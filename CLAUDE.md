@@ -181,10 +181,14 @@ isi berkas, ukuran, SHA-256).
   pembaruan OTA bisa nyasar ke HP karyawan. Proyek EAS sebelum ganti nama
   (`d1db6915…`, slug lama) tidak dipakai lagi. Varian rilis diputuskan saat
   aplikasi baru menggantikan yang lama.
-- **Variabel EAS `EXPO_PUBLIC_API_URL` lingkungan `preview` belum ada** di
-  proyek `@socialnael/opennael`. Sebelum diisi (`https://…`), `build:preview`
-  / `update:preview` ditolak `app.config.ts`; Expo Go tidak terpengaruh.
-  APK Nael Uji lama (proyek & sidik jari lama) wajib dibangun ulang.
+- **API `preview` sementara = terowongan ngrok ke laptop** (26 Okt 2026,
+  sampai API dipasang di VPS — pekerjaan terakhir proyek): variabel EAS
+  `EXPO_PUBLIC_API_URL` lingkungan `preview` =
+  `https://barterer-sapling-cabbage.ngrok-free.dev`. Nael Uji hanya bisa
+  memanggil API selama laptop menyalakan `apps/api` `bun run dev` **dan**
+  `ngrok http --url=barterer-sapling-cabbage.ngrok-free.dev 3000`. Alamat API
+  tidak ikut sidik jari runtime (sudah diuji): pindah ke VPS cukup ganti
+  variabel lalu `update:preview`, tanpa build ulang.
 
 ## Jalur rilis aplikasi HP (keputusan pemilik, 24 Okt 2026)
 
