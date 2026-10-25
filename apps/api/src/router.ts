@@ -1,5 +1,5 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
-import { galatSchema } from "@naelcapital/contracts";
+import { galatSchema } from "@opennael/contracts";
 import { jawabanValidasi } from "./galat";
 import type { Aktor } from "./modul/auth/token";
 

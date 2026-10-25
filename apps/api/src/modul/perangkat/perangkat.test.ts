@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import type { Sesi } from "@naelcapital/contracts";
+import type { Sesi } from "@opennael/contracts";
 import { dalamTransaksi, type Jawaban, siapkanKantor, URL_DB } from "../../uji/bantu";
 
 /**

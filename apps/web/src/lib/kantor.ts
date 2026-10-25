@@ -1,4 +1,4 @@
-import { waktuKantor, type ZonaWaktu } from "@naelcapital/domain";
+import { waktuKantor, type ZonaWaktu } from "@opennael/domain";
 import { useSesi } from "./sesi";
 
 /** Kantor bos yang sedang masuk; layar bos hanya tampil bila sesi ada. */

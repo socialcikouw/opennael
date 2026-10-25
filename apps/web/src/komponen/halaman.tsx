@@ -1,4 +1,4 @@
-import { geserTanggal } from "@naelcapital/domain";
+import { geserTanggal } from "@opennael/domain";
 import { ChevronLeft, ChevronRight, LoaderCircle } from "lucide-react";
 import type { ReactNode } from "react";
 import { Button } from "@/komponen/ui/button";

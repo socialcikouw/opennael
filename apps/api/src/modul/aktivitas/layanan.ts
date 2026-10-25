@@ -1,5 +1,5 @@
-import type { Aktivitas, JejakRiwayat, Peran } from "@naelcapital/contracts";
-import { rentangTanggalKantor } from "@naelcapital/domain";
+import type { Aktivitas, JejakRiwayat, Peran } from "@opennael/contracts";
+import { rentangTanggalKantor } from "@opennael/domain";
 import { and, desc, eq, gte, inArray, isNotNull, lt, ne, or } from "drizzle-orm";
 import { type AnyPgColumn, alias } from "drizzle-orm/pg-core";
 import type { Db } from "../../db/klien";

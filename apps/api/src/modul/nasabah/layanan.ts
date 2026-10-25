@@ -1,5 +1,5 @@
-import type { LokasiRumahInput, NasabahJawaban, UbahNasabahInput } from "@naelcapital/contracts";
-import { kunciWilayah, samarkanNik } from "@naelcapital/domain";
+import type { LokasiRumahInput, NasabahJawaban, UbahNasabahInput } from "@opennael/contracts";
+import { kunciWilayah, samarkanNik } from "@opennael/domain";
 import { and, asc, eq, ilike, inArray, isNull, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import type { Db } from "../../db/klien";

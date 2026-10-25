@@ -1,5 +1,5 @@
-import type { KartuTagih } from "@naelcapital/contracts";
-import { hitungBayar, hitungLunas } from "@naelcapital/domain";
+import type { KartuTagih } from "@opennael/contracts";
+import { hitungBayar, hitungLunas } from "@opennael/domain";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Alert, Text, View } from "react-native";

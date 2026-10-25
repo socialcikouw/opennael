@@ -15,7 +15,7 @@ const app = buatApp({
 });
 
 const server = Bun.serve({ port: env.PORT, fetch: app.fetch });
-console.log(`Nael Capital API di http://localhost:${server.port}`);
+console.log(`OpenNael API di http://localhost:${server.port}`);
 if (!env.KODE_REGISTRASI) console.log("Registrasi kantor baru DITUTUP (KODE_REGISTRASI kosong)");
 
 jadwalkanTutupHari(buatLayananTutupHari({ db }));

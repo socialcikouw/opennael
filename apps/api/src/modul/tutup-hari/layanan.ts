@@ -4,7 +4,7 @@ import {
   mulaiDitagih,
   nilaiMacet,
   tanggalMasukPembukuan,
-} from "@naelcapital/domain";
+} from "@opennael/domain";
 import { and, between, eq, inArray, isNull, lt, lte, or, sql } from "drizzle-orm";
 import type { Db } from "../../db/klien";
 import { kantor, nasabah, pinjaman, posisiHarian, transaksi } from "../../db/skema";

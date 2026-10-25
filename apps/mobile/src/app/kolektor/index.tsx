@@ -1,5 +1,5 @@
-import type { KartuTagih } from "@naelcapital/contracts";
-import { kunciWilayah } from "@naelcapital/domain";
+import type { KartuTagih } from "@opennael/contracts";
+import { kunciWilayah } from "@opennael/domain";
 import { router } from "expo-router";
 import { useMemo, useState } from "react";
 import {

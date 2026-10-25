@@ -6,8 +6,8 @@ import type {
   TerimaKasInput,
   TransferInput,
   UbahHariIniInput,
-} from "@naelcapital/contracts";
-import { batasTransfer, tekorDanLebih, tunaiSeharusnya } from "@naelcapital/domain";
+} from "@opennael/contracts";
+import { batasTransfer, tekorDanLebih, tunaiSeharusnya } from "@opennael/domain";
 import { type AnyColumn, and, asc, eq, gte, isNull, lte, ne, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import type { Db } from "../../db/klien";

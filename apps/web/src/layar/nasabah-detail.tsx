@@ -1,4 +1,4 @@
-import type { NasabahJawaban } from "@naelcapital/contracts";
+import type { NasabahJawaban } from "@opennael/contracts";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowRightLeft,

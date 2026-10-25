@@ -1,4 +1,4 @@
-# Nael Capital — gambaran produk
+# OpenNael — gambaran produk
 
 Pembukuan **koperasi simpan-pinjam harian**: kantor meminjamkan uang ke
 nasabah di kampung-kampung, kolektor menagih angsurannya setiap hari kerja di

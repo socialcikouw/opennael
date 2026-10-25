@@ -1,4 +1,4 @@
-import { bakukanNomorHp } from "@naelcapital/domain";
+import { bakukanNomorHp } from "@opennael/domain";
 import { z } from "zod";
 
 /** Nomor HP yang diketik → E.164 (`0812…` menjadi `+62812…`). */

@@ -1,6 +1,6 @@
 import { fileURLToPath } from "node:url";
 import { createRoute } from "@hono/zod-openapi";
-import { sehatSchema } from "@naelcapital/contracts";
+import { sehatSchema } from "@opennael/contracts";
 import { Scalar } from "@scalar/hono-api-reference";
 import { BATAS_BAWAAN, type BatasPercobaan } from "./batas";
 import type { Db } from "./db/klien";
@@ -148,7 +148,7 @@ export function buatApp(deps: AppDeps) {
   });
   app.doc31("/openapi.json", {
     openapi: "3.1.0",
-    info: { title: "Nael Capital API", version: "0.0.0" },
+    info: { title: "OpenNael API", version: "0.0.0" },
   });
   app.get("/dokumentasi", Scalar({ url: "/openapi.json" }));
 

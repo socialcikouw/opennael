@@ -44,7 +44,7 @@ export function useTulis<I, O>(kirim: (input: I) => Promise<O>) {
   });
 }
 
-/** Penulis per operasi — bentuk isi mengikuti kontrak `@naelcapital/contracts`. */
+/** Penulis per operasi — bentuk isi mengikuti kontrak `@opennael/contracts`. */
 export const tulis = {
   absen: async (json: Parameters<typeof api.lapangan.absen.$post>[0]["json"]) =>
     (await panggil(() => api.lapangan.absen.$post({ json }))).json(),

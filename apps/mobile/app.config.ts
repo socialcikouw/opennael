@@ -22,7 +22,7 @@ import type { ConfigContext, ExpoConfig } from "expo/config";
  * saat aplikasi baru menggantikan aplikasi lama.
  */
 const VARIAN = {
-  preview: { name: "Nael Uji", paket: "com.naelcapital.app.preview" },
+  preview: { name: "Nael Uji", paket: "com.opennael.app.preview" },
 } as const;
 
 export default ({ config }: ConfigContext): ExpoConfig => {
@@ -50,7 +50,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
   return {
     ...config,
     name,
-    slug: config.slug ?? "new-naelcapital",
+    slug: config.slug ?? "opennael",
     android: { ...config.android, package: paket },
     ios: { ...config.ios, bundleIdentifier: paket },
   };

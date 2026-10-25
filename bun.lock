@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "naelcapital",
+      "name": "opennael",
       "devDependencies": {
         "@biomejs/biome": "2.6.2",
         "@types/bun": "1.4.3",
@@ -11,12 +11,12 @@
       },
     },
     "apps/api": {
-      "name": "@naelcapital/api",
+      "name": "@opennael/api",
       "version": "0.0.0",
       "dependencies": {
         "@hono/zod-openapi": "^1.6.3",
-        "@naelcapital/contracts": "workspace:*",
-        "@naelcapital/domain": "workspace:*",
+        "@opennael/contracts": "workspace:*",
+        "@opennael/domain": "workspace:*",
         "@scalar/hono-api-reference": "^0.12.13",
         "croner": "^10.0.1",
         "drizzle-orm": "^0.45.4",
@@ -30,14 +30,14 @@
       },
     },
     "apps/mobile": {
-      "name": "@naelcapital/mobile",
+      "name": "@opennael/mobile",
       "version": "0.0.0",
       "dependencies": {
         "@expo/ui": "~58.0.23",
         "@expo/vector-icons": "^15.0.2",
         "@hookform/resolvers": "^6.0.0",
-        "@naelcapital/contracts": "workspace:*",
-        "@naelcapital/domain": "workspace:*",
+        "@opennael/contracts": "workspace:*",
+        "@opennael/domain": "workspace:*",
         "@tanstack/react-query": "^5.104.5",
         "expo": "~58.0.19",
         "expo-camera": "~58.0.12",
@@ -71,16 +71,16 @@
         "react-native-worklets": "0.13.0",
       },
       "devDependencies": {
-        "@naelcapital/api": "workspace:*",
+        "@opennael/api": "workspace:*",
         "@types/react": "~19.3.0",
       },
     },
     "apps/web": {
-      "name": "@naelcapital/web",
+      "name": "@opennael/web",
       "version": "0.0.0",
       "dependencies": {
-        "@naelcapital/contracts": "workspace:*",
-        "@naelcapital/domain": "workspace:*",
+        "@opennael/contracts": "workspace:*",
+        "@opennael/domain": "workspace:*",
         "@tanstack/react-query": "^5.104.5",
         "@tanstack/react-router": "^1.170.45",
         "@tanstack/react-table": "^9.3.1",
@@ -96,7 +96,7 @@
         "tailwind-merge": "^3.7.0",
       },
       "devDependencies": {
-        "@naelcapital/api": "workspace:*",
+        "@opennael/api": "workspace:*",
         "@tailwindcss/vite": "^4.3.3",
         "@types/react": "~19.3.0",
         "@types/react-dom": "~19.3.0",
@@ -106,15 +106,15 @@
       },
     },
     "packages/contracts": {
-      "name": "@naelcapital/contracts",
+      "name": "@opennael/contracts",
       "version": "0.0.0",
       "dependencies": {
-        "@naelcapital/domain": "workspace:*",
+        "@opennael/domain": "workspace:*",
         "zod": "^4.6.7",
       },
     },
     "packages/domain": {
-      "name": "@naelcapital/domain",
+      "name": "@opennael/domain",
       "version": "0.0.0",
     },
   },
@@ -459,15 +459,15 @@
 
     "@jridgewell/trace-mapping": ["@jridgewell/trace-mapping@0.3.31", "", { "dependencies": { "@jridgewell/resolve-uri": "^3.1.0", "@jridgewell/sourcemap-codec": "^1.4.14" } }, "sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw=="],
 
-    "@naelcapital/api": ["@naelcapital/api@workspace:apps/api"],
+    "@opennael/api": ["@opennael/api@workspace:apps/api"],
 
-    "@naelcapital/contracts": ["@naelcapital/contracts@workspace:packages/contracts"],
+    "@opennael/contracts": ["@opennael/contracts@workspace:packages/contracts"],
 
-    "@naelcapital/domain": ["@naelcapital/domain@workspace:packages/domain"],
+    "@opennael/domain": ["@opennael/domain@workspace:packages/domain"],
 
-    "@naelcapital/mobile": ["@naelcapital/mobile@workspace:apps/mobile"],
+    "@opennael/mobile": ["@opennael/mobile@workspace:apps/mobile"],
 
-    "@naelcapital/web": ["@naelcapital/web@workspace:apps/web"],
+    "@opennael/web": ["@opennael/web@workspace:apps/web"],
 
     "@noxcturnal/noxcturnal-darwin-arm64": ["@noxcturnal/noxcturnal-darwin-arm64@0.1.8", "", { "os": "darwin", "cpu": "arm64" }, "sha512-IaKvOx7pb7nr+OQ4rm6VKO4z4a7BfqBrvxcDYfvtOHRq9yVylrph0crkWJRgxskGlaBrLMrNiWYHvFqrd0hRSA=="],
 

@@ -1,4 +1,4 @@
-import { angsuranKe, hitungGulung, KELIPATAN_POKOK, TENOR_PINJAMAN } from "@naelcapital/domain";
+import { angsuranKe, hitungGulung, KELIPATAN_POKOK, TENOR_PINJAMAN } from "@opennael/domain";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Alert, Text, View } from "react-native";

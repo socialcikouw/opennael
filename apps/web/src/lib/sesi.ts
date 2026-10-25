@@ -1,4 +1,4 @@
-import type { Profil } from "@naelcapital/contracts";
+import type { Profil } from "@opennael/contracts";
 import { useSyncExternalStore } from "react";
 
 /**

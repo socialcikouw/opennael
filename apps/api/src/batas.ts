@@ -1,5 +1,5 @@
-import type { Galat } from "@naelcapital/contracts";
-import { bakukanNomorHp } from "@naelcapital/domain";
+import type { Galat } from "@opennael/contracts";
+import { bakukanNomorHp } from "@opennael/domain";
 import type { Context, MiddlewareHandler } from "hono";
 import { rateLimiter } from "hono-rate-limiter";
 

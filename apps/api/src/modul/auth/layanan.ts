@@ -1,5 +1,5 @@
 import { createHash, timingSafeEqual } from "node:crypto";
-import type { LoginInput, Profil, RegistrasiInput, Sesi } from "@naelcapital/contracts";
+import type { LoginInput, Profil, RegistrasiInput, Sesi } from "@opennael/contracts";
 import { and, eq, isNull, sql } from "drizzle-orm";
 import type { Db } from "../../db/klien";
 import { kantor, pekanKerja, pengguna, perangkat, tarifGaji } from "../../db/skema";

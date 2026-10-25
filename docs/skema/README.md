@@ -1,4 +1,4 @@
-# Desain Ulang Skema Database — Nael Capital
+# Desain Ulang Skema Database — OpenNael
 
 Dokumen di folder ini adalah **rancangan akhir** skema database hasil audit
 tabel demi tabel (mulai 21 Okt 2026). Tujuannya: database yang **rapi** (tanpa

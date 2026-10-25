@@ -1,4 +1,4 @@
-import type { PerangkatJawaban } from "@naelcapital/contracts";
+import type { PerangkatJawaban } from "@opennael/contracts";
 import { and, desc, eq, isNull } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import type { Db } from "../../db/klien";

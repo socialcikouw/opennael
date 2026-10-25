@@ -80,7 +80,7 @@ export function Merek({ besar }: { besar?: boolean }) {
         <Text style={[g.merekHuruf, besar ? HURUF["2xl"] : HURUF.lg]}>N</Text>
       </View>
       <View>
-        <Text style={[g.merekNama, besar ? HURUF.xl : HURUF.base]}>Nael Capital</Text>
+        <Text style={[g.merekNama, besar ? HURUF.xl : HURUF.base]}>OpenNael</Text>
         <Text style={g.teksMini}>Simpan pinjam harian</Text>
       </View>
     </View>

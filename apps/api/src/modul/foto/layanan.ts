@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { type FotoTersimpan, UKURAN_FOTO_MAKS } from "@naelcapital/contracts";
+import { type FotoTersimpan, UKURAN_FOTO_MAKS } from "@opennael/contracts";
 import { and, eq } from "drizzle-orm";
 import type { Db } from "../../db/klien";
 import { foto } from "../../db/skema";

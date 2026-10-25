@@ -6,7 +6,7 @@ import {
   saringRekapBulananSchema,
   selRekapSchema,
   transaksiLengkapSchema,
-} from "@naelcapital/contracts";
+} from "@opennael/contracts";
 import { buatRouter, jawabanGalat } from "../../router";
 import type { LayananAuth } from "../auth/layanan";
 import { wajibMasuk } from "../auth/wajib-masuk";

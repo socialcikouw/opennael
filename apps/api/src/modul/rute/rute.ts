@@ -1,5 +1,5 @@
 import { createRoute } from "@hono/zod-openapi";
-import { ruteSchema, saringRuteSchema, simpanRuteSchema } from "@naelcapital/contracts";
+import { ruteSchema, saringRuteSchema, simpanRuteSchema } from "@opennael/contracts";
 import { buatRouter, jawabanGalat } from "../../router";
 import type { LayananAuth } from "../auth/layanan";
 import { wajibMasuk } from "../auth/wajib-masuk";

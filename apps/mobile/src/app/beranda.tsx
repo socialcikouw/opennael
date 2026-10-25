@@ -22,7 +22,7 @@ export default function Beranda() {
       <Judul>Halo, {s.pengguna.nama}</Judul>
       <Spanduk
         judul="Akun ini dipakai di web"
-        isi="Pekerjaan bos — karyawan, kas, gaji, pengaturan — ada di web Nael Capital. Aplikasi HP untuk kasir, pengawas, dan kolektor."
+        isi="Pekerjaan bos — karyawan, kas, gaji, pengaturan — ada di web OpenNael. Aplikasi HP untuk kasir, pengawas, dan kolektor."
       />
       <Keterangan>{s.pengguna.kantor.nama}</Keterangan>
       <View style={g.isi} />

@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { geserTanggal } from "@naelcapital/domain";
+import { geserTanggal } from "@opennael/domain";
 import { sql } from "drizzle-orm";
 import { dalamTransaksi, type Jawaban, siapkanKantor, URL_DB } from "../../uji/bantu";
 

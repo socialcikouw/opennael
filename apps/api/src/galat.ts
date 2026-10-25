@@ -1,5 +1,5 @@
-import type { Galat } from "@naelcapital/contracts";
-import { GalatAturan } from "@naelcapital/domain";
+import type { Galat } from "@opennael/contracts";
+import { GalatAturan } from "@opennael/domain";
 import type { Context } from "hono";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 import type { ZodError } from "zod";

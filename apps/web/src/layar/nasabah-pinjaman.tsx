@@ -1,4 +1,4 @@
-import type { KartuPinjaman, Peristiwa, RincianPinjaman } from "@naelcapital/contracts";
+import type { KartuPinjaman, Peristiwa, RincianPinjaman } from "@opennael/contracts";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { History, ListOrdered, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";

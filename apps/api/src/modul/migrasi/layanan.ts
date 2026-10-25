@@ -1,5 +1,5 @@
-import type { HasilMigrasi, MigrasiInput, NasabahBaruInput } from "@naelcapital/contracts";
-import { syaratMigrasi } from "@naelcapital/domain";
+import type { HasilMigrasi, MigrasiInput, NasabahBaruInput } from "@opennael/contracts";
+import { syaratMigrasi } from "@opennael/domain";
 import { and, eq, inArray, isNull, sql } from "drizzle-orm";
 import type { Db } from "../../db/klien";
 import { nasabah, pengguna, pinjaman } from "../../db/skema";

@@ -1,5 +1,5 @@
-import type { BatalInput, BayarGajiInput } from "@naelcapital/contracts";
-import { GalatAturan, gajiBersih, gajiKotor, tarifBerlaku } from "@naelcapital/domain";
+import type { BatalInput, BayarGajiInput } from "@opennael/contracts";
+import { GalatAturan, gajiBersih, gajiKotor, tarifBerlaku } from "@opennael/domain";
 import { and, between, desc, eq, gte, isNull, lte, or, sql } from "drizzle-orm";
 import type { Db } from "../../db/klien";
 import {

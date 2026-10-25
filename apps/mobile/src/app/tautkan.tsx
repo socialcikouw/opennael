@@ -22,7 +22,7 @@ interface Tautan {
 }
 
 const LANGKAH = [
-  "Bos membuka web Nael Capital → menu Tautkan HP.",
+  "Bos membuka web OpenNael → menu Tautkan HP.",
   "Bos memindai QR di bawah, atau mengetik kodenya.",
   "HP ini masuk sendiri begitu disetujui.",
 ];

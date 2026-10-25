@@ -1,5 +1,5 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { fotoTersimpanSchema, UKURAN_FOTO_MAKS, unggahFotoSchema } from "@naelcapital/contracts";
+import { fotoTersimpanSchema, UKURAN_FOTO_MAKS, unggahFotoSchema } from "@opennael/contracts";
 import { bodyLimit } from "hono/body-limit";
 import { GalatApp } from "../../galat";
 import { buatRouter, jawabanGalat } from "../../router";

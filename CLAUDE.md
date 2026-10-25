@@ -1,9 +1,15 @@
-# Nael Capital
+# OpenNael
 
 Pembukuan koperasi simpan-pinjam harian: kolektor menagih di lapangan, kasir
 menerima setoran sore, pengawas memeriksa, bos memegang kendali. Repo ini
 membangun ulang aplikasi lama dari akarnya — **rancangan database di
 `docs/skema/` adalah acuannya**.
+
+Nama aplikasi **OpenNael** (dulu "Nael Capital", ganti nama 26 Okt 2026):
+teks tampilan `OpenNael`, nama teknis huruf kecil (`@opennael/*`,
+`opennael://`, `com.opennael.app.*`). **Nael Capital** tetap nama usaha
+koperasinya — contoh nama kantor di docs & data uji memakai nama itu. Nama
+`naelcapital` hanya tersisa di rujukan repo/aplikasi lama.
 
 Dokumen yang dibaca lebih dulu:
 
@@ -129,7 +135,7 @@ isi berkas, ukuran, SHA-256).
   bukan mendefinisikan ulang.
 - **Tipe untuk klien `hc` = berkas deklarasi**: `apps/api` menghasilkan
   `apps/api/tipe/*.d.ts` (`bun run tipe`, tidak ikut repo); klien mengimpor
-  `import type { App } from "@naelcapital/api/tipe"`. Impor langsung dari
+  `import type { App } from "@opennael/api/tipe"`. Impor langsung dari
   `apps/api/src` ikut membawa tipe Bun/`node:crypto` ke pemeriksaan tipe HP.
   Skrip `typecheck` mobile menghasilkan tipe itu lebih dulu.
 - Middleware yang dirangkai sendiri: log (pino), rate limit, penerjemah galat
@@ -169,11 +175,18 @@ isi berkas, ukuran, SHA-256).
 - Repo lama (`desktop\re-launching\naelcapital` dan `naelcapitalAPI`) masih
   dipakai karyawan di lapangan — **jangan mengubah branch `main` repo lama**.
 - **Aplikasi mobile baru terpisah dari aplikasi lama**: proyek EAS
-  `@socialnael/new-naelcapital` (bukan `NaelCapital`/`d537903a…` milik APK
-  lapangan) dan paket `com.naelcapital.app.preview` untuk APK uji. Jangan
+  `@socialnael/opennael` (bukan `NaelCapital`/`d537903a…` milik APK
+  lapangan) dan paket `com.opennael.app.preview` untuk APK uji. Jangan
   menautkan ke proyek EAS lama atau memakai paket `com.naelcapital.app` —
-  pembaruan OTA bisa nyasar ke HP karyawan. Varian rilis diputuskan saat
+  pembaruan OTA bisa nyasar ke HP karyawan. Proyek EAS sebelum ganti nama
+  (`d1db6915…`, slug lama) tidak dipakai lagi. Varian rilis diputuskan saat
   aplikasi baru menggantikan yang lama.
+- **Proyek EAS `@socialnael/opennael` belum ditautkan**: `app.json` belum
+  punya `extra.eas.projectId` dan `updates.url`. Pemilik membuatnya dengan
+  `bunx eas-cli init` lalu `bunx eas-cli update:configure` dari
+  `apps/mobile`, dan mengisi lagi variabel EAS `EXPO_PUBLIC_API_URL`
+  lingkungan `preview` di proyek baru. Sebelum itu `build:preview` /
+  `update:preview` tidak bisa jalan; Expo Go tidak terpengaruh.
 
 ## Jalur rilis aplikasi HP (keputusan pemilik, 24 Okt 2026)
 
@@ -182,8 +195,8 @@ branch EAS Update**.
 
 | Jalur | Git | Aplikasi / paket | JS dari |
 |---|---|---|---|
-| `development` | branch apa saja | **Expo Go** di HP (tanpa build; Nael Dev / `com.naelcapital.app.dev` tidak dipakai sejak 25 Okt 2026) | Metro di laptop |
-| `preview` | `main` | Nael Uji / `com.naelcapital.app.preview` | EAS Update channel `preview` (manual: `bun run update:preview`) |
+| `development` | branch apa saja | **Expo Go** di HP (tanpa build; APK Nael Dev tidak dipakai sejak 25 Okt 2026) | Metro di laptop |
+| `preview` | `main` | Nael Uji / `com.opennael.app.preview` | EAS Update channel `preview` (manual: `bun run update:preview`) |
 | `production` | `production` (dibuat saat rilis pertama) + tag `mobile-vX.Y.Z` | diputuskan saat menggantikan aplikasi lama | EAS Update channel `production` |
 
 - `runtimeVersion` = **fingerprint**: perubahan JS boleh lewat OTA; perubahan

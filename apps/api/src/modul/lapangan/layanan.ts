@@ -5,7 +5,7 @@ import type {
   NasabahBaruInput,
   NasabahLama,
   PinjamanKartu,
-} from "@naelcapital/contracts";
+} from "@opennael/contracts";
 import {
   angsuranKe,
   hariTagihMingguan,
@@ -15,7 +15,7 @@ import {
   kunciWilayah,
   rapikanNamaWilayah,
   syaratAkad,
-} from "@naelcapital/domain";
+} from "@opennael/domain";
 import { and, asc, desc, eq, inArray, isNull, ne, notExists, or, sql } from "drizzle-orm";
 import type { Db } from "../../db/klien";
 import {

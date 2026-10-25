@@ -1,5 +1,5 @@
-import type { Aktivitas, Peran, TabelBerjejak } from "@naelcapital/contracts";
-import { tabelBerjejakSchema } from "@naelcapital/contracts";
+import type { Aktivitas, Peran, TabelBerjejak } from "@opennael/contracts";
+import { tabelBerjejakSchema } from "@opennael/contracts";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import {

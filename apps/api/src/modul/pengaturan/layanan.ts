@@ -6,7 +6,7 @@ import type {
   RemNasabahInput,
   TarifInput,
   UbahKantorInput,
-} from "@naelcapital/contracts";
+} from "@opennael/contracts";
 import {
   bitmaskKeHari,
   geserTanggal,
@@ -14,7 +14,7 @@ import {
   menitDariJam,
   selisihHari,
   tarifBerlaku,
-} from "@naelcapital/domain";
+} from "@opennael/domain";
 import { and, asc, between, desc, eq, isNull, lte, ne, or } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import type { Db } from "../../db/klien";

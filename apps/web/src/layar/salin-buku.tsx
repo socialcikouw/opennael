@@ -1,10 +1,5 @@
-import type { Aktivitas, HasilMigrasi } from "@naelcapital/contracts";
-import {
-  GalatAturan,
-  type JenisPinjaman,
-  syaratMigrasi,
-  TENOR_PINJAMAN,
-} from "@naelcapital/domain";
+import type { Aktivitas, HasilMigrasi } from "@opennael/contracts";
+import { GalatAturan, type JenisPinjaman, syaratMigrasi, TENOR_PINJAMAN } from "@opennael/domain";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft, BookCopy, Undo2, UserCheck } from "lucide-react";

@@ -1,5 +1,5 @@
-import type { Peristiwa, SaringPeristiwa } from "@naelcapital/contracts";
-import { geserTanggal, selisihHari } from "@naelcapital/domain";
+import type { Peristiwa, SaringPeristiwa } from "@opennael/contracts";
+import { geserTanggal, selisihHari } from "@opennael/domain";
 import { and, eq, gte, isNull, lte, type SQL } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import type { Db } from "../../db/klien";

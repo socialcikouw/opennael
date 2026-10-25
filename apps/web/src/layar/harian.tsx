@@ -1,4 +1,4 @@
-import type { HariKas } from "@naelcapital/contracts";
+import type { HariKas } from "@opennael/contracts";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import { ArrowLeftRight, HandCoins, Pencil, Plus, RotateCcw, Trash2, Undo2 } from "lucide-react";

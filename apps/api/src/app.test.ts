@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { sehatSchema } from "@naelcapital/contracts";
+import { sehatSchema } from "@opennael/contracts";
 import { buatApp } from "./app";
 import type { Db } from "./db/klien";
 import { pastikanDatabasePengembangan } from "./db/penjaga";

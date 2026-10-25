@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import type { Sesi } from "@naelcapital/contracts";
+import type { Sesi } from "@opennael/contracts";
 import { sql } from "drizzle-orm";
 import { dalamTransaksi, siapkanKantor, URL_DB } from "../../uji/bantu";
 

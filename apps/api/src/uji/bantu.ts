@@ -1,4 +1,4 @@
-import type { Sesi } from "@naelcapital/contracts";
+import type { Sesi } from "@opennael/contracts";
 import { sql, TransactionRollbackError } from "drizzle-orm";
 import { type AppDeps, buatApp } from "../app";
 import { buatDb, type Db } from "../db/klien";

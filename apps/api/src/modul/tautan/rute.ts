@@ -6,7 +6,7 @@ import {
   persetujuanTautanSchema,
   setujuiTautanSchema,
   tautanBaruSchema,
-} from "@naelcapital/contracts";
+} from "@opennael/contracts";
 import { type BatasPercobaan, pembatasPerIp } from "../../batas";
 import { buatRouter, jawabanGalat } from "../../router";
 import type { LayananAuth } from "../auth/layanan";

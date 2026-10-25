@@ -1,4 +1,4 @@
-import { geserTanggal } from "@naelcapital/domain";
+import { geserTanggal } from "@opennael/domain";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi, Link } from "@tanstack/react-router";
 import {

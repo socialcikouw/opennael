@@ -1,5 +1,5 @@
-import type { NasabahLama } from "@naelcapital/contracts";
-import { type JenisPinjaman, kunciWilayah, syaratAkad, TENOR_PINJAMAN } from "@naelcapital/domain";
+import type { NasabahLama } from "@opennael/contracts";
+import { type JenisPinjaman, kunciWilayah, syaratAkad, TENOR_PINJAMAN } from "@opennael/domain";
 import { router } from "expo-router";
 import { useMemo, useState } from "react";
 import { ActivityIndicator, Alert, Pressable, Text, View } from "react-native";

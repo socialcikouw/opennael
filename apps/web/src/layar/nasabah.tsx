@@ -1,4 +1,4 @@
-import type { NasabahJawaban } from "@naelcapital/contracts";
+import type { NasabahJawaban } from "@opennael/contracts";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi, Link } from "@tanstack/react-router";
 import { BookCopy, Search } from "lucide-react";

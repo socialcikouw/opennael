@@ -1,4 +1,4 @@
-import type { SimpanRuteInput } from "@naelcapital/contracts";
+import type { SimpanRuteInput } from "@opennael/contracts";
 import { and, asc, eq } from "drizzle-orm";
 import type { Db } from "../../db/klien";
 import { pengguna, ruteKolektor, ruteWilayah, wilayah } from "../../db/skema";

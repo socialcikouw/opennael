@@ -1,4 +1,4 @@
-import type { KartuPinjaman, RincianPinjaman } from "@naelcapital/contracts";
+import type { KartuPinjaman, RincianPinjaman } from "@opennael/contracts";
 import {
   ATURAN_MACET,
   awalJendelaMacet,
@@ -7,7 +7,7 @@ import {
   nilaiMacet,
   posisiTagih,
   tanggalMasukPembukuan,
-} from "@naelcapital/domain";
+} from "@opennael/domain";
 import {
   and,
   asc,

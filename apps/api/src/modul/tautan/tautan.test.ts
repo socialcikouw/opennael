@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import type { Sesi } from "@naelcapital/contracts";
+import type { Sesi } from "@opennael/contracts";
 import { TransactionRollbackError } from "drizzle-orm";
 import { buatApp } from "../../app";
 import { buatDb, type Db } from "../../db/klien";
@@ -64,7 +64,7 @@ describe.skipIf(!url)("tautan QR", () => {
       });
       expect(t1.status).toBe(201);
       expect(t1.isi.kode).toMatch(/^[A-Z2-9]{4}-[A-Z2-9]{4}$/);
-      expect(t1.isi.qr).toBe(`naelcapital://tautan/${t1.isi.kode.replace("-", "")}`);
+      expect(t1.isi.qr).toBe(`opennael://tautan/${t1.isi.kode.replace("-", "")}`);
       const klaim1 = (k = t1.isi.klaim) => kirim(`/auth/tautan/${t1.isi.id}/klaim`, { klaim: k });
 
       expect((await klaim1()).isi.status).toBe("menunggu");

@@ -1,4 +1,4 @@
-import type { BatalInput, PutihkanInput } from "@naelcapital/contracts";
+import type { BatalInput, PutihkanInput } from "@opennael/contracts";
 import { and, eq, ne, sql } from "drizzle-orm";
 import type { Db } from "../../db/klien";
 import { nasabah, pinjaman } from "../../db/skema";

@@ -1,4 +1,4 @@
-import type { Profil } from "@naelcapital/contracts";
+import type { Profil } from "@opennael/contracts";
 import * as SecureStore from "expo-secure-store";
 import { useSyncExternalStore } from "react";
 

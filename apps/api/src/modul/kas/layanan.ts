@@ -4,8 +4,8 @@ import type {
   MutasiInput,
   PencocokanInput,
   UbahKasAwalInput,
-} from "@naelcapital/contracts";
-import { geserTanggal, syaratAkunMutasi } from "@naelcapital/domain";
+} from "@opennael/contracts";
+import { geserTanggal, syaratAkunMutasi } from "@opennael/domain";
 import { and, asc, between, eq, sql } from "drizzle-orm";
 import type { Db } from "../../db/klien";
 import {

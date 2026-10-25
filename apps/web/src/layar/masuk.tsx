@@ -31,7 +31,7 @@ export function LayarMasuk() {
   };
 
   return (
-    <KartuTengah judul="Nael Capital — Bos">
+    <KartuTengah judul="OpenNael — Bos">
       <form className="space-y-4" onSubmit={kirim}>
         <Isian
           label="Nomor HP"

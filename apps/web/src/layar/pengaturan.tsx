@@ -1,4 +1,4 @@
-import { geserTanggal, kunciWilayah, rapikanNamaWilayah } from "@naelcapital/domain";
+import { geserTanggal, kunciWilayah, rapikanNamaWilayah } from "@opennael/domain";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import { ArrowDown, ArrowUp, Pencil, Plus, Trash2, Undo2 } from "lucide-react";

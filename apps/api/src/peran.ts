@@ -1,4 +1,4 @@
-import type { Peran } from "@naelcapital/contracts";
+import type { Peran } from "@opennael/contracts";
 import { dilarang } from "./galat";
 import type { Aktor } from "./modul/auth/token";
 

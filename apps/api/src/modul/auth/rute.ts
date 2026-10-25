@@ -6,7 +6,7 @@ import {
   registrasiSchema,
   sesiSchema,
   tokenSchema,
-} from "@naelcapital/contracts";
+} from "@opennael/contracts";
 import { type BatasPercobaan, pembatasLoginPerNomor, pembatasPerIp } from "../../batas";
 import { buatRouter, jawabanGalat } from "../../router";
 import type { LayananAuth } from "./layanan";

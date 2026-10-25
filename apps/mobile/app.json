@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Nael Capital",
-    "slug": "new-naelcapital",
+    "name": "OpenNael",
+    "slug": "opennael",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -31,28 +31,22 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Nael Capital memakai kamera untuk memotret serah terima pinjaman.",
+          "cameraPermission": "OpenNael memakai kamera untuk memotret serah terima pinjaman.",
           "recordAudioAndroid": false
         }
       ],
       "expo-secure-store"
     ],
-    "scheme": "naelcapital",
+    "scheme": "opennael",
     "owner": "socialnael",
     "runtimeVersion": {
       "policy": "fingerprint"
-    },
-    "updates": {
-      "url": "https://u.expo.dev/d1db6915-5a25-48c3-8e37-4aeb009a7f5e"
     },
     "extra": {
       "router": {
         "asyncRoutes": {
           "web": true
         }
-      },
-      "eas": {
-        "projectId": "d1db6915-5a25-48c3-8e37-4aeb009a7f5e"
       }
     }
   }

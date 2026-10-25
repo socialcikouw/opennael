@@ -1,5 +1,5 @@
 {
-  "name": "@naelcapital/api",
+  "name": "@opennael/api",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -14,8 +14,8 @@
   },
   "dependencies": {
     "@hono/zod-openapi": "^1.6.3",
-    "@naelcapital/contracts": "workspace:*",
-    "@naelcapital/domain": "workspace:*",
+    "@opennael/contracts": "workspace:*",
+    "@opennael/domain": "workspace:*",
     "@scalar/hono-api-reference": "^0.12.13",
     "croner": "^10.0.1",
     "drizzle-orm": "^0.45.4",

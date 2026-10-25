@@ -1,4 +1,4 @@
-import { UKURAN_FOTO_MAKS } from "@naelcapital/contracts";
+import { UKURAN_FOTO_MAKS } from "@opennael/contracts";
 import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
 import { ALAMAT_API, ambilDenganSesi, bacaGalat, PESAN_JARINGAN } from "./api";
 

@@ -1,4 +1,4 @@
-import { type Peran, peranSchema } from "@naelcapital/contracts";
+import { type Peran, peranSchema } from "@opennael/contracts";
 import {
   createRootRoute,
   createRoute,

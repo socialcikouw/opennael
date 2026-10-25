@@ -1,4 +1,4 @@
-import type { JenisPinjaman, ZonaWaktu } from "@naelcapital/domain";
+import type { JenisPinjaman, ZonaWaktu } from "@opennael/domain";
 
 /**
  * FORMAT TAMPILAN — rupiah, tanggal kantor (`YYYY-MM-DD`), dan jam menurut

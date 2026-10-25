@@ -1,4 +1,4 @@
-import { bakukanKode } from "@naelcapital/domain";
+import { bakukanKode } from "@opennael/domain";
 import { z } from "zod";
 import { infoPerangkatSchema, nomorHpSchema, peranSchema, sesiSchema } from "./auth";
 

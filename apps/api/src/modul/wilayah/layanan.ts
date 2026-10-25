@@ -1,5 +1,5 @@
-import type { WilayahJawaban } from "@naelcapital/contracts";
-import { kunciWilayah, rapikanNamaWilayah } from "@naelcapital/domain";
+import type { WilayahJawaban } from "@opennael/contracts";
+import { kunciWilayah, rapikanNamaWilayah } from "@opennael/domain";
 import { and, asc, eq, gte, inArray, ne, sql } from "drizzle-orm";
 import type { Db } from "../../db/klien";
 import { nasabah, pengguna, pinjaman, ruteKolektor, ruteWilayah, wilayah } from "../../db/skema";

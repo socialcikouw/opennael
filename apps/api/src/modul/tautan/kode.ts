@@ -1,5 +1,5 @@
 import { createHash, randomBytes, randomInt, timingSafeEqual } from "node:crypto";
-import { ABJAD_KODE, PANJANG_KODE } from "@naelcapital/domain";
+import { ABJAD_KODE, PANJANG_KODE } from "@opennael/domain";
 
 /**
  * Kode penautan acak: 31^8 ≈ 8,5 × 10^11 kemungkinan, berlaku 2 menit, dan

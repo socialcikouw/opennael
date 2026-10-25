@@ -1,5 +1,5 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
-import type { Peran } from "@naelcapital/contracts";
+import type { Peran } from "@opennael/contracts";
 import { sign, verify } from "hono/jwt";
 
 /** Umur token akses (JWT). Pendek: pencabutan sesi berlaku paling lambat sekian. */

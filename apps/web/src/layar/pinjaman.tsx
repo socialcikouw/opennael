@@ -1,4 +1,4 @@
-import type { KartuPinjaman } from "@naelcapital/contracts";
+import type { KartuPinjaman } from "@opennael/contracts";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import { useMemo } from "react";

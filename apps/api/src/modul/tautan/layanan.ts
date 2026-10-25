@@ -1,5 +1,5 @@
-import type { HasilKlaim, SetujuiTautanInput } from "@naelcapital/contracts";
-import { isiQr, tampilanKode } from "@naelcapital/domain";
+import type { HasilKlaim, SetujuiTautanInput } from "@opennael/contracts";
+import { isiQr, tampilanKode } from "@opennael/domain";
 import { and, eq, gt, isNull, lt } from "drizzle-orm";
 import type { Db } from "../../db/klien";
 import { pengguna, perangkat, tautan } from "../../db/skema";

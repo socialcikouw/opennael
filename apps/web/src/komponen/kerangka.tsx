@@ -77,9 +77,7 @@ export function Kerangka() {
       <aside className="sticky top-0 hidden h-screen flex-col border-r bg-card md:flex">
         <div className="border-b px-5 py-4">
           <p className="truncate font-semibold">{s.pengguna.kantor.nama}</p>
-          <p className="text-xs text-muted-foreground">
-            Nael Capital · {s.pengguna.kantor.zonaWaktu}
-          </p>
+          <p className="text-xs text-muted-foreground">OpenNael · {s.pengguna.kantor.zonaWaktu}</p>
         </div>
         <nav className="flex-1 space-y-0.5 overflow-y-auto p-3">
           {MENU.map((m) => (

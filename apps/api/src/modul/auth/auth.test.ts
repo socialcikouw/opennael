@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import type { Sesi } from "@naelcapital/contracts";
+import type { Sesi } from "@opennael/contracts";
 import { TransactionRollbackError } from "drizzle-orm";
 import { buatApp } from "../../app";
 import { buatDb, type Db } from "../../db/klien";

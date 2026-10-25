@@ -1,4 +1,4 @@
-import type { NonaktifkanInput, Peran, UbahPenggunaInput } from "@naelcapital/contracts";
+import type { NonaktifkanInput, Peran, UbahPenggunaInput } from "@opennael/contracts";
 import { and, asc, eq, inArray, isNull, sql } from "drizzle-orm";
 import type { Db } from "../../db/klien";
 import { nasabah, pengguna, perangkat, pinjaman } from "../../db/skema";

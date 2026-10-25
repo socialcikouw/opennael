@@ -1,4 +1,4 @@
-import { geserTanggal } from "@naelcapital/domain";
+import { geserTanggal } from "@opennael/domain";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import { Banknote, Undo2 } from "lucide-react";

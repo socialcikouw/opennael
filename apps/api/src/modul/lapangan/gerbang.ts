@@ -4,7 +4,7 @@ import {
   hariKerjaPekan,
   hariTagihKantor,
   waktuKantor,
-} from "@naelcapital/domain";
+} from "@opennael/domain";
 import { and, between, desc, eq, lte } from "drizzle-orm";
 import type { Db } from "../../db/klien";
 import { hariKolektor, kantor, liburKantor, pekanKerja } from "../../db/skema";

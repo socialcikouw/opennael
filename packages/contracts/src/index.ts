@@ -1,5 +1,5 @@
 /**
- * Bentuk permintaan & respons API Nael Capital (Zod). Rute Hono di
+ * Bentuk permintaan & respons API OpenNael (Zod). Rute Hono di
  * `apps/api` memakai skema ini — tidak mendefinisikan ulang — dan formulir di
  * `apps/mobile` / `apps/web` memvalidasi dengan skema yang sama.
  */

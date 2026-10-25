@@ -1,4 +1,4 @@
-import { geserTanggal, hitungPerforma, selisihHari } from "@naelcapital/domain";
+import { geserTanggal, hitungPerforma, selisihHari } from "@opennael/domain";
 import { and, asc, between, eq, inArray, isNull, ne, sql } from "drizzle-orm";
 import type { Db } from "../../db/klien";
 import {

@@ -1,4 +1,4 @@
-import { geserTanggal } from "@naelcapital/domain";
+import { geserTanggal } from "@opennael/domain";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { ActivityIndicator, Alert, Text, View } from "react-native";

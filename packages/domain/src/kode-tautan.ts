@@ -9,7 +9,7 @@
 export const ABJAD_KODE = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
 export const PANJANG_KODE = 8;
 /** Isi QR: skema aplikasi + kode, supaya pemindai menolak QR lain. */
-export const AWALAN_QR = "naelcapital://tautan/";
+export const AWALAN_QR = "opennael://tautan/";
 
 /** "K7QM28XD" → "K7QM-28XD" (tampilan). */
 export function tampilanKode(kode: string): string {

@@ -4,7 +4,7 @@ import {
   ringkasanKolektorSchema,
   ringkasanSchema,
   saringRingkasanSchema,
-} from "@naelcapital/contracts";
+} from "@opennael/contracts";
 import type { ZodType } from "zod";
 import { buatRouter, jawabanGalat } from "../../router";
 import type { LayananAuth } from "../auth/layanan";

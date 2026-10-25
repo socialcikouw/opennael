@@ -1,4 +1,4 @@
-import { bakukanKode, tampilanKode } from "@naelcapital/domain";
+import { bakukanKode, tampilanKode } from "@opennael/domain";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import QrScanner from "qr-scanner";
@@ -93,7 +93,7 @@ export function LayarTautkan() {
     e.preventDefault();
     const baku = bakukanKode(ketikan);
     if (!baku) {
-      setGalatKode("Itu bukan kode penautan Nael Capital");
+      setGalatKode("Itu bukan kode penautan OpenNael");
       return;
     }
     setKode(baku);
@@ -127,8 +127,7 @@ export function LayarTautkan() {
     return (
       <KartuFormulir judul="Tautkan HP karyawan">
         <p className="text-muted-foreground">
-          Di HP karyawan, buka aplikasi Nael Capital — layar "Tautkan HP ini" menampilkan QR dan
-          kode.
+          Di HP karyawan, buka aplikasi OpenNael — layar "Tautkan HP ini" menampilkan QR dan kode.
         </p>
         {kamera ? (
           <Pemindai onKode={setKode} />

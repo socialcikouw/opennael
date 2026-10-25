@@ -1,5 +1,5 @@
-import type { BatalInput, KoreksiInput, PenarikanInput } from "@naelcapital/contracts";
-import { hitungKoreksi, syaratPenarikan } from "@naelcapital/domain";
+import type { BatalInput, KoreksiInput, PenarikanInput } from "@opennael/contracts";
+import { hitungKoreksi, syaratPenarikan } from "@opennael/domain";
 import { and, desc, eq, ne, sql } from "drizzle-orm";
 import type { Db } from "../../db/klien";
 import {

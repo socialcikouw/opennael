@@ -1,5 +1,5 @@
-import type { Peran } from "@naelcapital/contracts";
-import { waktuKantor, type ZonaWaktu } from "@naelcapital/domain";
+import type { Peran } from "@opennael/contracts";
+import { waktuKantor, type ZonaWaktu } from "@opennael/domain";
 
 /** Layar pertama tiap peran sesudah HP tertaut. */
 export function layarAwal(peran: Peran) {

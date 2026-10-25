@@ -1,5 +1,5 @@
-import type { App } from "@naelcapital/api/tipe";
-import type { Galat } from "@naelcapital/contracts";
+import type { App } from "@opennael/api/tipe";
+import type { Galat } from "@opennael/contracts";
 import { hc } from "hono/client";
 import { sesi } from "./sesi";
 
