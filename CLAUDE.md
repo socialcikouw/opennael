@@ -175,18 +175,16 @@ isi berkas, ukuran, SHA-256).
 - Repo lama (`desktop\re-launching\naelcapital` dan `naelcapitalAPI`) masih
   dipakai karyawan di lapangan — **jangan mengubah branch `main` repo lama**.
 - **Aplikasi mobile baru terpisah dari aplikasi lama**: proyek EAS
-  `@socialnael/opennael` (bukan `NaelCapital`/`d537903a…` milik APK
-  lapangan) dan paket `com.opennael.app.preview` untuk APK uji. Jangan
+  `@socialnael/opennael` (`c433d424…`, ditautkan 26 Okt 2026; bukan
+  `NaelCapital`/`d537903a…` milik APK lapangan) dan paket `com.opennael.app.preview` untuk APK uji. Jangan
   menautkan ke proyek EAS lama atau memakai paket `com.naelcapital.app` —
   pembaruan OTA bisa nyasar ke HP karyawan. Proyek EAS sebelum ganti nama
   (`d1db6915…`, slug lama) tidak dipakai lagi. Varian rilis diputuskan saat
   aplikasi baru menggantikan yang lama.
-- **Proyek EAS `@socialnael/opennael` belum ditautkan**: `app.json` belum
-  punya `extra.eas.projectId` dan `updates.url`. Pemilik membuatnya dengan
-  `bunx eas-cli init` lalu `bunx eas-cli update:configure` dari
-  `apps/mobile`, dan mengisi lagi variabel EAS `EXPO_PUBLIC_API_URL`
-  lingkungan `preview` di proyek baru. Sebelum itu `build:preview` /
-  `update:preview` tidak bisa jalan; Expo Go tidak terpengaruh.
+- **Variabel EAS `EXPO_PUBLIC_API_URL` lingkungan `preview` belum ada** di
+  proyek `@socialnael/opennael`. Sebelum diisi (`https://…`), `build:preview`
+  / `update:preview` ditolak `app.config.ts`; Expo Go tidak terpengaruh.
+  APK Nael Uji lama (proyek & sidik jari lama) wajib dibangun ulang.
 
 ## Jalur rilis aplikasi HP (keputusan pemilik, 24 Okt 2026)
 

@@ -47,7 +47,13 @@
         "asyncRoutes": {
           "web": true
         }
+      },
+      "eas": {
+        "projectId": "c433d424-1542-47d3-b01b-bbe14a2e76de"
       }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/c433d424-1542-47d3-b01b-bbe14a2e76de"
     }
   }
 }
