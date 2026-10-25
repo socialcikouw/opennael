@@ -127,6 +127,16 @@ isi berkas, ukuran, SHA-256).
 | Pengembangan | `dev` | Supabase (Postgres polos) | `bun --watch` di laptop |
 | Produksi | `main` | **Sementara Supabase** (sama dengan `dev`) sampai API dipasang di VPS; lalu PostgreSQL di VPS | **Nanti** VPS dengan domain `opennael` (belum dibeli): `bun build --compile` (satu berkas program) + systemd, di belakang **Nginx** (sudah terpasang; Caddy ditimbang lagi saat rilis) — Nginx juga melayani berkas statis `apps/web`. Sampai itu API untuk HP = laptop lewat ngrok (lihat Aturan kerja). |
 
+**Saklar gerbang kalender lapangan** (aturan-usaha C4, keputusan 26 Okt 2026):
+`VALIDASI_JAM_KERJA`, `VALIDASI_HARI_KERJA`, `VALIDASI_LIBUR_KANTOR` di
+`apps/api/.env`. Laptop: `false` (uji kapan saja); VPS: `true` atau tidak
+ditulis (bawaannya `true`). Server menolak menyala bila ada yang `false`
+sementara `DATABASE_URL` bukan `*.supabase.com`. Hanya gerbang lapangan &
+absen — hari tagih, macet, sapuan tetap memakai kalender sungguhan. Untuk
+menguji alert gerbangnya, setel `true` di laptop. **`bun --watch` tidak
+memantau `.env`**: sesudah mengubahnya, matikan lalu nyalakan ulang
+`bun run dev` di `apps/api`.
+
 ### Catatan Hono
 
 - **Rute dipecah per modul** (`kantor`, `pengguna`, `pinjaman`, …) dan klien

@@ -15,6 +15,7 @@ import { buatLayananGaji } from "./modul/gaji/layanan";
 import { ruteGaji } from "./modul/gaji/rute";
 import { buatLayananKas } from "./modul/kas/layanan";
 import { ruteKas } from "./modul/kas/rute";
+import type { ValidasiKalender } from "./modul/lapangan/gerbang";
 import { buatLayananLapangan } from "./modul/lapangan/layanan";
 import { ruteLapangan } from "./modul/lapangan/rute";
 import { buatLayananMigrasi } from "./modul/migrasi/layanan";
@@ -76,6 +77,8 @@ export interface AppDeps {
   batas?: BatasPercobaan;
   /** Penyimpanan berkas foto — bawaan disk `apps/api/.berkas/`. */
   penyimpanan?: Penyimpanan;
+  /** Pemeriksaan kalender gerbang lapangan — bawaan semua dijalankan. */
+  validasiKalender?: ValidasiKalender;
 }
 
 /**
@@ -86,7 +89,11 @@ export interface AppDeps {
 export function buatApp(deps: AppDeps) {
   const auth = buatLayananAuth(deps);
   const tautan = buatLayananTautan({ db: deps.db, auth, sekarang: deps.sekarang });
-  const lapangan = buatLayananLapangan({ db: deps.db, sekarang: deps.sekarang });
+  const lapangan = buatLayananLapangan({
+    db: deps.db,
+    sekarang: deps.sekarang,
+    validasiKalender: deps.validasiKalender,
+  });
   const setoranSore = buatLayananSetoranSore({ db: deps.db, sekarang: deps.sekarang });
   const kas = buatLayananKas({ db: deps.db, sekarang: deps.sekarang });
   const gaji = buatLayananGaji({ db: deps.db, sekarang: deps.sekarang });

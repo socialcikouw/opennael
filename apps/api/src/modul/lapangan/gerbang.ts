@@ -21,6 +21,35 @@ export interface KalenderHari {
   liburKantor: string | null;
 }
 
+/**
+ * Pemeriksaan kalender gerbang lapangan (C4) yang dijalankan. `false` hanya di
+ * pengembangan (`.env` `VALIDASI_*`): pemeriksaan itu dianggap lolos.
+ */
+export interface ValidasiKalender {
+  jamKerja: boolean;
+  hariKerja: boolean;
+  liburKantor: boolean;
+}
+
+export const VALIDASI_PENUH: ValidasiKalender = {
+  jamKerja: true,
+  hariKerja: true,
+  liburKantor: true,
+};
+
+/**
+ * Kalender sebagaimana dilihat gerbang lapangan & HP kolektor. Hanya untuk
+ * gerbang — hari tagih, macet, dan tanggal pembukuan memakai `bacaKalender`.
+ */
+export function kalenderGerbang(kal: KalenderHari, v: ValidasiKalender): KalenderHari {
+  return {
+    ...kal,
+    dalamJamKerja: kal.dalamJamKerja || !v.jamKerja,
+    hariKerja: kal.hariKerja || !v.hariKerja,
+    liburKantor: v.liburKantor ? kal.liburKantor : null,
+  };
+}
+
 /** Kalender kantor pada saat `sekarang`: tanggal, jam kerja, pekan kerja bertanggal, libur. */
 export async function bacaKalender(
   db: Db,
@@ -89,10 +118,10 @@ export async function bukaGerbang(
   db: Db,
   aktor: Aktor,
   sekarang: Date,
-  opsi: { perluAbsen: boolean },
+  opsi: { perluAbsen: boolean; validasi: ValidasiKalender },
 ): Promise<{ tanggal: string }> {
   wajibPeran(aktor, "kolektor");
-  const kal = await bacaKalender(db, aktor.kantorId, sekarang);
+  const kal = kalenderGerbang(await bacaKalender(db, aktor.kantorId, sekarang), opsi.validasi);
   if (!kal.dalamJamKerja) throw melanggar("DI_LUAR_JAM_KERJA", "Di luar jam kerja kantor");
   if (!kal.hariKerja) throw melanggar("BUKAN_HARI_KERJA", "Hari ini bukan hari kerja kantor");
   if (kal.liburKantor) {

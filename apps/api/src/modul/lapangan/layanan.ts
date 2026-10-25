@@ -33,7 +33,13 @@ import { bentrok, dilarang, melanggar, tidakDitemukan } from "../../galat";
 import { wajibPeran } from "../../peran";
 import { gabungRem } from "../../rem";
 import type { Aktor } from "../auth/token";
-import { bacaKalender, bukaGerbang } from "./gerbang";
+import {
+  bacaKalender,
+  bukaGerbang,
+  kalenderGerbang,
+  VALIDASI_PENUH,
+  type ValidasiKalender,
+} from "./gerbang";
 
 /** Foto serah terima hanya sah bila diambil kurang dari 1 jam sebelum akad (A7). */
 const UMUR_FOTO_MS = 60 * 60 * 1000;
@@ -41,6 +47,8 @@ const UMUR_FOTO_MS = 60 * 60 * 1000;
 export interface LapanganDeps {
   db: Db;
   sekarang?: () => Date;
+  /** Bawaan: semua pemeriksaan kalender gerbang dijalankan. */
+  validasiKalender?: ValidasiKalender;
 }
 
 type Tx = Db;
@@ -220,6 +228,7 @@ const kolomTransaksi = {
 
 export function buatLayananLapangan(deps: LapanganDeps) {
   const sekarang = deps.sekarang ?? (() => new Date());
+  const validasi = deps.validasiKalender ?? VALIDASI_PENUH;
 
   async function hariIni(aktor: Aktor, tanggal: string, db: Db = deps.db) {
     const [h] = await db
@@ -240,7 +249,10 @@ export function buatLayananLapangan(deps: LapanganDeps) {
   return {
     /** Absen pagi — sekali sehari. */
     async absen(aktor: Aktor, input: AbsenInput) {
-      const { tanggal } = await bukaGerbang(deps.db, aktor, sekarang(), { perluAbsen: false });
+      const { tanggal } = await bukaGerbang(deps.db, aktor, sekarang(), {
+        perluAbsen: false,
+        validasi,
+      });
       // Transaksi sendiri: absen ganda ditolak UNIQUE tanpa merusak transaksi pemanggil.
       await deps.db.transaction(async (tx) => {
         await tx.insert(hariKolektor).values({
@@ -258,10 +270,13 @@ export function buatLayananLapangan(deps: LapanganDeps) {
       return h;
     },
 
-    /** Keadaan hari ini kolektor (null = belum absen). */
+    /** Keadaan hari ini kolektor (null = belum absen); kalender seperti dilihat gerbang. */
     async keadaanHariIni(aktor: Aktor) {
       wajibPeran(aktor, "kolektor");
-      const kal = await bacaKalender(deps.db, aktor.kantorId, sekarang());
+      const kal = kalenderGerbang(
+        await bacaKalender(deps.db, aktor.kantorId, sekarang()),
+        validasi,
+      );
       return { kalender: kal, hari: await hariIni(aktor, kal.tanggal) };
     },
 
@@ -408,7 +423,10 @@ export function buatLayananLapangan(deps: LapanganDeps) {
 
     /** Akad baru — orang baru, atau nasabah lama pegangan kolektor ini (A). */
     async akad(aktor: Aktor, input: AkadInput): Promise<PinjamanKartu> {
-      const { tanggal } = await bukaGerbang(deps.db, aktor, sekarang(), { perluAbsen: true });
+      const { tanggal } = await bukaGerbang(deps.db, aktor, sekarang(), {
+        perluAbsen: true,
+        validasi,
+      });
       const kini = sekarang();
       const syarat = syaratAkad(input.jenis, input.pokok, input.tenor);
 
@@ -499,7 +517,10 @@ export function buatLayananLapangan(deps: LapanganDeps) {
       aktor: Aktor,
       input: { pinjamanId: string; setoranMurni: number; setoranPelunasan: number },
     ) {
-      const { tanggal } = await bukaGerbang(deps.db, aktor, sekarang(), { perluAbsen: true });
+      const { tanggal } = await bukaGerbang(deps.db, aktor, sekarang(), {
+        perluAbsen: true,
+        validasi,
+      });
       return deps.db.transaction(async (tx) => {
         const p = await kunciPinjaman(tx, aktor, input.pinjamanId);
         await pastikanBelumAdaPeristiwa(tx, p.id, tanggal);
@@ -525,7 +546,10 @@ export function buatLayananLapangan(deps: LapanganDeps) {
 
     /** Pelunasan (D): tabungan menutup saldo lebih dulu; seluruh tabungan keluar. */
     async lunas(aktor: Aktor, input: { pinjamanId: string }) {
-      const { tanggal } = await bukaGerbang(deps.db, aktor, sekarang(), { perluAbsen: true });
+      const { tanggal } = await bukaGerbang(deps.db, aktor, sekarang(), {
+        perluAbsen: true,
+        validasi,
+      });
       return deps.db.transaction(async (tx) => {
         const p = await kunciPinjaman(tx, aktor, input.pinjamanId);
         await pastikanBelumAdaPeristiwa(tx, p.id, tanggal);
@@ -562,7 +586,10 @@ export function buatLayananLapangan(deps: LapanganDeps) {
       aktor: Aktor,
       input: { pinjamanId: string; pokok: number; tenor: number; fotoSerahTerimaId: string },
     ) {
-      const { tanggal } = await bukaGerbang(deps.db, aktor, sekarang(), { perluAbsen: true });
+      const { tanggal } = await bukaGerbang(deps.db, aktor, sekarang(), {
+        perluAbsen: true,
+        validasi,
+      });
       const kini = sekarang();
       return deps.db.transaction(async (tx) => {
         const asal = await kunciPinjaman(tx, aktor, input.pinjamanId);
@@ -638,7 +665,10 @@ export function buatLayananLapangan(deps: LapanganDeps) {
 
     /** Libur nasabah (G): pinjaman tidak ditagih hari ini. */
     async libur(aktor: Aktor, input: { pinjamanId: string; alasan?: string | undefined }) {
-      const { tanggal } = await bukaGerbang(deps.db, aktor, sekarang(), { perluAbsen: true });
+      const { tanggal } = await bukaGerbang(deps.db, aktor, sekarang(), {
+        perluAbsen: true,
+        validasi,
+      });
       return deps.db.transaction(async (tx) => {
         const p = await kunciPinjaman(tx, aktor, input.pinjamanId);
         await pastikanBelumAdaPeristiwa(tx, p.id, tanggal);

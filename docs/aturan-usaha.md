@@ -133,6 +133,15 @@ pernah nol.
 hari kerja, bukan libur kantor, kolektor sudah absen masuk kerja, dan laporan
 hari itu belum dibuka.
 
+> **Hanya di pengembangan**, tiga pemeriksaan kalender pertama — jam kerja,
+> hari kerja, libur kantor — boleh dimatikan satu per satu lewat `.env` API
+> (`VALIDASI_JAM_KERJA`, `VALIDASI_HARI_KERJA`, `VALIDASI_LIBUR_KANTOR` =
+> `false`) supaya aplikasi bisa diuji kapan saja. Bawaannya `true`; server
+> menolak menyala bila ada yang `false` sementara database bukan Supabase
+> pengembangan. Berlaku untuk gerbang ini (termasuk absen pagi) saja — hari
+> tagih (B2), macet, dan sapuan tengah malam tetap memakai kalender
+> sungguhan. Wajib absen, laporan, dan rem bos tidak pernah dimatikan.
+
 **C5. Patokan setoran adalah saldo**, bukan saldo dikurangi tabungan: tabungan
 baru diperhitungkan saat lunas.
 
