@@ -13,7 +13,7 @@ import type { ConfigContext, ExpoConfig } from "expo/config";
  * untuk iPhone tanpa akun Apple Developer (tanpa build, tanpa profil EAS).
  * Expo Go hanya memuat pembaruan berruntime `exposdk:<SDK>`, bukan sidik
  * jari; API dari variabel EAS lingkungan `preview`. Kirim: `bun run
- * update:expogo` dari root (skripnya di root karena `scripts` di
+ * update:expogo` dari root (skrip OTA di root karena `scripts` di
  * `apps/mobile/package.json` ikut sidik jari Nael Uji).
  *
  * Nama paket SENGAJA berbeda dari APK lapangan aplikasi lama
@@ -22,10 +22,11 @@ import type { ConfigContext, ExpoConfig } from "expo/config";
  *
  * `APP_VARIANT` ikut menentukan sidik jari runtime (`runtimeVersion`
  * fingerprint): `eas update` wajib dijalankan dengan varian yang sama dengan
- * build-nya, kalau tidak update-nya tidak pernah masuk (skrip `update:preview`).
+ * build-nya, kalau tidak update-nya tidak pernah masuk (`bun run
+ * update:preview` dari root, lewat `scripts/kirim-ota.ts`).
  *
- * Varian produksi belum ditentukan: nama paket & proyek EAS rilis diputuskan
- * saat aplikasi baru menggantikan aplikasi lama.
+ * `preview` sekaligus aplikasi lapangan sementara (belum ada akun Play
+ * Store); nama & paketnya diganti sebelum dipasang di HP karyawan.
  */
 const VARIAN = {
   preview: { name: "Nael Uji", paket: "com.opennael.app.preview", lingkungan: "preview" },

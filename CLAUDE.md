@@ -122,10 +122,10 @@ isi berkas, ukuran, SHA-256).
 
 ### Lingkungan
 
-| | Database | Server |
-|---|---|---|
-| Pengembangan | Supabase (Postgres polos) | `bun --watch` |
-| Produksi | PostgreSQL di VPS | `bun build --compile` (satu berkas program) + systemd, di belakang **Nginx** (sudah terpasang; Caddy ditimbang lagi saat rilis) — Nginx juga melayani berkas statis `apps/web`. |
+| | Git | Database | Server |
+|---|---|---|---|
+| Pengembangan | `dev` | Supabase (Postgres polos) | `bun --watch` di laptop |
+| Produksi | `main` | **Sementara Supabase** (sama dengan `dev`) sampai API dipasang di VPS; lalu PostgreSQL di VPS | **Nanti** VPS dengan domain `opennael` (belum dibeli): `bun build --compile` (satu berkas program) + systemd, di belakang **Nginx** (sudah terpasang; Caddy ditimbang lagi saat rilis) — Nginx juga melayani berkas statis `apps/web`. Sampai itu API untuk HP = laptop lewat ngrok (lihat Aturan kerja). |
 
 ### Catatan Hono
 
@@ -171,16 +171,28 @@ isi berkas, ukuran, SHA-256).
   mobile. Verifikasi lewat `tsc`/lint/uji, lalu pemilik mencoba di HP-nya.
 - **Rahasia** (`DATABASE_URL`, kunci JWT, kunci penyimpanan berkas) hanya di
   `.env` — tidak pernah di-commit. Sediakan `.env.example`.
-- **Commit lalu push otomatis** ke `origin` (GitHub) setiap selesai satu langkah yang lolos pemeriksaan — keputusan pemilik 23 Okt 2026.
+- **Bekerja di branch `dev`** (keputusan pemilik 26 Okt 2026) — api, web, dan
+  mobile sekaligus (satu repo). **Commit lalu push otomatis** ke `origin/dev`
+  setiap selesai satu langkah yang lolos pemeriksaan.
+- **`main` = hasil tahap akhir**: digabung dari `dev` **hanya saat pemilik
+  bilang "gabung ke main"** — `git checkout main && git merge --ff-only dev &&
+  git push`, lalu kembali ke `dev`. OTA (`update:preview`, `update:expogo`)
+  **hanya dari `main`** dan dijaga `scripts/kirim-ota.ts` (menolak bila bukan
+  `main`, ada perubahan belum di-commit, atau `main` belum sama dengan GitHub).
 - Repo lama (`desktop\re-launching\naelcapital` dan `naelcapitalAPI`) masih
   dipakai karyawan di lapangan — **jangan mengubah branch `main` repo lama**.
 - **Aplikasi mobile baru terpisah dari aplikasi lama**: proyek EAS
   `@socialnael/opennael` (`c433d424…`, ditautkan 26 Okt 2026; bukan
-  `NaelCapital`/`d537903a…` milik APK lapangan) dan paket `com.opennael.app.preview` untuk APK uji. Jangan
-  menautkan ke proyek EAS lama atau memakai paket `com.naelcapital.app` —
-  pembaruan OTA bisa nyasar ke HP karyawan. Proyek EAS sebelum ganti nama
-  (`d1db6915…`, slug lama) tidak dipakai lagi. Varian rilis diputuskan saat
-  aplikasi baru menggantikan yang lama.
+  `NaelCapital`/`d537903a…` milik APK lapangan lama) dan paket
+  `com.opennael.app.preview`. Jangan menautkan ke proyek EAS lama atau memakai
+  paket `com.naelcapital.app` — pembaruan OTA bisa nyasar ke HP karyawan.
+  Proyek EAS sebelum ganti nama (`d1db6915…`, slug lama) tidak dipakai lagi.
+- **APK `preview` = aplikasi lapangan sementara** (keputusan pemilik 26 Okt
+  2026): belum ada akun Play Store / App Store, jadi kolektor, kasir, dan
+  pengawas nanti memasang APK `preview` (Android) dari `main`. **Tugas
+  terbuka sebelum dipasang di HP karyawan**: ganti identitasnya (nama "Nael
+  Uji" → mis. "OpenNael", paket `.preview` → mis. `com.opennael.app`) — satu
+  build ulang; dikerjakan bersama persiapan VPS.
 - **API `preview` sementara = terowongan ngrok ke laptop** (26 Okt 2026,
   sampai API dipasang di VPS — pekerjaan terakhir proyek): variabel EAS
   `EXPO_PUBLIC_API_URL` lingkungan `preview` =
@@ -188,33 +200,40 @@ isi berkas, ukuran, SHA-256).
   memanggil API selama laptop menyalakan `apps/api` `bun run dev` **dan**
   `ngrok http --url=barterer-sapling-cabbage.ngrok-free.dev 3000`. Alamat API
   tidak ikut sidik jari runtime (sudah diuji): pindah ke VPS cukup ganti
-  variabel lalu `update:preview`, tanpa build ulang.
+  variabel lalu `update:preview`, tanpa build ulang. API di laptop menjalankan
+  kode branch yang sedang dikerjakan (biasanya `dev`) — diterima pemilik
+  sampai VPS siap (HP karyawan belum memakai APK sebelum itu); aturan API
+  kompatibel mundur tetap berlaku.
 
-## Jalur rilis aplikasi HP (keputusan pemilik, 24 Okt 2026)
+## Jalur rilis aplikasi HP (keputusan pemilik, 24 & 26 Okt 2026)
 
 Satu nama jalur di semua tempat: **profil EAS = `APP_VARIANT` = channel =
 branch EAS Update**.
 
 | Jalur | Git | Aplikasi / paket | JS dari |
 |---|---|---|---|
-| `development` | branch apa saja | **Expo Go** di HP (tanpa build; APK Nael Dev tidak dipakai sejak 25 Okt 2026) | Metro di laptop |
-| `preview` | `main` | Nael Uji / `com.opennael.app.preview` | EAS Update channel `preview` (manual: `bun run update:preview`) |
-| `production` | `production` (dibuat saat rilis pertama) + tag `mobile-vX.Y.Z` | diputuskan saat menggantikan aplikasi lama | EAS Update channel `production` |
-| `expogo` (26 Okt 2026) | `main` | **Expo Go** di HP (iPhone tanpa akun Apple Developer; Android juga bisa) — tanpa build, tanpa profil EAS | EAS Update channel `expogo`, runtime `exposdk:58.0.0` (manual dari **root**: `bun run update:expogo --message "<isi>"`) |
+| `development` | `dev` | **Expo Go** di HP Android & iPhone (tanpa build) — tempat menguji perubahan sebelum digabung ke `main` | Metro di laptop |
+| `preview` | `main` | Nael Uji / `com.opennael.app.preview` — **aplikasi lapangan sementara** (pengganti Play Store) | EAS Update channel `preview` (manual dari **root**: `bun run update:preview --message "<isi>"`) |
+| `expogo` | `main` | **Expo Go** — iPhone pemilik tanpa akun Apple Developer (Android juga bisa); tanpa build, tanpa profil EAS | EAS Update channel `expogo`, runtime `exposdk:58.0.0` (manual dari **root**: `bun run update:expogo --message "<isi>"`) |
+| `production` | belum dipakai | menunggu akun Play Store / App Store | EAS Update channel `production` |
 
 - **Jalur `expogo`**: dibuka di Expo Go lewat tautan tetap
   `exp://u.expo.dev/c433d424-1542-47d3-b01b-bbe14a2e76de?channel-name=expogo&runtime-version=exposdk:58.0.0`
   (dipindai sekali; pembaruan berikutnya masuk sendiri). API = lingkungan
-  `preview`. Skripnya di `package.json` **root** — skrip di
-  `apps/mobile/package.json` mengubah sidik jari Nael Uji (sudah diuji).
-  Naik SDK = runtime `exposdk:` ikut berganti, tautan diperbarui.
+  `preview`. Naik SDK = runtime `exposdk:` ikut berganti, tautan diperbarui.
+- **Skrip OTA di `package.json` root** (`scripts/kirim-ota.ts`): mengubah
+  `scripts` di `apps/mobile/package.json` mengubah sidik jari Nael Uji (sudah
+  diuji). Skrip lama `update:preview` di `apps/mobile/package.json` dibiarkan
+  hanya karena menghapusnya pun mengubah sidik jari — **jangan dipakai**.
 - `runtimeVersion` = **fingerprint**: perubahan JS boleh lewat OTA; perubahan
   native (paket ber-kode native, `app.json`, plugin) wajib build ulang — OTA ke
   APK lama otomatis tidak masuk. `eas update` wajib memakai `APP_VARIANT` yang
   sama dengan build-nya (skrip `update:<jalur>` sudah menyetelnya).
-- Ke produksi: **`eas update:republish`** grup yang sudah diuji di `preview`,
-  bukan bundle ulang. Perbaikan darurat: branch dari `production`, kirim,
-  lalu gabung balik ke `main`. Update rusak: `eas update:rollback`.
+- OTA `preview` **langsung sampai ke HP karyawan** begitu APK dipakai di
+  lapangan — uji dulu di `dev` lewat Expo Go, gabung ke `main` hanya atas kata
+  pemilik. Update rusak: `eas update:rollback`. (Rencana lama — `production`
+  diisi `eas update:republish` dari `preview` — berlaku lagi saat ada akun
+  toko.)
 - **API kompatibel mundur** terhadap versi HP yang masih beredar (HP baru
   menerima OTA saat aplikasi dibuka ulang).
 - Alamat API `preview` = variabel EAS `EXPO_PUBLIC_API_URL` lingkungan
@@ -232,7 +251,8 @@ Dari root repo:
 | `bun run test` | `bun test` di setiap paket yang punya uji. Uji skema database berjalan ke Supabase dev (`apps/api/.env`) dalam satu transaksi yang dibatalkan; tanpa `DATABASE_URL` dilewati. |
 | `bun run lint` | Biome: lint + cek format (Markdown & `docs/` tidak ikut). |
 | `bun run format` | Biome: rapikan kode & urutkan import. |
-| `bun run update:expogo --message "<isi>"` | OTA jalur `expogo` (Expo Go tanpa Metro, Android & iOS). |
+| `bun run update:preview --message "<isi>"` | OTA jalur `preview` (APK lapangan Android). Hanya dari `main` yang bersih & sudah di-push. |
+| `bun run update:expogo --message "<isi>"` | OTA jalur `expogo` (Expo Go tanpa Metro, Android & iOS). Hanya dari `main` yang bersih & sudah di-push. |
 
 Per paket (`cd apps/<nama>`):
 
@@ -240,7 +260,7 @@ Per paket (`cd apps/<nama>`):
 |---|---|
 | `apps/api` | `bun run dev` (server + muat ulang otomatis, port dari `.env`, bawaan 3000); dokumentasi API di `/dokumentasi`, OpenAPI di `/openapi.json`. Server juga menjalankan **sapuan tutup hari** (saat menyala + tiap jam menit ke-5) ke database di `.env` — di pengembangan: Supabase dev; menyunting `server.ts` saat `--watch` menyala memicu sapuan itu. |
 | `apps/web` | `bun run dev` (Vite, port 5173) bersama `apps/api` `bun run dev` — web memanggil API di `/api/...` yang diteruskan Vite ke port 3000 (di produksi: Nginx `location /api/ { proxy_pass http://127.0.0.1:3000/; }`), satu asal tanpa CORS. `bun run build` = tipe API + typecheck + berkas statis `dist/`. Sesi bos di `localStorage`. Komponen shadcn/ui disalin tangan ke `src/komponen/ui/` (CLI `shadcn` menggantung di mesin ini); layar di `src/layar/`, dimuat per rute (`lazyRouteComponent`). |
-| `apps/mobile` | `bun run start` (Metro mode **Expo Go** — satu-satunya cara membuka aplikasi di Android & iPhone; Expo Go di HP harus versi SDK 58 dari toko; `expo-dev-client` sengaja tidak dipasang supaya `expo start` selalu mode Expo Go); paket ber-kode native dipasang dengan `bunx expo install <paket>` (versi cocok SDK), bukan `bun add`; `bunx expo-doctor` untuk memeriksa. **Tidak pernah `expo web`.** Rute di `src/app/` (Expo Router); panduan resmi Expo ada di `apps/mobile/AGENTS.md`. Alamat API di `apps/mobile/.env`: `EXPO_PUBLIC_API_URL=http://<IP laptop>:3000` (bukan localhost). Pemeriksaan bundel tanpa HP: `bunx expo export --platform android --output-dir <folder sementara>`. **Aplikasi harus tetap bisa dibuka Expo Go** (keputusan 25 Okt 2026): paket ber-kode native hanya yang sudah ada di Expo Go SDK 58, versinya persis `bunx expo install --check`. Tambah `-- --clear` untuk mengosongkan cache. **Jalankan Expo dari path asli** (`...\Desktop\...`, huruf besar-kecil persis seperti di disk): dari `...\desktop\...` Metro memuat setiap modul dua kali dan Expo Go iOS crash (`Tried to register two views with the same name RNCSafeAreaProvider`); `metro.config.js` menolak bundling dari path seperti itu dan menunjukkan `cd` yang benar. Pembungkus di `scripts` sengaja tidak dipakai — `scripts` package.json ikut sidik jari runtime. Babel memakai bawaan Expo (tanpa `babel.config.js`), Metro bawaan + penjaga itu. Galat start iOS di React Native seperti `property is not writable` (`__FUSEBOX_REACT_DEVTOOLS_DISPATCHER__`), `Global was not installed`, atau `Tried to register two views` hampir pasti **bundel ganda** — periksa huruf path dulu (bundel iOS dev ±1829 modul; ±3000 = ganda), jangan menambal React Native. Tambalan Fusebox & catatan JSX-NativeWind lama dibuang 25 Okt 2026 setelah diuji di iPhone dari path asli. Bug `Cannot find native module 'ExpoAsset'` saat muat ulang di tempat milik Expo Go 58.0.5 (expo/expo#52146), sudah diperbaiki di rilis Expo Go berikutnya — perbarui Expo Go dari toko. **Development build tidak dipakai** (keputusan 25 Okt 2026): `expo-dev-client` & profil EAS `development` dibuang; memasangnya lagi membuat `expo start` jatuh ke mode development build. **Preview**: `bun run build:preview` (APK Nael Uji, channel `preview`), `bun run update:preview --message "<isi>"` (OTA ke Nael Uji). |
+| `apps/mobile` | `bun run start` (Metro mode **Expo Go** — satu-satunya cara membuka aplikasi di Android & iPhone; Expo Go di HP harus versi SDK 58 dari toko; `expo-dev-client` sengaja tidak dipasang supaya `expo start` selalu mode Expo Go); paket ber-kode native dipasang dengan `bunx expo install <paket>` (versi cocok SDK), bukan `bun add`; `bunx expo-doctor` untuk memeriksa. **Tidak pernah `expo web`.** Rute di `src/app/` (Expo Router); panduan resmi Expo ada di `apps/mobile/AGENTS.md`. Alamat API di `apps/mobile/.env`: `EXPO_PUBLIC_API_URL=http://<IP laptop>:3000` (bukan localhost). Pemeriksaan bundel tanpa HP: `bunx expo export --platform android --output-dir <folder sementara>`. **Aplikasi harus tetap bisa dibuka Expo Go** (keputusan 25 Okt 2026): paket ber-kode native hanya yang sudah ada di Expo Go SDK 58, versinya persis `bunx expo install --check`. Tambah `-- --clear` untuk mengosongkan cache. **Jalankan Expo dari path asli** (`...\Desktop\...`, huruf besar-kecil persis seperti di disk): dari `...\desktop\...` Metro memuat setiap modul dua kali dan Expo Go iOS crash (`Tried to register two views with the same name RNCSafeAreaProvider`); `metro.config.js` menolak bundling dari path seperti itu dan menunjukkan `cd` yang benar. Pembungkus di `scripts` sengaja tidak dipakai — `scripts` package.json ikut sidik jari runtime. Babel memakai bawaan Expo (tanpa `babel.config.js`), Metro bawaan + penjaga itu. Galat start iOS di React Native seperti `property is not writable` (`__FUSEBOX_REACT_DEVTOOLS_DISPATCHER__`), `Global was not installed`, atau `Tried to register two views` hampir pasti **bundel ganda** — periksa huruf path dulu (bundel iOS dev ±1829 modul; ±3000 = ganda), jangan menambal React Native. Tambalan Fusebox & catatan JSX-NativeWind lama dibuang 25 Okt 2026 setelah diuji di iPhone dari path asli. Bug `Cannot find native module 'ExpoAsset'` saat muat ulang di tempat milik Expo Go 58.0.5 (expo/expo#52146), sudah diperbaiki di rilis Expo Go berikutnya — perbarui Expo Go dari toko. **Development build tidak dipakai** (keputusan 25 Okt 2026): `expo-dev-client` & profil EAS `development` dibuang; memasangnya lagi membuat `expo start` jatuh ke mode development build. **Preview**: `bun run build:preview` (APK Nael Uji, channel `preview`); OTA-nya dari **root** (`bun run update:preview`), bukan skrip `update:preview` di paket ini. |
 
 Catatan instalasi: `bunfig.toml` memakai `linker = "hoisted"` — instalasi
 isolated (bawaan Bun 1.3) membuat salinan ganda `expo`/`react-native` yang

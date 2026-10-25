@@ -11,7 +11,8 @@
     "test": "bun run --filter '*' test",
     "lint": "biome check .",
     "format": "biome check --write .",
-    "update:expogo": "cd apps/mobile && APP_VARIANT=expogo bunx eas-cli update --channel expogo --environment preview"
+    "update:preview": "bun scripts/kirim-ota.ts preview",
+    "update:expogo": "bun scripts/kirim-ota.ts expogo"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.2",
