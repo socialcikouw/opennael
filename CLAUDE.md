@@ -200,7 +200,14 @@ branch EAS Update**.
 | `development` | branch apa saja | **Expo Go** di HP (tanpa build; APK Nael Dev tidak dipakai sejak 25 Okt 2026) | Metro di laptop |
 | `preview` | `main` | Nael Uji / `com.opennael.app.preview` | EAS Update channel `preview` (manual: `bun run update:preview`) |
 | `production` | `production` (dibuat saat rilis pertama) + tag `mobile-vX.Y.Z` | diputuskan saat menggantikan aplikasi lama | EAS Update channel `production` |
+| `expogo` (26 Okt 2026) | `main` | **Expo Go** di HP (iPhone tanpa akun Apple Developer; Android juga bisa) — tanpa build, tanpa profil EAS | EAS Update channel `expogo`, runtime `exposdk:58.0.0` (manual dari **root**: `bun run update:expogo --message "<isi>"`) |
 
+- **Jalur `expogo`**: dibuka di Expo Go lewat tautan tetap
+  `exp://u.expo.dev/c433d424-1542-47d3-b01b-bbe14a2e76de?channel-name=expogo&runtime-version=exposdk:58.0.0`
+  (dipindai sekali; pembaruan berikutnya masuk sendiri). API = lingkungan
+  `preview`. Skripnya di `package.json` **root** — skrip di
+  `apps/mobile/package.json` mengubah sidik jari Nael Uji (sudah diuji).
+  Naik SDK = runtime `exposdk:` ikut berganti, tautan diperbarui.
 - `runtimeVersion` = **fingerprint**: perubahan JS boleh lewat OTA; perubahan
   native (paket ber-kode native, `app.json`, plugin) wajib build ulang — OTA ke
   APK lama otomatis tidak masuk. `eas update` wajib memakai `APP_VARIANT` yang
@@ -225,6 +232,7 @@ Dari root repo:
 | `bun run test` | `bun test` di setiap paket yang punya uji. Uji skema database berjalan ke Supabase dev (`apps/api/.env`) dalam satu transaksi yang dibatalkan; tanpa `DATABASE_URL` dilewati. |
 | `bun run lint` | Biome: lint + cek format (Markdown & `docs/` tidak ikut). |
 | `bun run format` | Biome: rapikan kode & urutkan import. |
+| `bun run update:expogo --message "<isi>"` | OTA jalur `expogo` (Expo Go tanpa Metro, Android & iOS). |
 
 Per paket (`cd apps/<nama>`):
 

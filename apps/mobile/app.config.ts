@@ -9,6 +9,12 @@ import type { ConfigContext, ExpoConfig } from "expo/config";
  * (tanpa build, `APP_VARIANT` kosong) dengan JS dari Metro di laptop.
  * `preview`: APK uji pemilik ("Nael Uji"); JS dari EAS Update channel
  * `preview`, API dari variabel EAS lingkungan `preview`.
+ * `expogo`: JS untuk Expo Go dari EAS Update channel `expogo` tanpa Metro —
+ * untuk iPhone tanpa akun Apple Developer (tanpa build, tanpa profil EAS).
+ * Expo Go hanya memuat pembaruan berruntime `exposdk:<SDK>`, bukan sidik
+ * jari; API dari variabel EAS lingkungan `preview`. Kirim: `bun run
+ * update:expogo` dari root (skripnya di root karena `scripts` di
+ * `apps/mobile/package.json` ikut sidik jari Nael Uji).
  *
  * Nama paket SENGAJA berbeda dari APK lapangan aplikasi lama
  * (`com.naelcapital.app`, proyek EAS lain) — terpasang berdampingan, tidak
@@ -22,7 +28,8 @@ import type { ConfigContext, ExpoConfig } from "expo/config";
  * saat aplikasi baru menggantikan aplikasi lama.
  */
 const VARIAN = {
-  preview: { name: "Nael Uji", paket: "com.opennael.app.preview" },
+  preview: { name: "Nael Uji", paket: "com.opennael.app.preview", lingkungan: "preview" },
+  expogo: { name: "OpenNael", paket: null, lingkungan: "preview" },
 } as const;
 
 export default ({ config }: ConfigContext): ExpoConfig => {
@@ -35,7 +42,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       `APP_VARIANT "${varian}" tidak dikenal (yang ada: ${Object.keys(VARIAN).join(", ")}).`,
     );
   }
-  const { name, paket } = VARIAN[varian as keyof typeof VARIAN];
+  const { name, paket, lingkungan } = VARIAN[varian as keyof typeof VARIAN];
 
   // APK dipakai tanpa laptop: alamat API wajib dari variabel EAS lingkungan
   // varian itu. Tanpa itu `.env` lokal (IP laptop) ikut terbundel diam-diam
@@ -50,9 +57,12 @@ export default ({ config }: ConfigContext): ExpoConfig => {
   const alamatApi = process.env.EXPO_PUBLIC_API_URL ?? "";
   if (membundel && !alamatApi.startsWith("https://")) {
     throw new Error(
-      `Varian ${varian} butuh EXPO_PUBLIC_API_URL https:// dari variabel EAS lingkungan "${varian}" (sekarang: "${alamatApi}").`,
+      `Varian ${varian} butuh EXPO_PUBLIC_API_URL https:// dari variabel EAS lingkungan "${lingkungan}" (sekarang: "${alamatApi}").`,
     );
   }
+
+  // Expo Go: tanpa paket sendiri; runtime mengikuti SDK, bukan sidik jari.
+  if (paket === null) return { ...config, name, runtimeVersion: { policy: "sdkVersion" } };
 
   return {
     ...config,
