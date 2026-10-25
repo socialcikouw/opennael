@@ -143,4 +143,6 @@ export const SENTUH = { kecil: 40, sedang: 44, besar: 52, isianUang: 56 } as con
 export const BAYANGAN = {
   kecil: "0px 1px 2px rgba(15, 23, 42, 0.06)",
   sedang: "0px 1px 3px rgba(15, 23, 42, 0.10)",
+  /** Benda yang melayang di atas isi layar (tab bar mengambang). */
+  mengambang: "0px 6px 20px rgba(15, 23, 42, 0.14)",
 } as const;

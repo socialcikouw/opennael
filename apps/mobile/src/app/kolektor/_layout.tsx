@@ -12,10 +12,10 @@ export default function TataLetakKolektor() {
 
   return (
     <Stack screenOptions={OPSI_STACK}>
-      <Stack.Screen name="index" options={{ title: "Kerja Harian" }} />
+      <Stack.Screen name="(tab)" options={{ headerShown: false }} />
       <Stack.Screen name="pinjaman/[id]" options={{ title: "Pinjaman" }} />
       <Stack.Screen name="gulung/[id]" options={{ title: "Gulung" }} />
-      <Stack.Screen name="akad" options={{ title: "Akad Baru" }} />
+      <Stack.Screen name="akad" options={{ title: "Akad Baru", presentation: "modal" }} />
     </Stack>
   );
 }
