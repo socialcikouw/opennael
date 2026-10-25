@@ -7,7 +7,7 @@ import { BAYANGAN, HURUF, RUANG, SUDUT, TEBAL } from "../komponen/tema";
 import { g, Ikon, Judul, Keterangan, Merek, PesanGalat, Tombol, WARNA } from "../komponen/ui";
 import { api, panggil } from "../lib/api";
 import { layarAwal } from "../lib/peran";
-import { infoPerangkat } from "../lib/perangkat";
+import { infoPerangkat, versiAplikasi } from "../lib/perangkat";
 import { sesi } from "../lib/sesi";
 
 /** Jeda bertanya ke server selama menunggu bos memindai. */
@@ -196,6 +196,7 @@ export default function Tautkan() {
         </View>
 
         <PesanGalat pesan={galat} />
+        <Text style={gaya.versi}>{versiAplikasi()}</Text>
       </ScrollView>
     </SafeAreaView>
   );
@@ -259,4 +260,5 @@ const gaya = StyleSheet.create({
   },
   rataTengah: { textAlign: "center" },
   penuh: { width: "100%" },
+  versi: { ...HURUF.xs, textAlign: "center", color: WARNA.redup },
 });
