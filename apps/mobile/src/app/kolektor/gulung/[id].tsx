@@ -22,11 +22,16 @@ import {
 } from "../../../komponen/kamera-serah-terima";
 import { useGaya, useWarna, useWarnaMode } from "../../../komponen/tampilan";
 import { BAYANGAN, HURUF, RUANG, SUDUT, TEBAL, type Warna } from "../../../komponen/tema";
-import { Gulir, Ikon, Keterangan, Tombol } from "../../../komponen/ui";
+import { Gulir, Ikon, Keterangan, type NamaIkon, Tombol } from "../../../komponen/ui";
 import { cobaAturan, NAMA_JENIS, namaTenor, rupiah } from "../../../lib/format";
 import { tulis, useTagihan, useTulis } from "../../../lib/lapangan";
 
-const NAMA_GULUNG = { naik: "Gulung naik", tetap: "Gulung tetap", turun: "Gulung turun" } as const;
+/** Lencana jenis gulung di bawah nominal — ikon sama dengan lencana kartu Droping. */
+const LENCANA_GULUNG = {
+  naik: { teks: "NAIK", ikon: "trending-up" },
+  tetap: { teks: "TETAP", ikon: "repeat" },
+  turun: { teks: "TURUN", ikon: "trending-down" },
+} as const satisfies Record<string, { teks: string; ikon: NamaIkon }>;
 
 /**
  * GULUNG (E) — pinjaman lama dilunasi pinjaman baru berjenis sama.
@@ -84,6 +89,13 @@ export default function Gulung() {
     gulung.error?.message ??
     rencana?.galat ??
     (foto && !fotoSah ? "Foto sudah lebih dari 1 jam — potret ulang." : null);
+
+  // Naik = hijau merek, tetap = abu, turun = merah (pokok berkurang).
+  const rupaGulung = {
+    naik: { teks: WARNA.utama, latar: WARNA.utamaLembut },
+    tetap: { teks: WARNA.teksKedua, latar: WARNA.abu },
+    turun: { teks: WARNA.bahayaTeks, latar: WARNA.bahayaLembut },
+  };
 
   const tekan = (kunci: string) => {
     if (gulung.error) gulung.reset();
@@ -216,18 +228,39 @@ export default function Gulung() {
             ]}
           />
           <View style={gaya.ket}>
-            {galat ? <Ikon nama="circle-alert" ukuran={12} warna={WARNA.bahayaTeks} /> : null}
-            <Text
-              style={[gaya.ketTeks, galat ? { color: WARNA.bahayaTeks } : null]}
-              numberOfLines={2}
-              adjustsFontSizeToFit
-              minimumFontScale={0.85}
-            >
-              {galat ??
-                (hasil
-                  ? `${NAMA_GULUNG[hasil.jenisGulung]} · tunai ke nasabah ${rupiah(hasil.pencairan)}`
-                  : "Ketuk nominal pokok baru — setiap ketukan menambah")}
-            </Text>
+            {galat ? (
+              <>
+                <Ikon nama="circle-alert" ukuran={12} warna={WARNA.bahayaTeks} />
+                <Text
+                  style={[gaya.ketTeks, { color: WARNA.bahayaTeks }]}
+                  numberOfLines={2}
+                  adjustsFontSizeToFit
+                  minimumFontScale={0.85}
+                >
+                  {galat}
+                </Text>
+              </>
+            ) : hasil ? (
+              <>
+                <Text style={gaya.ketTeks}>Gulung</Text>
+                <View
+                  style={[gaya.lencana, { backgroundColor: rupaGulung[hasil.jenisGulung].latar }]}
+                >
+                  <Ikon
+                    nama={LENCANA_GULUNG[hasil.jenisGulung].ikon}
+                    ukuran={12}
+                    warna={rupaGulung[hasil.jenisGulung].teks}
+                  />
+                  <Text style={[gaya.lencanaTeks, { color: rupaGulung[hasil.jenisGulung].teks }]}>
+                    {LENCANA_GULUNG[hasil.jenisGulung].teks}
+                  </Text>
+                </View>
+              </>
+            ) : (
+              <Text style={gaya.ketTeks} numberOfLines={2}>
+                Ketuk nominal pokok baru — setiap ketukan menambah
+              </Text>
+            )}
           </View>
 
           {pilihanTenor.length > 1 ? (
@@ -392,6 +425,15 @@ const buatGaya = (WARNA: Warna) =>
       paddingHorizontal: RUANG[4],
     },
     ketTeks: { ...HURUF.xs, flexShrink: 1, textAlign: "center", color: WARNA.redup },
+    lencana: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: RUANG[1],
+      paddingHorizontal: RUANG[2],
+      paddingVertical: 2,
+      borderRadius: SUDUT.bulat,
+    },
+    lencanaTeks: { ...HURUF.xs, fontWeight: TEBAL.ekstra, letterSpacing: 0.5 },
     tenor: { flexDirection: "row", gap: RUANG[2] },
     tenorPil: {
       paddingHorizontal: RUANG[4],
