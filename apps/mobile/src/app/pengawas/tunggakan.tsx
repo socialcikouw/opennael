@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { ActivityIndicator, RefreshControl, ScrollView, Text, View } from "react-native";
-import { g, Keterangan, KotakAngka, Lencana, PesanGalat, Pilihan, WARNA } from "../../komponen/ui";
+import { useWarna } from "../../komponen/tampilan";
+import { Keterangan, KotakAngka, Lencana, PesanGalat, Pilihan, useG } from "../../komponen/ui";
 import { api, panggil } from "../../lib/api";
 import { NAMA_JENIS, namaTenor, rupiah } from "../../lib/format";
 
@@ -11,6 +12,8 @@ import { NAMA_JENIS, namaTenor, rupiah } from "../../lib/format";
  * angsuran terbayar), urut tunggakan terbesar.
  */
 export default function Tunggakan() {
+  const WARNA = useWarna();
+  const g = useG();
   const [kolektorId, setKolektorId] = useState<string>("semua");
   const q = useQuery({
     queryKey: ["pinjaman", "aktif"],

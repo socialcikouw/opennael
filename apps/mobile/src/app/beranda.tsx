@@ -1,7 +1,7 @@
 import { Redirect } from "expo-router";
 import { View } from "react-native";
 import { TombolKeluar } from "../komponen/keluar";
-import { g, Judul, Keterangan, Layar, Merek, Spanduk } from "../komponen/ui";
+import { Judul, Keterangan, Layar, Merek, Spanduk, useG } from "../komponen/ui";
 import { layarAwal } from "../lib/peran";
 import { useSesi } from "../lib/sesi";
 
@@ -10,6 +10,7 @@ import { useSesi } from "../lib/sesi";
  * Kasir, pengawas, dan kolektor diarahkan ke layarnya masing-masing.
  */
 export default function Beranda() {
+  const g = useG();
   const s = useSesi();
   if (s === undefined) return null;
   if (s === null) return <Redirect href="/tautkan" />;

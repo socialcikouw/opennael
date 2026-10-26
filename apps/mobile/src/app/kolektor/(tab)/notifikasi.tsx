@@ -1,13 +1,17 @@
 import { ScrollView, StyleSheet, View } from "react-native";
 import { useRuangTab } from "../../../komponen/tab-mengambang";
-import { RUANG, SUDUT } from "../../../komponen/tema";
-import { g, Ikon, Keterangan, WARNA } from "../../../komponen/ui";
+import { useGaya, useWarna } from "../../../komponen/tampilan";
+import { RUANG, SUDUT, type Warna } from "../../../komponen/tema";
+import { Ikon, Keterangan, useG } from "../../../komponen/ui";
 
 /**
  * NOTIFIKASI — belum ada isinya: apa yang diberitahukan ke kolektor (dan
  * tabel/endpoint-nya) dirancang dulu di docs sebelum dibangun.
  */
 export default function Notifikasi() {
+  const WARNA = useWarna();
+  const gaya = useGaya(buatGaya);
+  const g = useG();
   const ruangTab = useRuangTab();
   return (
     <ScrollView style={g.layar} contentContainerStyle={[gaya.isi, { paddingBottom: ruangTab }]}>
@@ -19,16 +23,17 @@ export default function Notifikasi() {
   );
 }
 
-const gaya = StyleSheet.create({
-  isi: { paddingHorizontal: RUANG[5], paddingTop: RUANG[2] },
-  kosong: {
-    alignItems: "center",
-    gap: RUANG[2],
-    borderRadius: SUDUT.besar,
-    borderWidth: 1,
-    borderStyle: "dashed",
-    borderColor: WARNA.garisTegas,
-    paddingHorizontal: RUANG[4],
-    paddingVertical: RUANG[8],
-  },
-});
+const buatGaya = (WARNA: Warna) =>
+  StyleSheet.create({
+    isi: { paddingHorizontal: RUANG[5], paddingTop: RUANG[2] },
+    kosong: {
+      alignItems: "center",
+      gap: RUANG[2],
+      borderRadius: SUDUT.besar,
+      borderWidth: 1,
+      borderStyle: "dashed",
+      borderColor: WARNA.garisTegas,
+      paddingHorizontal: RUANG[4],
+      paddingVertical: RUANG[8],
+    },
+  });

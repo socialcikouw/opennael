@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Alert, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
 import { TombolKeluar } from "../../../komponen/keluar";
+import { PilihTampilan } from "../../../komponen/pilih-tampilan";
 import { useRuangTab } from "../../../komponen/tab-mengambang";
-import { HURUF, RUANG, TEBAL } from "../../../komponen/tema";
+import { useGaya } from "../../../komponen/tampilan";
+import { HURUF, RUANG, TEBAL, type Warna } from "../../../komponen/tema";
 import {
-  g,
   Isian,
   IsianUang,
   Kartu,
@@ -14,7 +15,7 @@ import {
   Pilihan,
   Spanduk,
   Tombol,
-  WARNA,
+  useG,
 } from "../../../komponen/ui";
 import { rupiah, tanggalPanjang } from "../../../lib/format";
 import { bacaGerbang, tulis, useHariIni, useTagihan, useTulis } from "../../../lib/lapangan";
@@ -25,6 +26,8 @@ import { useSesi } from "../../../lib/sesi";
  * sore. Daftar tagih ada di tab Tagihan; akad baru lewat tombol (+).
  */
 export default function Beranda() {
+  const gaya = useGaya(buatGaya);
+  const g = useG();
   const s = useSesi();
   const hariIni = useHariIni();
   const tagihan = useTagihan();
@@ -94,6 +97,7 @@ export default function Beranda() {
 }
 
 function FormulirAbsen() {
+  const g = useG();
   const [absensi, setAbsensi] = useState<"masuk_kerja" | "tidak_kerja">("masuk_kerja");
   const [kasLapangan, setKasLapangan] = useState(0);
   const [uangJalan, setUangJalan] = useState(0);
@@ -150,6 +154,7 @@ function FormulirAbsen() {
 }
 
 function KakiKerja({ laporanBisa }: { laporanBisa: boolean }) {
+  const gaya = useGaya(buatGaya);
   const laporan = useTulis(tulis.laporan);
 
   const bukaLaporan = () =>
@@ -176,14 +181,16 @@ function KakiKerja({ laporanBisa }: { laporanBisa: boolean }) {
           />
         </>
       ) : null}
+      <PilihTampilan />
       <TombolKeluar />
     </View>
   );
 }
 
-const gaya = StyleSheet.create({
-  galat: { gap: RUANG[4], paddingHorizontal: RUANG[5], paddingVertical: RUANG[6] },
-  isi: { gap: RUANG[4], paddingHorizontal: RUANG[5], paddingTop: RUANG[2] },
-  tanggal: { ...HURUF.sm, fontWeight: TEBAL.sedang, color: WARNA.utama },
-  kaki: { gap: RUANG[3], paddingTop: RUANG[4] },
-});
+const buatGaya = (WARNA: Warna) =>
+  StyleSheet.create({
+    galat: { gap: RUANG[4], paddingHorizontal: RUANG[5], paddingVertical: RUANG[6] },
+    isi: { gap: RUANG[4], paddingHorizontal: RUANG[5], paddingTop: RUANG[2] },
+    tanggal: { ...HURUF.sm, fontWeight: TEBAL.sedang, color: WARNA.utama },
+    kaki: { gap: RUANG[3], paddingTop: RUANG[4] },
+  });

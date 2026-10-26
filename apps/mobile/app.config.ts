@@ -35,7 +35,11 @@ const VARIAN = {
 
 export default ({ config }: ConfigContext): ExpoConfig => {
   const varian = process.env.APP_VARIANT;
-  if (!varian) return config as ExpoConfig;
+  // Mode gelap mengikuti HP di Expo Go (`development` & `expogo`). APK
+  // `preview` tetap `light` dari app.json sampai build ulang berikutnya —
+  // mengubahnya mengganti sidik jari, OTA ke APK lama berhenti masuk. Di APK
+  // itu mode gelap hanya lewat pilihan Tampilan di aplikasi.
+  if (!varian) return { ...config, userInterfaceStyle: "automatic" } as ExpoConfig;
   // Varian salah ketik / usang (mis. `development`) jangan diam-diam jatuh ke
   // konfigurasi dasar: sidik jarinya lain, OTA terkirim tapi tak pernah masuk.
   if (!Object.hasOwn(VARIAN, varian)) {
@@ -63,7 +67,14 @@ export default ({ config }: ConfigContext): ExpoConfig => {
   }
 
   // Expo Go: tanpa paket sendiri; runtime mengikuti SDK, bukan sidik jari.
-  if (paket === null) return { ...config, name, runtimeVersion: { policy: "sdkVersion" } };
+  if (paket === null) {
+    return {
+      ...config,
+      name,
+      runtimeVersion: { policy: "sdkVersion" },
+      userInterfaceStyle: "automatic",
+    };
+  }
 
   return {
     ...config,

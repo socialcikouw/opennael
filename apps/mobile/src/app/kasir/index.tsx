@@ -2,16 +2,9 @@ import { router } from "expo-router";
 import { ActivityIndicator, Pressable, RefreshControl, ScrollView, Text, View } from "react-native";
 import { TombolKeluar } from "../../komponen/keluar";
 import { KepalaPeran } from "../../komponen/kepala-peran";
-import {
-  g,
-  Ikon,
-  Keterangan,
-  KotakAngka,
-  Lencana,
-  PesanGalat,
-  Tombol,
-  WARNA,
-} from "../../komponen/ui";
+import { PilihTampilan } from "../../komponen/pilih-tampilan";
+import { useWarna } from "../../komponen/tampilan";
+import { Ikon, Keterangan, KotakAngka, Lencana, PesanGalat, Tombol, useG } from "../../komponen/ui";
 import { rupiah } from "../../lib/format";
 import { type HariKolektor, keadaanHari, useHariKolektor } from "../../lib/setoran";
 
@@ -27,6 +20,8 @@ function urutan(h: HariKolektor): number {
  * biaya tak terduga, dan menerima kas (hitung buta).
  */
 export default function SetoranSore() {
+  const WARNA = useWarna();
+  const g = useG();
   const hari = useHariKolektor();
   const daftar = [...(hari.data ?? [])].sort(
     (a, b) => urutan(a) - urutan(b) || a.kolektor.nama.localeCompare(b.kolektor.nama),
@@ -69,12 +64,15 @@ export default function SetoranSore() {
           ))}
         </>
       ) : null}
+      <PilihTampilan />
       <TombolKeluar />
     </ScrollView>
   );
 }
 
 function BarisKolektor({ h }: { h: HariKolektor }) {
+  const WARNA = useWarna();
+  const g = useG();
   const k = keadaanHari(h);
   const bisaDibuka = h.absensi === "masuk_kerja";
   return (

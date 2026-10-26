@@ -2,10 +2,10 @@ import { geserTanggal } from "@opennael/domain";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { ActivityIndicator, Alert, Text, View } from "react-native";
+import { useWarna } from "../../komponen/tampilan";
 import {
   Baris,
   Gulir,
-  g,
   Isian,
   IsianUang,
   Kartu,
@@ -15,7 +15,7 @@ import {
   Pilihan,
   Spanduk,
   Tombol,
-  WARNA,
+  useG,
 } from "../../komponen/ui";
 import { api, panggil } from "../../lib/api";
 import { rupiah, tanggalPendek } from "../../lib/format";
@@ -32,6 +32,8 @@ type Akun = keyof typeof LABEL_AKUN;
  * tersimpan. Riwayat: pencocokan miliknya 30 hari terakhir.
  */
 export default function CocokkanKas() {
+  const WARNA = useWarna();
+  const g = useG();
   const s = useSesi();
   const klien = useQueryClient();
   const [akun, setAkun] = useState<Akun>("tunai");

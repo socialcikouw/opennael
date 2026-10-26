@@ -7,10 +7,10 @@ import {
   fotoMasihBerlaku,
   IsianFotoSerahTerima,
 } from "../../../komponen/kamera-serah-terima";
+import { useWarna } from "../../../komponen/tampilan";
 import {
   Baris,
   Gulir,
-  g,
   IsianUang,
   Kartu,
   Keterangan,
@@ -18,7 +18,7 @@ import {
   Pilihan,
   Spanduk,
   Tombol,
-  WARNA,
+  useG,
 } from "../../../komponen/ui";
 import { cobaAturan, NAMA_JENIS, namaTenor, rupiah } from "../../../lib/format";
 import { tulis, useTagihan, useTulis } from "../../../lib/lapangan";
@@ -30,6 +30,8 @@ const NAMA_GULUNG = { naik: "Naik", tetap: "Tetap", turun: "Turun" } as const;
  * memakai rumus yang sama dengan server; rem bos hanya diketahui server.
  */
 export default function Gulung() {
+  const WARNA = useWarna();
+  const g = useG();
   const { id } = useLocalSearchParams<{ id: string }>();
   const p = useTagihan().data?.find((x) => x.id === id);
   const [pokok, setPokok] = useState(p?.pokok ?? 0);

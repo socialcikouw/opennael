@@ -1,7 +1,8 @@
 import { Redirect } from "expo-router";
 import { ActivityIndicator, View } from "react-native";
+import { useWarna } from "../komponen/tampilan";
 import { RUANG } from "../komponen/tema";
-import { g, Judul, Keterangan, Layar, Merek, Spanduk, WARNA } from "../komponen/ui";
+import { Judul, Keterangan, Layar, Merek, Spanduk, useG } from "../komponen/ui";
 import { ALAMAT_API } from "../lib/api";
 import { layarAwal } from "../lib/peran";
 import { useSesi } from "../lib/sesi";
@@ -11,6 +12,8 @@ import { useSesi } from "../lib/sesi";
  * HP khusus kasir, pengawas, kolektor; tidak ada login nomor HP + kata sandi.
  */
 export default function Pintu() {
+  const WARNA = useWarna();
+  const g = useG();
   const s = useSesi();
 
   if (!ALAMAT_API) {

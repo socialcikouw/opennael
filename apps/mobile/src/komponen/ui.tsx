@@ -12,19 +12,23 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { bacaUang, tulisUang } from "../lib/format";
 import { IKON, type NamaIkon } from "./ikon";
-import { BAYANGAN, HURUF, RUANG, SENTUH, SUDUT, TEBAL, WARNA } from "./tema";
+import { useGaya, useWarna } from "./tampilan";
+import { BAYANGAN, GELAP, HURUF, RUANG, SENTUH, SUDUT, TEBAL, type Warna } from "./tema";
 
-export { WARNA };
+const buatOpsiStack = (WARNA: Warna) =>
+  ({
+    headerTintColor: WARNA.utama,
+    headerTitleStyle: { color: WARNA.teks, fontWeight: TEBAL.tebal },
+    headerStyle: { backgroundColor: WARNA.latar },
+    headerShadowVisible: false,
+    headerBackButtonDisplayMode: "minimal",
+    contentStyle: { backgroundColor: WARNA.latar },
+  }) as const;
 
-/** Header Stack baku layar-layar peran (kolektor, kasir, pengawas). */
-export const OPSI_STACK = {
-  headerTintColor: WARNA.utama,
-  headerTitleStyle: { color: WARNA.teks, fontWeight: TEBAL.tebal },
-  headerStyle: { backgroundColor: WARNA.latar },
-  headerShadowVisible: false,
-  headerBackButtonDisplayMode: "minimal",
-  contentStyle: { backgroundColor: WARNA.latar },
-} as const;
+/** Header Stack baku layar-layar peran (kolektor, kasir, pengawas), sesuai mode tampilan. */
+export function useOpsiStack() {
+  return useGaya(buatOpsiStack);
+}
 
 /**
  * KOMPONEN DASAR HP — satu gaya untuk semua layar: latar abu muda, kartu
@@ -36,6 +40,7 @@ export type { NamaIkon };
 
 /** Ikon Lucide (`komponen/ikon.ts`). `tebal` = garis lebih tebal (mis. tab aktif). */
 export function Ikon(props: { nama: NamaIkon; ukuran?: number; warna?: string; tebal?: boolean }) {
+  const WARNA = useWarna();
   const Gambar = IKON[props.nama];
   return (
     <Gambar
@@ -48,6 +53,7 @@ export function Ikon(props: { nama: NamaIkon; ukuran?: number; warna?: string; t
 
 /** Kerangka layar tanpa header: aman dari poni & bilah navigasi. */
 export function Layar({ children }: { children: ReactNode }) {
+  const g = useG();
   return (
     <SafeAreaView style={g.layar}>
       <View style={g.layarIsi}>{children}</View>
@@ -57,6 +63,7 @@ export function Layar({ children }: { children: ReactNode }) {
 
 /** Isi layar bergulir (layar ber-header Stack); keyboard tidak menutupi isian. */
 export function Gulir({ children }: { children: ReactNode }) {
+  const g = useG();
   return (
     <ScrollView
       style={g.layar}
@@ -72,6 +79,8 @@ export function Gulir({ children }: { children: ReactNode }) {
 
 /** Pemuat penuh layar. */
 export function Memuat({ teks }: { teks?: string }) {
+  const WARNA = useWarna();
+  const g = useG();
   return (
     <View style={g.memuat}>
       <ActivityIndicator color={WARNA.utama} />
@@ -82,6 +91,7 @@ export function Memuat({ teks }: { teks?: string }) {
 
 /** Tanda merek: kotak hijau ber-"N" + nama aplikasi. */
 export function Merek({ besar }: { besar?: boolean }) {
+  const g = useG();
   return (
     <View style={g.baris3}>
       <View style={[g.merekKotak, besar ? g.merekKotakBesar : null]}>
@@ -96,34 +106,42 @@ export function Merek({ besar }: { besar?: boolean }) {
 }
 
 export function Judul({ children }: { children: ReactNode }) {
+  const g = useG();
   return <Text style={g.judul}>{children}</Text>;
 }
 
 export function Keterangan({ children }: { children: ReactNode }) {
+  const g = useG();
   return <Text style={g.keterangan}>{children}</Text>;
 }
 
-const GAYA_TOMBOL = {
-  utama: { kotak: { backgroundColor: WARNA.utama }, teks: WARNA.putih },
-  kedua: {
-    kotak: { backgroundColor: WARNA.permukaan, borderWidth: 1, borderColor: WARNA.garisTegas },
-    teks: WARNA.teksTombol,
-  },
-  bahaya: {
-    kotak: { backgroundColor: WARNA.bahayaLembut, borderWidth: 1, borderColor: WARNA.bahayaGaris },
-    teks: WARNA.bahaya,
-  },
-} as const;
+const buatGayaTombol = (WARNA: Warna) =>
+  ({
+    utama: { kotak: { backgroundColor: WARNA.utamaIsi }, teks: WARNA.teksAtasUtama },
+    kedua: {
+      kotak: { backgroundColor: WARNA.permukaan, borderWidth: 1, borderColor: WARNA.garisTegas },
+      teks: WARNA.teksTombol,
+    },
+    bahaya: {
+      kotak: {
+        backgroundColor: WARNA.bahayaLembut,
+        borderWidth: 1,
+        borderColor: WARNA.bahayaGaris,
+      },
+      teks: WARNA.bahaya,
+    },
+  }) as const;
 
 export function Tombol(props: {
   judul: string;
   onPress: () => void;
   memuat?: boolean;
-  jenis?: keyof typeof GAYA_TOMBOL;
+  jenis?: keyof ReturnType<typeof buatGayaTombol>;
   nonaktif?: boolean;
   ikon?: NamaIkon;
 }) {
-  const gaya = GAYA_TOMBOL[props.jenis ?? "utama"];
+  const g = useG();
+  const gaya = useGaya(buatGayaTombol)[props.jenis ?? "utama"];
   const mati = props.nonaktif || props.memuat;
   return (
     <Pressable
@@ -152,6 +170,7 @@ export function Tombol(props: {
 
 /** Tautan teks kecil (mis. "Ganti nasabah"). */
 export function TombolTeks(props: { judul: string; onPress: () => void }) {
+  const g = useG();
   return (
     <Pressable
       onPress={props.onPress}
@@ -164,26 +183,30 @@ export function TombolTeks(props: { judul: string; onPress: () => void }) {
 }
 
 function Label({ teks }: { teks?: string | undefined }) {
+  const g = useG();
   return teks ? <Text style={g.label}>{teks}</Text> : null;
 }
 
 /** Bingkai isian: menyala hijau saat aktif, merah saat galat. */
-function bingkai(fokus: boolean, galat: unknown) {
+function bingkai(WARNA: Warna, fokus: boolean, galat: unknown) {
   return { borderColor: galat ? WARNA.bahayaBingkai : fokus ? WARNA.utamaFokus : WARNA.garisTegas };
 }
 
 export function Isian(
   props: TextInputProps & { label?: string; galat?: string | undefined; ikon?: NamaIkon },
 ) {
+  const WARNA = useWarna();
+  const g = useG();
   const { label, galat, ikon, onFocus, onBlur, ...input } = props;
   const [fokus, setFokus] = useState(false);
   return (
     <View style={g.tumpuk1}>
       <Label teks={label} />
-      <View style={[g.bingkaiIsian, bingkai(fokus, galat)]}>
+      <View style={[g.bingkaiIsian, bingkai(WARNA, fokus, galat)]}>
         {ikon ? <Ikon nama={ikon} warna={WARNA.redup} /> : null}
         <TextInput
           style={g.isian}
+          keyboardAppearance={WARNA === GELAP ? "dark" : "light"}
           placeholderTextColor={WARNA.samar}
           onFocus={(e) => {
             setFokus(true);
@@ -209,14 +232,17 @@ export function IsianUang(props: {
   galat?: string | null | undefined;
   autoFocus?: boolean;
 }) {
+  const WARNA = useWarna();
+  const g = useG();
   const [fokus, setFokus] = useState(false);
   return (
     <View style={g.tumpuk1}>
       <Label teks={props.label} />
-      <View style={[g.bingkaiIsian, g.bingkaiUang, bingkai(fokus, props.galat)]}>
+      <View style={[g.bingkaiIsian, g.bingkaiUang, bingkai(WARNA, fokus, props.galat)]}>
         <Text style={g.awalanRp}>Rp</Text>
         <TextInput
           style={g.isianUang}
+          keyboardAppearance={WARNA === GELAP ? "dark" : "light"}
           keyboardType="number-pad"
           placeholder="0"
           placeholderTextColor={WARNA.samar}
@@ -233,6 +259,8 @@ export function IsianUang(props: {
 }
 
 export function PesanGalat({ pesan }: { pesan: string | null | undefined }) {
+  const WARNA = useWarna();
+  const g = useG();
   if (!pesan) return null;
   return (
     <View style={[g.kotakPesan, g.kotakGalat]}>
@@ -243,11 +271,14 @@ export function PesanGalat({ pesan }: { pesan: string | null | undefined }) {
 }
 
 export function Kartu({ children }: { children: ReactNode }) {
+  const g = useG();
   return <View style={g.kartu}>{children}</View>;
 }
 
 /** Satu baris label — nilai (angka rata kanan). `warna` = warna teks nilai. */
 export function Baris(props: { label: string; nilai: string; tebal?: boolean; warna?: string }) {
+  const WARNA = useWarna();
+  const g = useG();
   return (
     <View style={g.barisNilai}>
       <Text style={g.barisLabel}>{props.label}</Text>
@@ -266,6 +297,8 @@ export function Baris(props: { label: string; nilai: string; tebal?: boolean; wa
 
 /** Angka ringkas berlabel — deret ringkasan di atas layar. */
 export function KotakAngka(props: { label: string; nilai: string; ikon?: NamaIkon }) {
+  const WARNA = useWarna();
+  const g = useG();
   return (
     <View style={g.kotakAngka}>
       <View style={g.baris1}>
@@ -277,21 +310,29 @@ export function KotakAngka(props: { label: string; nilai: string; ikon?: NamaIko
   );
 }
 
-const WARNA_LENCANA = {
-  hijau: { backgroundColor: WARNA.utamaMuda, color: WARNA.utamaTua },
-  kuning: { backgroundColor: WARNA.waspadaMuda, color: WARNA.waspadaTua },
-  merah: { backgroundColor: WARNA.bahayaMuda, color: WARNA.bahayaTua },
-  abu: { backgroundColor: WARNA.abu, color: WARNA.teksLabel },
-} as const;
+const buatWarnaLencana = (WARNA: Warna) =>
+  ({
+    hijau: { backgroundColor: WARNA.utamaMuda, color: WARNA.utamaTua },
+    kuning: { backgroundColor: WARNA.waspadaMuda, color: WARNA.waspadaTua },
+    merah: { backgroundColor: WARNA.bahayaMuda, color: WARNA.bahayaTua },
+    abu: { backgroundColor: WARNA.abu, color: WARNA.teksLabel },
+  }) as const;
 
-export function Lencana(props: { teks: string; warna?: keyof typeof WARNA_LENCANA }) {
-  return <Text style={[g.lencana, WARNA_LENCANA[props.warna ?? "abu"]]}>{props.teks}</Text>;
+export function Lencana(props: {
+  teks: string;
+  warna?: keyof ReturnType<typeof buatWarnaLencana>;
+}) {
+  const g = useG();
+  const warna = useGaya(buatWarnaLencana);
+  return <Text style={[g.lencana, warna[props.warna ?? "abu"]]}>{props.teks}</Text>;
 }
 
-const GAYA_SPANDUK: Record<
+type GayaSpanduk = Record<
   "kuning" | "merah" | "hijau",
   { kotak: { backgroundColor: string; borderColor: string }; ikon: NamaIkon; warna: string }
-> = {
+>;
+
+const buatGayaSpanduk = (WARNA: Warna): GayaSpanduk => ({
   kuning: {
     kotak: { backgroundColor: WARNA.waspadaLembut, borderColor: WARNA.waspadaGaris },
     ikon: "triangle-alert",
@@ -307,15 +348,16 @@ const GAYA_SPANDUK: Record<
     ikon: "circle-check",
     warna: WARNA.utama,
   },
-};
+});
 
 /** Pengumuman di atas layar (gerbang tertutup, peringatan uang). */
 export function Spanduk(props: {
   judul: string;
   isi?: string | undefined;
-  warna?: keyof typeof GAYA_SPANDUK;
+  warna?: keyof GayaSpanduk;
 }) {
-  const gaya = GAYA_SPANDUK[props.warna ?? "kuning"];
+  const g = useG();
+  const gaya = useGaya(buatGayaSpanduk)[props.warna ?? "kuning"];
   return (
     <View style={[g.kotakPesan, g.spanduk, gaya.kotak]}>
       <Ikon nama={gaya.ikon} warna={gaya.warna} />
@@ -338,6 +380,8 @@ export function Pilihan<T extends string | number>(props: {
   onPilih: (nilai: T) => void;
   segmen?: boolean;
 }) {
+  const WARNA = useWarna();
+  const g = useG();
   if (props.segmen) {
     return (
       <View style={g.tumpuk1}>
@@ -381,7 +425,9 @@ export function Pilihan<T extends string | number>(props: {
                 pressed ? g.ditekan : null,
               ]}
             >
-              <Text style={[g.pilihanTeks, { color: aktif ? WARNA.putih : WARNA.teksTombol }]}>
+              <Text
+                style={[g.pilihanTeks, { color: aktif ? WARNA.teksAtasUtama : WARNA.teksTombol }]}
+              >
                 {p.teks}
               </Text>
             </Pressable>
@@ -396,210 +442,216 @@ export function Pilihan<T extends string | number>(props: {
  * Gaya bersama: dipakai komponen di atas, dan oleh layar untuk tata letak
  * berulang (deret, tumpukan, teks baku) — layar tidak menulis ulang angka.
  */
-export const g = StyleSheet.create({
-  layar: { flex: 1, backgroundColor: WARNA.latar },
-  layarIsi: {
-    flex: 1,
-    gap: RUANG[5],
-    paddingHorizontal: RUANG[5],
-    paddingTop: RUANG[4],
-    paddingBottom: RUANG[6],
-  },
-  gulirIsi: {
-    gap: RUANG[4],
-    paddingHorizontal: RUANG[5],
-    paddingTop: RUANG[4],
-    paddingBottom: RUANG[12],
-  },
-  memuat: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: RUANG[3],
-    backgroundColor: WARNA.latar,
-  },
-  isi: { flex: 1 },
+const buatG = (WARNA: Warna) =>
+  StyleSheet.create({
+    layar: { flex: 1, backgroundColor: WARNA.latar },
+    layarIsi: {
+      flex: 1,
+      gap: RUANG[5],
+      paddingHorizontal: RUANG[5],
+      paddingTop: RUANG[4],
+      paddingBottom: RUANG[6],
+    },
+    gulirIsi: {
+      gap: RUANG[4],
+      paddingHorizontal: RUANG[5],
+      paddingTop: RUANG[4],
+      paddingBottom: RUANG[12],
+    },
+    memuat: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      gap: RUANG[3],
+      backgroundColor: WARNA.latar,
+    },
+    isi: { flex: 1 },
 
-  /** Deret mendatar, tengah tegak, celah 6 / 8 / 12 pt. */
-  baris1: { flexDirection: "row", alignItems: "center", gap: RUANG[1.5] },
-  baris2: { flexDirection: "row", alignItems: "center", gap: RUANG[2] },
-  baris3: { flexDirection: "row", alignItems: "center", gap: RUANG[3] },
-  /** Deret yang boleh membungkus ke baris berikut. */
-  bungkus: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: RUANG[2] },
-  /** Tumpukan tegak, celah 2 / 6 / 8 / 12 pt. */
-  tumpuk05: { gap: RUANG[0.5] },
-  tumpuk1: { gap: RUANG[1.5] },
-  tumpuk2: { gap: RUANG[2] },
-  tumpuk3: { gap: RUANG[3] },
+    /** Deret mendatar, tengah tegak, celah 6 / 8 / 12 pt. */
+    baris1: { flexDirection: "row", alignItems: "center", gap: RUANG[1.5] },
+    baris2: { flexDirection: "row", alignItems: "center", gap: RUANG[2] },
+    baris3: { flexDirection: "row", alignItems: "center", gap: RUANG[3] },
+    /** Deret yang boleh membungkus ke baris berikut. */
+    bungkus: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: RUANG[2] },
+    /** Tumpukan tegak, celah 2 / 6 / 8 / 12 pt. */
+    tumpuk05: { gap: RUANG[0.5] },
+    tumpuk1: { gap: RUANG[1.5] },
+    tumpuk2: { gap: RUANG[2] },
+    tumpuk3: { gap: RUANG[3] },
 
-  judul: { ...HURUF["2xl"], fontWeight: TEBAL.tebal, letterSpacing: -0.4, color: WARNA.teks },
-  keterangan: { ...HURUF.base, color: WARNA.teksKedua },
-  /** Judul kartu. */
-  subjudul: { ...HURUF.lg, fontWeight: TEBAL.tebal, color: WARNA.teks },
-  /** Nama orang / butir utama di daftar. */
-  teksTebal: { ...HURUF.base, fontWeight: TEBAL.semi, color: WARNA.teks },
-  teksKecil: { ...HURUF.sm, color: WARNA.teksKedua },
-  teksRedup: { ...HURUF.sm, color: WARNA.redup },
-  teksMini: { ...HURUF.xs, color: WARNA.redup },
-  tautan: { ...HURUF.sm, fontWeight: TEBAL.semi, color: WARNA.utama },
-  tautanTombol: { alignSelf: "flex-start", paddingVertical: RUANG[1] },
+    judul: { ...HURUF["2xl"], fontWeight: TEBAL.tebal, letterSpacing: -0.4, color: WARNA.teks },
+    keterangan: { ...HURUF.base, color: WARNA.teksKedua },
+    /** Judul kartu. */
+    subjudul: { ...HURUF.lg, fontWeight: TEBAL.tebal, color: WARNA.teks },
+    /** Nama orang / butir utama di daftar. */
+    teksTebal: { ...HURUF.base, fontWeight: TEBAL.semi, color: WARNA.teks },
+    teksKecil: { ...HURUF.sm, color: WARNA.teksKedua },
+    teksRedup: { ...HURUF.sm, color: WARNA.redup },
+    teksMini: { ...HURUF.xs, color: WARNA.redup },
+    tautan: { ...HURUF.sm, fontWeight: TEBAL.semi, color: WARNA.utama },
+    tautanTombol: { alignSelf: "flex-start", paddingVertical: RUANG[1] },
 
-  /** Lingkaran inisial (avatar). */
-  avatar: {
-    width: 48,
-    height: 48,
-    borderRadius: SUDUT.bulat,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: WARNA.utamaMuda,
-  },
-  avatarHuruf: { ...HURUF.lg, fontWeight: TEBAL.tebal, color: WARNA.utamaTua },
+    /** Lingkaran inisial (avatar). */
+    avatar: {
+      width: 48,
+      height: 48,
+      borderRadius: SUDUT.bulat,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: WARNA.utamaMuda,
+    },
+    avatarHuruf: { ...HURUF.lg, fontWeight: TEBAL.tebal, color: WARNA.utamaTua },
 
-  merekKotak: {
-    width: 40,
-    height: 40,
-    borderRadius: SUDUT.besar,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: WARNA.utama,
-  },
-  merekKotakBesar: { width: 56, height: 56 },
-  merekHuruf: { fontWeight: TEBAL.ekstra, color: WARNA.putih },
-  merekNama: { fontWeight: TEBAL.tebal, color: WARNA.teks },
+    merekKotak: {
+      width: 40,
+      height: 40,
+      borderRadius: SUDUT.besar,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: WARNA.utamaIsi,
+    },
+    merekKotakBesar: { width: 56, height: 56 },
+    merekHuruf: { fontWeight: TEBAL.ekstra, color: WARNA.teksAtasUtama },
+    merekNama: { fontWeight: TEBAL.tebal, color: WARNA.teks },
 
-  tombol: {
-    minHeight: SENTUH.besar,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: RUANG[2],
-    borderRadius: SUDUT.besar,
-    paddingHorizontal: RUANG[4],
-  },
-  tombolTeks: { ...HURUF.base, fontWeight: TEBAL.semi },
-  ditekan: { opacity: 0.8 },
-  ditekanKuat: { opacity: 0.6 },
-  mati: { opacity: 0.5 },
+    tombol: {
+      minHeight: SENTUH.besar,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: RUANG[2],
+      borderRadius: SUDUT.besar,
+      paddingHorizontal: RUANG[4],
+    },
+    tombolTeks: { ...HURUF.base, fontWeight: TEBAL.semi },
+    ditekan: { opacity: 0.8 },
+    ditekanKuat: { opacity: 0.6 },
+    mati: { opacity: 0.5 },
 
-  label: { ...HURUF.sm, fontWeight: TEBAL.sedang, color: WARNA.teksLabel },
-  bingkaiIsian: {
-    minHeight: SENTUH.besar,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: RUANG[2],
-    borderRadius: SUDUT.besar,
-    borderWidth: 2,
-    backgroundColor: WARNA.permukaan,
-    paddingHorizontal: RUANG[4],
-  },
-  bingkaiUang: { minHeight: SENTUH.isianUang, gap: 0 },
-  isian: { flex: 1, paddingVertical: RUANG[3], fontSize: HURUF.base.fontSize, color: WARNA.teks },
-  awalanRp: { ...HURUF.lg, fontWeight: TEBAL.semi, color: WARNA.samar },
-  isianUang: {
-    flex: 1,
-    paddingVertical: RUANG[3],
-    paddingLeft: RUANG[2],
-    fontSize: HURUF.xl.fontSize,
-    fontWeight: TEBAL.tebal,
-    color: WARNA.teks,
-  },
-  galat: { ...HURUF.sm, color: WARNA.bahayaTeks },
+    label: { ...HURUF.sm, fontWeight: TEBAL.sedang, color: WARNA.teksLabel },
+    bingkaiIsian: {
+      minHeight: SENTUH.besar,
+      flexDirection: "row",
+      alignItems: "center",
+      gap: RUANG[2],
+      borderRadius: SUDUT.besar,
+      borderWidth: 2,
+      backgroundColor: WARNA.permukaan,
+      paddingHorizontal: RUANG[4],
+    },
+    bingkaiUang: { minHeight: SENTUH.isianUang, gap: 0 },
+    isian: { flex: 1, paddingVertical: RUANG[3], fontSize: HURUF.base.fontSize, color: WARNA.teks },
+    awalanRp: { ...HURUF.lg, fontWeight: TEBAL.semi, color: WARNA.samar },
+    isianUang: {
+      flex: 1,
+      paddingVertical: RUANG[3],
+      paddingLeft: RUANG[2],
+      fontSize: HURUF.xl.fontSize,
+      fontWeight: TEBAL.tebal,
+      color: WARNA.teks,
+    },
+    galat: { ...HURUF.sm, color: WARNA.bahayaTeks },
 
-  kotakPesan: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    borderRadius: SUDUT.besar,
-    borderWidth: 1,
-    paddingHorizontal: RUANG[4],
-    paddingVertical: RUANG[3],
-  },
-  kotakGalat: {
-    gap: RUANG[2],
-    borderColor: WARNA.bahayaGaris,
-    backgroundColor: WARNA.bahayaLembut,
-  },
-  pesanGalat: { ...HURUF.sm, flex: 1, color: WARNA.bahaya },
-  spanduk: { gap: RUANG[3] },
-  spandukIsi: { flex: 1, gap: RUANG[0.5] },
-  spandukJudul: { ...HURUF.base, fontWeight: TEBAL.semi, color: WARNA.teks },
-  spandukTeks: { ...HURUF.sm, color: WARNA.teksLabel },
+    kotakPesan: {
+      flexDirection: "row",
+      alignItems: "flex-start",
+      borderRadius: SUDUT.besar,
+      borderWidth: 1,
+      paddingHorizontal: RUANG[4],
+      paddingVertical: RUANG[3],
+    },
+    kotakGalat: {
+      gap: RUANG[2],
+      borderColor: WARNA.bahayaGaris,
+      backgroundColor: WARNA.bahayaLembut,
+    },
+    pesanGalat: { ...HURUF.sm, flex: 1, color: WARNA.bahaya },
+    spanduk: { gap: RUANG[3] },
+    spandukIsi: { flex: 1, gap: RUANG[0.5] },
+    spandukJudul: { ...HURUF.base, fontWeight: TEBAL.semi, color: WARNA.teks },
+    spandukTeks: { ...HURUF.sm, color: WARNA.teksLabel },
 
-  kartu: {
-    gap: RUANG[3],
-    borderRadius: SUDUT.besar,
-    borderWidth: 1,
-    borderColor: WARNA.garis,
-    backgroundColor: WARNA.permukaan,
-    padding: RUANG[4],
-    boxShadow: BAYANGAN.kecil,
-  },
+    kartu: {
+      gap: RUANG[3],
+      borderRadius: SUDUT.besar,
+      borderWidth: 1,
+      borderColor: WARNA.garis,
+      backgroundColor: WARNA.permukaan,
+      padding: RUANG[4],
+      boxShadow: BAYANGAN.kecil,
+    },
 
-  barisNilai: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: RUANG[3],
-  },
-  barisLabel: { ...HURUF.sm, flexShrink: 1, color: WARNA.teksKedua },
-  barisAngka: { ...HURUF.base, textAlign: "right", fontWeight: TEBAL.sedang },
-  barisAngkaTebal: { ...HURUF.lg, fontWeight: TEBAL.tebal },
+    barisNilai: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: RUANG[3],
+    },
+    barisLabel: { ...HURUF.sm, flexShrink: 1, color: WARNA.teksKedua },
+    barisAngka: { ...HURUF.base, textAlign: "right", fontWeight: TEBAL.sedang },
+    barisAngkaTebal: { ...HURUF.lg, fontWeight: TEBAL.tebal },
 
-  kotakAngka: {
-    flex: 1,
-    gap: RUANG[1],
-    borderRadius: SUDUT.besar,
-    borderWidth: 1,
-    borderColor: WARNA.garis,
-    backgroundColor: WARNA.permukaan,
-    padding: RUANG[4],
-  },
-  kotakAngkaLabel: { ...HURUF.xs, fontWeight: TEBAL.sedang, color: WARNA.redup },
-  kotakAngkaNilai: { ...HURUF.lg, fontWeight: TEBAL.tebal, color: WARNA.teks },
+    kotakAngka: {
+      flex: 1,
+      gap: RUANG[1],
+      borderRadius: SUDUT.besar,
+      borderWidth: 1,
+      borderColor: WARNA.garis,
+      backgroundColor: WARNA.permukaan,
+      padding: RUANG[4],
+    },
+    kotakAngkaLabel: { ...HURUF.xs, fontWeight: TEBAL.sedang, color: WARNA.redup },
+    kotakAngkaNilai: { ...HURUF.lg, fontWeight: TEBAL.tebal, color: WARNA.teks },
 
-  lencana: {
-    ...HURUF.xs,
-    alignSelf: "flex-start",
-    overflow: "hidden",
-    borderRadius: SUDUT.bulat,
-    paddingHorizontal: RUANG[2.5],
-    paddingVertical: RUANG[1],
-    fontWeight: TEBAL.semi,
-  },
+    lencana: {
+      ...HURUF.xs,
+      alignSelf: "flex-start",
+      overflow: "hidden",
+      borderRadius: SUDUT.bulat,
+      paddingHorizontal: RUANG[2.5],
+      paddingVertical: RUANG[1],
+      fontWeight: TEBAL.semi,
+    },
 
-  segmen: {
-    flexDirection: "row",
-    borderRadius: SUDUT.besar,
-    backgroundColor: WARNA.abuTua,
-    padding: RUANG[1],
-  },
-  segmenButir: {
-    minHeight: SENTUH.sedang,
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: SUDUT.sedang,
-  },
-  segmenAktif: { backgroundColor: WARNA.permukaan, boxShadow: BAYANGAN.sedang },
-  pilihanTeks: { ...HURUF.sm, fontWeight: TEBAL.semi },
-  /** Butir pilihan bulat — juga dipakai layar (mis. saran kampung). */
-  chip: {
-    minHeight: SENTUH.sedang,
-    justifyContent: "center",
-    borderRadius: SUDUT.bulat,
-    borderWidth: 1,
-    borderColor: WARNA.garisTegas,
-    backgroundColor: WARNA.permukaan,
-    paddingHorizontal: RUANG[4],
-  },
-  chipAktif: { borderColor: WARNA.utama, backgroundColor: WARNA.utama },
-  /** Butir daftar yang bisa diketuk (kartu pinjaman, nasabah lama). */
-  butirDaftar: {
-    borderRadius: SUDUT.besar,
-    borderWidth: 1,
-    borderColor: WARNA.garis,
-    backgroundColor: WARNA.permukaan,
-    paddingHorizontal: RUANG[4],
-    paddingVertical: RUANG[3],
-  },
-  butirDitekan: { backgroundColor: WARNA.abu },
-});
+    segmen: {
+      flexDirection: "row",
+      borderRadius: SUDUT.besar,
+      backgroundColor: WARNA.abuTua,
+      padding: RUANG[1],
+    },
+    segmenButir: {
+      minHeight: SENTUH.sedang,
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: SUDUT.sedang,
+    },
+    segmenAktif: { backgroundColor: WARNA.permukaan, boxShadow: BAYANGAN.sedang },
+    pilihanTeks: { ...HURUF.sm, fontWeight: TEBAL.semi },
+    /** Butir pilihan bulat — juga dipakai layar (mis. saran kampung). */
+    chip: {
+      minHeight: SENTUH.sedang,
+      justifyContent: "center",
+      borderRadius: SUDUT.bulat,
+      borderWidth: 1,
+      borderColor: WARNA.garisTegas,
+      backgroundColor: WARNA.permukaan,
+      paddingHorizontal: RUANG[4],
+    },
+    chipAktif: { borderColor: WARNA.utamaIsi, backgroundColor: WARNA.utamaIsi },
+    /** Butir daftar yang bisa diketuk (kartu pinjaman, nasabah lama). */
+    butirDaftar: {
+      borderRadius: SUDUT.besar,
+      borderWidth: 1,
+      borderColor: WARNA.garis,
+      backgroundColor: WARNA.permukaan,
+      paddingHorizontal: RUANG[4],
+      paddingVertical: RUANG[3],
+    },
+    butirDitekan: { backgroundColor: WARNA.abu },
+  });
+
+/** Gaya bersama `g` untuk mode tampilan yang sedang berlaku. */
+export function useG() {
+  return useGaya(buatG);
+}

@@ -19,42 +19,62 @@ const slate = {
   700: "#334155",
   800: "#1e293b",
   900: "#0f172a",
+  950: "#020617",
 } as const;
 
 const emerald = {
   50: "#ecfdf5",
   100: "#d1fae5",
   200: "#a7f3d0",
+  300: "#6ee7b7",
+  400: "#34d399",
+  500: "#10b981",
   600: "#059669",
   700: "#047857",
   800: "#065f46",
+  900: "#064e3b",
+  950: "#022c22",
 } as const;
 
 const red = {
   50: "#fef2f2",
   100: "#fee2e2",
   200: "#fecaca",
+  300: "#fca5a5",
+  400: "#f87171",
   500: "#ef4444",
   600: "#dc2626",
   700: "#b91c1c",
   800: "#991b1b",
+  900: "#7f1d1d",
+  950: "#450a0a",
 } as const;
 
 const amber = {
   50: "#fffbeb",
   100: "#fef3c7",
   200: "#fde68a",
+  300: "#fcd34d",
+  400: "#fbbf24",
   700: "#b45309",
   800: "#92400e",
+  900: "#78350f",
+  950: "#451a03",
 } as const;
 
-export const WARNA = {
+/**
+ * PALET WARNA — dua mode dengan kunci yang sama (`TERANG`, `GELAP`). Layar
+ * tidak mengimpor palet langsung: `useWarna()` / `useGaya()` di
+ * `tampilan.tsx` memilih palet sesuai mode HP atau pilihan pengguna.
+ */
+export const TERANG = {
+  /** Putih & hitam mutlak (latar QR, ikon di atas foto) — sama di kedua mode. */
   putih: "#ffffff",
   hitam: "#000000",
 
   /** Latar layar. */
   latar: slate[50],
-  /** Kartu, isian, tombol kedua. */
+  /** Kartu, isian, tombol kedua, tab bar. */
   permukaan: "#ffffff",
   /** Isi abu: avatar, lencana netral. */
   abu: slate[100],
@@ -72,12 +92,18 @@ export const WARNA = {
   redup: slate[500],
   samar: slate[400],
 
+  /** Hijau untuk teks, ikon, tab aktif. */
   utama: emerald[700],
+  /** Hijau berkontras lebih kuat (teks di atas `utamaMuda`). */
   utamaTua: emerald[800],
   utamaFokus: emerald[600],
   utamaMuda: emerald[100],
   utamaLembut: emerald[50],
   utamaGaris: emerald[200],
+  /** Isi tombol utama & tombol (+). */
+  utamaIsi: emerald[700],
+  /** Teks/ikon di atas `utamaIsi`. */
+  teksAtasUtama: "#ffffff",
 
   bahaya: red[700],
   bahayaTua: red[800],
@@ -98,6 +124,59 @@ export const WARNA = {
   /** Lapisan terang tembus pandang di atas latar gelap (tombol tutup layar penuh). */
   tiraiTerang: "rgba(255, 255, 255, 0.18)",
 } as const;
+
+export type Warna = { readonly [K in keyof typeof TERANG]: string };
+
+/**
+ * Mode gelap: latar slate-950, kartu slate-900. Warna aksen dibuat lebih
+ * TERANG (emerald-400, red-400, amber-400) agar terbaca di latar gelap; latar
+ * lembut (lencana, tab aktif) memakai tingkat 900–950. Tombol utama
+ * emerald-500 dengan teks gelap — teks putih di atasnya kurang kontras.
+ */
+export const GELAP: Warna = {
+  putih: "#ffffff",
+  hitam: "#000000",
+
+  latar: slate[950],
+  permukaan: slate[900],
+  abu: slate[800],
+  abuTua: slate[700],
+  garis: slate[800],
+  garisTegas: slate[700],
+
+  teks: slate[50],
+  teksTombol: slate[100],
+  teksLabel: slate[200],
+  teksKedua: slate[300],
+  redup: slate[400],
+  samar: slate[500],
+
+  utama: emerald[400],
+  utamaTua: emerald[300],
+  utamaFokus: emerald[500],
+  utamaMuda: emerald[900],
+  utamaLembut: emerald[950],
+  utamaGaris: emerald[800],
+  utamaIsi: emerald[500],
+  teksAtasUtama: slate[950],
+
+  bahaya: red[400],
+  bahayaTua: red[300],
+  bahayaTeks: red[400],
+  bahayaBingkai: red[500],
+  bahayaMuda: red[900],
+  bahayaLembut: red[950],
+  bahayaGaris: red[900],
+
+  waspada: amber[400],
+  waspadaTua: amber[300],
+  waspadaMuda: amber[900],
+  waspadaLembut: amber[950],
+  waspadaGaris: amber[900],
+
+  tiraiGelap: "rgba(2, 6, 23, 0.6)",
+  tiraiTerang: "rgba(255, 255, 255, 0.18)",
+};
 
 /** Jarak kelipatan 4 pt — kunci = angka skala Tailwind (`5` = 20 pt, seperti `p-5`). */
 export const RUANG = {

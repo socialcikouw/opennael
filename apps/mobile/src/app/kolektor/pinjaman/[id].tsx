@@ -7,7 +7,6 @@ import { FotoSerahTerima } from "../../../komponen/foto-nasabah";
 import {
   Baris,
   Gulir,
-  g,
   Isian,
   IsianUang,
   Kartu,
@@ -18,6 +17,7 @@ import {
   Pilihan,
   Spanduk,
   Tombol,
+  useG,
 } from "../../../komponen/ui";
 import { cobaAturan, NAMA_JENIS, namaTenor, rupiah, tanggalPendek } from "../../../lib/format";
 import { bacaGerbang, tulis, useHariIni, useTagihan, useTulis } from "../../../lib/lapangan";
@@ -26,6 +26,7 @@ type Aksi = "setor" | "lunas" | "libur" | "gulung";
 
 /** KARTU PINJAMAN — rincian lalu satu catatan hari ini: setor, lunas, libur, atau gulung. */
 export default function KartuPinjaman() {
+  const g = useG();
   const { id } = useLocalSearchParams<{ id: string }>();
   const tagihan = useTagihan();
   const hariIni = useHariIni();

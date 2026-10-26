@@ -3,8 +3,10 @@ import { useState } from "react";
 import { ActivityIndicator, Pressable, RefreshControl, ScrollView, Text, View } from "react-native";
 import { TombolKeluar } from "../../komponen/keluar";
 import { KepalaPeran } from "../../komponen/kepala-peran";
+import { PilihTampilan } from "../../komponen/pilih-tampilan";
 import { RincianKas } from "../../komponen/rincian-kas";
-import { g, Ikon, Keterangan, Lencana, type NamaIkon, PesanGalat, WARNA } from "../../komponen/ui";
+import { useWarna } from "../../komponen/tampilan";
+import { Ikon, Keterangan, Lencana, type NamaIkon, PesanGalat, useG } from "../../komponen/ui";
 import { rupiah } from "../../lib/format";
 import { type HariKolektor, keadaanHari, useHariKolektor } from "../../lib/setoran";
 
@@ -13,6 +15,8 @@ import { type HariKolektor, keadaanHari, useHariKolektor } from "../../lib/setor
  * pinjaman yang menunggak, dan membaca setoran sore hari ini.
  */
 export default function BerandaPengawas() {
+  const WARNA = useWarna();
+  const g = useG();
   const hari = useHariKolektor();
   return (
     <ScrollView
@@ -45,12 +49,15 @@ export default function BerandaPengawas() {
       {hari.data?.map((h) => (
         <BarisHari key={h.id} h={h} />
       ))}
+      <PilihTampilan />
       <TombolKeluar />
     </ScrollView>
   );
 }
 
 function Menu(props: { ikon: NamaIkon; judul: string; isi: string; ke: Href }) {
+  const WARNA = useWarna();
+  const g = useG();
   return (
     <Pressable
       onPress={() => router.push(props.ke)}
@@ -68,6 +75,8 @@ function Menu(props: { ikon: NamaIkon; judul: string; isi: string; ke: Href }) {
 
 /** Satu kolektor hari ini; yang kasnya sudah diterima bisa dibuka rinciannya. */
 function BarisHari({ h }: { h: HariKolektor }) {
+  const WARNA = useWarna();
+  const g = useG();
   const [buka, setBuka] = useState(false);
   const k = keadaanHari(h);
   return (

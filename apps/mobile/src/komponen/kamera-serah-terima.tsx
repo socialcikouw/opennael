@@ -3,8 +3,9 @@ import { useRef, useState } from "react";
 import { Image, Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { unggahFotoSerahTerima } from "../lib/foto";
-import { HURUF, RUANG, SUDUT, WARNA } from "./tema";
-import { g, Keterangan, PesanGalat, Tombol } from "./ui";
+import { useGaya } from "./tampilan";
+import { HURUF, RUANG, SUDUT, type Warna } from "./tema";
+import { Keterangan, PesanGalat, Tombol, useG } from "./ui";
 
 interface Potret {
   uri: string;
@@ -22,6 +23,8 @@ export function KameraSerahTerima(props: {
   onTutup: () => void;
   onSelesai: (fotoId: string, pratinjauUri: string) => void;
 }) {
+  const gaya = useGaya(buatGaya);
+  const g = useG();
   const [izin, mintaIzin] = useCameraPermissions();
   const kamera = useRef<CameraView>(null);
   const [potret, setPotret] = useState<Potret | null>(null);
@@ -141,6 +144,8 @@ export function IsianFotoSerahTerima(props: {
   nilai: FotoSerahTerima | null;
   onUbah: (f: FotoSerahTerima | null) => void;
 }) {
+  const gaya = useGaya(buatGaya);
+  const g = useG();
   const [terbuka, setTerbuka] = useState(false);
   const berlaku = fotoMasihBerlaku(props.nilai);
 
@@ -184,38 +189,39 @@ export function IsianFotoSerahTerima(props: {
   );
 }
 
-const gaya = StyleSheet.create({
-  latar: { flex: 1, backgroundColor: WARNA.hitam },
-  izin: {
-    flex: 1,
-    justifyContent: "center",
-    gap: RUANG[4],
-    backgroundColor: WARNA.permukaan,
-    paddingHorizontal: RUANG[5],
-  },
-  panel: {
-    gap: RUANG[3],
-    backgroundColor: WARNA.hitam,
-    paddingHorizontal: RUANG[5],
-    paddingVertical: RUANG[4],
-  },
-  panelTerang: { backgroundColor: WARNA.permukaan },
-  petunjuk: { ...HURUF.sm, textAlign: "center", color: WARNA.putih },
-  kendali: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  sisi: { width: 80, paddingVertical: RUANG[3] },
-  batal: { ...HURUF.base, color: WARNA.putih },
-  rana: {
-    width: 80,
-    height: 80,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: SUDUT.bulat,
-    borderWidth: 4,
-    borderColor: WARNA.putih,
-  },
-  ranaMati: { opacity: 0.4 },
-  ranaIsi: { width: 64, height: 64, borderRadius: SUDUT.bulat, backgroundColor: WARNA.putih },
-  pratinjau: { width: 64, height: 80, borderRadius: SUDUT.kecil, backgroundColor: WARNA.abu },
-  keteranganFoto: { gap: RUANG[1] },
-  diambil: { ...HURUF.sm, color: WARNA.teksLabel },
-});
+const buatGaya = (WARNA: Warna) =>
+  StyleSheet.create({
+    latar: { flex: 1, backgroundColor: WARNA.hitam },
+    izin: {
+      flex: 1,
+      justifyContent: "center",
+      gap: RUANG[4],
+      backgroundColor: WARNA.permukaan,
+      paddingHorizontal: RUANG[5],
+    },
+    panel: {
+      gap: RUANG[3],
+      backgroundColor: WARNA.hitam,
+      paddingHorizontal: RUANG[5],
+      paddingVertical: RUANG[4],
+    },
+    panelTerang: { backgroundColor: WARNA.permukaan },
+    petunjuk: { ...HURUF.sm, textAlign: "center", color: WARNA.putih },
+    kendali: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+    sisi: { width: 80, paddingVertical: RUANG[3] },
+    batal: { ...HURUF.base, color: WARNA.putih },
+    rana: {
+      width: 80,
+      height: 80,
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: SUDUT.bulat,
+      borderWidth: 4,
+      borderColor: WARNA.putih,
+    },
+    ranaMati: { opacity: 0.4 },
+    ranaIsi: { width: 64, height: 64, borderRadius: SUDUT.bulat, backgroundColor: WARNA.putih },
+    pratinjau: { width: 64, height: 80, borderRadius: SUDUT.kecil, backgroundColor: WARNA.abu },
+    keteranganFoto: { gap: RUANG[1] },
+    diambil: { ...HURUF.sm, color: WARNA.teksLabel },
+  });

@@ -1,8 +1,9 @@
 import type { BottomTabBarProps } from "expo-router/js-tabs";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { BAYANGAN, HURUF, RUANG, SUDUT, TEBAL } from "./tema";
-import { Ikon, type NamaIkon, WARNA } from "./ui";
+import { useGaya, useWarna } from "./tampilan";
+import { BAYANGAN, HURUF, RUANG, SUDUT, TEBAL, type Warna } from "./tema";
+import { Ikon, type NamaIkon } from "./ui";
 
 /** Tinggi pil tab (dan diameter tombol tambah). */
 const TINGGI = 64;
@@ -36,6 +37,8 @@ export function TabMengambang({
   onTambah: () => void;
   judulTambah: string;
 }) {
+  const WARNA = useWarna();
+  const gaya = useGaya(buatGaya);
   return (
     <View pointerEvents="box-none" style={[gaya.wadah, { bottom: insets.bottom + JARAK_BAWAH }]}>
       <View style={gaya.pil}>
@@ -77,58 +80,59 @@ export function TabMengambang({
         onPress={onTambah}
         style={({ pressed }) => [gaya.tambah, pressed ? gaya.tambahDitekan : null]}
       >
-        <Ikon nama="plus" ukuran={30} warna={WARNA.putih} tebal />
+        <Ikon nama="plus" ukuran={30} warna={WARNA.teksAtasUtama} tebal />
       </Pressable>
     </View>
   );
 }
 
-const gaya = StyleSheet.create({
-  wadah: {
-    position: "absolute",
-    left: RUANG[4],
-    right: RUANG[4],
-    flexDirection: "row",
-    alignItems: "center",
-    gap: RUANG[3],
-  },
-  pil: {
-    flex: 1,
-    height: TINGGI,
-    flexDirection: "row",
-    alignItems: "center",
-    borderRadius: SUDUT.bulat,
-    borderWidth: 1,
-    borderColor: WARNA.garis,
-    backgroundColor: WARNA.permukaan,
-    paddingHorizontal: RUANG[2],
-    boxShadow: BAYANGAN.mengambang,
-  },
-  tab: {
-    flex: 1,
-    height: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: RUANG[0.5],
-  },
-  ditekan: { opacity: 0.6 },
-  ikonTab: {
-    height: 32,
-    paddingHorizontal: RUANG[4],
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: SUDUT.bulat,
-  },
-  ikonAktif: { backgroundColor: WARNA.utamaMuda },
-  label: { ...HURUF["2xs"], fontWeight: TEBAL.biasa },
-  tambah: {
-    width: TINGGI,
-    height: TINGGI,
-    borderRadius: SUDUT.bulat,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: WARNA.utama,
-    boxShadow: BAYANGAN.mengambang,
-  },
-  tambahDitekan: { backgroundColor: WARNA.utamaTua },
-});
+const buatGaya = (WARNA: Warna) =>
+  StyleSheet.create({
+    wadah: {
+      position: "absolute",
+      left: RUANG[4],
+      right: RUANG[4],
+      flexDirection: "row",
+      alignItems: "center",
+      gap: RUANG[3],
+    },
+    pil: {
+      flex: 1,
+      height: TINGGI,
+      flexDirection: "row",
+      alignItems: "center",
+      borderRadius: SUDUT.bulat,
+      borderWidth: 1,
+      borderColor: WARNA.garis,
+      backgroundColor: WARNA.permukaan,
+      paddingHorizontal: RUANG[2],
+      boxShadow: BAYANGAN.mengambang,
+    },
+    tab: {
+      flex: 1,
+      height: "100%",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: RUANG[0.5],
+    },
+    ditekan: { opacity: 0.6 },
+    ikonTab: {
+      height: 32,
+      paddingHorizontal: RUANG[4],
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: SUDUT.bulat,
+    },
+    ikonAktif: { backgroundColor: WARNA.utamaMuda },
+    label: { ...HURUF["2xs"], fontWeight: TEBAL.biasa },
+    tambah: {
+      width: TINGGI,
+      height: TINGGI,
+      borderRadius: SUDUT.bulat,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: WARNA.utamaIsi,
+      boxShadow: BAYANGAN.mengambang,
+    },
+    tambahDitekan: { backgroundColor: WARNA.utamaTua },
+  });

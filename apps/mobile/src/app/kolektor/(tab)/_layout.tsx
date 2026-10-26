@@ -2,8 +2,8 @@ import { router } from "expo-router";
 import { Tabs } from "expo-router/js-tabs";
 import { Alert } from "react-native";
 import { TabMengambang } from "../../../komponen/tab-mengambang";
+import { useWarna } from "../../../komponen/tampilan";
 import { TEBAL } from "../../../komponen/tema";
-import { WARNA } from "../../../komponen/ui";
 import { bacaGerbang, useHariIni } from "../../../lib/lapangan";
 
 /** Ikon Lucide tiap tab. */
@@ -18,6 +18,7 @@ const IKON = {
  * (orang baru atau nasabah lama pinjam lagi).
  */
 export default function TabKolektor() {
+  const WARNA = useWarna();
   const hariIni = useHariIni();
 
   // Gerbang (C4) hanya untuk menjelaskan lebih awal — server tetap memutuskan.

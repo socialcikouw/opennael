@@ -4,8 +4,9 @@ import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ALAMAT_API } from "../lib/api";
 import { sesi } from "../lib/sesi";
-import { HURUF, RUANG, SUDUT, TEBAL } from "./tema";
-import { Ikon, WARNA } from "./ui";
+import { useGaya, useWarna } from "./tampilan";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "./tema";
+import { Ikon } from "./ui";
 
 /**
  * Berkas `GET /foto/:id` bertoken. Disimpan di disk HP per id foto — tiap foto
@@ -31,6 +32,8 @@ export function AvatarNasabah(props: {
   ukuran: number;
   tanda?: boolean;
 }) {
+  const WARNA = useWarna();
+  const gaya = useGaya(buatGaya);
   const [gagal, setGagal] = useState(false);
   const bulat = { width: props.ukuran, height: props.ukuran, borderRadius: props.ukuran / 2 };
   return (
@@ -53,7 +56,7 @@ export function AvatarNasabah(props: {
       )}
       {props.tanda ? (
         <View style={gaya.tanda}>
-          <Ikon nama="check" ukuran={12} warna={WARNA.putih} />
+          <Ikon nama="check" ukuran={12} warna={WARNA.teksAtasUtama} />
         </View>
       ) : null}
     </View>
@@ -62,6 +65,8 @@ export function AvatarNasabah(props: {
 
 /** FOTO SERAH TERIMA besar di rincian pinjaman; ketuk = layar penuh. */
 export function FotoSerahTerima({ fotoId, nama }: { fotoId: string; nama: string }) {
+  const WARNA = useWarna();
+  const gaya = useGaya(buatGaya);
   const [penuh, setPenuh] = useState(false);
   const [gagal, setGagal] = useState(false);
   const atas = useSafeAreaInsets().top;
@@ -116,48 +121,49 @@ export function FotoSerahTerima({ fotoId, nama }: { fotoId: string; nama: string
   );
 }
 
-const gaya = StyleSheet.create({
-  latarFoto: { backgroundColor: WARNA.abuTua },
-  inisial: { alignItems: "center", justifyContent: "center", backgroundColor: WARNA.abu },
-  inisialHuruf: { ...HURUF.base, fontWeight: TEBAL.tebal, color: WARNA.teksKedua },
-  tanda: {
-    position: "absolute",
-    right: -2,
-    bottom: -2,
-    width: 20,
-    height: 20,
-    borderRadius: SUDUT.bulat,
-    borderWidth: 2,
-    borderColor: WARNA.permukaan,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: WARNA.utama,
-  },
-  besar: { width: "100%", aspectRatio: 4 / 3, borderRadius: SUDUT.besar },
-  petunjuk: {
-    position: "absolute",
-    right: RUANG[2],
-    bottom: RUANG[2],
-    padding: RUANG[1.5],
-    borderRadius: SUDUT.bulat,
-    backgroundColor: WARNA.tiraiGelap,
-  },
-  gagal: {
-    alignItems: "center",
-    justifyContent: "center",
-    gap: RUANG[2],
-    borderWidth: 1,
-    borderStyle: "dashed",
-    borderColor: WARNA.garisTegas,
-  },
-  gagalTeks: { ...HURUF.sm, color: WARNA.redup },
-  layarPenuh: { flex: 1, backgroundColor: WARNA.hitam },
-  isiPenuh: { flex: 1 },
-  tutup: {
-    position: "absolute",
-    right: RUANG[4],
-    padding: RUANG[2],
-    borderRadius: SUDUT.bulat,
-    backgroundColor: WARNA.tiraiTerang,
-  },
-});
+const buatGaya = (WARNA: Warna) =>
+  StyleSheet.create({
+    latarFoto: { backgroundColor: WARNA.abuTua },
+    inisial: { alignItems: "center", justifyContent: "center", backgroundColor: WARNA.abu },
+    inisialHuruf: { ...HURUF.base, fontWeight: TEBAL.tebal, color: WARNA.teksKedua },
+    tanda: {
+      position: "absolute",
+      right: -2,
+      bottom: -2,
+      width: 20,
+      height: 20,
+      borderRadius: SUDUT.bulat,
+      borderWidth: 2,
+      borderColor: WARNA.permukaan,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: WARNA.utamaIsi,
+    },
+    besar: { width: "100%", aspectRatio: 4 / 3, borderRadius: SUDUT.besar },
+    petunjuk: {
+      position: "absolute",
+      right: RUANG[2],
+      bottom: RUANG[2],
+      padding: RUANG[1.5],
+      borderRadius: SUDUT.bulat,
+      backgroundColor: WARNA.tiraiGelap,
+    },
+    gagal: {
+      alignItems: "center",
+      justifyContent: "center",
+      gap: RUANG[2],
+      borderWidth: 1,
+      borderStyle: "dashed",
+      borderColor: WARNA.garisTegas,
+    },
+    gagalTeks: { ...HURUF.sm, color: WARNA.redup },
+    layarPenuh: { flex: 1, backgroundColor: WARNA.hitam },
+    isiPenuh: { flex: 1 },
+    tutup: {
+      position: "absolute",
+      right: RUANG[4],
+      padding: RUANG[2],
+      borderRadius: SUDUT.bulat,
+      backgroundColor: WARNA.tiraiTerang,
+    },
+  });

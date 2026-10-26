@@ -13,9 +13,9 @@ import {
 } from "react-native";
 import { AvatarNasabah } from "../../../komponen/foto-nasabah";
 import { useRuangTab } from "../../../komponen/tab-mengambang";
-import { HURUF, RUANG, SUDUT, TEBAL } from "../../../komponen/tema";
+import { useGaya, useWarna } from "../../../komponen/tampilan";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "../../../komponen/tema";
 import {
-  g,
   Ikon,
   Isian,
   Keterangan,
@@ -23,7 +23,7 @@ import {
   Memuat,
   PesanGalat,
   Tombol,
-  WARNA,
+  useG,
 } from "../../../komponen/ui";
 import { NAMA_JENIS, rupiah } from "../../../lib/format";
 import { useHariIni, useTagihan } from "../../../lib/lapangan";
@@ -33,6 +33,9 @@ import { useHariIni, useTagihan } from "../../../lib/lapangan";
  * dicatat hari ini (setoran / libur) ditandai (C3).
  */
 export default function Tagihan() {
+  const WARNA = useWarna();
+  const gaya = useGaya(buatGaya);
+  const g = useG();
   const hariIni = useHariIni();
   const tagihan = useTagihan();
   const ruangTab = useRuangTab();
@@ -122,6 +125,9 @@ export default function Tagihan() {
 }
 
 function BarisTagih({ p, tanggal }: { p: KartuTagih; tanggal: string }) {
+  const WARNA = useWarna();
+  const gaya = useGaya(buatGaya);
+  const g = useG();
   const lencana =
     p.hariIni?.jenis === "angsuran" ? (
       <Lencana teks={`Setor ${rupiah(p.hariIni.storting)}`} warna="hijau" />
@@ -171,35 +177,36 @@ function BarisTagih({ p, tanggal }: { p: KartuTagih; tanggal: string }) {
   );
 }
 
-const gaya = StyleSheet.create({
-  galat: { gap: RUANG[4], paddingHorizontal: RUANG[5], paddingVertical: RUANG[6] },
-  kepala: {
-    gap: RUANG[4],
-    paddingHorizontal: RUANG[5],
-    paddingTop: RUANG[2],
-    paddingBottom: RUANG[3],
-  },
-  kosong: {
-    alignItems: "center",
-    gap: RUANG[2],
-    borderRadius: SUDUT.besar,
-    borderWidth: 1,
-    borderStyle: "dashed",
-    borderColor: WARNA.garisTegas,
-    paddingHorizontal: RUANG[4],
-    paddingVertical: RUANG[8],
-  },
-  kampung: { paddingHorizontal: RUANG[5], paddingTop: RUANG[4], paddingBottom: RUANG[2] },
-  kampungTeks: {
-    ...HURUF.xs,
-    fontWeight: TEBAL.tebal,
-    textTransform: "uppercase",
-    letterSpacing: 0.6,
-    color: WARNA.redup,
-  },
-  butir: { marginHorizontal: RUANG[5], marginBottom: RUANG[2] },
-  sudahDicatat: { opacity: 0.7 },
-  rincian: { gap: RUANG[1] },
-  angka: { alignItems: "flex-end" },
-  angsuran: { ...HURUF.base, fontWeight: TEBAL.tebal, color: WARNA.teks },
-});
+const buatGaya = (WARNA: Warna) =>
+  StyleSheet.create({
+    galat: { gap: RUANG[4], paddingHorizontal: RUANG[5], paddingVertical: RUANG[6] },
+    kepala: {
+      gap: RUANG[4],
+      paddingHorizontal: RUANG[5],
+      paddingTop: RUANG[2],
+      paddingBottom: RUANG[3],
+    },
+    kosong: {
+      alignItems: "center",
+      gap: RUANG[2],
+      borderRadius: SUDUT.besar,
+      borderWidth: 1,
+      borderStyle: "dashed",
+      borderColor: WARNA.garisTegas,
+      paddingHorizontal: RUANG[4],
+      paddingVertical: RUANG[8],
+    },
+    kampung: { paddingHorizontal: RUANG[5], paddingTop: RUANG[4], paddingBottom: RUANG[2] },
+    kampungTeks: {
+      ...HURUF.xs,
+      fontWeight: TEBAL.tebal,
+      textTransform: "uppercase",
+      letterSpacing: 0.6,
+      color: WARNA.redup,
+    },
+    butir: { marginHorizontal: RUANG[5], marginBottom: RUANG[2] },
+    sudahDicatat: { opacity: 0.7 },
+    rincian: { gap: RUANG[1] },
+    angka: { alignItems: "flex-end" },
+    angsuran: { ...HURUF.base, fontWeight: TEBAL.tebal, color: WARNA.teks },
+  });

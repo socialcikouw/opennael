@@ -2,10 +2,10 @@ import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { ActivityIndicator, Alert, Text, View } from "react-native";
 import { RincianKas } from "../../komponen/rincian-kas";
+import { useWarna } from "../../komponen/tampilan";
 import {
   Baris,
   Gulir,
-  g,
   Isian,
   IsianUang,
   Kartu,
@@ -15,7 +15,7 @@ import {
   Spanduk,
   Tombol,
   TombolTeks,
-  WARNA,
+  useG,
 } from "../../komponen/ui";
 import { rupiah } from "../../lib/format";
 import {
@@ -35,6 +35,8 @@ const LABEL_JENIS = { angsuran: "Angsuran", pelunasan: "Pelunasan", gulung: "Gul
  * sesudah disimpan). Kasir hanya mencatat; pembatalan oleh bos di web.
  */
 export default function KasKolektor() {
+  const WARNA = useWarna();
+  const g = useG();
   const { kolektorId } = useLocalSearchParams<{ kolektorId: string }>();
   const hari = useHariKolektor();
   const h = hari.data?.find((x) => x.kolektor.id === kolektorId);
@@ -75,6 +77,8 @@ export default function KasKolektor() {
 }
 
 function Transfer({ kolektorId, terkunci }: { kolektorId: string; terkunci: boolean }) {
+  const WARNA = useWarna();
+  const g = useG();
   const setoran = useSetoranKolektor(kolektorId);
   const [pilih, setPilih] = useState<{ id: string; nominal: number } | null>(null);
   const catat = useTulisSetoran(tulisSetoran.transfer);
@@ -141,6 +145,8 @@ function Transfer({ kolektorId, terkunci }: { kolektorId: string; terkunci: bool
 }
 
 function Biaya({ hari, terkunci }: { hari: HariKolektor; terkunci: boolean }) {
+  const WARNA = useWarna();
+  const g = useG();
   const biaya = useBiayaKolektor(hari.kolektor.id, hari.tanggal);
   const catat = useTulisSetoran(tulisSetoran.biaya);
   const [nominal, setNominal] = useState(0);
@@ -194,6 +200,7 @@ function Biaya({ hari, terkunci }: { hari: HariKolektor; terkunci: boolean }) {
 }
 
 function TerimaKas({ hari }: { hari: HariKolektor }) {
+  const g = useG();
   const terima = useTulisSetoran(tulisSetoran.terimaKas);
   const [tunai, setTunai] = useState(0);
 

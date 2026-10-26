@@ -8,10 +8,10 @@ import {
   fotoMasihBerlaku,
   IsianFotoSerahTerima,
 } from "../../komponen/kamera-serah-terima";
+import { useWarna } from "../../komponen/tampilan";
 import {
   Baris,
   Gulir,
-  g,
   Isian,
   IsianUang,
   Kartu,
@@ -20,7 +20,7 @@ import {
   Pilihan,
   Tombol,
   TombolTeks,
-  WARNA,
+  useG,
 } from "../../komponen/ui";
 import { cobaAturan, NAMA_JENIS, namaTenor, rupiah } from "../../lib/format";
 import { tulis, useKampung, useNasabahLama, useTulis } from "../../lib/lapangan";
@@ -33,6 +33,7 @@ const POKOK_CEPAT = [500_000, 1_000_000, 1_500_000, 2_000_000];
  * saat uang diserahkan.
  */
 export default function Akad() {
+  const WARNA = useWarna();
   const [siapa, setSiapa] = useState<"baru" | "lama">("baru");
   const [nama, setNama] = useState("");
   const [kampungTeks, setKampungTeks] = useState("");
@@ -203,6 +204,7 @@ function PilihKampung(props: {
   terpilih: string | null;
   onUbah: (teks: string, id: string | null) => void;
 }) {
+  const g = useG();
   const kampung = useKampung();
   const saran = useMemo(() => {
     const kunci = kunciWilayah(props.teks);
@@ -242,6 +244,8 @@ function PilihNasabahLama(props: {
   terpilih: NasabahLama | null;
   onPilih: (n: NasabahLama | null) => void;
 }) {
+  const WARNA = useWarna();
+  const g = useG();
   const daftar = useNasabahLama();
   const [cari, setCari] = useState("");
   const cocok = useMemo(() => {

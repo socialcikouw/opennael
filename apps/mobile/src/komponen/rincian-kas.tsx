@@ -1,13 +1,16 @@
 import { Text, View } from "react-native";
 import { rupiah } from "../lib/format";
 import type { HariKolektor } from "../lib/setoran";
-import { Baris, g, Kartu, WARNA } from "./ui";
+import { useWarna } from "./tampilan";
+import { Baris, Kartu, useG } from "./ui";
 
 /**
  * Rincian tunai seharusnya satu hari kolektor (aturan-usaha I2) — hanya ada
  * sesudah kas diterima (hitung buta), dengan tekor / lebih setor.
  */
 export function RincianKas({ hari }: { hari: HariKolektor }) {
+  const WARNA = useWarna();
+  const g = useG();
   const r = hari.rincian;
   const st = hari.serahTerima;
   if (!r || !st) return null;
