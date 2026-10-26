@@ -1,13 +1,14 @@
 import { angsuranKe, hitungGulung, KELIPATAN_POKOK, TENOR_PINJAMAN } from "@opennael/domain";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { Alert, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import {
   type FotoSerahTerima,
   fotoMasihBerlaku,
   IsianFotoSerahTerima,
 } from "../../../komponen/kamera-serah-terima";
-import { useWarna } from "../../../komponen/tampilan";
+import { useGaya, useWarna, useWarnaMode } from "../../../komponen/tampilan";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "../../../komponen/tema";
 import {
   Baris,
   Gulir,
@@ -28,9 +29,15 @@ const NAMA_GULUNG = { naik: "Naik", tetap: "Tetap", turun: "Turun" } as const;
 /**
  * GULUNG (E) — pinjaman lama dilunasi pinjaman baru berjenis sama. Pratinjau
  * memakai rumus yang sama dengan server; rem bos hanya diketahui server.
+ *
+ * Seperti lembar gulung aplikasi lama: satu angka PATOKAN dicetak besar
+ * (pokok lama — acuan yang diketik ulang kolektor di depan nasabah), lalu
+ * pokok baru, tenor, dan ringkasan penerus. Berupa layar, bukan lembar,
+ * karena gulung wajib memotret serah terima.
  */
 export default function Gulung() {
   const WARNA = useWarna();
+  const gaya = useGaya(buatGaya);
   const g = useG();
   const { id } = useLocalSearchParams<{ id: string }>();
   const p = useTagihan().data?.find((x) => x.id === id);
@@ -40,6 +47,7 @@ export default function Gulung() {
   );
   const [foto, setFoto] = useState<FotoSerahTerima | null>(null);
   const gulung = useTulis(tulis.gulung);
+  const aksen = useWarnaMode(p?.jenis ?? "harian");
 
   if (!p) {
     return (
@@ -81,15 +89,41 @@ export default function Gulung() {
   return (
     <Gulir>
       <Stack.Screen options={{ title: `Gulung · ${p.nasabah.nama}` }} />
-      <Kartu>
-        <Text style={g.teksTebal}>
-          Pinjaman lama: {NAMA_JENIS[p.jenis]} ke-{p.pinjamanKe}
-        </Text>
-        <Baris label="Pokok lama" nilai={rupiah(p.pokok)} />
-        <Baris label="Saldo lama" nilai={rupiah(p.saldo)} />
-      </Kartu>
+      <View style={gaya.kepala}>
+        <View style={gaya.bulat}>
+          <Text style={gaya.bulatTeks}>{p.angsuranKe}</Text>
+        </View>
+        <View style={g.isi}>
+          <View style={gaya.barisNama}>
+            <Text style={gaya.nama} numberOfLines={1}>
+              {p.nasabah.nama}
+            </Text>
+            <View style={[gaya.chip, { backgroundColor: aksen.lembut }]}>
+              <Text style={[gaya.chipTeks, { color: aksen.teks }]}>
+                {NAMA_JENIS[p.jenis]} ke-{p.pinjamanKe}
+              </Text>
+            </View>
+          </View>
+          <Text style={gaya.sub} numberOfLines={1}>
+            {p.nasabah.kampung} · saldo {rupiah(p.saldo)}
+          </Text>
+        </View>
+      </View>
 
-      <IsianUang label="Pokok baru" nilai={pokok} onUbah={setPokok} />
+      <View style={gaya.patokan}>
+        <Text style={gaya.patokanLabel}>POKOK</Text>
+        <Text
+          style={gaya.patokanNilai}
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          minimumFontScale={0.6}
+          maxFontSizeMultiplier={1.15}
+        >
+          {rupiah(p.pokok)}
+        </Text>
+      </View>
+
+      <IsianUang label="Nominal pokok baru" nilai={pokok} onUbah={setPokok} />
       <View style={g.baris2}>
         <View style={g.isi}>
           <Tombol
@@ -120,14 +154,21 @@ export default function Gulung() {
         <Kartu>
           <Baris label="Jenis gulung" nilai={NAMA_GULUNG[rencana.hasil.jenisGulung]} />
           <Baris label="Pencairan akad baru" nilai={rupiah(rencana.hasil.syarat.pencairan)} />
-          <Baris label="Dikurangi saldo lama" nilai={`− ${rupiah(rencana.hasil.saldoLama)}`} />
+          <Baris label="Saldo lama ditutup" nilai={`− ${rupiah(rencana.hasil.saldoLama)}`} />
+          <View style={gaya.tunai}>
+            <Text style={gaya.tunaiLabel}>Tunai ke nasabah</Text>
+            <Text style={[gaya.tunaiNilai, { color: WARNA.utama }]} numberOfLines={1}>
+              {rupiah(rencana.hasil.pencairan)}
+            </Text>
+          </View>
           <Baris
-            label="Tunai ke nasabah"
-            nilai={rupiah(rencana.hasil.pencairan)}
-            tebal
-            warna={WARNA.utama}
+            label={p.jenis === "tempoan" ? "Kembali sekali bayar" : "Angsuran baru"}
+            nilai={
+              p.jenis === "tempoan"
+                ? rupiah(rencana.hasil.syarat.totalKembali)
+                : `${rupiah(rencana.hasil.syarat.angsuran)} × ${rencana.hasil.syarat.tenor}`
+            }
           />
-          <Baris label="Angsuran baru" nilai={rupiah(rencana.hasil.syarat.angsuran)} />
         </Kartu>
       ) : (
         <Spanduk warna="merah" judul="Belum bisa digulung" isi={rencana.galat} />
@@ -145,3 +186,56 @@ export default function Gulung() {
     </Gulir>
   );
 }
+
+const buatGaya = (WARNA: Warna) =>
+  StyleSheet.create({
+    kepala: { flexDirection: "row", alignItems: "center", gap: RUANG[3] },
+    bulat: {
+      width: 44,
+      height: 44,
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: SUDUT.bulat,
+      backgroundColor: WARNA.abu,
+    },
+    bulatTeks: { ...HURUF.base, fontWeight: TEBAL.ekstra, color: WARNA.teks },
+    barisNama: { flexDirection: "row", alignItems: "center", gap: RUANG[2] },
+    nama: { ...HURUF.lg, flexShrink: 1, fontWeight: TEBAL.tebal, color: WARNA.teks },
+    chip: { paddingHorizontal: RUANG[2], paddingVertical: 2, borderRadius: SUDUT.bulat },
+    chipTeks: { ...HURUF["2xs"], fontWeight: TEBAL.tebal },
+    sub: { ...HURUF.sm, color: WARNA.redup },
+    patokan: {
+      alignItems: "center",
+      gap: RUANG[1],
+      paddingVertical: RUANG[5],
+      paddingHorizontal: RUANG[4],
+      borderRadius: SUDUT.besar,
+      backgroundColor: WARNA.abu,
+    },
+    patokanLabel: {
+      ...HURUF.xs,
+      fontWeight: TEBAL.tebal,
+      letterSpacing: 1,
+      color: WARNA.redup,
+    },
+    patokanNilai: {
+      ...HURUF["3xl"],
+      fontWeight: TEBAL.ekstra,
+      color: WARNA.teks,
+      fontVariant: ["tabular-nums"],
+    },
+    tunai: {
+      flexDirection: "row",
+      alignItems: "baseline",
+      justifyContent: "space-between",
+      gap: RUANG[3],
+      paddingVertical: RUANG[1],
+    },
+    tunaiLabel: { ...HURUF.sm, fontWeight: TEBAL.semi, color: WARNA.teks },
+    tunaiNilai: {
+      ...HURUF.xl,
+      flexShrink: 1,
+      fontWeight: TEBAL.ekstra,
+      fontVariant: ["tabular-nums"],
+    },
+  });
