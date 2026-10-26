@@ -31,6 +31,7 @@ import {
 } from "../../../fitur/tagihan/inti/daftar";
 import { susunBahanGrid } from "../../../fitur/tagihan/inti/grid";
 import { type KartuVM, kartuVM } from "../../../fitur/tagihan/inti/kartu";
+import { ringkasJatuhTempo } from "../../../fitur/tagihan/inti/khusus";
 import { JudulKelompok, KerangkaKartu, Kosong } from "../../../fitur/tagihan/ui/daftar-bagian";
 import {
   type AksiKartu,
@@ -40,7 +41,7 @@ import {
 import { KartuDroping, KartuSudah } from "../../../fitur/tagihan/ui/kartu-sudah";
 import { buatSimpananRute, KepalaTagihan } from "../../../fitur/tagihan/ui/kepala-tagihan";
 import { LembarBayar } from "../../../fitur/tagihan/ui/lembar-bayar";
-import { KartuRasio, LembarRute } from "../../../fitur/tagihan/ui/ringkasan";
+import { KartuJatuhTempo, KartuRasio, LembarRute } from "../../../fitur/tagihan/ui/ringkasan";
 import { useRuangTab } from "../../../komponen/tab-mengambang";
 import { useGaya, useWarnaMode } from "../../../komponen/tampilan";
 import { RUANG, type Warna } from "../../../komponen/tema";
@@ -52,6 +53,7 @@ import {
   useHariIni,
   useKalenderBulan,
   usePeristiwaBulan,
+  useRiwayatPinjaman,
   useTagihan,
 } from "../../../lib/lapangan";
 
@@ -97,6 +99,14 @@ function LayarTagihan() {
   const tagihan = useTagihan();
   const kalender = useKalenderBulan(tanggal?.slice(0, 7));
   const peristiwa = usePeristiwaBulan(tanggal);
+  const idMingguan = useMemo(
+    () =>
+      jenis === null || jenis === "mingguan"
+        ? (tagihan.data ?? []).filter((p) => p.jenis === "mingguan").map((p) => p.id)
+        : [],
+    [tagihan.data, jenis],
+  );
+  const riwayat = useRiwayatPinjaman(idMingguan);
 
   const [cari, setCari] = useState("");
   const [cariTerbuka, setCariTerbuka] = useState(false);
@@ -109,8 +119,8 @@ function LayarTagihan() {
 
   // ---- data → kartu → segmen → baris -------------------------------------
   const bahan = useMemo(
-    () => (tanggal ? susunBahanGrid(tanggal, peristiwa.data, kalender.data) : null),
-    [tanggal, peristiwa.data, kalender.data],
+    () => (tanggal ? susunBahanGrid(tanggal, peristiwa.data, kalender.data, riwayat) : null),
+    [tanggal, peristiwa.data, kalender.data, riwayat],
   );
   const semua = useMemo(() => {
     if (!tagihan.data || !tanggal || !bahan) return [];
@@ -124,6 +134,13 @@ function LayarTagihan() {
     [partisi, tab],
   );
   const maju = useMemo(() => kemajuan(semua), [semua]);
+  const jatuhTempo = useMemo(
+    () =>
+      mode === "tempoan"
+        ? ringkasJatuhTempo(semua.flatMap((vm) => (vm.tempo ? [vm.tempo] : [])))
+        : null,
+    [mode, semua],
+  );
   const droping = useMemo(
     () => ringkasDroping(semua.filter((vm) => vm.ember === "droping")),
     [semua],
@@ -415,13 +432,17 @@ function LayarTagihan() {
         onUkur={setTinggiKepala}
         mode={{ label: MODE[mode].label, warna: aksen }}
         kartuAtas={
-          <KartuRasio
-            bayar={maju.bayar}
-            libur={maju.libur}
-            sisa={maju.sisa}
-            aksen={aksen}
-            onLaporan={() => router.navigate("/kolektor")}
-          />
+          jatuhTempo ? (
+            <KartuJatuhTempo r={jatuhTempo} aksen={aksen} />
+          ) : (
+            <KartuRasio
+              bayar={maju.bayar}
+              libur={maju.libur}
+              sisa={maju.sisa}
+              aksen={aksen}
+              onLaporan={() => router.navigate("/kolektor")}
+            />
+          )
         }
         tab={tab}
         jumlah={jumlahSegmen(partisi)}

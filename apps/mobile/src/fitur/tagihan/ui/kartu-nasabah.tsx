@@ -9,6 +9,7 @@ import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "../../..
 import { Ikon, type NamaIkon } from "../../../komponen/ui";
 import type { KartuVM, Nada } from "../inti/kartu";
 import { GridBulan } from "./grid-bulan";
+import { BlokMinggu, BlokTempo } from "./slot-khusus";
 
 /** Aksi kartu — SATU objek stabil dari layar, diteruskan ke kartu-kartu ber-memo. */
 export interface AksiKartu {
@@ -50,6 +51,10 @@ export const KartuNasabah = memo(function KartuNasabah(props: {
       {vm.progres ? <BlokProgres progres={vm.progres} /> : null}
       {vm.grid ? (
         <GridBulan pekan={vm.grid} kolomHariIni={props.kolomHariIni} aksen={props.aksen} />
+      ) : vm.mingguan ? (
+        <BlokMinggu m={vm.mingguan} hariTagih={vm.hariTagih} aksen={props.aksen} />
+      ) : vm.tempo ? (
+        <BlokTempo t={vm.tempo} aksen={props.aksen} />
       ) : null}
       <BarisAngka vm={vm} tanpaAngsuran={bisaAksi} />
       {bisaAksi ? <KakiAksi vm={vm} aksi={props.aksi} aksen={props.aksen} /> : null}

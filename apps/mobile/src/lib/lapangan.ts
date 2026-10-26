@@ -1,4 +1,5 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { Peristiwa } from "@opennael/contracts";
+import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, panggil } from "./api";
 
 /**
@@ -51,6 +52,31 @@ export function usePeristiwaBulan(hariIni: string | undefined) {
         )
       ).json(),
   });
+}
+
+/**
+ * Seluruh riwayat beberapa pinjaman (satu permintaan per pinjaman) — kotak
+ * mingguan sepanjang tenor bisa melewati sebulan. Peta tetap sama selama
+ * isinya tak berubah, jadi kartu tak disusun ulang sia-sia.
+ */
+export function useRiwayatPinjaman(ids: readonly string[]) {
+  return useQueries({
+    queries: ids.map((id) => ({
+      queryKey: [...KUNCI, "peristiwa-pinjaman", id],
+      queryFn: async () =>
+        (await panggil(() => api.transaksi.peristiwa.$get({ query: { pinjamanId: id } }))).json(),
+    })),
+    combine: gabungRiwayat,
+  });
+}
+
+function gabungRiwayat(hasil: { data?: Peristiwa[] | undefined }[]) {
+  const peta = new Map<string, readonly Peristiwa[]>();
+  for (const h of hasil) {
+    const pertama = h.data?.[0];
+    if (pertama) peta.set(pertama.pinjamanId, h.data ?? []);
+  }
+  return peta;
 }
 
 export function useKampung() {

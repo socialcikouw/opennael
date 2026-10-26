@@ -11,7 +11,7 @@ import type { KartuVM } from "./kartu";
 export type TabKerja = "aktif" | "macet" | "droping";
 
 export const TAB_KERJA: readonly { nilai: TabKerja; label: string }[] = [
-  { nilai: "aktif", label: "Aktif" },
+  { nilai: "aktif", label: "Berjalan" },
   { nilai: "macet", label: "Macet" },
   { nilai: "droping", label: "Droping" },
 ];

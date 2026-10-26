@@ -100,12 +100,15 @@ export interface BahanGrid {
   peristiwa: ReadonlyMap<string, ReadonlyMap<string, Peristiwa>> | null;
   hariTagih: ReadonlySet<string> | null;
   liburKantor: ReadonlySet<string>;
+  /** Seluruh riwayat pinjaman MINGGUAN per id (kotak sepanjang tenor bisa melewati sebulan). */
+  riwayat: ReadonlyMap<string, readonly Peristiwa[]>;
 }
 
 export function susunBahanGrid(
   hariIni: string,
   peristiwa: readonly Peristiwa[] | undefined,
   kalender: KalenderBulan | undefined,
+  riwayat: ReadonlyMap<string, readonly Peristiwa[]> = new Map(),
 ): BahanGrid {
   let peta: Map<string, Map<string, Peristiwa>> | null = null;
   if (peristiwa) {
@@ -124,6 +127,7 @@ export function susunBahanGrid(
     peristiwa: peta,
     hariTagih: kalender ? new Set(kalender.hariTagih) : null,
     liburKantor: new Set(kalender?.liburKantor.map((l) => l.tanggal) ?? []),
+    riwayat,
   };
 }
 

@@ -64,6 +64,51 @@ export function KartuRasio(props: {
   );
 }
 
+/** Kartu JATUH TEMPO di kepala mode Tempoan (pengganti rasio bayar) — jumlah nasabah saja. */
+export function KartuJatuhTempo(props: {
+  r: { lewat: number; hariIni: number; pekan: number; berjalan: number };
+  aksen: WarnaMode;
+}) {
+  const WARNA = useWarna();
+  const gaya = useGaya(buatGaya);
+  const sel = [
+    {
+      label: "Lewat",
+      angka: props.r.lewat,
+      warna: props.r.lewat > 0 ? WARNA.bahayaTeks : WARNA.teks,
+    },
+    {
+      label: "Hari ini",
+      angka: props.r.hariIni,
+      warna: props.r.hariIni > 0 ? props.aksen.teks : WARNA.teks,
+    },
+    { label: "7 hari ke depan", angka: props.r.pekan, warna: WARNA.teks },
+  ];
+  return (
+    <View style={gaya.kartu}>
+      <View style={gaya.barisLabel}>
+        <Text style={gaya.label}>JATUH TEMPO</Text>
+        <Text style={gaya.ket}>{props.r.berjalan} tempoan berjalan</Text>
+      </View>
+      <View style={gaya.barisSel}>
+        {sel.map((s) => (
+          <View
+            key={s.label}
+            style={gaya.sel}
+            accessible
+            accessibilityLabel={`${s.label} ${s.angka} nasabah`}
+          >
+            <Text style={[gaya.angkaSel, { color: s.warna }]}>{s.angka}</Text>
+            <Text style={gaya.ket} numberOfLines={1}>
+              {s.label}
+            </Text>
+          </View>
+        ))}
+      </View>
+    </View>
+  );
+}
+
 /**
  * Lembar LOMPAT KE RUTE — satu baris per kelompok di daftar yang sedang
  * tampil: nama rute & jumlah kartunya; kelompok yang sedang di layar
@@ -136,6 +181,9 @@ const buatGaya = (WARNA: Warna) =>
     rel: { height: 8, borderRadius: SUDUT.bulat, backgroundColor: WARNA.abu },
     isiRel: { height: 8, borderRadius: SUDUT.bulat },
     legenda: { flexDirection: "row", gap: RUANG[4] },
+    barisSel: { flexDirection: "row" },
+    sel: { flex: 1, alignItems: "center", gap: 2 },
+    angkaSel: { ...HURUF["2xl"], fontWeight: TEBAL.ekstra, fontVariant: ["tabular-nums"] },
     legendaTeks: { ...HURUF.xs, color: WARNA.redup },
     legendaAngka: { fontWeight: TEBAL.tebal, color: WARNA.teks },
     baris: {

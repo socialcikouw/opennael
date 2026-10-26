@@ -10,6 +10,7 @@ import {
 } from "@opennael/domain";
 import type { NamaIkon } from "../../../komponen/ikon";
 import { type BahanGrid, type BarisPekan, nominalK, susunGrid } from "./grid";
+import { type MingguanVM, susunMingguan, susunTempo, type TempoVM } from "./khusus";
 
 /**
  * VIEW MODEL KARTU NASABAH (layar Tagihan) — semua keputusan tampilan dihitung
@@ -57,6 +58,10 @@ export interface KartuVM {
   } | null;
   /** Grid setoran sebulan — hanya harian di ember belum. */
   grid: BarisPekan[] | null;
+  /** Slot grid mingguan: kotak per minggu + kabar. */
+  mingguan: MingguanVM | null;
+  /** Slot grid tempoan: garis waktu menuju jatuh tempo. */
+  tempo: TempoVM | null;
   pokokTeks: string;
   angsuranTeks: string;
   tabunganTeks: string;
@@ -162,6 +167,11 @@ function susun(p: KartuTagih, hariIni: string, bahan: BahanGrid): KartuVM {
     hariTagih: p.jenis === "mingguan" ? (NAMA_HARI[hariPekanDari(p.tanggalAkad)] ?? null) : null,
     progres: e === "belum" && !tempoan ? progres(p, status) : null,
     grid: e === "belum" && p.jenis === "harian" ? susunGrid(bahan, p) : null,
+    mingguan:
+      e === "belum" && p.jenis === "mingguan"
+        ? susunMingguan(p, bahan.riwayat.get(p.id), hariIni)
+        : null,
+    tempo: e === "belum" && tempoan ? susunTempo(p, hariIni) : null,
     pokokTeks: ribuan(p.pokok),
     angsuranTeks: ribuan(p.angsuran),
     tabunganTeks: ribuan(p.tabungan),
