@@ -103,33 +103,24 @@ export default function Gulung() {
   };
   const konfirmasi = () => {
     if (!sah || !hasil || !tenor || !fotoMasihBerlaku(foto)) return;
-    const s = hasil.syarat;
-    Alert.alert(
-      "Simpan gulung?",
-      `Pokok baru ${rupiah(pokok)} · ${namaTenor(p.jenis, tenor)}\n${
-        p.jenis === "tempoan"
-          ? `Kembali ${rupiah(s.totalKembali)} sekali bayar`
-          : `Angsuran ${rupiah(s.angsuran)} × ${s.tenor}`
-      }\n\nSerahkan ${rupiah(hasil.pencairan)} tunai ke ${p.nasabah.nama}.`,
-      [
-        { text: "Batal", style: "cancel" },
-        {
-          text: "Simpan",
-          onPress: () =>
-            gulung.mutate(
-              { pinjamanId: p.id, pokok, tenor, fotoSerahTerimaId: foto.id },
-              {
-                // Penerusnya cair hari ini: kolektor dibawa ke segmen Droping.
-                onSuccess: () =>
-                  router.dismissTo({
-                    pathname: "/kolektor/tagihan",
-                    params: { segmen: "droping" },
-                  }),
-              },
-            ),
-        },
-      ],
-    );
+    Alert.alert("Setuju digulung?", `Pokok Pinjaman: ${rupiah(pokok)}`, [
+      { text: "Batal", style: "cancel" },
+      {
+        text: "Setuju",
+        onPress: () =>
+          gulung.mutate(
+            { pinjamanId: p.id, pokok, tenor, fotoSerahTerimaId: foto.id },
+            {
+              // Penerusnya cair hari ini: kolektor dibawa ke segmen Droping.
+              onSuccess: () =>
+                router.dismissTo({
+                  pathname: "/kolektor/tagihan",
+                  params: { segmen: "droping" },
+                }),
+            },
+          ),
+      },
+    ]);
   };
 
   return (
