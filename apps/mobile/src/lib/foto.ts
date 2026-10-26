@@ -1,4 +1,5 @@
 import { UKURAN_FOTO_MAKS } from "@opennael/contracts";
+import { File } from "expo-file-system";
 import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
 import { ALAMAT_API, ambilDenganSesi, bacaGalat, PESAN_JARINGAN } from "./api";
 
@@ -22,12 +23,10 @@ export async function unggahFotoSerahTerima(
   const form = new FormData();
   form.append("jenis", "serah_terima");
   form.append("diambilAt", new Date().toISOString());
-  // Bentuk berkas khas React Native: { uri, name, type } dibaca dari disk saat dikirim.
-  form.append("berkas", {
-    uri: hasil.uri,
-    name: "serah-terima.webp",
-    type: "image/webp",
-  } as unknown as Blob);
+  // `File` expo-file-system (bukan bentuk lama { uri, name, type }): `fetch`
+  // bawaan Expo SDK 58 = expo/fetch, yang menolak berkas ber-`uri` di FormData
+  // ("Unsupported FormDataPart implementation") sebelum apa pun terkirim.
+  form.append("berkas", new File(hasil.uri));
 
   let res: Response;
   try {
