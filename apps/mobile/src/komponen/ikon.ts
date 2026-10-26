@@ -5,7 +5,6 @@ import BadgeCheck from "lucide-react-native/icons/badge-check";
 import Banknote from "lucide-react-native/icons/banknote";
 import Bell from "lucide-react-native/icons/bell";
 import Calculator from "lucide-react-native/icons/calculator";
-import CalendarClock from "lucide-react-native/icons/calendar-clock";
 import Check from "lucide-react-native/icons/check";
 import CheckCheck from "lucide-react-native/icons/check-check";
 import ChevronDown from "lucide-react-native/icons/chevron-down";
@@ -44,7 +43,6 @@ import X from "lucide-react-native/icons/x";
 export const IKON = {
   "search-x": SearchX,
   "hand-coins": HandCoins,
-  "calendar-clock": CalendarClock,
   "arrow-left": ArrowLeft,
   "arrow-left-right": ArrowLeftRight,
   "badge-check": BadgeCheck,
