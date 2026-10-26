@@ -7,6 +7,7 @@ import Banknote from "lucide-react-native/icons/banknote";
 import Bell from "lucide-react-native/icons/bell";
 import Calculator from "lucide-react-native/icons/calculator";
 import Calendar from "lucide-react-native/icons/calendar";
+import Camera from "lucide-react-native/icons/camera";
 import Check from "lucide-react-native/icons/check";
 import CheckCheck from "lucide-react-native/icons/check-check";
 import ChevronDown from "lucide-react-native/icons/chevron-down";
@@ -53,6 +54,7 @@ import X from "lucide-react-native/icons/x";
 export const IKON = {
   eye: Eye,
   calendar: Calendar,
+  camera: Camera,
   "circle-arrow-down": CircleArrowDown,
   "circle-pause": CirclePause,
   "user-plus": UserPlus,

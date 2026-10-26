@@ -5,18 +5,14 @@ import { useState } from "react";
 import { Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { kabarTercatat } from "../../../fitur/tagihan/inti/kabar-tercatat";
-import { hapusSatu, ketik, nilaiDigit } from "../../../fitur/tagihan/inti/papan";
-import { PapanAngka } from "../../../fitur/tagihan/ui/papan-angka";
+import { nilaiDigit, PAPAN_BAYAR, tekanBayar } from "../../../fitur/tagihan/inti/papan";
+import { PapanTombol, tinggiTombolPapan } from "../../../fitur/tagihan/ui/papan-tombol";
 import { AvatarNasabah } from "../../../komponen/foto-nasabah";
 import { useGaya, useWarna, useWarnaMode } from "../../../komponen/tampilan";
 import { BAYANGAN, HURUF, RUANG, SUDUT, TEBAL, type Warna } from "../../../komponen/tema";
 import { Gulir, Ikon, Keterangan, Tombol } from "../../../komponen/ui";
 import { cobaAturan, rupiah } from "../../../lib/format";
 import { tulis, useTagihan } from "../../../lib/lapangan";
-
-/** Tinggi tombol papan menurut tinggi HP: 46–60 pt, papan selalu muat tanpa digulir. */
-const tinggiTombol = (tinggiLayar: number) =>
-  Math.round(Math.min(60, Math.max(46, (tinggiLayar - 500) / 5)));
 
 /**
  * BAYAR ANGSURAN — layar sendiri, diisi kolektor berdiri di depan rumah
@@ -147,11 +143,10 @@ export default function Bayar() {
       </View>
 
       <View style={[gaya.panel, { paddingBottom: bawah + RUANG[4] }]}>
-        <PapanAngka
-          tinggi={tinggiTombol(height)}
-          onKetik={(t) => ubah(ketik(digit, t))}
-          onHapus={() => ubah(hapusSatu(digit))}
-          onKosongkan={() => ubah("")}
+        <PapanTombol
+          papan={PAPAN_BAYAR}
+          tinggi={tinggiTombolPapan(height, PAPAN_BAYAR.length, 500)}
+          onTekan={(k) => ubah(tekanBayar(digit, k))}
         />
         <Pressable
           accessibilityRole="button"

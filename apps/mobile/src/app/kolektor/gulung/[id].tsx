@@ -1,53 +1,59 @@
-import { angsuranKe, hitungGulung, KELIPATAN_POKOK, TENOR_PINJAMAN } from "@opennael/domain";
+import { angsuranKe, hitungGulung, TENOR_PINJAMAN } from "@opennael/domain";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { Alert, StyleSheet, Text, View } from "react-native";
+import {
+  Alert,
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { jumlahKetukan, PAPAN_POKOK, tekanPokok } from "../../../fitur/tagihan/inti/papan";
+import { PapanTombol, tinggiTombolPapan } from "../../../fitur/tagihan/ui/papan-tombol";
+import { AvatarNasabah } from "../../../komponen/foto-nasabah";
 import {
   type FotoSerahTerima,
   fotoMasihBerlaku,
-  IsianFotoSerahTerima,
+  KameraSerahTerima,
 } from "../../../komponen/kamera-serah-terima";
 import { useGaya, useWarna, useWarnaMode } from "../../../komponen/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "../../../komponen/tema";
-import {
-  Baris,
-  Gulir,
-  IsianUang,
-  Kartu,
-  Keterangan,
-  PesanGalat,
-  Pilihan,
-  Spanduk,
-  Tombol,
-  useG,
-} from "../../../komponen/ui";
+import { BAYANGAN, HURUF, RUANG, SUDUT, TEBAL, type Warna } from "../../../komponen/tema";
+import { Gulir, Ikon, Keterangan, Tombol } from "../../../komponen/ui";
 import { cobaAturan, NAMA_JENIS, namaTenor, rupiah } from "../../../lib/format";
 import { tulis, useTagihan, useTulis } from "../../../lib/lapangan";
 
-const NAMA_GULUNG = { naik: "Naik", tetap: "Tetap", turun: "Turun" } as const;
+const NAMA_GULUNG = { naik: "Gulung naik", tetap: "Gulung tetap", turun: "Gulung turun" } as const;
 
 /**
- * GULUNG (E) — pinjaman lama dilunasi pinjaman baru berjenis sama. Pratinjau
- * memakai rumus yang sama dengan server; rem bos hanya diketahui server.
+ * GULUNG (E) — pinjaman lama dilunasi pinjaman baru berjenis sama.
  *
- * Seperti lembar gulung aplikasi lama: satu angka PATOKAN dicetak besar
- * (pokok lama — acuan yang diketik ulang kolektor di depan nasabah), lalu
- * pokok baru, tenor, dan ringkasan penerus. Berupa layar, bukan lembar,
- * karena gulung wajib memotret serah terima.
+ * Alur: tombol Gulung → KAMERA langsung terbuka (foto serah terima wajib,
+ * A7) → formulir bergaya layar Bayar: nasabah, foto tepat di bawahnya,
+ * patokan POKOK lama, nominal pokok baru besar, papan pokok, KONFIRMASI.
+ * Batal di kamera sebelum ada foto = kembali ke daftar.
+ *
+ * Papan pokok MENAMBAH: 100k diketuk dua kali = Rp 200.000; ⌫ membatalkan
+ * ketukan terakhir. Pratinjau memakai rumus yang sama dengan server; rem bos
+ * hanya diketahui server.
  */
 export default function Gulung() {
   const WARNA = useWarna();
   const gaya = useGaya(buatGaya);
-  const g = useG();
+  const bawah = useSafeAreaInsets().bottom;
+  const { height } = useWindowDimensions();
   const { id } = useLocalSearchParams<{ id: string }>();
   const p = useTagihan().data?.find((x) => x.id === id);
-  const [pokok, setPokok] = useState(p?.pokok ?? 0);
-  const [tenor, setTenor] = useState<number | null>(
-    p ? (TENOR_PINJAMAN[p.jenis][0] ?? null) : null,
-  );
-  const [foto, setFoto] = useState<FotoSerahTerima | null>(null);
-  const gulung = useTulis(tulis.gulung);
   const aksen = useWarnaMode(p?.jenis ?? "harian");
+  const [ketukan, setKetukan] = useState<readonly number[]>([]);
+  /** Pilihan kolektor; null = bawaan (tenor pinjaman lama bila masih berlaku). */
+  const [tenorDipilih, setTenor] = useState<number | null>(null);
+  const [foto, setFoto] = useState<FotoSerahTerima | null>(null);
+  const [kamera, setKamera] = useState(true);
+  const gulung = useTulis(tulis.gulung);
 
   if (!p) {
     return (
@@ -58,184 +64,362 @@ export default function Gulung() {
     );
   }
 
-  const rencana = cobaAturan(() =>
-    hitungGulung({ ...p, angsuranKe: angsuranKe(p) }, pokok, tenor ?? 0, {
-      gulungDikunci: false,
-      naikDikunci: false,
-    }),
-  );
+  const pilihanTenor = TENOR_PINJAMAN[p.jenis];
+  const tenor =
+    tenorDipilih ?? (pilihanTenor.includes(p.tenor) ? p.tenor : (pilihanTenor[0] ?? null));
+  const pokok = jumlahKetukan(ketukan);
+  const rencana =
+    pokok > 0
+      ? cobaAturan(() =>
+          hitungGulung({ ...p, angsuranKe: angsuranKe(p) }, pokok, tenor ?? 0, {
+            gulungDikunci: false,
+            naikDikunci: false,
+          }),
+        )
+      : null;
+  const hasil = rencana?.hasil ?? null;
   const fotoSah = fotoMasihBerlaku(foto);
+  const sah = hasil !== null && tenor !== null && fotoSah;
+  const galat =
+    gulung.error?.message ??
+    rencana?.galat ??
+    (foto && !fotoSah ? "Foto sudah lebih dari 1 jam — potret ulang." : null);
 
-  const simpan = () => {
-    if (!rencana.hasil || !tenor || !fotoMasihBerlaku(foto)) return;
-    const bersih = rencana.hasil.pencairan;
-    Alert.alert("Simpan gulung?", `Serahkan ${rupiah(bersih)} tunai ke ${p.nasabah.nama}.`, [
-      { text: "Batal", style: "cancel" },
-      {
-        text: "Simpan",
-        onPress: () =>
-          gulung.mutate(
-            { pinjamanId: p.id, pokok, tenor, fotoSerahTerimaId: foto.id },
-            {
-              // Penerusnya cair hari ini: kolektor dibawa ke segmen Droping.
-              onSuccess: () =>
-                router.dismissTo({ pathname: "/kolektor/tagihan", params: { segmen: "droping" } }),
-            },
-          ),
-      },
-    ]);
+  const tekan = (kunci: string) => {
+    if (gulung.error) gulung.reset();
+    setKetukan((k) => tekanPokok(k, kunci));
+  };
+  const konfirmasi = () => {
+    if (!sah || !hasil || !tenor || !fotoMasihBerlaku(foto)) return;
+    const s = hasil.syarat;
+    Alert.alert(
+      "Simpan gulung?",
+      `Pokok baru ${rupiah(pokok)} · ${namaTenor(p.jenis, tenor)}\n${
+        p.jenis === "tempoan"
+          ? `Kembali ${rupiah(s.totalKembali)} sekali bayar`
+          : `Angsuran ${rupiah(s.angsuran)} × ${s.tenor}`
+      }\n\nSerahkan ${rupiah(hasil.pencairan)} tunai ke ${p.nasabah.nama}.`,
+      [
+        { text: "Batal", style: "cancel" },
+        {
+          text: "Simpan",
+          onPress: () =>
+            gulung.mutate(
+              { pinjamanId: p.id, pokok, tenor, fotoSerahTerimaId: foto.id },
+              {
+                // Penerusnya cair hari ini: kolektor dibawa ke segmen Droping.
+                onSuccess: () =>
+                  router.dismissTo({
+                    pathname: "/kolektor/tagihan",
+                    params: { segmen: "droping" },
+                  }),
+              },
+            ),
+        },
+      ],
+    );
   };
 
   return (
-    <Gulir>
-      <Stack.Screen options={{ title: `Gulung · ${p.nasabah.nama}` }} />
-      <View style={gaya.kepala}>
-        <View style={gaya.bulat}>
-          <Text style={gaya.bulatTeks}>{p.angsuranKe}</Text>
-        </View>
-        <View style={g.isi}>
-          <View style={gaya.barisNama}>
+    <View style={gaya.layar}>
+      <Stack.Screen options={{ title: "Gulung" }} />
+
+      <ScrollView
+        style={gaya.gulir}
+        contentContainerStyle={gaya.atas}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={gaya.nasabah}>
+          <AvatarNasabah fotoId={p.fotoSerahTerimaId} nama={p.nasabah.nama} ukuran={48} />
+          <View style={gaya.isi}>
             <Text style={gaya.nama} numberOfLines={1}>
               {p.nasabah.nama}
             </Text>
-            <View style={[gaya.chip, { backgroundColor: aksen.lembut }]}>
-              <Text style={[gaya.chipTeks, { color: aksen.teks }]}>
-                {NAMA_JENIS[p.jenis]} ke-{p.pinjamanKe}
-              </Text>
-            </View>
-          </View>
-          <Text style={gaya.sub} numberOfLines={1}>
-            {p.nasabah.kampung} · saldo {rupiah(p.saldo)}
-          </Text>
-        </View>
-      </View>
-
-      <View style={gaya.patokan}>
-        <Text style={gaya.patokanLabel}>POKOK</Text>
-        <Text
-          style={gaya.patokanNilai}
-          numberOfLines={1}
-          adjustsFontSizeToFit
-          minimumFontScale={0.6}
-          maxFontSizeMultiplier={1.15}
-        >
-          {rupiah(p.pokok)}
-        </Text>
-      </View>
-
-      <IsianUang label="Nominal pokok baru" nilai={pokok} onUbah={setPokok} />
-      <View style={g.baris2}>
-        <View style={g.isi}>
-          <Tombol
-            judul={`− ${rupiah(KELIPATAN_POKOK)}`}
-            jenis="kedua"
-            nonaktif={pokok <= KELIPATAN_POKOK}
-            onPress={() => setPokok(Math.max(KELIPATAN_POKOK, pokok - KELIPATAN_POKOK))}
-          />
-        </View>
-        <View style={g.isi}>
-          <Tombol
-            judul={`+ ${rupiah(KELIPATAN_POKOK)}`}
-            jenis="kedua"
-            onPress={() => setPokok(pokok + KELIPATAN_POKOK)}
-          />
-        </View>
-      </View>
-      {TENOR_PINJAMAN[p.jenis].length > 1 ? (
-        <Pilihan
-          label="Tenor"
-          pilihan={TENOR_PINJAMAN[p.jenis].map((t) => ({ nilai: t, teks: namaTenor(p.jenis, t) }))}
-          nilai={tenor}
-          onPilih={setTenor}
-        />
-      ) : null}
-
-      {rencana.hasil ? (
-        <Kartu>
-          <Baris label="Jenis gulung" nilai={NAMA_GULUNG[rencana.hasil.jenisGulung]} />
-          <Baris label="Pencairan akad baru" nilai={rupiah(rencana.hasil.syarat.pencairan)} />
-          <Baris label="Saldo lama ditutup" nilai={`− ${rupiah(rencana.hasil.saldoLama)}`} />
-          <View style={gaya.tunai}>
-            <Text style={gaya.tunaiLabel}>Tunai ke nasabah</Text>
-            <Text style={[gaya.tunaiNilai, { color: WARNA.utama }]} numberOfLines={1}>
-              {rupiah(rencana.hasil.pencairan)}
+            <Text style={gaya.kampung} numberOfLines={1}>
+              {p.nasabah.kampung.toLowerCase()} · saldo {rupiah(p.saldo)}
             </Text>
           </View>
-          <Baris
-            label={p.jenis === "tempoan" ? "Kembali sekali bayar" : "Angsuran baru"}
-            nilai={
-              p.jenis === "tempoan"
-                ? rupiah(rencana.hasil.syarat.totalKembali)
-                : `${rupiah(rencana.hasil.syarat.angsuran)} × ${rencana.hasil.syarat.tenor}`
-            }
-          />
-        </Kartu>
-      ) : (
-        <Spanduk warna="merah" judul="Belum bisa digulung" isi={rencana.galat} />
-      )}
+          <View style={[gaya.chip, { backgroundColor: aksen.lembut }]}>
+            <Text style={[gaya.chipTeks, { color: aksen.teks }]}>
+              {NAMA_JENIS[p.jenis]} ke-{p.pinjamanKe}
+            </Text>
+          </View>
+        </View>
 
-      <IsianFotoSerahTerima nilai={foto} onUbah={setFoto} />
-      <PesanGalat pesan={gulung.error?.message} />
-      <Tombol
-        judul="Simpan gulung"
-        ikon="circle-check"
-        memuat={gulung.isPending}
-        nonaktif={!rencana.hasil || !fotoSah}
-        onPress={simpan}
+        {foto ? (
+          <View
+            style={[gaya.foto, { height: Math.round(Math.min(160, Math.max(96, height * 0.15))) }]}
+          >
+            <Image source={{ uri: foto.uri }} style={StyleSheet.absoluteFill} resizeMode="cover" />
+            <View style={gaya.fotoKaki}>
+              <View style={[gaya.fotoChip, fotoSah ? null : gaya.fotoChipLewat]}>
+                <Ikon nama="clock" ukuran={12} warna={WARNA.putih} />
+                <Text style={gaya.fotoChipTeks}>
+                  {fotoSah
+                    ? `${new Date(foto.diambilAt).toLocaleTimeString("id-ID", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })} · berlaku 1 jam`
+                    : "Lewat 1 jam"}
+                </Text>
+              </View>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Potret ulang foto serah terima"
+                onPress={() => setKamera(true)}
+                hitSlop={6}
+                style={({ pressed }) => [gaya.fotoChip, pressed ? gaya.ditekan : null]}
+              >
+                <Ikon nama="camera" ukuran={12} warna={WARNA.putih} />
+                <Text style={gaya.fotoChipTeks}>Potret ulang</Text>
+              </Pressable>
+            </View>
+          </View>
+        ) : (
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => setKamera(true)}
+            style={({ pressed }) => [gaya.fotoKosong, pressed ? gaya.ditekan : null]}
+          >
+            <Ikon nama="camera" ukuran={20} warna={aksen.teks} />
+            <Text style={[gaya.fotoKosongTeks, { color: aksen.teks }]}>Potret serah terima</Text>
+          </Pressable>
+        )}
+
+        <View style={gaya.tengah}>
+          <View style={[gaya.patokan, { backgroundColor: aksen.lembut }]}>
+            <Text style={[gaya.patokanLabel, { color: aksen.teks }]}>POKOK</Text>
+            <Text style={[gaya.patokanNilai, { color: aksen.teks }]} numberOfLines={1}>
+              {rupiah(p.pokok)}
+            </Text>
+          </View>
+
+          <View
+            style={gaya.nominalBaris}
+            accessible
+            accessibilityLabel={`Pokok baru ${rupiah(pokok)}`}
+          >
+            <Text style={[gaya.mataUang, pokok > 0 ? { color: WARNA.teks } : null]}>Rp</Text>
+            <Text
+              style={[gaya.nominal, pokok === 0 ? { color: WARNA.samar } : null]}
+              numberOfLines={1}
+              adjustsFontSizeToFit
+              minimumFontScale={0.5}
+            >
+              {pokok.toLocaleString("id-ID")}
+            </Text>
+          </View>
+          <View
+            style={[
+              gaya.garisNominal,
+              { backgroundColor: galat ? WARNA.bahaya : pokok > 0 ? aksen.teks : WARNA.garis },
+            ]}
+          />
+          <View style={gaya.ket}>
+            {galat ? <Ikon nama="circle-alert" ukuran={12} warna={WARNA.bahayaTeks} /> : null}
+            <Text
+              style={[gaya.ketTeks, galat ? { color: WARNA.bahayaTeks } : null]}
+              numberOfLines={2}
+              adjustsFontSizeToFit
+              minimumFontScale={0.85}
+            >
+              {galat ??
+                (hasil
+                  ? `${NAMA_GULUNG[hasil.jenisGulung]} · tunai ke nasabah ${rupiah(hasil.pencairan)}`
+                  : "Ketuk nominal pokok baru — setiap ketukan menambah")}
+            </Text>
+          </View>
+
+          {pilihanTenor.length > 1 ? (
+            <View style={gaya.tenor}>
+              {pilihanTenor.map((t) => {
+                const aktif = t === tenor;
+                return (
+                  <Pressable
+                    key={t}
+                    accessibilityRole="radio"
+                    accessibilityState={{ selected: aktif }}
+                    onPress={() => setTenor(t)}
+                    style={[
+                      gaya.tenorPil,
+                      aktif ? { backgroundColor: aksen.isi, borderColor: aksen.isi } : null,
+                    ]}
+                  >
+                    <Text style={[gaya.tenorTeks, aktif ? { color: aksen.teksIsi } : null]}>
+                      {namaTenor(p.jenis, t)}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          ) : null}
+        </View>
+      </ScrollView>
+
+      <View style={[gaya.panel, { paddingBottom: bawah + RUANG[4] }]}>
+        <PapanTombol
+          papan={PAPAN_POKOK}
+          tinggi={tinggiTombolPapan(height, PAPAN_POKOK.length, 600)}
+          onTekan={tekan}
+        />
+        <Pressable
+          accessibilityRole="button"
+          accessibilityState={{ disabled: !sah || gulung.isPending }}
+          disabled={!sah || gulung.isPending}
+          onPress={konfirmasi}
+          style={({ pressed }) => [
+            gaya.konfirmasi,
+            sah ? { backgroundColor: aksen.isi } : gaya.konfirmasiMati,
+            pressed ? gaya.konfirmasiDitekan : null,
+          ]}
+        >
+          <Ikon
+            nama={gulung.isPending ? "clock" : "check"}
+            ukuran={20}
+            warna={sah ? aksen.teksIsi : WARNA.samar}
+            tebal
+          />
+          <Text style={[gaya.konfirmasiTeks, { color: sah ? aksen.teksIsi : WARNA.samar }]}>
+            {gulung.isPending ? "MENYIMPAN…" : "KONFIRMASI"}
+          </Text>
+        </Pressable>
+      </View>
+
+      <KameraSerahTerima
+        terbuka={kamera}
+        onTutup={() => {
+          setKamera(false);
+          // Gulung dimulai dari kamera: batal sebelum ada foto = batal gulung.
+          if (!foto) router.back();
+        }}
+        onSelesai={(fotoId, uri) => {
+          setFoto({ id: fotoId, uri, diambilAt: Date.now() });
+          setKamera(false);
+        }}
       />
-    </Gulir>
+    </View>
   );
 }
 
 const buatGaya = (WARNA: Warna) =>
   StyleSheet.create({
-    kepala: { flexDirection: "row", alignItems: "center", gap: RUANG[3] },
-    bulat: {
-      width: 44,
-      height: 44,
-      alignItems: "center",
-      justifyContent: "center",
-      borderRadius: SUDUT.bulat,
-      backgroundColor: WARNA.abu,
+    layar: { flex: 1, backgroundColor: WARNA.latar },
+    gulir: { flex: 1 },
+    atas: {
+      flexGrow: 1,
+      gap: RUANG[3],
+      paddingHorizontal: RUANG[5],
+      paddingTop: RUANG[4],
+      paddingBottom: RUANG[3],
     },
-    bulatTeks: { ...HURUF.base, fontWeight: TEBAL.ekstra, color: WARNA.teks },
-    barisNama: { flexDirection: "row", alignItems: "center", gap: RUANG[2] },
-    nama: { ...HURUF.lg, flexShrink: 1, fontWeight: TEBAL.tebal, color: WARNA.teks },
-    chip: { paddingHorizontal: RUANG[2], paddingVertical: 2, borderRadius: SUDUT.bulat },
-    chipTeks: { ...HURUF["2xs"], fontWeight: TEBAL.tebal },
-    sub: { ...HURUF.sm, color: WARNA.redup },
-    patokan: {
-      alignItems: "center",
-      gap: RUANG[1],
-      paddingVertical: RUANG[5],
-      paddingHorizontal: RUANG[4],
+    nasabah: { flexDirection: "row", alignItems: "center", gap: RUANG[3] },
+    isi: { flex: 1 },
+    nama: { ...HURUF.xl, fontWeight: TEBAL.ekstra, color: WARNA.teks },
+    kampung: { ...HURUF.sm, color: WARNA.redup },
+    chip: { paddingHorizontal: RUANG[2.5], paddingVertical: RUANG[1], borderRadius: SUDUT.bulat },
+    chipTeks: { ...HURUF.xs, fontWeight: TEBAL.tebal },
+    foto: {
+      overflow: "hidden",
+      justifyContent: "flex-end",
       borderRadius: SUDUT.besar,
       backgroundColor: WARNA.abu,
     },
-    patokanLabel: {
-      ...HURUF.xs,
-      fontWeight: TEBAL.tebal,
-      letterSpacing: 1,
-      color: WARNA.redup,
+    fotoKaki: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      padding: RUANG[2],
     },
-    patokanNilai: {
-      ...HURUF["3xl"],
+    fotoChip: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: RUANG[1],
+      paddingHorizontal: RUANG[2.5],
+      paddingVertical: RUANG[1],
+      borderRadius: SUDUT.bulat,
+      backgroundColor: WARNA.tiraiGelap,
+    },
+    fotoChipLewat: { backgroundColor: WARNA.bahaya },
+    fotoChipTeks: { ...HURUF.xs, fontWeight: TEBAL.semi, color: WARNA.putih },
+    fotoKosong: {
+      height: 72,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: RUANG[2],
+      borderRadius: SUDUT.besar,
+      borderWidth: 1.5,
+      borderStyle: "dashed",
+      borderColor: WARNA.garisTegas,
+    },
+    fotoKosongTeks: { ...HURUF.sm, fontWeight: TEBAL.tebal },
+    ditekan: { opacity: 0.8 },
+    tengah: { flex: 1, justifyContent: "center", alignItems: "center", gap: RUANG[3] },
+    patokan: {
+      alignItems: "center",
+      paddingVertical: RUANG[2],
+      paddingHorizontal: RUANG[5],
+      borderRadius: SUDUT.lebar,
+    },
+    patokanLabel: { ...HURUF["2xs"], fontWeight: TEBAL.ekstra, letterSpacing: 1.5 },
+    patokanNilai: { ...HURUF.xl, fontWeight: TEBAL.ekstra, fontVariant: ["tabular-nums"] },
+    nominalBaris: {
+      width: "100%",
+      flexDirection: "row",
+      alignItems: "baseline",
+      justifyContent: "center",
+      gap: RUANG[2],
+      paddingHorizontal: RUANG[2],
+    },
+    mataUang: { ...HURUF["2xl"], fontWeight: TEBAL.semi, color: WARNA.samar },
+    // Angka pahlawan layar ini — sama dengan layar Bayar, di atas skala token.
+    nominal: {
+      fontSize: 48,
+      lineHeight: 56,
+      flexShrink: 1,
       fontWeight: TEBAL.ekstra,
+      letterSpacing: -1,
       color: WARNA.teks,
       fontVariant: ["tabular-nums"],
     },
-    tunai: {
+    garisNominal: { width: "70%", height: 2, borderRadius: SUDUT.bulat },
+    ket: {
+      // Dua baris huruf xs dipesan: munculnya galat tak menggeser nominal.
+      minHeight: 32,
       flexDirection: "row",
-      alignItems: "baseline",
-      justifyContent: "space-between",
-      gap: RUANG[3],
-      paddingVertical: RUANG[1],
+      alignItems: "center",
+      justifyContent: "center",
+      gap: RUANG[1.5],
+      paddingHorizontal: RUANG[4],
     },
-    tunaiLabel: { ...HURUF.sm, fontWeight: TEBAL.semi, color: WARNA.teks },
-    tunaiNilai: {
-      ...HURUF.xl,
-      flexShrink: 1,
-      fontWeight: TEBAL.ekstra,
-      fontVariant: ["tabular-nums"],
+    ketTeks: { ...HURUF.xs, flexShrink: 1, textAlign: "center", color: WARNA.redup },
+    tenor: { flexDirection: "row", gap: RUANG[2] },
+    tenorPil: {
+      paddingHorizontal: RUANG[4],
+      paddingVertical: RUANG[1.5],
+      borderRadius: SUDUT.bulat,
+      borderWidth: 1,
+      borderColor: WARNA.garisTegas,
+      backgroundColor: WARNA.permukaan,
     },
+    tenorTeks: { ...HURUF.sm, fontWeight: TEBAL.semi, color: WARNA.teksKedua },
+    panel: {
+      gap: RUANG[4],
+      paddingHorizontal: RUANG[4],
+      paddingTop: RUANG[4],
+      borderTopLeftRadius: SUDUT.lebar,
+      borderTopRightRadius: SUDUT.lebar,
+      backgroundColor: WARNA.permukaan,
+      boxShadow: BAYANGAN.panelBawah,
+    },
+    konfirmasi: {
+      height: 56,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: RUANG[2],
+      borderRadius: SUDUT.bulat,
+    },
+    konfirmasiMati: { backgroundColor: WARNA.abu },
+    konfirmasiDitekan: { opacity: 0.88, transform: [{ scale: 0.98 }] },
+    konfirmasiTeks: { ...HURUF.base, fontWeight: TEBAL.ekstra, letterSpacing: 1.5 },
   });
