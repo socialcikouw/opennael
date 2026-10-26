@@ -178,6 +178,28 @@ export const GELAP: Warna = {
   tiraiTerang: "rgba(255, 255, 255, 0.18)",
 };
 
+/**
+ * WARNA MODE aplikasi kolektor (Harian · Mingguan · Tempoan · Semua): aksen
+ * teks/ikon (`teks`), latar lembut (`lembut`), dan isi tombol berteks
+ * (`isi` + `teksIsi`). Harian = hijau merek; mode lain punya warnanya sendiri
+ * supaya wajah aplikasi terasa berganti. Dipilih `useWarnaMode`.
+ */
+export type WarnaMode = { teks: string; lembut: string; isi: string; teksIsi: string };
+
+export const MODE_TERANG = {
+  harian: { teks: emerald[700], lembut: emerald[100], isi: emerald[700], teksIsi: "#ffffff" },
+  mingguan: { teks: "#6d28d9", lembut: "#ede9fe", isi: "#6d28d9", teksIsi: "#ffffff" },
+  tempoan: { teks: "#c2410c", lembut: "#ffedd5", isi: "#c2410c", teksIsi: "#ffffff" },
+  semua: { teks: "#0f766e", lembut: "#ccfbf1", isi: "#0f766e", teksIsi: "#ffffff" },
+} as const satisfies Record<string, WarnaMode>;
+
+export const MODE_GELAP: Record<keyof typeof MODE_TERANG, WarnaMode> = {
+  harian: { teks: emerald[400], lembut: emerald[950], isi: emerald[500], teksIsi: slate[950] },
+  mingguan: { teks: "#a78bfa", lembut: "#2e1065", isi: "#8b5cf6", teksIsi: slate[950] },
+  tempoan: { teks: "#fb923c", lembut: "#431407", isi: "#f97316", teksIsi: slate[950] },
+  semua: { teks: "#2dd4bf", lembut: "#042f2e", isi: "#14b8a6", teksIsi: slate[950] },
+};
+
 /** Jarak kelipatan 4 pt — kunci = angka skala Tailwind (`5` = 20 pt, seperti `p-5`). */
 export const RUANG = {
   0.5: 2,

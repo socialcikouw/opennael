@@ -1,6 +1,6 @@
 import type { NasabahLama } from "@opennael/contracts";
 import { type JenisPinjaman, kunciWilayah, syaratAkad, TENOR_PINJAMAN } from "@opennael/domain";
-import { router } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
 import { ActivityIndicator, Alert, Pressable, Text, View } from "react-native";
 import {
@@ -41,8 +41,11 @@ export default function Akad() {
   const [nik, setNik] = useState("");
   const [nomorHp, setNomorHp] = useState("");
   const [lama, setLama] = useState<NasabahLama | null>(null);
-  const [jenis, setJenis] = useState<JenisPinjaman>("harian");
-  const [tenor, setTenor] = useState<number>(24);
+  // Dibuka dari tombol + mode Harian/Mingguan/Tempoan: jenisnya mengikuti mode, tanpa pilihan.
+  const param = useLocalSearchParams<{ jenis?: string }>().jenis;
+  const jenisTetap = param && param in TENOR_PINJAMAN ? (param as JenisPinjaman) : null;
+  const [jenis, setJenis] = useState<JenisPinjaman>(jenisTetap ?? "harian");
+  const [tenor, setTenor] = useState<number>(TENOR_PINJAMAN[jenisTetap ?? "harian"][0] ?? 0);
   const [pokok, setPokok] = useState(1_000_000);
   const [foto, setFoto] = useState<FotoSerahTerima | null>(null);
   const akad = useTulis(tulis.akad);
@@ -53,7 +56,7 @@ export default function Akad() {
   };
   const pilihLama = (n: NasabahLama | null) => {
     setLama(n);
-    if (n?.terakhir) {
+    if (n?.terakhir && (!jenisTetap || n.terakhir.jenis === jenisTetap)) {
       pilihJenis(n.terakhir.jenis);
       setPokok(n.terakhir.pokok);
     }
@@ -140,16 +143,20 @@ export default function Akad() {
         <PilihNasabahLama terpilih={lama} onPilih={pilihLama} />
       )}
 
-      <Pilihan
-        segmen
-        label="Jenis pinjaman"
-        pilihan={(["harian", "mingguan", "tempoan"] as const).map((j) => ({
-          nilai: j,
-          teks: NAMA_JENIS[j],
-        }))}
-        nilai={jenis}
-        onPilih={pilihJenis}
-      />
+      {jenisTetap ? (
+        <Stack.Screen options={{ title: `Akad ${NAMA_JENIS[jenisTetap]}` }} />
+      ) : (
+        <Pilihan
+          segmen
+          label="Jenis pinjaman"
+          pilihan={(["harian", "mingguan", "tempoan"] as const).map((j) => ({
+            nilai: j,
+            teks: NAMA_JENIS[j],
+          }))}
+          nilai={jenis}
+          onPilih={pilihJenis}
+        />
+      )}
       {TENOR_PINJAMAN[jenis].length > 1 ? (
         <Pilihan
           label="Tenor"

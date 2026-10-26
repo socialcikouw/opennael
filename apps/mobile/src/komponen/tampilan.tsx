@@ -1,7 +1,7 @@
 import * as SecureStore from "expo-secure-store";
 import { createContext, type ReactNode, useContext, useMemo, useSyncExternalStore } from "react";
 import { useColorScheme } from "react-native";
-import { GELAP, TERANG, type Warna } from "./tema";
+import { GELAP, MODE_GELAP, MODE_TERANG, TERANG, type Warna, type WarnaMode } from "./tema";
 
 /**
  * MODE TAMPILAN — terang / gelap. Bawaan mengikuti HP; pengguna boleh memilih
@@ -82,4 +82,9 @@ export function useGaya<T>(buat: (w: Warna) => T): T {
     if (!perPalet.has(w)) perPalet.set(w, buat(w));
     return perPalet.get(w) as T;
   }, [buat, w]);
+}
+
+/** Warna mode aplikasi kolektor (Harian/Mingguan/Tempoan/Semua) di tema yang berlaku. */
+export function useWarnaMode(mode: keyof typeof MODE_TERANG): WarnaMode {
+  return (useGelap() ? MODE_GELAP : MODE_TERANG)[mode];
 }
