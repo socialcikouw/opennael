@@ -21,6 +21,24 @@ export function useTagihan() {
   });
 }
 
+/**
+ * Posisi tagih (aturan-usaha B5: angsuran tertinggal & tunggakan) pinjaman
+ * aktif pegangan kolektor ini, per id pinjaman — dari `GET /pinjaman` yang
+ * sudah menghitungnya untuk kolektor. Dimuat sejajar dengan daftar tagih:
+ * kartu tampil dulu, penanda telat menyusul.
+ */
+export function usePosisiTagih() {
+  return useQuery({
+    queryKey: [...KUNCI, "posisi-tagih"],
+    queryFn: async () => {
+      const kartu = await (
+        await panggil(() => api.pinjaman.$get({ query: { status: "aktif" } }))
+      ).json();
+      return new Map(kartu.map((k) => [k.id, k.tagih]));
+    },
+  });
+}
+
 export function useKampung() {
   return useQuery({
     queryKey: [...KUNCI, "kampung"],

@@ -5,6 +5,7 @@ import BadgeCheck from "lucide-react-native/icons/badge-check";
 import Banknote from "lucide-react-native/icons/banknote";
 import Bell from "lucide-react-native/icons/bell";
 import Calculator from "lucide-react-native/icons/calculator";
+import CalendarClock from "lucide-react-native/icons/calendar-clock";
 import Check from "lucide-react-native/icons/check";
 import CheckCheck from "lucide-react-native/icons/check-check";
 import ChevronDown from "lucide-react-native/icons/chevron-down";
@@ -16,6 +17,7 @@ import CircleCheck from "lucide-react-native/icons/circle-check";
 import Clock from "lucide-react-native/icons/clock";
 import CloudOff from "lucide-react-native/icons/cloud-off";
 import FileText from "lucide-react-native/icons/file-text";
+import HandCoins from "lucide-react-native/icons/hand-coins";
 import House from "lucide-react-native/icons/house";
 import ImageIcon from "lucide-react-native/icons/image";
 import LogOut from "lucide-react-native/icons/log-out";
@@ -26,6 +28,7 @@ import Plus from "lucide-react-native/icons/plus";
 import RefreshCw from "lucide-react-native/icons/refresh-cw";
 import Repeat from "lucide-react-native/icons/repeat";
 import Search from "lucide-react-native/icons/search";
+import SearchX from "lucide-react-native/icons/search-x";
 import TriangleAlert from "lucide-react-native/icons/triangle-alert";
 import Users from "lucide-react-native/icons/users";
 import UsersRound from "lucide-react-native/icons/users-round";
@@ -39,6 +42,9 @@ import X from "lucide-react-native/icons/x";
  * baru: impor lalu tambahkan di peta ini.
  */
 export const IKON = {
+  "search-x": SearchX,
+  "hand-coins": HandCoins,
+  "calendar-clock": CalendarClock,
   "arrow-left": ArrowLeft,
   "arrow-left-right": ArrowLeftRight,
   "badge-check": BadgeCheck,
