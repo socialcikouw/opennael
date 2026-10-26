@@ -85,6 +85,8 @@ export const pinjamanSchema = z.object({
   saldo: z.number(),
   /** Angsuran yang sudah lunas — nomor di kartu. */
   angsuranKe: z.number(),
+  /** Foto serah terima (`GET /foto/:id`); kosong untuk salinan buku lama (migrasi). */
+  fotoSerahTerimaId: z.uuid().nullable(),
 });
 export type PinjamanKartu = z.infer<typeof pinjamanSchema>;
 

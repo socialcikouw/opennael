@@ -1,8 +1,8 @@
 import { createHash } from "node:crypto";
 import { type FotoTersimpan, UKURAN_FOTO_MAKS } from "@opennael/contracts";
-import { and, eq } from "drizzle-orm";
+import { and, eq, or } from "drizzle-orm";
 import type { Db } from "../../db/klien";
-import { foto } from "../../db/skema";
+import { foto, nasabah, pinjaman } from "../../db/skema";
 import { dilarang, GalatApp, tidakDitemukan } from "../../galat";
 import { jenisGambar, type Penyimpanan } from "../../penyimpanan";
 import { wajibPeran } from "../../peran";
@@ -111,7 +111,10 @@ export function buatLayananFoto(deps: FotoDeps) {
       }
     },
 
-    /** Isi berkas — bos & pengawas, atau pengunggahnya sendiri. Kasir tidak. */
+    /**
+     * Isi berkas — bos & pengawas; kolektor pengunggahnya atau pemegang nasabah
+     * pemilik foto (serah terima pinjamannya / KTP-nya). Kasir tidak.
+     */
     async baca(aktor: Aktor, id: string) {
       const [f] = await deps.db
         .select({ kunci: foto.kunciBerkas, tipeMime: foto.tipeMime, oleh: foto.diunggahOleh })
@@ -120,13 +123,33 @@ export function buatLayananFoto(deps: FotoDeps) {
         .limit(1);
       if (!f) throw tidakDitemukan("FOTO_TIDAK_DITEMUKAN", "Foto tidak ditemukan");
       const boleh =
-        aktor.peran === "bos" || aktor.peran === "pengawas" || f.oleh === aktor.penggunaId;
+        aktor.peran === "bos" ||
+        aktor.peran === "pengawas" ||
+        f.oleh === aktor.penggunaId ||
+        (aktor.peran === "kolektor" && (await pegangKolektor(deps.db, aktor, id)));
       if (!boleh) throw dilarang("PERAN_DILARANG", "Anda tidak boleh membuka foto ini");
       const isi = await deps.penyimpanan.baca(f.kunci);
       if (!isi) throw tidakDitemukan("BERKAS_HILANG", "Berkas foto tidak ditemukan di penyimpanan");
       return { isi, tipeMime: f.tipeMime };
     },
   };
+}
+
+/** Foto ini milik nasabah pegangan kolektor `aktor` (serah terima pinjamannya atau KTP-nya)? */
+async function pegangKolektor(db: Db, aktor: Aktor, fotoId: string): Promise<boolean> {
+  const [n] = await db
+    .select({ id: nasabah.id })
+    .from(nasabah)
+    .leftJoin(pinjaman, eq(pinjaman.nasabahId, nasabah.id))
+    .where(
+      and(
+        eq(nasabah.kantorId, aktor.kantorId),
+        eq(nasabah.kolektorId, aktor.penggunaId),
+        or(eq(pinjaman.fotoSerahTerimaId, fotoId), eq(nasabah.fotoKtpId, fotoId)),
+      ),
+    )
+    .limit(1);
+  return n !== undefined;
 }
 
 export type LayananFoto = ReturnType<typeof buatLayananFoto>;

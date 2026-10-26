@@ -92,6 +92,11 @@ export const WARNA = {
   waspadaMuda: amber[100],
   waspadaLembut: amber[50],
   waspadaGaris: amber[200],
+
+  /** Lapisan gelap tembus pandang di atas foto (ikon petunjuk). */
+  tiraiGelap: "rgba(15, 23, 42, 0.55)",
+  /** Lapisan terang tembus pandang di atas latar gelap (tombol tutup layar penuh). */
+  tiraiTerang: "rgba(255, 255, 255, 0.18)",
 } as const;
 
 /** Jarak kelipatan 4 pt — kunci = angka skala Tailwind (`5` = 20 pt, seperti `p-5`). */

@@ -99,6 +99,22 @@ describe.skipIf(!URL_DB)("foto bukti", () => {
         sql`select foto_serah_terima_id from pinjaman where id = ${akad.isi.id}`,
       )) as unknown as { foto_serah_terima_id: string }[];
       expect(p?.foto_serah_terima_id).toBe(f1.isi.id);
+      // Kartu pinjaman membawa id fotonya (foto profil nasabah di HP).
+      expect(akad.isi.fotoSerahTerimaId).toBe(f1.isi.id);
+
+      // Kolektor lain tak boleh membuka — sampai nasabahnya dioper kepadanya.
+      const t = await kirim("/auth/tautan", { isi: {} });
+      await kirim("/auth/tautan/setujui", {
+        isi: { kode: t.isi.kode, akun: { peran: "kolektor", nama: "Budi" } },
+        token: bos.tokenAkses,
+      });
+      const budi = (await kirim(`/auth/tautan/${t.isi.id}/klaim`, { isi: { klaim: t.isi.klaim } }))
+        .isi;
+      expect((await kirim(`/foto/${f1.isi.id}`, { token: budi.tokenAkses })).status).toBe(403);
+      await tx.execute(
+        sql`update nasabah set kolektor_id = ${budi.pengguna.id} where id = ${akad.isi.nasabah.id}`,
+      );
+      expect((await kirim(`/foto/${f1.isi.id}`, { token: budi.tokenAkses })).status).toBe(200);
     });
   }, 120_000);
 });

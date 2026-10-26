@@ -3,6 +3,7 @@ import { hitungBayar, hitungLunas } from "@opennael/domain";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Alert, Text, View } from "react-native";
+import { FotoSerahTerima } from "../../../komponen/foto-nasabah";
 import {
   Baris,
   Gulir,
@@ -62,6 +63,9 @@ export default function KartuPinjaman() {
   return (
     <Gulir>
       <Stack.Screen options={{ title: p.nasabah.nama }} />
+      {p.fotoSerahTerimaId ? (
+        <FotoSerahTerima fotoId={p.fotoSerahTerimaId} nama={p.nasabah.nama} />
+      ) : null}
       <Kartu>
         <View style={g.bungkus}>
           <Text style={g.subjudul}>

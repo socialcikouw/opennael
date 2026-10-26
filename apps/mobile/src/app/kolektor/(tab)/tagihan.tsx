@@ -11,6 +11,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { AvatarNasabah } from "../../../komponen/foto-nasabah";
 import { useRuangTab } from "../../../komponen/tab-mengambang";
 import { HURUF, RUANG, SUDUT, TEBAL } from "../../../komponen/tema";
 import {
@@ -145,13 +146,12 @@ function BarisTagih({ p, tanggal }: { p: KartuTagih; tanggal: string }) {
         p.hariIni ? gaya.sudahDicatat : null,
       ]}
     >
-      <View style={[gaya.inisial, p.hariIni ? gaya.inisialDicatat : null]}>
-        {p.hariIni ? (
-          <Ikon nama="checkmark" ukuran={18} warna={WARNA.utama} />
-        ) : (
-          <Text style={gaya.inisialHuruf}>{p.nasabah.nama.charAt(0).toUpperCase()}</Text>
-        )}
-      </View>
+      <AvatarNasabah
+        fotoId={p.fotoSerahTerimaId}
+        nama={p.nasabah.nama}
+        ukuran={48}
+        tanda={p.hariIni !== null}
+      />
       <View style={[g.isi, gaya.rincian]}>
         <View style={g.bungkus}>
           <Text style={g.teksTebal}>{p.nasabah.nama}</Text>
@@ -199,16 +199,6 @@ const gaya = StyleSheet.create({
   },
   butir: { marginHorizontal: RUANG[5], marginBottom: RUANG[2] },
   sudahDicatat: { opacity: 0.7 },
-  inisial: {
-    width: 36,
-    height: 36,
-    borderRadius: SUDUT.bulat,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: WARNA.abu,
-  },
-  inisialDicatat: { backgroundColor: WARNA.utamaMuda },
-  inisialHuruf: { ...HURUF.sm, fontWeight: TEBAL.tebal, color: WARNA.teksKedua },
   rincian: { gap: RUANG[1] },
   angka: { alignItems: "flex-end" },
   angsuran: { ...HURUF.base, fontWeight: TEBAL.tebal, color: WARNA.teks },

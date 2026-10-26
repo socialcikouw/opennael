@@ -41,7 +41,7 @@ const baca = createRoute({
   method: "get",
   path: "/foto/{id}",
   tags: ["foto"],
-  summary: "Isi berkas foto — bos, pengawas, atau pengunggahnya",
+  summary: "Isi berkas foto — bos, pengawas, kolektor pengunggah atau pemegang nasabahnya",
   security: [{ bearer: [] }],
   request: { params: z.object({ id: z.uuid() }) },
   responses: {

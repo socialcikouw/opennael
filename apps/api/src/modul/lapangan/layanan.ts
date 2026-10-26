@@ -73,6 +73,7 @@ export const kolomKartu = {
   angsuran: pinjaman.angsuran,
   saldo: pinjaman.saldo,
   angsuranKe: pinjaman.angsuranKe,
+  fotoSerahTerimaId: pinjaman.fotoSerahTerimaId,
 };
 
 /** Baris hasil `select(kolomKartu)` → bentuk kartu di kontrak. */
