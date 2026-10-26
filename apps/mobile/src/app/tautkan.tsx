@@ -165,7 +165,7 @@ export default function Tautkan() {
               </View>
               {sinyalPutus ? (
                 <View style={g.baris2}>
-                  <Ikon nama="cloud-offline-outline" ukuran={16} warna={WARNA.waspada} />
+                  <Ikon nama="cloud-off" ukuran={16} warna={WARNA.waspada} />
                   <Text style={gaya.sinyalPutus}>Sinyal terputus — terus mencoba…</Text>
                 </View>
               ) : null}
@@ -178,7 +178,7 @@ export default function Tautkan() {
           ) : (
             <View style={gaya.habis}>
               <View style={gaya.ikonHabis}>
-                <Ikon nama="time-outline" ukuran={28} warna={WARNA.redup} />
+                <Ikon nama="clock" ukuran={28} warna={WARNA.redup} />
               </View>
               <View style={gaya.tengah}>
                 <Text style={g.subjudul}>
@@ -189,7 +189,7 @@ export default function Tautkan() {
                 </Text>
               </View>
               <View style={gaya.penuh}>
-                <Tombol judul="Minta kode baru" ikon="refresh" onPress={() => void minta()} />
+                <Tombol judul="Minta kode baru" ikon="refresh-cw" onPress={() => void minta()} />
               </View>
             </View>
           )}

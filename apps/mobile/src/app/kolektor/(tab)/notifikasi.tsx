@@ -12,7 +12,7 @@ export default function Notifikasi() {
   return (
     <ScrollView style={g.layar} contentContainerStyle={[gaya.isi, { paddingBottom: ruangTab }]}>
       <View style={gaya.kosong}>
-        <Ikon nama="notifications-outline" ukuran={28} warna={WARNA.redup} />
+        <Ikon nama="bell" ukuran={28} warna={WARNA.redup} />
         <Keterangan>Belum ada notifikasi.</Keterangan>
       </View>
     </ScrollView>

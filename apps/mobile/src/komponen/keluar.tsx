@@ -18,7 +18,7 @@ export function TombolKeluar() {
     <Tombol
       judul="Keluar dari HP ini"
       jenis="bahaya"
-      ikon="log-out-outline"
+      ikon="log-out"
       memuat={jalan}
       onPress={() =>
         Alert.alert("Keluar?", "HP ini perlu ditautkan ulang oleh bos untuk masuk lagi.", [

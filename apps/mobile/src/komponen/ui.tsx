@@ -1,5 +1,4 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { type ComponentProps, type ReactNode, useState } from "react";
+import { type ReactNode, useState } from "react";
 import {
   ActivityIndicator,
   Pressable,
@@ -12,6 +11,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { bacaUang, tulisUang } from "../lib/format";
+import { IKON, type NamaIkon } from "./ikon";
 import { BAYANGAN, HURUF, RUANG, SENTUH, SUDUT, TEBAL, WARNA } from "./tema";
 
 export { WARNA };
@@ -32,10 +32,18 @@ export const OPSI_STACK = {
  * isian menyala hijau saat aktif, keyboard tidak menutupi isian.
  */
 
-export type NamaIkon = ComponentProps<typeof Ionicons>["name"];
+export type { NamaIkon };
 
-export function Ikon(props: { nama: NamaIkon; ukuran?: number; warna?: string }) {
-  return <Ionicons name={props.nama} size={props.ukuran ?? 20} color={props.warna ?? WARNA.teks} />;
+/** Ikon Lucide (`komponen/ikon.ts`). `tebal` = garis lebih tebal (mis. tab aktif). */
+export function Ikon(props: { nama: NamaIkon; ukuran?: number; warna?: string; tebal?: boolean }) {
+  const Gambar = IKON[props.nama];
+  return (
+    <Gambar
+      size={props.ukuran ?? 20}
+      color={props.warna ?? WARNA.teks}
+      strokeWidth={props.tebal ? 2.5 : 2}
+    />
+  );
 }
 
 /** Kerangka layar tanpa header: aman dari poni & bilah navigasi. */
@@ -228,7 +236,7 @@ export function PesanGalat({ pesan }: { pesan: string | null | undefined }) {
   if (!pesan) return null;
   return (
     <View style={[g.kotakPesan, g.kotakGalat]}>
-      <Ikon nama="alert-circle" ukuran={18} warna={WARNA.bahaya} />
+      <Ikon nama="circle-alert" ukuran={18} warna={WARNA.bahaya} />
       <Text style={g.pesanGalat}>{pesan}</Text>
     </View>
   );
@@ -286,17 +294,17 @@ const GAYA_SPANDUK: Record<
 > = {
   kuning: {
     kotak: { backgroundColor: WARNA.waspadaLembut, borderColor: WARNA.waspadaGaris },
-    ikon: "warning",
+    ikon: "triangle-alert",
     warna: WARNA.waspada,
   },
   merah: {
     kotak: { backgroundColor: WARNA.bahayaLembut, borderColor: WARNA.bahayaGaris },
-    ikon: "alert-circle",
+    ikon: "circle-alert",
     warna: WARNA.bahaya,
   },
   hijau: {
     kotak: { backgroundColor: WARNA.utamaLembut, borderColor: WARNA.utamaGaris },
-    ikon: "checkmark-circle",
+    ikon: "circle-check",
     warna: WARNA.utama,
   },
 };

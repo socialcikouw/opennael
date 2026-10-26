@@ -53,7 +53,7 @@ export function AvatarNasabah(props: {
       )}
       {props.tanda ? (
         <View style={gaya.tanda}>
-          <Ikon nama="checkmark" ukuran={12} warna={WARNA.putih} />
+          <Ikon nama="check" ukuran={12} warna={WARNA.putih} />
         </View>
       ) : null}
     </View>
@@ -69,7 +69,7 @@ export function FotoSerahTerima({ fotoId, nama }: { fotoId: string; nama: string
   if (gagal) {
     return (
       <View style={[gaya.besar, gaya.gagal]}>
-        <Ikon nama="image-outline" ukuran={28} warna={WARNA.redup} />
+        <Ikon nama="image" ukuran={28} warna={WARNA.redup} />
         <Text style={gaya.gagalTeks}>Foto serah terima tidak bisa dimuat</Text>
       </View>
     );
@@ -91,7 +91,7 @@ export function FotoSerahTerima({ fotoId, nama }: { fotoId: string; nama: string
           style={[gaya.besar, gaya.latarFoto]}
         />
         <View style={gaya.petunjuk}>
-          <Ikon nama="expand-outline" ukuran={14} warna={WARNA.putih} />
+          <Ikon nama="maximize-2" ukuran={14} warna={WARNA.putih} />
         </View>
       </Pressable>
       <Modal
@@ -108,7 +108,7 @@ export function FotoSerahTerima({ fotoId, nama }: { fotoId: string; nama: string
             style={gaya.isiPenuh}
           />
           <View style={[gaya.tutup, { top: atas + RUANG[3] }]}>
-            <Ikon nama="close" ukuran={24} warna={WARNA.putih} />
+            <Ikon nama="x" ukuran={24} warna={WARNA.putih} />
           </View>
         </Pressable>
       </Modal>

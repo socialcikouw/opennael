@@ -126,7 +126,7 @@ export default function CocokkanKas() {
         <PesanGalat pesan={cocok.error?.message} />
         <Tombol
           judul="Simpan hitungan"
-          ikon="checkmark-circle-outline"
+          ikon="circle-check"
           memuat={cocok.isPending}
           onPress={simpan}
         />

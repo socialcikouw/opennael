@@ -121,7 +121,7 @@ function Transfer({ kolektorId, terkunci }: { kolektorId: string; terkunci: bool
               <PesanGalat pesan={catat.error?.message} />
               <Tombol
                 judul="Simpan transfer"
-                ikon="swap-horizontal"
+                ikon="arrow-left-right"
                 memuat={catat.isPending}
                 nonaktif={pilih.nominal <= 0 || pilih.nominal > t.batasTransfer}
                 onPress={() =>
@@ -172,7 +172,7 @@ function Biaya({ hari, terkunci }: { hari: HariKolektor; terkunci: boolean }) {
           <Tombol
             judul="Catat biaya"
             jenis="kedua"
-            ikon="add"
+            ikon="plus"
             memuat={catat.isPending}
             nonaktif={nominal <= 0 || !keterangan.trim()}
             onPress={() =>
@@ -221,7 +221,7 @@ function TerimaKas({ hari }: { hari: HariKolektor }) {
       <PesanGalat pesan={terima.error?.message} />
       <Tombol
         judul="Simpan uang diterima"
-        ikon="cash-outline"
+        ikon="banknote"
         memuat={terima.isPending}
         onPress={simpan}
       />

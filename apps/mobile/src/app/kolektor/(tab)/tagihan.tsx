@@ -62,7 +62,7 @@ export default function Tagihan() {
     return (
       <View style={[g.layar, gaya.galat]}>
         <PesanGalat pesan={hariIni.error.message} />
-        <Tombol judul="Coba lagi" ikon="refresh" onPress={segarkan} />
+        <Tombol judul="Coba lagi" ikon="refresh-cw" onPress={segarkan} />
       </View>
     );
   }
@@ -99,7 +99,7 @@ export default function Tagihan() {
           {tagihan.isPending ? <ActivityIndicator color={WARNA.utama} /> : null}
           {tagihan.data && semua.length === 0 ? (
             <View style={gaya.kosong}>
-              <Ikon nama="people-outline" ukuran={28} warna={WARNA.redup} />
+              <Ikon nama="users" ukuran={28} warna={WARNA.redup} />
               <Keterangan>Belum ada pinjaman aktif di pegangan Anda.</Keterangan>
             </View>
           ) : null}
@@ -110,7 +110,7 @@ export default function Tagihan() {
       }
       renderSectionHeader={({ section }) => (
         <View style={[g.baris2, gaya.kampung]}>
-          <Ikon nama="location-outline" ukuran={14} warna={WARNA.redup} />
+          <Ikon nama="map-pin" ukuran={14} warna={WARNA.redup} />
           <Text style={gaya.kampungTeks}>
             {section.title} · {section.data.length}
           </Text>
@@ -166,7 +166,7 @@ function BarisTagih({ p, tanggal }: { p: KartuTagih; tanggal: string }) {
         <Text style={gaya.angsuran}>{rupiah(p.angsuran)}</Text>
         <Text style={g.teksMini}>saldo {rupiah(p.saldo)}</Text>
       </View>
-      <Ikon nama="chevron-forward" ukuran={18} warna={WARNA.samar} />
+      <Ikon nama="chevron-right" ukuran={18} warna={WARNA.samar} />
     </Pressable>
   );
 }

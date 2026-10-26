@@ -39,8 +39,8 @@ export default function Tunggakan() {
       {q.data ? (
         <>
           <View style={g.baris3}>
-            <KotakAngka label="Menunggak" ikon="people-outline" nilai={String(tampil.length)} />
-            <KotakAngka label="Total tunggakan" ikon="cash-outline" nilai={rupiah(total)} />
+            <KotakAngka label="Menunggak" ikon="users" nilai={String(tampil.length)} />
+            <KotakAngka label="Total tunggakan" ikon="banknote" nilai={rupiah(total)} />
           </View>
           {kolektor.length > 1 ? (
             <Pilihan

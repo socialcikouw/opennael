@@ -19,8 +19,8 @@ export function useRuangTab(): number {
 
 /**
  * TAB BAR MENGAMBANG — pil berisi tab-tab layar, ditambah tombol bulat (+)
- * untuk aksi utama. Judul dari `title` tiap layar; ikon per nama rute
- * (`[aktif, tidak aktif]`).
+ * untuk aksi utama. Judul dari `title` tiap layar; ikon Lucide per nama rute
+ * — tab aktif: hijau, berlatar, garis lebih tebal.
  */
 export function TabMengambang({
   state,
@@ -32,7 +32,7 @@ export function TabMengambang({
   onTambah,
   judulTambah,
 }: BottomTabBarProps & {
-  ikon: Record<string, readonly [NamaIkon, NamaIkon]>;
+  ikon: Record<string, NamaIkon>;
   onTambah: () => void;
   judulTambah: string;
 }) {
@@ -41,7 +41,7 @@ export function TabMengambang({
       <View style={gaya.pil}>
         {state.routes.map((route, i) => {
           const judul = descriptors[route.key]?.options.title ?? route.name;
-          const [ikonAktif, ikonDiam] = ikon[route.name] ?? ["ellipse", "ellipse-outline"];
+          const ikonTab = ikon[route.name] ?? "circle";
           const aktif = i === state.index;
           const warna = aktif ? WARNA.utama : WARNA.redup;
           const tekan = () => {
@@ -62,7 +62,7 @@ export function TabMengambang({
               style={({ pressed }) => [gaya.tab, pressed ? gaya.ditekan : null]}
             >
               <View style={[gaya.ikonTab, aktif ? gaya.ikonAktif : null]}>
-                <Ikon nama={aktif ? ikonAktif : ikonDiam} ukuran={22} warna={warna} />
+                <Ikon nama={ikonTab} ukuran={22} warna={warna} tebal={aktif} />
               </View>
               <Text style={[gaya.label, { color: warna }]} numberOfLines={1}>
                 {judul}
@@ -77,7 +77,7 @@ export function TabMengambang({
         onPress={onTambah}
         style={({ pressed }) => [gaya.tambah, pressed ? gaya.tambahDitekan : null]}
       >
-        <Ikon nama="add" ukuran={32} warna={WARNA.putih} />
+        <Ikon nama="plus" ukuran={30} warna={WARNA.putih} tebal />
       </Pressable>
     </View>
   );

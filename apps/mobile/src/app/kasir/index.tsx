@@ -48,16 +48,16 @@ export default function SetoranSore() {
       {hari.isError ? (
         <>
           <PesanGalat pesan={hari.error.message} />
-          <Tombol judul="Coba lagi" ikon="refresh" onPress={() => void hari.refetch()} />
+          <Tombol judul="Coba lagi" ikon="refresh-cw" onPress={() => void hari.refetch()} />
         </>
       ) : null}
       {hari.data ? (
         <>
           <View style={g.baris3}>
-            <KotakAngka label="Siap diterima" ikon="time-outline" nilai={String(siap)} />
+            <KotakAngka label="Siap diterima" ikon="clock" nilai={String(siap)} />
             <KotakAngka
               label="Kas diterima"
-              ikon="checkmark-done"
+              ikon="check-check"
               nilai={`${diterima} / ${masukKerja.length}`}
             />
           </View>
@@ -98,7 +98,7 @@ function BarisKolektor({ h }: { h: HariKolektor }) {
       {h.serahTerima ? (
         <Text style={g.teksTebal}>{rupiah(h.serahTerima.tunaiDiterima)}</Text>
       ) : null}
-      {bisaDibuka ? <Ikon nama="chevron-forward" ukuran={18} warna={WARNA.samar} /> : null}
+      {bisaDibuka ? <Ikon nama="chevron-right" ukuran={18} warna={WARNA.samar} /> : null}
     </Pressable>
   );
 }

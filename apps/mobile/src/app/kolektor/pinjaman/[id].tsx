@@ -39,7 +39,7 @@ export default function KartuPinjaman() {
     return (
       <Gulir>
         <Keterangan>Pinjaman ini sudah tidak ada di daftar tagih (lunas atau digulung).</Keterangan>
-        <Tombol judul="Kembali" ikon="arrow-back" jenis="kedua" onPress={() => router.back()} />
+        <Tombol judul="Kembali" ikon="arrow-left" jenis="kedua" onPress={() => router.back()} />
       </Gulir>
     );
   }
@@ -145,7 +145,7 @@ function PanelSetor({ p }: { p: KartuTagih }) {
         <Tombol
           judul="Pelunasan sebagian"
           jenis="kedua"
-          ikon="add"
+          ikon="plus"
           onPress={() => setTambahPelunasan(true)}
         />
       )}
@@ -157,7 +157,7 @@ function PanelSetor({ p }: { p: KartuTagih }) {
       <PesanGalat pesan={bayar.error?.message} />
       <Tombol
         judul={`Simpan setoran ${rupiah(murni + (tambahPelunasan ? pelunasan : 0))}`}
-        ikon="checkmark-circle-outline"
+        ikon="circle-check"
         memuat={bayar.isPending}
         nonaktif={!pratinjau.hasil}
         onPress={() =>
@@ -205,12 +205,7 @@ function PanelLunas({ p }: { p: KartuTagih }) {
         />
       ) : null}
       <PesanGalat pesan={lunas.error?.message} />
-      <Tombol
-        judul="Lunaskan"
-        ikon="ribbon-outline"
-        memuat={lunas.isPending}
-        onPress={konfirmasi}
-      />
+      <Tombol judul="Lunaskan" ikon="badge-check" memuat={lunas.isPending} onPress={konfirmasi} />
     </Kartu>
   );
 }
@@ -237,7 +232,7 @@ function PanelLibur({ p }: { p: KartuTagih }) {
       <PesanGalat pesan={libur.error?.message} />
       <Tombol
         judul="Catat libur hari ini"
-        ikon="moon-outline"
+        ikon="moon"
         memuat={libur.isPending}
         nonaktif={belumBoleh}
         onPress={() =>

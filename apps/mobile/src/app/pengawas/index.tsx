@@ -24,13 +24,13 @@ export default function BerandaPengawas() {
     >
       <KepalaPeran />
       <Menu
-        ikon="calculator-outline"
+        ikon="calculator"
         judul="Cocokkan kas"
         isi="Hitung isi brankas atau periksa saldo rekening, lalu bandingkan dengan buku."
         ke="/pengawas/cocokkan"
       />
       <Menu
-        ikon="alert-circle-outline"
+        ikon="circle-alert"
         judul="Pinjaman menunggak"
         isi="Nasabah yang tertinggal angsuran, per kolektor."
         ke="/pengawas/tunggakan"
@@ -61,7 +61,7 @@ function Menu(props: { ikon: NamaIkon; judul: string; isi: string; ke: Href }) {
         <Text style={g.teksTebal}>{props.judul}</Text>
         <Text style={g.teksKecil}>{props.isi}</Text>
       </View>
-      <Ikon nama="chevron-forward" ukuran={18} warna={WARNA.samar} />
+      <Ikon nama="chevron-right" ukuran={18} warna={WARNA.samar} />
     </Pressable>
   );
 }

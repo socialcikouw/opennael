@@ -188,7 +188,7 @@ export default function Akad() {
       <PesanGalat pesan={akad.error?.message} />
       <Tombol
         judul="Simpan akad"
-        ikon="checkmark-circle-outline"
+        ikon="circle-check"
         memuat={akad.isPending}
         nonaktif={!nasabahLengkap || !syarat.hasil || !fotoSah || (!!nik && nik.length !== 16)}
         onPress={simpan}

@@ -40,7 +40,7 @@ export default function Beranda() {
     return (
       <View style={[g.layar, gaya.galat]}>
         <PesanGalat pesan={hariIni.error.message} />
-        <Tombol judul="Coba lagi" ikon="refresh" onPress={segarkan} />
+        <Tombol judul="Coba lagi" ikon="refresh-cw" onPress={segarkan} />
       </View>
     );
   }
@@ -80,10 +80,10 @@ export default function Beranda() {
         <View style={g.baris3}>
           <KotakAngka
             label="Dicatat"
-            ikon="checkmark-done"
+            ikon="check-check"
             nilai={`${dicatat.length} / ${semua.length}`}
           />
-          <KotakAngka label="Setoran" ikon="cash-outline" nilai={rupiah(storting)} />
+          <KotakAngka label="Setoran" ikon="banknote" nilai={rupiah(storting)} />
         </View>
       ) : null}
       {tagihan.isError ? <PesanGalat pesan={tagihan.error.message} /> : null}
@@ -140,7 +140,7 @@ function FormulirAbsen() {
       <PesanGalat pesan={absen.error?.message} />
       <Tombol
         judul="Simpan absen"
-        ikon="checkmark-circle-outline"
+        ikon="circle-check"
         memuat={absen.isPending}
         nonaktif={absensi === "tidak_kerja" && !alasan.trim()}
         onPress={simpan}
@@ -170,7 +170,7 @@ function KakiKerja({ laporanBisa }: { laporanBisa: boolean }) {
           <Tombol
             judul="Buka laporan hari ini"
             jenis="kedua"
-            ikon="document-text-outline"
+            ikon="file-text"
             memuat={laporan.isPending}
             onPress={bukaLaporan}
           />

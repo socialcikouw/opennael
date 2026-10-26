@@ -6,11 +6,11 @@ import { TEBAL } from "../../../komponen/tema";
 import { WARNA } from "../../../komponen/ui";
 import { bacaGerbang, useHariIni } from "../../../lib/lapangan";
 
-/** Ikon tiap tab: `[aktif, tidak aktif]`. */
+/** Ikon Lucide tiap tab. */
 const IKON = {
-  index: ["home", "home-outline"],
-  tagihan: ["list", "list-outline"],
-  notifikasi: ["notifications", "notifications-outline"],
+  index: "house",
+  tagihan: "clipboard-list",
+  notifikasi: "bell",
 } as const;
 
 /**
