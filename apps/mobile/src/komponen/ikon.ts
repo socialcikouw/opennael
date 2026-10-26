@@ -19,6 +19,7 @@ import CircleCheck from "lucide-react-native/icons/circle-check";
 import CirclePause from "lucide-react-native/icons/circle-pause";
 import Clock from "lucide-react-native/icons/clock";
 import CloudOff from "lucide-react-native/icons/cloud-off";
+import Delete from "lucide-react-native/icons/delete";
 import Eye from "lucide-react-native/icons/eye";
 import FileText from "lucide-react-native/icons/file-text";
 import HandCoins from "lucide-react-native/icons/hand-coins";
@@ -63,6 +64,7 @@ export const IKON = {
   "arrow-left": ArrowLeft,
   "arrow-left-right": ArrowLeftRight,
   "arrow-up-down": ArrowUpDown,
+  delete: Delete,
   "badge-check": BadgeCheck,
   banknote: Banknote,
   bell: Bell,

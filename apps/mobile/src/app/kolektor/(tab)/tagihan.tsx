@@ -31,7 +31,8 @@ import {
   type TabKerja,
 } from "../../../fitur/tagihan/inti/daftar";
 import { susunBahanGrid } from "../../../fitur/tagihan/inti/grid";
-import { type KartuVM, kartuVM } from "../../../fitur/tagihan/inti/kartu";
+import { kabarTercatat } from "../../../fitur/tagihan/inti/kabar-tercatat";
+import { kartuVM } from "../../../fitur/tagihan/inti/kartu";
 import { ringkasJatuhTempo } from "../../../fitur/tagihan/inti/khusus";
 import { JudulKelompok, KerangkaKartu, Kosong } from "../../../fitur/tagihan/ui/daftar-bagian";
 import {
@@ -41,7 +42,6 @@ import {
 } from "../../../fitur/tagihan/ui/kartu-nasabah";
 import { KartuDroping, KartuSudah } from "../../../fitur/tagihan/ui/kartu-sudah";
 import { buatSimpananRute, KepalaTagihan } from "../../../fitur/tagihan/ui/kepala-tagihan";
-import { LembarBayar } from "../../../fitur/tagihan/ui/lembar-bayar";
 import { KartuJatuhTempo, KartuRasio, LembarRute } from "../../../fitur/tagihan/ui/ringkasan";
 import { useRuangTab } from "../../../komponen/tab-mengambang";
 import { useGaya, useWarnaMode } from "../../../komponen/tampilan";
@@ -149,11 +149,8 @@ function LayarTagihan() {
 
   // ---- transaksi ----------------------------------------------------------
   const [stempel, setStempel] = useState<ReadonlyMap<string, Stempel>>(new Map());
-  const [lembarBayar, setLembarBayar] = useState<KartuVM | null>(null);
-  const bayar = useMutation({ mutationFn: tulis.bayar });
   const { mutate: catatLibur } = useMutation({ mutationFn: tulis.libur });
   const { mutate: catatLunas } = useMutation({ mutationFn: tulis.lunas });
-  const { reset: resetBayar } = bayar;
 
   /** Stempel di kartu sebentar, lalu data disegarkan & kartunya turun ke "Sudah ditagih". */
   const tercatat = useCallback(
@@ -173,6 +170,9 @@ function LayarTagihan() {
     [klien],
   );
 
+  // Bayar dicatat di layarnya sendiri: stempel dipasang di sini sesudah kembali.
+  useEffect(() => kabarTercatat.dengar(tercatat), [tercatat]);
+
   const gerbang = useMemo(() => (hariIni.data ? bacaGerbang(hariIni.data) : null), [hariIni.data]);
   /** Gerbang lapangan (C4) dijelaskan di tempat — server tetap memutuskan. */
   const gerbangTutup = useCallback((): boolean => {
@@ -188,8 +188,7 @@ function LayarTagihan() {
     () => ({
       bayar: (vm) => {
         if (gerbangTutup()) return;
-        resetBayar();
-        setLembarBayar(vm);
+        router.push({ pathname: "/kolektor/bayar/[id]", params: { id: vm.id } });
       },
       gulung: (vm) => {
         const status = vm.progres?.status ?? "boleh";
@@ -248,7 +247,7 @@ function LayarTagihan() {
         );
       },
     }),
-    [gerbangTutup, resetBayar, catatLibur, catatLunas, tercatat],
+    [gerbangTutup, catatLibur, catatLunas, tercatat],
   );
 
   // ---- gulungan & kepala melayang ---------------------------------------
@@ -467,25 +466,6 @@ function LayarTagihan() {
         }}
         onTutup={() => setLembarRute(false)}
         onSelesaiTutup={gulirKeRute}
-      />
-
-      <LembarBayar
-        vm={lembarBayar}
-        aksen={aksen}
-        sedangKirim={bayar.isPending}
-        galat={bayar.error?.message ?? null}
-        onTutup={() => setLembarBayar(null)}
-        onKirim={(vm, setoranMurni) =>
-          bayar.mutate(
-            { pinjamanId: vm.id, setoranMurni, setoranPelunasan: 0 },
-            {
-              onSuccess: () => {
-                setLembarBayar(null);
-                tercatat(vm.id, "bayar");
-              },
-            },
-          )
-        }
       />
     </View>
   );
