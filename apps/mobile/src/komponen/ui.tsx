@@ -550,7 +550,7 @@ const buatG = (WARNA: Warna) =>
       fontWeight: TEBAL.tebal,
       color: WARNA.teks,
     },
-    galat: { ...HURUF.sm, color: WARNA.bahayaTeks },
+    galat: { ...HURUF.xs, color: WARNA.bahayaTeks },
 
     kotakPesan: {
       flexDirection: "row",

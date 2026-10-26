@@ -126,14 +126,16 @@ export default function Bayar() {
             ]}
           />
           <View style={gaya.ket}>
-            {galat ? <Ikon nama="circle-alert" ukuran={14} warna={WARNA.bahayaTeks} /> : null}
-            {!galat && pas ? <Ikon nama="circle-check" ukuran={14} warna={aksen.teks} /> : null}
+            {galat ? <Ikon nama="circle-alert" ukuran={12} warna={WARNA.bahayaTeks} /> : null}
+            {!galat && pas ? <Ikon nama="circle-check" ukuran={12} warna={aksen.teks} /> : null}
             <Text
               style={[
                 gaya.ketTeks,
                 galat ? { color: WARNA.bahayaTeks } : pas ? { color: aksen.teks } : null,
               ]}
               numberOfLines={2}
+              adjustsFontSizeToFit
+              minimumFontScale={0.85}
             >
               {galat ??
                 (pratinjau?.hasil
@@ -217,14 +219,15 @@ const buatGaya = (WARNA: Warna) =>
     },
     garisNominal: { width: "70%", height: 2, borderRadius: SUDUT.bulat },
     ket: {
-      minHeight: 20,
+      // Dua baris huruf xs dipesan: munculnya galat tak menggeser nominal.
+      minHeight: 32,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
       gap: RUANG[1.5],
       paddingHorizontal: RUANG[4],
     },
-    ketTeks: { ...HURUF.sm, textAlign: "center", color: WARNA.redup },
+    ketTeks: { ...HURUF.xs, flexShrink: 1, textAlign: "center", color: WARNA.redup },
     panel: {
       gap: RUANG[4],
       paddingHorizontal: RUANG[4],
