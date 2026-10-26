@@ -21,21 +21,35 @@ export function useTagihan() {
   });
 }
 
-/**
- * Posisi tagih (aturan-usaha B5: angsuran tertinggal & tunggakan) pinjaman
- * aktif pegangan kolektor ini, per id pinjaman — dari `GET /pinjaman` yang
- * sudah menghitungnya untuk kolektor. Dimuat sejajar dengan daftar tagih:
- * kartu tampil dulu, penanda telat menyusul.
- */
-export function usePosisiTagih() {
+/** Kalender kantor sebulan (`YYYY-MM`): hari tagih & libur kantor — bahan grid kartu. */
+export function useKalenderBulan(bulan: string | undefined) {
   return useQuery({
-    queryKey: [...KUNCI, "posisi-tagih"],
-    queryFn: async () => {
-      const kartu = await (
-        await panggil(() => api.pinjaman.$get({ query: { status: "aktif" } }))
-      ).json();
-      return new Map(kartu.map((k) => [k.id, k.tagih]));
-    },
+    queryKey: [...KUNCI, "kalender", bulan],
+    enabled: !!bulan,
+    staleTime: 60 * 60 * 1000,
+    queryFn: async () =>
+      (await panggil(() => api.lapangan.kalender.$get({ query: { bulan: bulan ?? "" } }))).json(),
+  });
+}
+
+/**
+ * Peristiwa (setoran, lunas, gulung, libur) pegangan kolektor ini dari awal
+ * bulan s/d hari ini — isi grid setoran sebulan di kartu. Server membatasi
+ * kolektor ke pegangannya sendiri.
+ */
+export function usePeristiwaBulan(hariIni: string | undefined) {
+  const awal = hariIni ? `${hariIni.slice(0, 7)}-01` : "";
+  return useQuery({
+    queryKey: [...KUNCI, "peristiwa-bulan", hariIni],
+    enabled: !!hariIni,
+    queryFn: async () =>
+      (
+        await panggil(() =>
+          api.transaksi.peristiwa.$get({
+            query: { tanggalMulai: awal, tanggalSelesai: hariIni ?? "" },
+          }),
+        )
+      ).json(),
   });
 }
 

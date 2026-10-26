@@ -226,7 +226,9 @@ export const SUDUT = {
 
 /** Ukuran huruf + tinggi baris (skala Tailwind dalam pt). */
 export const HURUF = {
-  /** Label terkecil (judul tab bawah) — di luar skala Tailwind. */
+  /** Judul kolom grid setoran — di luar skala Tailwind. */
+  "3xs": { fontSize: 9, lineHeight: 12 },
+  /** Label terkecil (judul tab bawah, isi grid) — di luar skala Tailwind. */
   "2xs": { fontSize: 10, lineHeight: 14 },
   xs: { fontSize: 12, lineHeight: 16 },
   sm: { fontSize: 14, lineHeight: 20 },

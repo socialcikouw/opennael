@@ -87,6 +87,12 @@ export const pinjamanSchema = z.object({
   angsuranKe: z.number(),
   /** Foto serah terima (`GET /foto/:id`); kosong untuk salinan buku lama (migrasi). */
   fotoSerahTerimaId: z.uuid().nullable(),
+  /** Uang baru yang keluar saat akad (E7); akad baru = pokok. */
+  dropBaru: z.number(),
+  /** Bagian pokok yang memutar pinjaman lama (gulung, E7); selain gulung 0. */
+  dropGulung: z.number(),
+  /** Gulung: naik · tetap · turun dibanding pokok asal; selain gulung null. */
+  jenisGulung: z.enum(["naik", "tetap", "turun"]).nullable(),
 });
 export type PinjamanKartu = z.infer<typeof pinjamanSchema>;
 
@@ -147,6 +153,8 @@ export const liburTercatatSchema = z.object({
  */
 export const kartuTagihSchema = pinjamanSchema.extend({
   tabungan: z.number(),
+  /** Nomor urut kampung nasabah di rute kolektor ini (Rute 1, 2, …); null = belum diatur. */
+  ruteKe: z.number().nullable(),
   hariIni: z
     .discriminatedUnion("jenis", [
       z.object({ jenis: z.literal("angsuran"), storting: z.number() }),

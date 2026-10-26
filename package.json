@@ -7,8 +7,8 @@
     "packages/*"
   ],
   "scripts": {
-    "typecheck": "bun run --filter '*' typecheck",
-    "test": "bun run --filter '*' test",
+    "typecheck": "bun run --filter '*' typecheck && tsc --noEmit -p apps/mobile/tsconfig.uji.json",
+    "test": "bun run --filter '*' test && bun test apps/mobile/src",
     "lint": "biome check .",
     "format": "biome check --write .",
     "update:preview": "bun scripts/kirim-ota.ts preview",

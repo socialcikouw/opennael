@@ -68,7 +68,11 @@ export default function Gulung() {
         onPress: () =>
           gulung.mutate(
             { pinjamanId: p.id, pokok, tenor, fotoSerahTerimaId: foto.id },
-            { onSuccess: () => router.dismissTo("/kolektor") },
+            {
+              // Penerusnya cair hari ini: kolektor dibawa ke segmen Droping.
+              onSuccess: () =>
+                router.dismissTo({ pathname: "/kolektor/tagihan", params: { segmen: "droping" } }),
+            },
           ),
       },
     ]);

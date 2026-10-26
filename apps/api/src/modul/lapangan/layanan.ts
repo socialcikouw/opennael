@@ -78,6 +78,9 @@ export const kolomKartu = {
   saldo: pinjaman.saldo,
   angsuranKe: pinjaman.angsuranKe,
   fotoSerahTerimaId: pinjaman.fotoSerahTerimaId,
+  dropBaru: pinjaman.dropBaru,
+  dropGulung: pinjaman.dropGulung,
+  jenisGulung: pinjaman.jenisGulung,
 };
 
 /** Baris hasil `select(kolomKartu)` → bentuk kartu di kontrak. */
@@ -382,7 +385,7 @@ export function buatLayananLapangan(deps: LapanganDeps) {
       wajibPeran(aktor, "kolektor");
       const { tanggal } = await bacaKalender(deps.db, aktor.kantorId, sekarang());
       const baris = await deps.db
-        .select({ ...kolomKartu, tabungan: nasabah.saldoTabungan })
+        .select({ ...kolomKartu, tabungan: nasabah.saldoTabungan, ruteKe: ruteWilayah.urutan })
         .from(pinjaman)
         .innerJoin(nasabah, eq(nasabah.id, pinjaman.nasabahId))
         .innerJoin(wilayah, eq(wilayah.id, nasabah.wilayahId))
@@ -404,9 +407,10 @@ export function buatLayananLapangan(deps: LapanganDeps) {
       if (ids.length === 0) return [];
 
       const catatan = await catatanHari(deps.db, ids, tanggal);
-      return baris.map(({ tabungan, ...b }) => ({
+      return baris.map(({ tabungan, ruteKe, ...b }) => ({
         ...keKartu(b),
         tabungan,
+        ruteKe,
         hariIni: catatan.get(b.id) ?? null,
       }));
     },

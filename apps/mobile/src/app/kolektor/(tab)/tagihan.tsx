@@ -1,270 +1,470 @@
-import { kunciWilayah } from "@opennael/domain";
-import { router } from "expo-router";
-import { useCallback, useDeferredValue, useMemo, useState } from "react";
-import { Pressable, RefreshControl, SectionList, StyleSheet, Text, View } from "react-native";
+import { hitungLunas, kunciWilayah } from "@opennael/domain";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { router, useLocalSearchParams } from "expo-router";
+import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import {
-  KartuTagihan,
-  type KartuVM,
-  KerangkaKartu,
-  susunKartu,
-} from "../../../komponen/kartu-tagihan";
-import { LembarSetor } from "../../../komponen/lembar-setor";
+  Alert,
+  type FlatList,
+  LayoutAnimation,
+  RefreshControl,
+  StyleSheet,
+  View,
+} from "react-native";
+import Animated, {
+  FadeIn,
+  useAnimatedScrollHandler,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { jenisDariMode, MODE, useMode } from "../../../fitur/mode/mode";
+import {
+  type Baris,
+  daftarLompat,
+  jumlahSegmen,
+  kemajuan,
+  type LompatRute,
+  pilah,
+  ringkasDroping,
+  susunBaris,
+  type TabKerja,
+} from "../../../fitur/tagihan/inti/daftar";
+import { susunBahanGrid } from "../../../fitur/tagihan/inti/grid";
+import { type KartuVM, kartuVM } from "../../../fitur/tagihan/inti/kartu";
+import { JudulKelompok, KerangkaKartu, Kosong } from "../../../fitur/tagihan/ui/daftar-bagian";
+import {
+  type AksiKartu,
+  KartuNasabah,
+  type Stempel,
+} from "../../../fitur/tagihan/ui/kartu-nasabah";
+import { KartuDroping, KartuSudah } from "../../../fitur/tagihan/ui/kartu-sudah";
+import { buatSimpananRute, KepalaTagihan } from "../../../fitur/tagihan/ui/kepala-tagihan";
+import { LembarBayar } from "../../../fitur/tagihan/ui/lembar-bayar";
+import { KartuRasio, LembarRute } from "../../../fitur/tagihan/ui/ringkasan";
 import { useRuangTab } from "../../../komponen/tab-mengambang";
-import { useGaya, useWarna } from "../../../komponen/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "../../../komponen/tema";
-import { Ikon, Isian, Keterangan, PesanGalat, Spanduk, Tombol } from "../../../komponen/ui";
+import { useGaya, useWarnaMode } from "../../../komponen/tampilan";
+import { RUANG, type Warna } from "../../../komponen/tema";
+import { PesanGalat, Tombol } from "../../../komponen/ui";
 import { rupiah } from "../../../lib/format";
-import { bacaGerbang, useHariIni, usePosisiTagih, useTagihan } from "../../../lib/lapangan";
+import {
+  bacaGerbang,
+  tulis,
+  useHariIni,
+  useKalenderBulan,
+  usePeristiwaBulan,
+  useTagihan,
+} from "../../../lib/lapangan";
 
-type Saringan = "belum" | "telat" | "sudah" | "semua";
+const gagal = (judul: string) => (e: Error) => Alert.alert(judul, e.message);
 
-const SARINGAN: { nilai: Saringan; teks: string }[] = [
-  { nilai: "belum", teks: "Belum" },
-  { nilai: "telat", teks: "Telat" },
-  { nilai: "sudah", teks: "Sudah" },
-  { nilai: "semua", teks: "Semua" },
-];
-
-const sudahDicatat = (vm: KartuVM) => vm.keadaan === "setor" || vm.keadaan === "libur";
-
-const cocokSaringan: Record<Saringan, (vm: KartuVM) => boolean> = {
-  belum: (vm) => vm.keadaan === "belum",
-  telat: (vm) => vm.p.status === "macet" || (vm.telat ?? 0) > 0,
-  sudah: sudahDicatat,
-  semua: () => true,
-};
-
-const KOSONG: Record<Saringan, string> = {
-  belum: "Semua yang wajib ditagih hari ini sudah dicatat — laporan bisa dibuka.",
-  telat: "Tidak ada nasabah yang telat atau macet.",
-  sudah: "Belum ada setoran atau libur yang dicatat hari ini.",
-  semua: "Belum ada pinjaman aktif di pegangan Anda.",
-};
+/** Lama stempel tampil di kartu sebelum kartu turun ke "Sudah ditagih". */
+const LAMA_STEMPEL_MS = 900;
+/** Gulir searah (pt) sebelum bagian lipat kepala disembunyikan / dimunculkan lagi. */
+const AMBANG_ARAH = 24;
 
 /**
- * TAGIHAN — kerja lapangan kolektor dalam satu layar: ringkasan hari ini,
- * cari, saring (Belum · Telat · Sudah · Semua), daftar per kampung urut rute,
- * dan setor cepat dari kartu. Di tiap kampung yang belum dicatat di atas;
- * yang sudah turun ringkas ke bawah.
+ * TAGIHAN — klon layar Kerja aplikasi lama (naelcapital): kepala melayang
+ * yang melipat, segmen Aktif · Macet · Droping, daftar per rute, kartu
+ * nasabah lengkap, dan transaksi langsung dari kartu. Isinya mengikuti mode
+ * aplikasi (Harian · Mingguan · Tempoan; Semua = hanya-baca).
  *
- * Cepat: daftar tagih & posisi tagih dimuat sejajar (kartu tampil dulu,
- * penanda telat menyusul); view model kartu di-cache per objek data; kolom
- * cari memakai nilai tertunda supaya ketikan tak tersendat.
+ * Data tetap satu sumber (`lib/lapangan`): sesudah transaksi kartu
+ * menampilkan stempel sebentar, lalu data disegarkan dan kartunya turun ke
+ * "Sudah ditagih".
  */
 export default function Tagihan() {
-  const WARNA = useWarna();
+  const mode = useMode();
+  // Ganti mode = seluruh wajah berganti: dipasang ulang dengan pudar singkat.
+  return (
+    <Animated.View key={mode} entering={FadeIn.duration(200)} style={{ flex: 1 }}>
+      <LayarTagihan />
+    </Animated.View>
+  );
+}
+
+function LayarTagihan() {
   const gaya = useGaya(buatGaya);
+  const insets = useSafeAreaInsets();
   const ruangTab = useRuangTab();
+  const mode = useMode();
+  const jenis = jenisDariMode(mode);
+  const aksen = useWarnaMode(mode);
+  const hanyaBaca = mode === "semua";
+  const klien = useQueryClient();
+
   const hariIni = useHariIni();
+  const tanggal = hariIni.data?.kalender.tanggal;
   const tagihan = useTagihan();
-  const posisi = usePosisiTagih();
+  const kalender = useKalenderBulan(tanggal?.slice(0, 7));
+  const peristiwa = usePeristiwaBulan(tanggal);
+
   const [cari, setCari] = useState("");
+  const [cariTerbuka, setCariTerbuka] = useState(false);
   const kunci = kunciWilayah(useDeferredValue(cari));
-  const [saring, setSaring] = useState<Saringan>("belum");
-  const [setor, setSetor] = useState<KartuVM | null>(null);
+  const segmenAwal = useLocalSearchParams<{ segmen?: string }>().segmen;
+  const [tab, setTab] = useState<TabKerja>(segmenAwal === "droping" ? "droping" : "aktif");
+  useEffect(() => {
+    if (segmenAwal === "droping") setTab("droping");
+  }, [segmenAwal]);
 
-  const tanggal = hariIni.data?.kalender.tanggal ?? "";
-  const semua = useMemo(
-    () => (tagihan.data ?? []).map((p) => susunKartu(p, posisi.data?.get(p.id), tanggal)),
-    [tagihan.data, posisi.data, tanggal],
+  // ---- data → kartu → segmen → baris -------------------------------------
+  const bahan = useMemo(
+    () => (tanggal ? susunBahanGrid(tanggal, peristiwa.data, kalender.data) : null),
+    [tanggal, peristiwa.data, kalender.data],
+  );
+  const semua = useMemo(() => {
+    if (!tagihan.data || !tanggal || !bahan) return [];
+    return tagihan.data
+      .filter((p) => jenis === null || p.jenis === jenis)
+      .map((p) => kartuVM(p, tanggal, bahan));
+  }, [tagihan.data, tanggal, bahan, jenis]);
+  const partisi = useMemo(() => pilah(semua, kunci), [semua, kunci]);
+  const baris = useMemo(
+    () => susunBaris(partisi[tab], tab === "droping" ? [] : partisi.sudah[tab]),
+    [partisi, tab],
+  );
+  const maju = useMemo(() => kemajuan(semua), [semua]);
+  const droping = useMemo(
+    () => ringkasDroping(semua.filter((vm) => vm.ember === "droping")),
+    [semua],
   );
 
-  const ringkasan = useMemo(() => {
-    let dicatat = 0;
-    let libur = 0;
-    let setoran = 0;
-    let wajib = 0;
-    for (const vm of semua) {
-      // Setoran dijumlah semuanya; dicatat/wajib hanya yang wajib hari ini (B6)
-      // — sama dengan yang diperiksa server sebelum laporan dibuka (C6).
-      if (vm.p.hariIni?.jenis === "angsuran") setoran += vm.p.hariIni.storting;
-      if (vm.p.hariIni?.jenis === "libur") libur++;
-      if (!vm.wajib) continue;
-      wajib++;
-      if (vm.p.hariIni) dicatat++;
-    }
-    const jumlah = {} as Record<Saringan, number>;
-    for (const s of SARINGAN) jumlah[s.nilai] = semua.filter(cocokSaringan[s.nilai]).length;
-    return { dicatat, libur, setoran, wajib, jumlah };
-  }, [semua]);
+  // ---- transaksi ----------------------------------------------------------
+  const [stempel, setStempel] = useState<ReadonlyMap<string, Stempel>>(new Map());
+  const [lembarBayar, setLembarBayar] = useState<KartuVM | null>(null);
+  const bayar = useMutation({ mutationFn: tulis.bayar });
+  const { mutate: catatLibur } = useMutation({ mutationFn: tulis.libur });
+  const { mutate: catatLunas } = useMutation({ mutationFn: tulis.lunas });
+  const { reset: resetBayar } = bayar;
 
-  const bagian = useMemo(() => {
-    const perKampung = new Map<string, KartuVM[]>();
-    for (const vm of semua) {
-      if (!cocokSaringan[saring](vm)) continue;
-      const { nama, kampung } = vm.p.nasabah;
-      if (kunci && !kunciWilayah(nama).includes(kunci) && !kunciWilayah(kampung).includes(kunci))
-        continue;
-      perKampung.set(kampung, [...(perKampung.get(kampung) ?? []), vm]);
-    }
-    return [...perKampung].map(([title, data]) => ({
-      title,
-      // Urutan rute dari server dipertahankan; yang sudah dicatat turun ke bawah.
-      data: [...data.filter((vm) => !sudahDicatat(vm)), ...data.filter(sudahDicatat)],
-      dicatat: data.filter(sudahDicatat).length,
-    }));
-  }, [semua, saring, kunci]);
-
-  const gerbang = hariIni.data ? bacaGerbang(hariIni.data) : null;
-  const buka = useCallback(
-    (id: string) => router.push({ pathname: "/kolektor/pinjaman/[id]", params: { id } }),
-    [],
+  /** Stempel di kartu sebentar, lalu data disegarkan & kartunya turun ke "Sudah ditagih". */
+  const tercatat = useCallback(
+    (id: string, jenisStempel: Stempel) => {
+      setStempel((m) => new Map(m).set(id, jenisStempel));
+      setTimeout(() => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        void klien.invalidateQueries({ queryKey: ["lapangan"] }).finally(() =>
+          setStempel((m) => {
+            const baru = new Map(m);
+            baru.delete(id);
+            return baru;
+          }),
+        );
+      }, LAMA_STEMPEL_MS);
+    },
+    [klien],
   );
-  const segarkan = () => {
-    void hariIni.refetch();
-    void tagihan.refetch();
-    void posisi.refetch();
+
+  const gerbang = useMemo(() => (hariIni.data ? bacaGerbang(hariIni.data) : null), [hariIni.data]);
+  /** Gerbang lapangan (C4) dijelaskan di tempat — server tetap memutuskan. */
+  const gerbangTutup = useCallback((): boolean => {
+    if (!gerbang || gerbang.buka) return false;
+    Alert.alert(
+      gerbang.perluAbsen ? "Absen dulu" : (gerbang.judul ?? "Lapangan tutup"),
+      gerbang.perluAbsen ? "Transaksi bisa dicatat sesudah absen pagi di Beranda." : gerbang.isi,
+    );
+    return true;
+  }, [gerbang]);
+
+  const aksi: AksiKartu = useMemo(
+    () => ({
+      bayar: (vm) => {
+        if (gerbangTutup()) return;
+        resetBayar();
+        setLembarBayar(vm);
+      },
+      gulung: (vm) => {
+        const status = vm.progres?.status ?? "boleh";
+        if (status !== "boleh") {
+          Alert.alert("Belum bisa digulung", vm.progres?.petunjuk);
+          return;
+        }
+        if (gerbangTutup()) return;
+        router.push({ pathname: "/kolektor/gulung/[id]", params: { id: vm.id } });
+      },
+      libur: (vm) => {
+        if (vm.alasanLibur) {
+          Alert.alert("Belum bisa libur", vm.alasanLibur);
+          return;
+        }
+        if (gerbangTutup()) return;
+        Alert.alert("Tandai libur", `Yakin ${vm.nama} libur hari ini?`, [
+          { text: "Batal", style: "cancel" },
+          {
+            text: "Yakin",
+            style: "destructive",
+            onPress: () =>
+              catatLibur(
+                { pinjamanId: vm.id },
+                {
+                  onSuccess: () => tercatat(vm.id, "libur"),
+                  onError: gagal("Gagal mencatat libur"),
+                },
+              ),
+          },
+        ]);
+      },
+      lunas: (vm) => {
+        if (gerbangTutup()) return;
+        const r = hitungLunas(vm.p.saldo, vm.p.tabungan);
+        const kembali = -r.storting;
+        Alert.alert(
+          "Pelunasan",
+          `Yakin melunasi ${vm.nama}?\n\nSaldo: ${rupiah(vm.p.saldo)}\nTabungan: ${rupiah(vm.p.tabungan)}\n\n${
+            kembali > 0
+              ? `Tabungan keluar ke ${vm.nama}: ${rupiah(kembali)}`
+              : `Sisa yang harus disetor ${vm.nama}: ${rupiah(r.setoranMurni)}`
+          }`,
+          [
+            { text: "Batal", style: "cancel" },
+            {
+              text: "Yakin",
+              style: "destructive",
+              onPress: () =>
+                catatLunas(vm.id, {
+                  onSuccess: () => tercatat(vm.id, "lunas"),
+                  onError: gagal("Gagal melunasi"),
+                }),
+            },
+          ],
+        );
+      },
+    }),
+    [gerbangTutup, resetBayar, catatLibur, catatLunas, tercatat],
+  );
+
+  // ---- gulungan & kepala melayang ---------------------------------------
+  const lipat = useSharedValue(0);
+  const terangkat = useSharedValue(0);
+  const tinggiLipat = useSharedValue(0);
+  const terakhir = useSharedValue(0);
+  const arah = useSharedValue(0);
+  const cariSV = useSharedValue(0);
+  useEffect(() => {
+    cariSV.set(cariTerbuka ? 1 : 0);
+    if (cariTerbuka) lipat.set(withTiming(0, { duration: 180 }));
+  }, [cariTerbuka, cariSV, lipat]);
+
+  const onScroll = useAnimatedScrollHandler((e) => {
+    const y = Math.max(e.contentOffset.y, 0);
+    const dy = y - terakhir.get();
+    terakhir.set(y);
+    terangkat.set(withTiming(y > 4 ? 1 : 0, { duration: 150 }));
+    if (cariSV.get()) return;
+    const L = tinggiLipat.get();
+    if (y <= L) {
+      lipat.set(y);
+      arah.set(0);
+      return;
+    }
+    const kumpul = Math.sign(dy) === Math.sign(arah.get()) ? arah.get() + dy : dy;
+    arah.set(kumpul);
+    if (kumpul > AMBANG_ARAH && lipat.get() < L) lipat.set(withTiming(L, { duration: 180 }));
+    else if (kumpul < -AMBANG_ARAH && lipat.get() > 0) lipat.set(withTiming(0, { duration: 180 }));
+  });
+
+  const [tinggiKepala, setTinggiKepala] = useState(insets.top + 220);
+  const [lipatPt, setLipatPt] = useState(0);
+  const daftar = useRef<FlatList<Baris>>(null);
+  const keAtas = useCallback(() => {
+    lipat.set(0);
+    daftar.current?.scrollToOffset({ offset: 0, animated: false });
+  }, [lipat]);
+  const gantiTab = useCallback(
+    (t: TabKerja) => {
+      setTab(t);
+      keAtas();
+    },
+    [keAtas],
+  );
+
+  // ---- chip & lompat rute -------------------------------------------------
+  const [simpananRute] = useState(buatSimpananRute);
+  useEffect(() => {
+    simpananRute.tulis(baris[0]?.rute ?? null);
+  }, [baris, simpananRute]);
+  const onViewableItemsChanged = useRef(
+    ({ viewableItems }: { viewableItems: { item: Baris }[] }) => {
+      const pertama = viewableItems[0]?.item;
+      if (pertama) simpananRute.tulis(pertama.rute);
+    },
+  ).current;
+  const [lembarRute, setLembarRute] = useState(false);
+  const sasaranRute = useRef<number | null>(null);
+  const lompat = useMemo(() => (lembarRute ? daftarLompat(baris) : []), [lembarRute, baris]);
+  const offsetRute = tinggiKepala - lipatPt;
+  const gulirKeRute = () => {
+    const indeks = sasaranRute.current;
+    sasaranRute.current = null;
+    if (indeks !== null)
+      daftar.current?.scrollToIndex({ index: indeks, animated: true, viewOffset: offsetRute });
   };
+
+  // ---- tampilan -----------------------------------------------------------
+  const renderItem = useCallback(
+    ({ item }: { item: Baris }) => {
+      if (item.jenis === "judul") return <JudulKelompok baris={item} aksen={aksen} />;
+      if (item.jenis === "sudah") return <KartuSudah vm={item.vm} aksen={aksen} />;
+      return (
+        <KartuNasabah
+          vm={item.vm}
+          aksi={aksi}
+          aksen={aksen}
+          kolomHariIni={bahan?.kerangka.kolomHariIni ?? -1}
+          hanyaBaca={hanyaBaca}
+          stempel={stempel.get(item.vm.id) ?? null}
+        />
+      );
+    },
+    [aksi, aksen, bahan, hanyaBaca, stempel],
+  );
 
   if (hariIni.isError || tagihan.isError) {
     return (
-      <View style={[gaya.layar, gaya.galat]}>
+      <View style={[gaya.layar, gaya.galat, { paddingTop: insets.top + RUANG[6] }]}>
         <PesanGalat pesan={(hariIni.error ?? tagihan.error)?.message} />
-        <Tombol judul="Coba lagi" ikon="refresh-cw" onPress={segarkan} />
+        <Tombol
+          judul="Coba lagi"
+          ikon="refresh-cw"
+          onPress={() => {
+            void hariIni.refetch();
+            void tagihan.refetch();
+          }}
+        />
       </View>
     );
   }
 
   const memuat = hariIni.isPending || tagihan.isPending;
-  const persen = ringkasan.wajib > 0 ? ringkasan.dicatat / ringkasan.wajib : 0;
+  const tutup =
+    gerbang && !gerbang.buka
+      ? gerbang.perluAbsen
+        ? { judul: "Belum absen", isi: "Absen pagi di Beranda dulu supaya transaksi bisa dicatat." }
+        : { judul: gerbang.judul ?? "Lapangan tutup", isi: gerbang.isi }
+      : null;
 
   return (
     <View style={gaya.layar}>
-      <View style={gaya.alat}>
-        <Isian
-          ikon="search"
-          value={cari}
-          onChangeText={setCari}
-          placeholder="Cari nama atau kampung"
-          autoCorrect={false}
-          clearButtonMode="while-editing"
-          returnKeyType="search"
-        />
-        <View style={gaya.cipDeret}>
-          {SARINGAN.map((s) => {
-            const aktif = s.nilai === saring;
-            return (
-              <Pressable
-                key={s.nilai}
-                onPress={() => setSaring(s.nilai)}
-                accessibilityRole="tab"
-                accessibilityState={{ selected: aktif }}
-                style={[gaya.cip, aktif ? gaya.cipAktif : null]}
-              >
-                <Text style={[gaya.cipTeks, aktif ? gaya.cipTeksAktif : null]}>{s.teks}</Text>
-                <Text style={[gaya.cipJumlah, aktif ? gaya.cipTeksAktif : null]}>
-                  {memuat ? "–" : ringkasan.jumlah[s.nilai]}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
-      </View>
-
-      <SectionList
-        style={gaya.layar}
-        contentContainerStyle={{ paddingBottom: ruangTab }}
-        sections={memuat ? [] : bagian}
-        keyExtractor={(vm) => vm.p.id}
+      <Animated.FlatList
+        ref={daftar}
+        data={memuat ? [] : baris}
+        keyExtractor={(b) => b.id}
+        renderItem={renderItem}
+        extraData={stempel}
+        onScroll={onScroll}
+        scrollEventThrottle={16}
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
-        stickySectionHeadersEnabled
-        initialNumToRender={8}
-        windowSize={9}
+        initialNumToRender={6}
+        windowSize={7}
+        onViewableItemsChanged={onViewableItemsChanged}
+        viewabilityConfig={{ itemVisiblePercentThreshold: 10 }}
+        onScrollToIndexFailed={(info) => {
+          daftar.current?.scrollToOffset({
+            offset: info.averageItemLength * info.index,
+            animated: false,
+          });
+          setTimeout(
+            () =>
+              daftar.current?.scrollToIndex({
+                index: info.index,
+                animated: true,
+                viewOffset: offsetRute,
+              }),
+            120,
+          );
+        }}
+        contentContainerStyle={{ paddingTop: tinggiKepala + RUANG[2], paddingBottom: ruangTab }}
         refreshControl={
           <RefreshControl
-            refreshing={hariIni.isRefetching || tagihan.isRefetching}
-            onRefresh={segarkan}
-            tintColor={WARNA.utama}
-            colors={[WARNA.utama]}
+            refreshing={tagihan.isRefetching}
+            onRefresh={() => {
+              void hariIni.refetch();
+              void tagihan.refetch();
+              void peristiwa.refetch();
+            }}
+            progressViewOffset={tinggiKepala}
+            tintColor={aksen.teks}
+            colors={[aksen.teks]}
           />
         }
         ListHeaderComponent={
-          <View style={gaya.kepalaDaftar}>
-            {gerbang && !gerbang.buka ? (
-              <Spanduk
-                judul={gerbang.perluAbsen ? "Absen dulu" : (gerbang.judul ?? "Lapangan tutup")}
-                isi={
-                  gerbang.perluAbsen
-                    ? "Setoran bisa dicatat sesudah absen pagi di Beranda."
-                    : gerbang.isi
-                }
-              />
-            ) : null}
-            {memuat ? (
-              <>
-                <KerangkaKartu />
-                <KerangkaKartu />
-                <KerangkaKartu />
-              </>
-            ) : (
-              <View style={gaya.ringkasan}>
-                <View style={gaya.ringkasanAtas}>
-                  <View>
-                    <Text style={gaya.ringkasanLabel}>Dicatat hari ini</Text>
-                    <Text style={gaya.ringkasanAngka}>
-                      {ringkasan.dicatat}
-                      <Text style={gaya.ringkasanDari}> / {ringkasan.wajib}</Text>
-                    </Text>
-                  </View>
-                  <View style={gaya.ringkasanKanan}>
-                    <Text style={gaya.ringkasanLabel}>Setoran</Text>
-                    <Text style={gaya.ringkasanUang}>{rupiah(ringkasan.setoran)}</Text>
-                  </View>
-                </View>
-                <View style={gaya.rel}>
-                  <View style={[gaya.isiRel, { width: `${Math.round(persen * 100)}%` }]} />
-                </View>
-                <Text style={gaya.ringkasanKaki}>
-                  {ringkasan.wajib - ringkasan.dicatat} belum · {ringkasan.libur} libur ·{" "}
-                  {ringkasan.jumlah.telat} telat/macet
-                </Text>
-              </View>
-            )}
-          </View>
+          !memuat && tab === "droping" && droping.baru + droping.gulung > 0 ? (
+            <KartuDroping baru={droping.baru} gulung={droping.gulung} />
+          ) : undefined
         }
         ListEmptyComponent={
-          memuat ? undefined : (
-            <View style={gaya.kosong}>
-              <Ikon
-                nama={kunci ? "search-x" : saring === "belum" ? "circle-check" : "users"}
-                ukuran={28}
-                warna={WARNA.redup}
-              />
-              <Keterangan>
-                {kunci ? "Tidak ada yang cocok dengan pencarian ini." : KOSONG[saring]}
-              </Keterangan>
-            </View>
+          memuat ? (
+            <>
+              <KerangkaKartu />
+              <KerangkaKartu />
+            </>
+          ) : (
+            <Kosong tab={tab} mencari={kunci !== ""} aksen={aksen} />
           )
         }
-        renderSectionHeader={({ section }) => (
-          <View style={gaya.kampung}>
-            <Ikon nama="map-pin" ukuran={14} warna={WARNA.redup} />
-            <Text style={gaya.kampungTeks} numberOfLines={1}>
-              {section.title}
-            </Text>
-            <Text style={gaya.kampungJumlah}>
-              {section.dicatat}/{section.data.length}
-            </Text>
-          </View>
-        )}
-        renderItem={({ item }) => (
-          <KartuTagihan
-            vm={item}
-            bukaSetor={gerbang?.buka ?? false}
-            onBuka={buka}
-            onSetor={setSetor}
-          />
-        )}
       />
 
-      <LembarSetor
-        vm={setor}
-        onTutup={() => setSetor(null)}
-        onKartuLengkap={(id) => {
-          setSetor(null);
-          buka(id);
+      <KepalaTagihan
+        lipat={lipat}
+        terangkat={terangkat}
+        onUkurLipat={(t) => {
+          tinggiLipat.set(t);
+          setLipatPt(t);
         }}
+        onUkur={setTinggiKepala}
+        mode={{ label: MODE[mode].label, warna: aksen }}
+        kartuAtas={
+          <KartuRasio
+            bayar={maju.bayar}
+            libur={maju.libur}
+            sisa={maju.sisa}
+            aksen={aksen}
+            onLaporan={() => router.navigate("/kolektor")}
+          />
+        }
+        tab={tab}
+        jumlah={jumlahSegmen(partisi)}
+        onGantiTab={gantiTab}
+        cari={cari}
+        onCari={setCari}
+        cariTerbuka={cariTerbuka}
+        onCariTerbuka={setCariTerbuka}
+        tutup={tutup}
+        simpananRute={simpananRute}
+        onBukaRute={() => setLembarRute(true)}
+      />
+
+      <LembarRute
+        terbuka={lembarRute}
+        rute={lompat}
+        ruteKini={simpananRute.ambil()}
+        aksen={aksen}
+        onPilih={(r: LompatRute) => {
+          sasaranRute.current = r.indeks;
+          setLembarRute(false);
+        }}
+        onTutup={() => setLembarRute(false)}
+        onSelesaiTutup={gulirKeRute}
+      />
+
+      <LembarBayar
+        vm={lembarBayar}
+        aksen={aksen}
+        sedangKirim={bayar.isPending}
+        galat={bayar.error?.message ?? null}
+        onTutup={() => setLembarBayar(null)}
+        onKirim={(vm, setoranMurni) =>
+          bayar.mutate(
+            { pinjamanId: vm.id, setoranMurni, setoranPelunasan: 0 },
+            {
+              onSuccess: () => {
+                setLembarBayar(null);
+                tercatat(vm.id, "bayar");
+              },
+            },
+          )
+        }
       />
     </View>
   );
@@ -273,101 +473,5 @@ export default function Tagihan() {
 const buatGaya = (WARNA: Warna) =>
   StyleSheet.create({
     layar: { flex: 1, backgroundColor: WARNA.latar },
-    galat: { gap: RUANG[4], paddingHorizontal: RUANG[5], paddingVertical: RUANG[6] },
-    alat: {
-      gap: RUANG[3],
-      paddingHorizontal: RUANG[4],
-      paddingTop: RUANG[2],
-      paddingBottom: RUANG[3],
-      borderBottomWidth: 1,
-      borderBottomColor: WARNA.garis,
-      backgroundColor: WARNA.latar,
-    },
-    cipDeret: { flexDirection: "row", gap: RUANG[2] },
-    cip: {
-      flex: 1,
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: RUANG[1.5],
-      height: 36,
-      borderRadius: SUDUT.bulat,
-      borderWidth: 1,
-      borderColor: WARNA.garis,
-      backgroundColor: WARNA.permukaan,
-    },
-    cipAktif: { borderColor: WARNA.utamaIsi, backgroundColor: WARNA.utamaIsi },
-    cipTeks: { ...HURUF.sm, fontWeight: TEBAL.sedang, color: WARNA.teksKedua },
-    cipJumlah: {
-      ...HURUF.xs,
-      fontWeight: TEBAL.tebal,
-      fontVariant: ["tabular-nums"],
-      color: WARNA.redup,
-    },
-    cipTeksAktif: { color: WARNA.teksAtasUtama },
-    kepalaDaftar: { gap: RUANG[3], paddingTop: RUANG[3] },
-    ringkasan: {
-      gap: RUANG[3],
-      marginHorizontal: RUANG[4],
-      padding: RUANG[4],
-      borderRadius: SUDUT.lebar,
-      borderWidth: 1,
-      borderColor: WARNA.utamaGaris,
-      backgroundColor: WARNA.utamaLembut,
-    },
-    ringkasanAtas: { flexDirection: "row", justifyContent: "space-between" },
-    ringkasanKanan: { alignItems: "flex-end" },
-    ringkasanLabel: { ...HURUF.xs, fontWeight: TEBAL.sedang, color: WARNA.utamaTua },
-    ringkasanAngka: {
-      ...HURUF["3xl"],
-      fontWeight: TEBAL.ekstra,
-      fontVariant: ["tabular-nums"],
-      color: WARNA.utamaTua,
-    },
-    ringkasanDari: { ...HURUF.lg, fontWeight: TEBAL.semi, color: WARNA.utama },
-    ringkasanUang: {
-      ...HURUF.xl,
-      paddingTop: RUANG[1.5],
-      fontWeight: TEBAL.tebal,
-      fontVariant: ["tabular-nums"],
-      color: WARNA.utamaTua,
-    },
-    rel: { height: 8, borderRadius: SUDUT.bulat, backgroundColor: WARNA.utamaMuda },
-    isiRel: { height: "100%", borderRadius: SUDUT.bulat, backgroundColor: WARNA.utamaIsi },
-    ringkasanKaki: { ...HURUF.xs, color: WARNA.utamaTua },
-    kampung: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: RUANG[1.5],
-      paddingHorizontal: RUANG[5],
-      paddingTop: RUANG[4],
-      paddingBottom: RUANG[2],
-      backgroundColor: WARNA.latar,
-    },
-    kampungTeks: {
-      ...HURUF.xs,
-      flex: 1,
-      fontWeight: TEBAL.tebal,
-      textTransform: "uppercase",
-      letterSpacing: 0.6,
-      color: WARNA.redup,
-    },
-    kampungJumlah: {
-      ...HURUF.xs,
-      fontWeight: TEBAL.semi,
-      fontVariant: ["tabular-nums"],
-      color: WARNA.redup,
-    },
-    kosong: {
-      alignItems: "center",
-      gap: RUANG[2],
-      marginHorizontal: RUANG[4],
-      marginTop: RUANG[3],
-      paddingHorizontal: RUANG[4],
-      paddingVertical: RUANG[8],
-      borderRadius: SUDUT.besar,
-      borderWidth: 1,
-      borderStyle: "dashed",
-      borderColor: WARNA.garisTegas,
-    },
+    galat: { gap: RUANG[4], paddingHorizontal: RUANG[5] },
   });

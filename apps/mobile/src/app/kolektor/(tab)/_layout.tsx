@@ -69,7 +69,7 @@ export default function TabKolektor() {
         }}
       >
         <Tabs.Screen name="index" options={{ title: "Beranda" }} />
-        <Tabs.Screen name="tagihan" options={{ title: "Tagihan" }} />
+        <Tabs.Screen name="tagihan" options={{ title: "Tagihan", headerShown: false }} />
         <Tabs.Screen name="notifikasi" options={{ title: "Notifikasi" }} />
       </Tabs>
       <LembarMode terbuka={lembarMode} onTutup={() => setLembarMode(false)} />
