@@ -125,6 +125,8 @@ export const SUDUT = {
 
 /** Ukuran huruf + tinggi baris (skala Tailwind dalam pt). */
 export const HURUF = {
+  /** Label terkecil (judul tab bawah) — di luar skala Tailwind. */
+  "2xs": { fontSize: 10, lineHeight: 14 },
   xs: { fontSize: 12, lineHeight: 16 },
   sm: { fontSize: 14, lineHeight: 20 },
   base: { fontSize: 16, lineHeight: 24 },
@@ -135,6 +137,7 @@ export const HURUF = {
 } as const satisfies Record<string, TextStyle>;
 
 export const TEBAL = {
+  biasa: "400",
   sedang: "500",
   semi: "600",
   tebal: "700",

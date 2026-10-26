@@ -13,7 +13,6 @@ import ChevronUp from "lucide-react-native/icons/chevron-up";
 import Circle from "lucide-react-native/icons/circle";
 import CircleAlert from "lucide-react-native/icons/circle-alert";
 import CircleCheck from "lucide-react-native/icons/circle-check";
-import ClipboardList from "lucide-react-native/icons/clipboard-list";
 import Clock from "lucide-react-native/icons/clock";
 import CloudOff from "lucide-react-native/icons/cloud-off";
 import FileText from "lucide-react-native/icons/file-text";
@@ -29,6 +28,7 @@ import Repeat from "lucide-react-native/icons/repeat";
 import Search from "lucide-react-native/icons/search";
 import TriangleAlert from "lucide-react-native/icons/triangle-alert";
 import Users from "lucide-react-native/icons/users";
+import UsersRound from "lucide-react-native/icons/users-round";
 import X from "lucide-react-native/icons/x";
 
 /**
@@ -53,7 +53,7 @@ export const IKON = {
   circle: Circle,
   "circle-alert": CircleAlert,
   "circle-check": CircleCheck,
-  "clipboard-list": ClipboardList,
+  "users-round": UsersRound,
   clock: Clock,
   "cloud-off": CloudOff,
   "file-text": FileText,

@@ -9,7 +9,7 @@ import { bacaGerbang, useHariIni } from "../../../lib/lapangan";
 /** Ikon Lucide tiap tab. */
 const IKON = {
   index: "house",
-  tagihan: "clipboard-list",
+  tagihan: "users-round",
   notifikasi: "bell",
 } as const;
 

@@ -62,7 +62,7 @@ export function TabMengambang({
               style={({ pressed }) => [gaya.tab, pressed ? gaya.ditekan : null]}
             >
               <View style={[gaya.ikonTab, aktif ? gaya.ikonAktif : null]}>
-                <Ikon nama={ikonTab} ukuran={22} warna={warna} tebal={aktif} />
+                <Ikon nama={ikonTab} ukuran={26} warna={warna} tebal={aktif} />
               </View>
               <Text style={[gaya.label, { color: warna }]} numberOfLines={1}>
                 {judul}
@@ -113,14 +113,14 @@ const gaya = StyleSheet.create({
   },
   ditekan: { opacity: 0.6 },
   ikonTab: {
-    height: 28,
+    height: 32,
     paddingHorizontal: RUANG[4],
     alignItems: "center",
     justifyContent: "center",
     borderRadius: SUDUT.bulat,
   },
   ikonAktif: { backgroundColor: WARNA.utamaMuda },
-  label: { ...HURUF.xs, fontWeight: TEBAL.semi },
+  label: { ...HURUF["2xs"], fontWeight: TEBAL.biasa },
   tambah: {
     width: TINGGI,
     height: TINGGI,
