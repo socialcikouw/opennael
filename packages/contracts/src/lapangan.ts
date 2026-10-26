@@ -170,3 +170,15 @@ export const nasabahLamaSchema = z.object({
     .nullable(),
 });
 export type NasabahLama = z.infer<typeof nasabahLamaSchema>;
+
+/** `GET /lapangan/kalender?bulan=YYYY-MM` — kalender kantor sebulan (grid setoran kartu). */
+export const saringKalenderBulanSchema = z.object({
+  bulan: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, "Bulan YYYY-MM"),
+});
+
+export const kalenderBulanSchema = z.object({
+  /** Hari tagih kantor (aturan-usaha B2): hari kerja pola pekan yang berlaku & bukan libur kantor. */
+  hariTagih: z.array(z.string()),
+  liburKantor: z.array(z.object({ tanggal: z.string(), alasan: z.string() })),
+});
+export type KalenderBulan = z.infer<typeof kalenderBulanSchema>;

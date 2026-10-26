@@ -389,4 +389,35 @@ describe.skipIf(!url)("lapangan kolektor", () => {
       expect((await absen(longgar)).isi.kode).toBe("SUDAH_ABSEN");
     });
   }, 120_000);
+
+  test("kalender bulan: hari tagih pola pekan & libur kantor (grid kartu)", async () => {
+    await dalamTransaksi(async (tx) => {
+      const kirim = pengirim(buatApp({ db: tx, ...RAHASIA, kodeRegistrasi: KODE_REG }));
+      const bos = (
+        await kirim("/auth/register", {
+          kodeRegistrasi: KODE_REG,
+          namaKantor: "Kantor Kalender",
+          nama: "Bos",
+          nomorHp: "081299990012",
+          sandi: "sandi-rahasia-uji",
+        })
+      ).isi as Sesi;
+      const kantorId = bos.pengguna.kantor.id;
+      // Pekan kerja bawaan kantor baru: Senin–Sabtu (B2). Libur kantor Kamis 5 Nov.
+      await tx.execute(sql`
+        insert into libur_kantor (kantor_id, tanggal, alasan_libur, dibuat_oleh)
+        values (${kantorId}, '2026-11-05', 'Rapat', ${bos.pengguna.id})`);
+      const r = await kirim("/lapangan/kalender?bulan=2026-11", undefined, bos.tokenAkses);
+      expect(r.status).toBe(200);
+      // November 2026: 30 hari, 5 Minggu → 25 hari kerja, dikurangi 1 libur kantor.
+      expect(r.isi.hariTagih).toHaveLength(24);
+      expect(r.isi.hariTagih).not.toContain("2026-11-01"); // Minggu
+      expect(r.isi.hariTagih).not.toContain("2026-11-05"); // libur kantor
+      expect(r.isi.hariTagih).toContain("2026-11-30");
+      expect(r.isi.liburKantor).toEqual([{ tanggal: "2026-11-05", alasan: "Rapat" }]);
+      expect(
+        (await kirim("/lapangan/kalender?bulan=2026-13", undefined, bos.tokenAkses)).status,
+      ).toBe(400);
+    });
+  }, 60_000);
 });

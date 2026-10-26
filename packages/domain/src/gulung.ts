@@ -36,6 +36,33 @@ export interface RencanaGulung {
 /** E4. Pinjaman ke-1 s/d ke-3 mulai angsuran 12; ke-4 dst mulai angsuran 10. */
 export const AMBANG_GULUNG_HARIAN = { pinjamanAwalMaks: 3, awal: 12, lanjutan: 10 } as const;
 
+/** E4. Angsuran ke- terendah yang boleh digulung untuk pinjaman harian ke-`pinjamanKe`. */
+export function nomorGulungMinimal(pinjamanKe: number): number {
+  return pinjamanKe <= AMBANG_GULUNG_HARIAN.pinjamanAwalMaks
+    ? AMBANG_GULUNG_HARIAN.awal
+    : AMBANG_GULUNG_HARIAN.lanjutan;
+}
+
+/**
+ * Sinyal gulung di kartu kolektor: boleh · belum (harian di bawah ambang E4)
+ * · terkunci (selesai, atau harian macet). Tanpa rem bos (E3) dan tanpa syarat
+ * yang bergantung pokok baru (naik pertama, E6) — itu dinilai `hitungGulung`
+ * saat pokoknya diketik.
+ */
+export type StatusGulung = "boleh" | "belum" | "terkunci";
+
+export function statusGulung(p: {
+  jenis: PinjamanAsal["jenis"];
+  status: PinjamanAsal["status"];
+  pinjamanKe: number;
+  angsuranKe: number;
+}): StatusGulung {
+  const aktif = p.status === "berjalan" || p.status === "macet";
+  if (p.jenis !== "harian") return aktif ? "boleh" : "terkunci"; // E5
+  if (p.status !== "berjalan") return "terkunci";
+  return p.angsuranKe >= nomorGulungMinimal(p.pinjamanKe) ? "boleh" : "belum";
+}
+
 const pesanRem = (dasar: string, alasan?: string | null) =>
   alasan ? `${dasar} dikunci bos: ${alasan}` : `${dasar} sedang dikunci bos`;
 
@@ -71,10 +98,7 @@ export function hitungGulung(
       "GULUNG_PERTAMA_TIDAK_BOLEH_NAIK",
       "Pinjaman pertama belum bisa naik",
     );
-    const ambang =
-      asal.pinjamanKe <= AMBANG_GULUNG_HARIAN.pinjamanAwalMaks
-        ? AMBANG_GULUNG_HARIAN.awal
-        : AMBANG_GULUNG_HARIAN.lanjutan;
+    const ambang = nomorGulungMinimal(asal.pinjamanKe);
     wajib(
       asal.angsuranKe >= ambang,
       "GULUNG_ANGSURAN_BELUM_CUKUP",

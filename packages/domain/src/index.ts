@@ -12,6 +12,7 @@ export * from "./gulung";
 export * from "./kalender";
 export * from "./kas";
 export * from "./kode-tautan";
+export * from "./libur";
 export * from "./macet";
 export * from "./nik";
 export * from "./nomor-hp";

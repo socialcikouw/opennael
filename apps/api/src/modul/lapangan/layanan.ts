@@ -1,6 +1,7 @@
 import type {
   AbsenInput,
   AkadInput,
+  KalenderBulan,
   KartuTagih,
   NasabahBaruInput,
   NasabahLama,
@@ -8,21 +9,22 @@ import type {
 } from "@opennael/contracts";
 import {
   angsuranKe,
-  hariTagihMingguan,
   hitungBayar,
   hitungGulung,
   hitungLunas,
   kunciWilayah,
   rapikanNamaWilayah,
   syaratAkad,
+  tolakLibur,
   wajibDitagihHariIni,
 } from "@opennael/domain";
-import { and, asc, desc, eq, inArray, isNull, ne, notExists, or, sql } from "drizzle-orm";
+import { and, asc, between, desc, eq, inArray, isNull, ne, notExists, or, sql } from "drizzle-orm";
 import type { Db } from "../../db/klien";
 import {
   foto,
   hariKolektor,
   kebijakan,
+  liburKantor,
   liburNasabah,
   nasabah,
   pinjaman,
@@ -37,6 +39,7 @@ import type { Aktor } from "../auth/token";
 import {
   bacaKalender,
   bukaGerbang,
+  hariTagihAntara,
   kalenderGerbang,
   VALIDASI_PENUH,
   type ValidasiKalender,
@@ -408,6 +411,28 @@ export function buatLayananLapangan(deps: LapanganDeps) {
       }));
     },
 
+    /** Kalender kantor sebulan (grid setoran kartu): hari tagih B2 & libur kantor. */
+    async kalenderBulan(aktor: Aktor, bulan: string): Promise<KalenderBulan> {
+      wajibPeran(aktor, "kolektor", "pengawas", "bos");
+      const awal = `${bulan}-01`;
+      const [tahun = 0, nomorBulan = 0] = bulan.split("-").map(Number);
+      const akhir = new Date(Date.UTC(tahun, nomorBulan, 0)).toISOString().slice(0, 10);
+      const [hariTagih, libur] = await Promise.all([
+        hariTagihAntara(deps.db, aktor.kantorId, awal, akhir),
+        deps.db
+          .select({ tanggal: liburKantor.tanggal, alasan: liburKantor.alasanLibur })
+          .from(liburKantor)
+          .where(
+            and(
+              eq(liburKantor.kantorId, aktor.kantorId),
+              between(liburKantor.tanggal, awal, akhir),
+            ),
+          )
+          .orderBy(asc(liburKantor.tanggal)),
+      ]);
+      return { hariTagih, liburKantor: libur };
+    },
+
     /** Kampung kantor ini untuk formulir akad, urut nama. */
     /** Kampung kantor — pilihan formulir akad (kolektor) & salinan migrasi (bos). */
     async daftarKampung(aktor: Aktor) {
@@ -721,21 +746,9 @@ export function buatLayananLapangan(deps: LapanganDeps) {
       return deps.db.transaction(async (tx) => {
         const p = await kunciPinjaman(tx, aktor, input.pinjamanId);
         await pastikanBelumAdaPeristiwa(tx, p.id, tanggal);
-        if (p.jenis === "tempoan") {
-          throw melanggar("LIBUR_TIDAK_BERLAKU", "Pinjaman tempoan tidak punya hari libur");
-        }
-        if (p.jenis === "mingguan" && !hariTagihMingguan(p.tanggalAkad, tanggal)) {
-          throw melanggar(
-            "LIBUR_BUKAN_HARI_TAGIH",
-            "Hari ini bukan hari tagih pinjaman mingguan ini",
-          );
-        }
-        if (angsuranKe(p) < 2) {
-          throw melanggar(
-            "LIBUR_BELUM_BOLEH",
-            "Pinjaman yang baru terbayar 0–1 angsuran belum boleh libur",
-          );
-        }
+        // G1–G3 — aturan yang sama dengan tombol Libur di HP.
+        const tolak = tolakLibur({ ...p, angsuranKe: angsuranKe(p) }, tanggal);
+        if (tolak) throw melanggar(tolak.kode, tolak.pesan);
         const [l] = await tx
           .insert(liburNasabah)
           .values({

@@ -57,7 +57,8 @@ describe.skipIf(!URL_DB)("koreksi bos: hari kolektor & libur nasabah", () => {
         kirim(`/hari-kolektor/${andiId}/laporan/batal`, { isi: { alasan }, token: b });
       const jejak = (aksi: string) =>
         baris<{ sebelum: unknown; sesudah: unknown; alasan: string | null }>(sql`
-          select sebelum, sesudah, alasan_perubahan as alasan from riwayat_perubahan where aksi = ${aksi}`);
+          select sebelum, sesudah, alasan_perubahan as alasan from riwayat_perubahan
+          where aksi = ${aksi} and kantor_id = ${kantorId}`);
 
       // ---- betulkan angka pagi ------------------------------------------------
       expect((await ubah({ kasLapangan: 1_200_000 })).isi.kode).toBe("BELUM_ABSEN");

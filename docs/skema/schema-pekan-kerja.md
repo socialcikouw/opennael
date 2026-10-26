@@ -83,6 +83,7 @@ hari.
 | `GET /kantor` | semua | `hariKerja` = pola yang berlaku **hari ini** (bentuk respons tetap). |
 | `GET /kantor/pekan-kerja` | bos, pengawas | Riwayat pola, terbaru dulu. |
 | `PUT /kantor/pekan-kerja` | bos | `{ hariKerja: [1,2,3,4,5], berlakuMulai? }` — bawaan hari ini; tidak boleh mundur. |
+| `GET /lapangan/kalender?bulan=YYYY-MM` | kolektor, pengawas, bos | Kalender kantor sebulan untuk grid setoran kartu nasabah: `hariTagih` (hari kerja pola yang berlaku & bukan libur kantor, [aturan-usaha B2](../aturan-usaha.md)) dan `liburKantor` (`{ tanggal, alasan }`). |
 
 `PATCH /kantor` tidak lagi menerima `hariKerja` setelah aplikasi beralih
 (sampai itu: diterjemahkan menjadi baris baru berlaku hari ini).

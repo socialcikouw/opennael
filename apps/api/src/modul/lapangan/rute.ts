@@ -6,6 +6,7 @@ import {
   gulungSchema,
   hariKolektorSchema,
   hasilGulungSchema,
+  kalenderBulanSchema,
   kampungPilihanSchema,
   kartuTagihSchema,
   liburSchema,
@@ -13,6 +14,7 @@ import {
   lunasSchema,
   nasabahLamaSchema,
   pinjamanSchema,
+  saringKalenderBulanSchema,
   transaksiSchema,
 } from "@opennael/contracts";
 import type { ZodType } from "zod";
@@ -144,6 +146,19 @@ const kampung = createRoute({
   },
 });
 
+const kalenderBulan = createRoute({
+  method: "get",
+  path: "/lapangan/kalender",
+  tags: ["lapangan"],
+  summary: "Kalender kantor sebulan — hari tagih & libur kantor (grid setoran kartu)",
+  security: aman,
+  request: { query: saringKalenderBulanSchema },
+  responses: {
+    200: { description: "Kalender bulan", ...json(kalenderBulanSchema) },
+    ...galatLapangan,
+  },
+});
+
 const nasabahLama = createRoute({
   method: "get",
   path: "/lapangan/nasabah-lama",
@@ -167,6 +182,9 @@ export function ruteLapangan(lapangan: LayananLapangan, auth: LayananAuth) {
     .openapi(laporan, async (c) => c.json(await lapangan.bukaLaporan(c.get("aktor")), 200))
     .openapi(daftar, async (c) => c.json(await lapangan.daftarPinjaman(c.get("aktor")), 200))
     .openapi(kampung, async (c) => c.json(await lapangan.daftarKampung(c.get("aktor")), 200))
+    .openapi(kalenderBulan, async (c) =>
+      c.json(await lapangan.kalenderBulan(c.get("aktor"), c.req.valid("query").bulan), 200),
+    )
     .openapi(nasabahLama, async (c) =>
       c.json(await lapangan.daftarNasabahLama(c.get("aktor")), 200),
     )

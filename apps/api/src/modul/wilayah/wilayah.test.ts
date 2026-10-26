@@ -53,7 +53,8 @@ describe.skipIf(!URL_DB)("kampung", () => {
       expect(simpan.isi.versi).toBe(1);
       const jejak = async (aksi: string) =>
         baris<{ sebelum: unknown; sesudah: unknown }>(sql`
-          select sebelum, sesudah from riwayat_perubahan where aksi = ${aksi}`);
+          select sebelum, sesudah from riwayat_perubahan
+          where aksi = ${aksi} and kantor_id = ${kantorId}`);
 
       // Daftar & pemakaian (semua peran); saringan "baru" hanya bos.
       const daftar = await kirim("/wilayah", { token: k });
