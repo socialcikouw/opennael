@@ -4,21 +4,21 @@ import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "../../../komponen/tema";
 import { Ikon } from "../../../komponen/ui";
 import { BARIS_PAPAN, type TombolPapan } from "../inti/papan";
 
-/** Tinggi satu tombol papan — cukup untuk jempol, tetap muat di HP layar kecil. */
-const TINGGI_TOMBOL = 52;
-
 /**
- * Papan angka 3 kolom: 1–9, lalu 0 · 00 · 000, lalu C (kosongkan) dan ⌫
- * (hapus satu digit; tekan lama = kosongkan) di kolom tepi. Semua tombol
- * satu ukuran, jadi lajurnya lurus.
+ * Papan angka: 1–9 dan 0 · 00 · 000 dalam tiga kolom tombol bulat, lalu satu
+ * baris fungsi selebar papan — C (kosongkan) dan ⌫ (hapus satu; tekan lama =
+ * kosongkan) sama besar, jadi tak ada lubang di lajur. `tinggi` dihitung
+ * layar dari tinggi HP supaya papan selalu muat tanpa digulir.
  */
 export function PapanAngka(props: {
+  tinggi: number;
   onKetik: (tombol: TombolPapan) => void;
   onHapus: () => void;
   onKosongkan: () => void;
 }) {
   const WARNA = useWarna();
   const gaya = useGaya(buatGaya);
+  const tinggi = { height: props.tinggi };
   return (
     <View style={gaya.papan}>
       {BARIS_PAPAN.map((baris) => (
@@ -29,7 +29,7 @@ export function PapanAngka(props: {
               accessibilityRole="button"
               accessibilityLabel={t}
               onPress={() => props.onKetik(t)}
-              style={({ pressed }) => [gaya.tombol, pressed ? gaya.ditekan : null]}
+              style={({ pressed }) => [gaya.tombol, tinggi, pressed ? gaya.ditekan : null]}
             >
               <Text style={gaya.angka}>{t}</Text>
             </Pressable>
@@ -41,17 +41,21 @@ export function PapanAngka(props: {
           accessibilityRole="button"
           accessibilityLabel="Kosongkan"
           onPress={props.onKosongkan}
-          style={({ pressed }) => [gaya.tombol, gaya.fungsi, pressed ? gaya.ditekan : null]}
+          style={({ pressed }) => [
+            gaya.tombol,
+            gaya.kosongkan,
+            tinggi,
+            pressed ? gaya.ditekan : null,
+          ]}
         >
-          <Text style={[gaya.angka, { color: WARNA.bahayaTeks }]}>C</Text>
+          <Text style={gaya.kosongkanTeks}>C</Text>
         </Pressable>
-        <View style={gaya.kosong} />
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Hapus satu angka"
           onPress={props.onHapus}
           onLongPress={props.onKosongkan}
-          style={({ pressed }) => [gaya.tombol, gaya.fungsi, pressed ? gaya.ditekan : null]}
+          style={({ pressed }) => [gaya.tombol, gaya.hapus, tinggi, pressed ? gaya.ditekan : null]}
         >
           <Ikon nama="delete" ukuran={24} warna={WARNA.teks} />
         </Pressable>
@@ -62,25 +66,23 @@ export function PapanAngka(props: {
 
 const buatGaya = (WARNA: Warna) =>
   StyleSheet.create({
-    papan: { gap: RUANG[2] },
-    baris: { flexDirection: "row", gap: RUANG[2] },
+    papan: { gap: RUANG[2.5] },
+    baris: { flexDirection: "row", gap: RUANG[2.5] },
     tombol: {
       flex: 1,
-      height: TINGGI_TOMBOL,
       alignItems: "center",
       justifyContent: "center",
-      borderRadius: SUDUT.sedang,
-      borderWidth: 1,
-      borderColor: WARNA.garis,
-      backgroundColor: WARNA.permukaan,
+      borderRadius: SUDUT.bulat,
+      backgroundColor: WARNA.abu,
     },
-    fungsi: { borderColor: WARNA.abu, backgroundColor: WARNA.abu },
-    ditekan: { borderColor: WARNA.abuTua, backgroundColor: WARNA.abuTua },
-    kosong: { flex: 1 },
+    ditekan: { backgroundColor: WARNA.abuTua, transform: [{ scale: 0.96 }] },
     angka: {
       ...HURUF["2xl"],
       fontWeight: TEBAL.semi,
       color: WARNA.teks,
       fontVariant: ["tabular-nums"],
     },
+    kosongkan: { backgroundColor: WARNA.bahayaLembut },
+    kosongkanTeks: { ...HURUF.xl, fontWeight: TEBAL.tebal, color: WARNA.bahayaTeks },
+    hapus: { backgroundColor: WARNA.abuTua },
   });

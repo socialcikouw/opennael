@@ -256,4 +256,6 @@ export const BAYANGAN = {
   sedang: "0px 1px 3px rgba(15, 23, 42, 0.10)",
   /** Benda yang melayang di atas isi layar (tab bar mengambang). */
   mengambang: "0px 6px 20px rgba(15, 23, 42, 0.14)",
+  /** Panel yang menempel di dasar layar (papan angka) — bayangan ke atas. */
+  panelBawah: "0px -4px 16px rgba(15, 23, 42, 0.08)",
 } as const;
