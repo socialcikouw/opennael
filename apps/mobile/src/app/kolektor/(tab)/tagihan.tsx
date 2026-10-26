@@ -18,6 +18,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { jenisDariMode, MODE, useMode } from "../../../fitur/mode/mode";
+import { LayarSemua } from "../../../fitur/semua/layar-semua";
 import {
   type Baris,
   daftarLompat,
@@ -68,7 +69,8 @@ const AMBANG_ARAH = 24;
  * TAGIHAN — klon layar Kerja aplikasi lama (naelcapital): kepala melayang
  * yang melipat, segmen Aktif · Macet · Droping, daftar per rute, kartu
  * nasabah lengkap, dan transaksi langsung dari kartu. Isinya mengikuti mode
- * aplikasi (Harian · Mingguan · Tempoan; Semua = hanya-baca).
+ * aplikasi (Harian · Mingguan · Tempoan); mode Semua = direktori hanya-baca
+ * (`fitur/semua`).
  *
  * Data tetap satu sumber (`lib/lapangan`): sesudah transaksi kartu
  * menampilkan stempel sebentar, lalu data disegarkan dan kartunya turun ke
@@ -79,7 +81,7 @@ export default function Tagihan() {
   // Ganti mode = seluruh wajah berganti: dipasang ulang dengan pudar singkat.
   return (
     <Animated.View key={mode} entering={FadeIn.duration(200)} style={{ flex: 1 }}>
-      <LayarTagihan />
+      {mode === "semua" ? <LayarSemua /> : <LayarTagihan />}
     </Animated.View>
   );
 }
@@ -91,7 +93,6 @@ function LayarTagihan() {
   const mode = useMode();
   const jenis = jenisDariMode(mode);
   const aksen = useWarnaMode(mode);
-  const hanyaBaca = mode === "semua";
   const klien = useQueryClient();
 
   const hariIni = useHariIni();
@@ -328,12 +329,11 @@ function LayarTagihan() {
           aksi={aksi}
           aksen={aksen}
           kolomHariIni={bahan?.kerangka.kolomHariIni ?? -1}
-          hanyaBaca={hanyaBaca}
           stempel={stempel.get(item.vm.id) ?? null}
         />
       );
     },
-    [aksi, aksen, bahan, hanyaBaca, stempel],
+    [aksi, aksen, bahan, stempel],
   );
 
   if (hariIni.isError || tagihan.isError) {

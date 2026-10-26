@@ -1,6 +1,7 @@
 import type { LucideIcon } from "lucide-react-native";
 import ArrowLeft from "lucide-react-native/icons/arrow-left";
 import ArrowLeftRight from "lucide-react-native/icons/arrow-left-right";
+import ArrowUpDown from "lucide-react-native/icons/arrow-up-down";
 import BadgeCheck from "lucide-react-native/icons/badge-check";
 import Banknote from "lucide-react-native/icons/banknote";
 import Bell from "lucide-react-native/icons/bell";
@@ -61,6 +62,7 @@ export const IKON = {
   "hand-coins": HandCoins,
   "arrow-left": ArrowLeft,
   "arrow-left-right": ArrowLeftRight,
+  "arrow-up-down": ArrowUpDown,
   "badge-check": BadgeCheck,
   banknote: Banknote,
   bell: Bell,

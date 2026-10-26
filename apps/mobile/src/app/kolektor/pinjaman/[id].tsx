@@ -27,7 +27,8 @@ type Aksi = "setor" | "lunas" | "libur" | "gulung";
 /** KARTU PINJAMAN — rincian lalu satu catatan hari ini: setor, lunas, libur, atau gulung. */
 export default function KartuPinjaman() {
   const g = useG();
-  const { id } = useLocalSearchParams<{ id: string }>();
+  // lihat=1: dibuka dari mode Semua — rincian saja, tanpa transaksi.
+  const { id, lihat } = useLocalSearchParams<{ id: string; lihat?: string }>();
   const tagihan = useTagihan();
   const hariIni = useHariIni();
   const p = tagihan.data?.find((x) => x.id === id);
@@ -48,7 +49,7 @@ export default function KartuPinjaman() {
   const gerbang = hariIni.data
     ? bacaGerbang(hariIni.data)
     : { buka: false, judul: undefined, isi: undefined };
-  const bisaCatat = gerbang.buka && !p.hariIni;
+  const bisaCatat = lihat !== "1" && gerbang.buka && !p.hariIni;
   const pilihanAksi: { nilai: Aksi; teks: string }[] = tempoan
     ? [
         { nilai: "lunas", teks: "Lunas" },
@@ -94,7 +95,7 @@ export default function KartuPinjaman() {
         <Spanduk warna="hijau" judul={`Sudah setor hari ini: ${rupiah(p.hariIni.storting)}`} />
       ) : p.hariIni?.jenis === "libur" ? (
         <Spanduk judul="Libur hari ini" isi={p.hariIni.alasan ?? undefined} />
-      ) : gerbang.judul ? (
+      ) : lihat !== "1" && gerbang.judul ? (
         <Spanduk judul={gerbang.judul} isi={gerbang.isi} />
       ) : null}
 

@@ -37,13 +37,12 @@ export const KartuNasabah = memo(function KartuNasabah(props: {
   aksen: WarnaMode;
   kolomHariIni: number;
   /** Mode Semua (pantau): tanpa tombol & tanpa geser. */
-  hanyaBaca: boolean;
   stempel: Stempel | null;
 }) {
   const gaya = useGaya(buatGaya);
   const { vm } = props;
   const geser = useRef<SwipeableMethods>(null);
-  const bisaAksi = vm.aksi && !props.hanyaBaca && props.stempel === null;
+  const bisaAksi = vm.aksi && props.stempel === null;
 
   const kartu = (
     <View style={gaya.kartu}>
