@@ -15,6 +15,7 @@ import {
   kunciWilayah,
   rapikanNamaWilayah,
   syaratAkad,
+  wajibDitagihHariIni,
 } from "@opennael/domain";
 import { and, asc, desc, eq, inArray, isNull, ne, notExists, or, sql } from "drizzle-orm";
 import type { Db } from "../../db/klien";
@@ -227,6 +228,36 @@ const kolomTransaksi = {
   saldoSesudah: transaksi.saldoSesudah,
 };
 
+/**
+ * Catatan hari ini (C3) per pinjaman: setoran (transaksi berlaku — angsuran,
+ * lunas, gulung) atau libur. Satu sumber untuk daftar tagih & gerbang laporan.
+ */
+async function catatanHari(
+  db: Db,
+  ids: string[],
+  tanggal: string,
+): Promise<Map<string, KartuTagih["hariIni"]>> {
+  const catatan = new Map<string, KartuTagih["hariIni"]>();
+  if (ids.length === 0) return catatan;
+  const setoran = await db
+    .select({ pinjamanId: transaksi.pinjamanId, storting: transaksi.storting })
+    .from(transaksi)
+    .where(
+      and(
+        inArray(transaksi.pinjamanId, ids),
+        eq(transaksi.tanggal, tanggal),
+        isNull(transaksi.dibatalkanAt),
+      ),
+    );
+  const libur = await db
+    .select({ pinjamanId: liburNasabah.pinjamanId, alasan: liburNasabah.alasanLibur })
+    .from(liburNasabah)
+    .where(and(inArray(liburNasabah.pinjamanId, ids), eq(liburNasabah.tanggal, tanggal)));
+  for (const t of setoran) catatan.set(t.pinjamanId, { jenis: "angsuran", storting: t.storting });
+  for (const l of libur) catatan.set(l.pinjamanId, { jenis: "libur", alasan: l.alasan });
+  return catatan;
+}
+
 export function buatLayananLapangan(deps: LapanganDeps) {
   const sekarang = deps.sekarang ?? (() => new Date());
   const validasi = deps.validasiKalender ?? VALIDASI_PENUH;
@@ -290,6 +321,41 @@ export function buatLayananLapangan(deps: LapanganDeps) {
       if (h.absensi !== "masuk_kerja") {
         throw melanggar("TIDAK_KERJA_HARI_INI", "Anda tercatat tidak kerja hari ini");
       }
+      // Laporan yang sudah terbuka tetap terbuka (idempoten, tak diperiksa ulang).
+      if (h.laporanDibukaAt) return h;
+
+      // C6: semua yang wajib ditagih hari ini (B6) sudah punya catatan.
+      const aktif = await deps.db
+        .select({
+          id: pinjaman.id,
+          jenis: pinjaman.jenis,
+          tanggalAkad: pinjaman.tanggalAkad,
+          nama: nasabah.nama,
+        })
+        .from(pinjaman)
+        .innerJoin(nasabah, eq(nasabah.id, pinjaman.nasabahId))
+        .where(
+          and(
+            eq(nasabah.kolektorId, aktor.penggunaId),
+            inArray(pinjaman.status, ["berjalan", "macet"]),
+          ),
+        )
+        .orderBy(asc(nasabah.nama));
+      const wajib = aktif.filter((p) => wajibDitagihHariIni(p, tanggal));
+      const catatan = await catatanHari(
+        deps.db,
+        wajib.map((p) => p.id),
+        tanggal,
+      );
+      const sisa = wajib.filter((p) => !catatan.has(p.id));
+      if (sisa.length > 0) {
+        const nama = sisa.slice(0, 3).map((p) => p.nama);
+        throw melanggar(
+          "MASIH_ADA_TAGIHAN",
+          `Masih ada ${sisa.length} nasabah yang belum dicatat hari ini: ${nama.join(", ")}${sisa.length > 3 ? ", …" : ""}. Catat setoran atau libur dulu.`,
+        );
+      }
+
       await deps.db
         .update(hariKolektor)
         .set({ laporanDibukaAt: sekarang() })
@@ -334,25 +400,7 @@ export function buatLayananLapangan(deps: LapanganDeps) {
       const ids = baris.map((b) => b.id);
       if (ids.length === 0) return [];
 
-      // Catatan hari ini (C3): setoran atau libur — paling banyak satu per pinjaman.
-      const setoran = await deps.db
-        .select({ pinjamanId: transaksi.pinjamanId, storting: transaksi.storting })
-        .from(transaksi)
-        .where(
-          and(
-            inArray(transaksi.pinjamanId, ids),
-            eq(transaksi.tanggal, tanggal),
-            isNull(transaksi.dibatalkanAt),
-          ),
-        );
-      const libur = await deps.db
-        .select({ pinjamanId: liburNasabah.pinjamanId, alasan: liburNasabah.alasanLibur })
-        .from(liburNasabah)
-        .where(and(inArray(liburNasabah.pinjamanId, ids), eq(liburNasabah.tanggal, tanggal)));
-      const catatan = new Map<string, KartuTagih["hariIni"]>();
-      for (const t of setoran)
-        catatan.set(t.pinjamanId, { jenis: "angsuran", storting: t.storting });
-      for (const l of libur) catatan.set(l.pinjamanId, { jenis: "libur", alasan: l.alasan });
+      const catatan = await catatanHari(deps.db, ids, tanggal);
       return baris.map(({ tabungan, ...b }) => ({
         ...keKartu(b),
         tabungan,

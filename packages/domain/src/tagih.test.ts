@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { type BahanTagih, posisiTagih } from "./tagih";
+import { type BahanTagih, posisiTagih, wajibDitagihHariIni } from "./tagih";
 
 const harian: BahanTagih = {
   jenis: "harian",
@@ -78,5 +78,29 @@ describe("posisi tagih (aturan-usaha B5)", () => {
     };
     expect(posisiTagih(tempoan, "2026-06-15")).toEqual({ tertinggal: 0, tunggakan: 0 });
     expect(posisiTagih(tempoan, "2026-06-16")).toEqual({ tertinggal: 1, tunggakan: 1_250_000 });
+  });
+});
+
+describe("wajib ditagih hari ini (aturan-usaha B6)", () => {
+  // Kamis 29 Okt 2026.
+  const kamis = "2026-10-29";
+
+  test("contoh C6: hanya harian yang sudah mulai ditagih", () => {
+    expect(wajibDitagihHariIni({ jenis: "harian", tanggalAkad: "2026-10-20" }, kamis)).toBe(true);
+    // Mingguan akad Senin 26 — hari ini Kamis: bukan hari tagihnya.
+    expect(wajibDitagihHariIni({ jenis: "mingguan", tanggalAkad: "2026-10-26" }, kamis)).toBe(
+      false,
+    );
+    expect(wajibDitagihHariIni({ jenis: "tempoan", tanggalAkad: "2026-10-01" }, kamis)).toBe(false);
+    // Akad hari ini belum ditagih (B1).
+    expect(wajibDitagihHariIni({ jenis: "harian", tanggalAkad: kamis }, kamis)).toBe(false);
+  });
+
+  test("mingguan wajib tepat pada akad + 7k hari", () => {
+    expect(wajibDitagihHariIni({ jenis: "mingguan", tanggalAkad: "2026-10-22" }, kamis)).toBe(true);
+    expect(wajibDitagihHariIni({ jenis: "mingguan", tanggalAkad: "2026-10-08" }, kamis)).toBe(true);
+    expect(wajibDitagihHariIni({ jenis: "mingguan", tanggalAkad: "2026-10-23" }, kamis)).toBe(
+      false,
+    );
   });
 });

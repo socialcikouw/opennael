@@ -95,6 +95,16 @@ jadwal: minggu yang diliburkan tidak dihitung.
 
 **B4. Tempoan:** tidak berkala; dibayar sekali paling lambat jatuh tempo.
 
+**B6. Wajib ditagih hari ini** (yang menahan laporan, C6) — pinjaman aktif
+(berjalan **atau macet**) yang sudah mulai ditagih (B1, jadi bukan akad hari
+ini):
+
+- harian: setiap hari kerja;
+- mingguan: hanya pada hari tagihnya (akad + 7, 14, … hari). Di hari lain ia
+  tetap boleh dibayar, tetapi tidak wajib — libur pun hanya boleh pada hari
+  tagihnya (G2);
+- tempoan: tidak pernah (dibayar sekali penuh kapan pun nasabahnya siap).
+
 **B5. Tertinggal & tunggakan** (yang tampil di kartu kolektor), dihitung menurut
 **jumlah angsuran yang sudah terbayar**, bukan tanggal tiap setoran; hari ini
 belum dihitung lewat:
@@ -144,6 +154,19 @@ hari itu belum dibuka.
 
 **C5. Patokan setoran adalah saldo**, bukan saldo dikurangi tabungan: tabungan
 baru diperhitungkan saat lunas.
+
+**C6. Laporan baru boleh dibuka bila semua pinjaman yang wajib ditagih hari
+ini (B6) sudah punya catatan hari ini** — setoran, lunas, gulung, atau libur.
+Dijaga **server** (`MASIH_ADA_TAGIHAN`, menyebut nasabah yang tersisa), bukan
+hanya aplikasi. Tanpa pengecualian: nasabah yang belum boleh libur (G3) dan
+tidak membayar tetap menahan laporan — kolektor menagih sampai dapat. Laporan
+yang sudah terbuka tetap terbuka (tidak diperiksa ulang). Mengikuti aplikasi
+lama (gerbang Mutasi), kini di server.
+
+> Contoh: Andi memegang Sari (harian), Budi (mingguan, akad Senin — hari ini
+> Kamis), Citra (tempoan), dan Dewi (harian, akad hari ini). Yang wajib hanya
+> Sari. Sari belum setor → laporan ditolak "Masih ada 1 nasabah yang belum
+> dicatat: Sari". Sari diliburkan → laporan boleh dibuka.
 
 ---
 

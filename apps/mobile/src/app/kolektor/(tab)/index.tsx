@@ -1,3 +1,5 @@
+import { wajibDitagihHariIni } from "@opennael/domain";
+import { router } from "expo-router";
 import { useState } from "react";
 import { Alert, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
 import { TombolKeluar } from "../../../komponen/keluar";
@@ -51,8 +53,10 @@ export default function Beranda() {
   const keadaan = hariIni.data;
   const gerbang = bacaGerbang(keadaan);
   const semua = tagihan.data ?? [];
-  const dicatat = semua.filter((p) => p.hariIni);
-  const storting = dicatat.reduce(
+  // Wajib ditagih hari ini (aturan-usaha B6) — yang menahan laporan (C6).
+  const wajib = semua.filter((p) => wajibDitagihHariIni(p, keadaan.kalender.tanggal));
+  const sisa = wajib.filter((p) => !p.hariIni);
+  const storting = semua.reduce(
     (n, p) => n + (p.hariIni?.jenis === "angsuran" ? p.hariIni.storting : 0),
     0,
   );
@@ -84,14 +88,17 @@ export default function Beranda() {
           <KotakAngka
             label="Dicatat"
             ikon="check-check"
-            nilai={`${dicatat.length} / ${semua.length}`}
+            nilai={`${wajib.length - sisa.length} / ${wajib.length}`}
           />
           <KotakAngka label="Setoran" ikon="banknote" nilai={rupiah(storting)} />
         </View>
       ) : null}
       {tagihan.isError ? <PesanGalat pesan={tagihan.error.message} /> : null}
 
-      <KakiKerja laporanBisa={gerbang.buka} />
+      <KakiKerja
+        laporanBisa={gerbang.buka}
+        sisa={tagihan.data ? sisa.map((p) => p.nasabah.nama) : null}
+      />
     </ScrollView>
   );
 }
@@ -153,7 +160,11 @@ function FormulirAbsen() {
   );
 }
 
-function KakiKerja({ laporanBisa }: { laporanBisa: boolean }) {
+/**
+ * Buka laporan — hanya bila semua yang wajib ditagih hari ini sudah dicatat
+ * (C6; server juga menolaknya). `sisa` = nama yang belum; null = memuat.
+ */
+function KakiKerja({ laporanBisa, sisa }: { laporanBisa: boolean; sisa: string[] | null }) {
   const gaya = useGaya(buatGaya);
   const laporan = useTulis(tulis.laporan);
 
@@ -171,12 +182,26 @@ function KakiKerja({ laporanBisa }: { laporanBisa: boolean }) {
     <View style={gaya.kaki}>
       {laporanBisa ? (
         <>
+          {sisa && sisa.length > 0 ? (
+            <Spanduk
+              judul={`Masih ${sisa.length} nasabah belum dicatat`}
+              isi={`${sisa.slice(0, 3).join(", ")}${sisa.length > 3 ? ", …" : ""} — catat setoran atau libur dulu, baru laporan bisa dibuka.`}
+            />
+          ) : null}
           <PesanGalat pesan={laporan.error?.message} />
+          {sisa && sisa.length > 0 ? (
+            <Tombol
+              judul={`Lihat yang belum (${sisa.length})`}
+              ikon="users"
+              onPress={() => router.navigate("/kolektor/tagihan")}
+            />
+          ) : null}
           <Tombol
             judul="Buka laporan hari ini"
             jenis="kedua"
             ikon="file-text"
             memuat={laporan.isPending}
+            nonaktif={sisa === null || sisa.length > 0}
             onPress={bukaLaporan}
           />
         </>

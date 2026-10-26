@@ -35,7 +35,7 @@ const cocokSaringan: Record<Saringan, (vm: KartuVM) => boolean> = {
 };
 
 const KOSONG: Record<Saringan, string> = {
-  belum: "Semua nasabah hari ini sudah dicatat. Mantap!",
+  belum: "Semua yang wajib ditagih hari ini sudah dicatat — laporan bisa dibuka.",
   telat: "Tidak ada nasabah yang telat atau macet.",
   sudah: "Belum ada setoran atau libur yang dicatat hari ini.",
   semua: "Belum ada pinjaman aktif di pegangan Anda.",
@@ -75,15 +75,13 @@ export default function Tagihan() {
     let setoran = 0;
     let wajib = 0;
     for (const vm of semua) {
-      if (vm.keadaan === "baru") continue;
+      // Setoran dijumlah semuanya; dicatat/wajib hanya yang wajib hari ini (B6)
+      // — sama dengan yang diperiksa server sebelum laporan dibuka (C6).
+      if (vm.p.hariIni?.jenis === "angsuran") setoran += vm.p.hariIni.storting;
+      if (vm.p.hariIni?.jenis === "libur") libur++;
+      if (!vm.wajib) continue;
       wajib++;
-      if (vm.p.hariIni?.jenis === "angsuran") {
-        dicatat++;
-        setoran += vm.p.hariIni.storting;
-      } else if (vm.p.hariIni?.jenis === "libur") {
-        dicatat++;
-        libur++;
-      }
+      if (vm.p.hariIni) dicatat++;
     }
     const jumlah = {} as Record<Saringan, number>;
     for (const s of SARINGAN) jumlah[s.nilai] = semua.filter(cocokSaringan[s.nilai]).length;

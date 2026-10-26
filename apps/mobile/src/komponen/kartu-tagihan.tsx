@@ -1,5 +1,10 @@
 import type { KartuTagih } from "@opennael/contracts";
-import { type PosisiTagih, selisihHari } from "@opennael/domain";
+import {
+  hariPekanDari,
+  type PosisiTagih,
+  selisihHari,
+  wajibDitagihHariIni,
+} from "@opennael/domain";
 import { memo } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { NAMA_JENIS, rupiah } from "../lib/format";
@@ -20,11 +25,20 @@ import { Ikon, Lencana } from "./ui";
  * jadi `memo` benar-benar melewati kartu yang tak berubah.
  */
 
-export type Keadaan = "belum" | "setor" | "libur" | "baru";
+/**
+ * belum = wajib ditagih hari ini (aturan-usaha B6) & belum dicatat — yang
+ * menahan laporan (C6); bebas = boleh dibayar tapi tidak wajib hari ini
+ * (mingguan di luar hari tagihnya, tempoan); baru = akad hari ini.
+ */
+export type Keadaan = "belum" | "bebas" | "setor" | "libur" | "baru";
+
+const NAMA_HARI = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 
 export interface KartuVM {
   p: KartuTagih;
   keadaan: Keadaan;
+  /** Wajib ditagih hari ini (B6), sudah dicatat atau belum. */
+  wajib: boolean;
   /** Angsuran tertinggal (B5); null = posisi tagih belum dimuat. */
   telat: number | null;
   tunggakan: number;
@@ -59,6 +73,7 @@ export function susunKartu(
 }
 
 function buat(p: KartuTagih, tagih: PosisiTagih | null | undefined, hariIni: string): KartuVM {
+  const wajib = wajibDitagihHariIni(p, hariIni);
   const keadaan: Keadaan =
     p.hariIni?.jenis === "angsuran"
       ? "setor"
@@ -66,7 +81,9 @@ function buat(p: KartuTagih, tagih: PosisiTagih | null | undefined, hariIni: str
         ? "libur"
         : p.tanggalAkad === hariIni
           ? "baru"
-          : "belum";
+          : wajib
+            ? "belum"
+            : "bebas";
   const telat = tagih === undefined ? null : (tagih?.tertinggal ?? 0);
   const tunggakan = tagih?.tunggakan ?? 0;
 
@@ -80,6 +97,9 @@ function buat(p: KartuTagih, tagih: PosisiTagih | null | undefined, hariIni: str
     );
   }
   if (keadaan === "baru") lencana.push({ teks: "Akad hari ini", warna: "hijau" });
+  if (keadaan === "bebas" && p.jenis === "mingguan") {
+    lencana.push({ teks: `Tagih tiap ${NAMA_HARI[hariPekanDari(p.tanggalAkad)]}`, warna: "abu" });
+  }
 
   let kemajuan: number;
   let kemajuanTeks: string;
@@ -97,13 +117,14 @@ function buat(p: KartuTagih, tagih: PosisiTagih | null | undefined, hariIni: str
   return {
     p,
     keadaan,
+    wajib,
     telat,
     tunggakan,
     lencana,
     kemajuan,
     kemajuanTeks,
     ringkas: `${NAMA_JENIS[p.jenis]} ke-${p.pinjamanKe} · sisa ${rupiah(p.saldo)}`,
-    bisaSetor: keadaan === "belum" && p.jenis !== "tempoan",
+    bisaSetor: (keadaan === "belum" || keadaan === "bebas") && p.jenis !== "tempoan",
   };
 }
 

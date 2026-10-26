@@ -1,5 +1,5 @@
 import type { JenisPinjaman } from "./akad";
-import { selisihHari } from "./kalender";
+import { hariTagihMingguan, selisihHari } from "./kalender";
 
 /**
  * POSISI TAGIH — docs/aturan-usaha.md B5. Tertinggal & tunggakan dihitung
@@ -60,4 +60,19 @@ export function posisiTagih(b: BahanTagih, hariIni: string): PosisiTagih {
   jadwal = Math.min(b.tenor, Math.max(0, jadwal));
   const tertinggal = Math.max(0, jadwal - terbayar(b.totalKembali, b.saldo, b.angsuran));
   return { tertinggal, tunggakan: Math.min(tertinggal * b.angsuran, b.saldo) };
+}
+
+/**
+ * WAJIB DITAGIH HARI INI — docs/aturan-usaha.md B6 (yang menahan laporan, C6).
+ * Pinjaman aktif yang sudah mulai ditagih (B1: bukan akad hari ini): harian
+ * setiap hari kerja; mingguan hanya pada hari tagihnya (akad + 7k hari);
+ * tempoan tidak pernah. Hari kerja sendiri dijaga gerbang lapangan.
+ */
+export function wajibDitagihHariIni(
+  p: { jenis: JenisPinjaman; tanggalAkad: string },
+  hariIni: string,
+): boolean {
+  if (p.jenis === "harian") return selisihHari(p.tanggalAkad, hariIni) > 0;
+  if (p.jenis === "mingguan") return hariTagihMingguan(p.tanggalAkad, hariIni);
+  return false;
 }

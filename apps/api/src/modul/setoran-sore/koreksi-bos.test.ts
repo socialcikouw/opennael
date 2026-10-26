@@ -79,7 +79,14 @@ describe.skipIf(!URL_DB)("koreksi bos: hari kolektor & libur nasabah", () => {
       expect((await batalLaporan()).isi.kode).toBe("LAPORAN_BELUM_DIBUKA");
       const libur = await kirim("/lapangan/libur", { isi: { pinjamanId: pTono }, token: k });
       expect(libur.status).toBe(201);
-      await kirim("/lapangan/laporan", { isi: {}, token: k });
+      // C6: Budi juga wajib ditagih hari ini — laporan baru terbuka sesudah ia dicatat.
+      expect((await kirim("/lapangan/laporan", { isi: {}, token: k })).isi.kode).toBe(
+        "MASIH_ADA_TAGIHAN",
+      );
+      expect(
+        (await kirim("/lapangan/libur", { isi: { pinjamanId: pBudi }, token: k })).status,
+      ).toBe(201);
+      expect((await kirim("/lapangan/laporan", { isi: {}, token: k })).status).toBe(200);
       const setorTono = () =>
         kirim("/lapangan/bayar", { isi: { pinjamanId: pTono, setoranMurni: 100_000 }, token: k });
       expect((await setorTono()).isi.kode).toBe("LAPORAN_SUDAH_DIBUKA");

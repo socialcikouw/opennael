@@ -192,7 +192,12 @@ describe.skipIf(!URL_DB)("pembatalan bos", () => {
       expect(kode(await batal(`/pinjaman/${a.pinjamanId}/batal`))).toBe("BATAL_HANYA_HARI_INI");
 
       // ---- sesudah kas diterima: hari terkunci ----------------------------------------
-      await kirim("/lapangan/laporan", { isi: {}, token: k });
+      // Laporan dibuka langsung: pinjaman uji di atas sengaja dibiarkan tanpa
+      // catatan hari ini (setoran dibatalkan, belum boleh libur), sedangkan
+      // gerbang laporan C6 diuji di koreksi-bos & lapangan.
+      await tx.execute(
+        sql`update hari_kolektor set laporan_dibuka_at = now() where kolektor_id = ${andiId}`,
+      );
       const terima = await kirim(`/hari-kolektor/${andiId}/terima-kas`, {
         isi: { tunaiDiterima: 0 },
         token: ks,
