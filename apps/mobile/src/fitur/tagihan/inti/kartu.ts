@@ -9,6 +9,7 @@ import {
   wajibDitagihHariIni,
 } from "@opennael/domain";
 import type { NamaIkon } from "../../../komponen/ikon";
+import { tanggalBertahun } from "../../../lib/format";
 import { type BahanGrid, type BarisPekan, nominalK, susunGrid } from "./grid";
 import { type MingguanVM, susunMingguan, susunTempo, type TempoVM } from "./khusus";
 
@@ -80,16 +81,10 @@ export interface KartuVM {
   cari: string;
 }
 
-const BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
 const NAMA_HARI = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 
 const ribuan = (n: number) => n.toLocaleString("id-ID");
 export const rupiahPendek = (n: number) => `Rp ${ribuan(n)}`;
-
-function tanggalPendek(tanggal: string): string {
-  const [t = "", b = "1", h = "1"] = tanggal.split("-");
-  return `${Number(h)} ${BULAN[Number(b) - 1]} ${t.slice(2)}`;
-}
 
 function ember(p: KartuTagih, hariIni: string): Ember {
   if (p.tanggalAkad === hariIni && p.asal !== "migrasi") return "droping";
@@ -163,7 +158,7 @@ function susun(p: KartuTagih, hariIni: string, bahan: BahanGrid): KartuVM {
     subjudul: `${p.nasabah.kampung.toLowerCase()}${ekor}`,
     lingkaran: `${p.pinjamanKe}x`,
     lencana: lencana(p, e),
-    tanggalTeks: tanggalPendek(p.tanggalAkad),
+    tanggalTeks: tanggalBertahun(p.tanggalAkad),
     hariTagih: p.jenis === "mingguan" ? (NAMA_HARI[hariPekanDari(p.tanggalAkad)] ?? null) : null,
     progres: e === "belum" && !tempoan ? progres(p, status) : null,
     grid: e === "belum" && p.jenis === "harian" ? susunGrid(bahan, p) : null,

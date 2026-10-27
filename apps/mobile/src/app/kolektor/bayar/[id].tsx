@@ -1,7 +1,7 @@
 import { hitungBayar } from "@opennael/domain";
 import { useMutation } from "@tanstack/react-query";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { kabarTercatat } from "../../../fitur/tagihan/inti/kabar-tercatat";
@@ -10,18 +10,8 @@ import { PapanTombol, tinggiTombolPapan } from "../../../fitur/tagihan/ui/papan-
 import { useGaya, useWarna, useWarnaMode } from "../../../komponen/tampilan";
 import { BAYANGAN, HURUF, RUANG, SUDUT, TEBAL, type Warna } from "../../../komponen/tema";
 import { Gulir, Ikon, Keterangan, Tombol } from "../../../komponen/ui";
-import { cobaAturan, rupiah, waktuStempel } from "../../../lib/format";
+import { cobaAturan, rupiah, tanggalBertahun } from "../../../lib/format";
 import { tulis, useTagihan } from "../../../lib/lapangan";
-
-/** Jam HP, diperbarui tiap 15 detik — cap waktu di kepala layar. */
-function useJam(): Date {
-  const [sekarang, setSekarang] = useState(() => new Date());
-  useEffect(() => {
-    const t = setInterval(() => setSekarang(new Date()), 15_000);
-    return () => clearInterval(t);
-  }, []);
-  return sekarang;
-}
 
 /**
  * BAYAR ANGSURAN — layar sendiri, diisi kolektor berdiri di depan rumah
@@ -43,7 +33,6 @@ export default function Bayar() {
   const aksen = useWarnaMode(p?.jenis ?? "harian");
   const [digit, setDigit] = useState("");
   const bayar = useMutation({ mutationFn: tulis.bayar });
-  const sekarang = useJam();
 
   if (!p) {
     return (
@@ -108,8 +97,14 @@ export default function Bayar() {
               <Text style={gaya.kampung} numberOfLines={1}>
                 {p.nasabah.kampung}
               </Text>
-              <View style={[gaya.chip, gaya.chipWaktu]}>
-                <Text style={[gaya.chipTeks, gaya.waktuTeks]}>{waktuStempel(sekarang)}</Text>
+              <View
+                style={[gaya.chip, gaya.chipWaktu]}
+                accessible
+                accessibilityLabel={`Akad ${tanggalBertahun(p.tanggalAkad)}`}
+              >
+                <Text style={[gaya.chipTeks, gaya.waktuTeks]}>
+                  {tanggalBertahun(p.tanggalAkad)}
+                </Text>
               </View>
             </View>
           </View>
