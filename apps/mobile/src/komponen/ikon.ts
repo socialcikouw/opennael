@@ -15,7 +15,6 @@ import ChevronRight from "lucide-react-native/icons/chevron-right";
 import ChevronUp from "lucide-react-native/icons/chevron-up";
 import Circle from "lucide-react-native/icons/circle";
 import CircleAlert from "lucide-react-native/icons/circle-alert";
-import CircleArrowDown from "lucide-react-native/icons/circle-arrow-down";
 import CircleCheck from "lucide-react-native/icons/circle-check";
 import CirclePause from "lucide-react-native/icons/circle-pause";
 import Clock from "lucide-react-native/icons/clock";
@@ -55,7 +54,6 @@ export const IKON = {
   eye: Eye,
   calendar: Calendar,
   camera: Camera,
-  "circle-arrow-down": CircleArrowDown,
   "circle-pause": CirclePause,
   "user-plus": UserPlus,
   "trending-up": TrendingUp,

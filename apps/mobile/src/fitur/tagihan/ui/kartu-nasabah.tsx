@@ -270,7 +270,7 @@ function KakiAksi({ vm, aksi, aksen }: { vm: KartuVM; aksi: AksiKartu; aksen: Wa
       >
         <View style={gaya.bayarKiri}>
           <Ikon
-            nama={vm.sekaliBayar ? "circle-check" : "circle-arrow-down"}
+            nama={vm.sekaliBayar ? "circle-check" : "hand-coins"}
             ukuran={18}
             warna={aksen.teksIsi}
           />
