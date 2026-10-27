@@ -21,6 +21,14 @@ export function waktuPendek(d: Date): string {
   return `${d.getDate()} ${BULAN[d.getMonth()]} ${jam}.${menit}`;
 }
 
+/** Waktu di jam HP → "27 Okt 26 • 14.15" (cap waktu layar transaksi). */
+export function waktuStempel(d: Date): string {
+  const jam = String(d.getHours()).padStart(2, "0");
+  const menit = String(d.getMinutes()).padStart(2, "0");
+  const tahun = String(d.getFullYear()).slice(2);
+  return `${d.getDate()} ${BULAN[d.getMonth()]} ${tahun} • ${jam}.${menit}`;
+}
+
 /** "2026-10-23" → "23 Okt". */
 export function tanggalPendek(tanggal: string): string {
   const [, b, h] = tanggal.split("-").map(Number) as [number, number, number];

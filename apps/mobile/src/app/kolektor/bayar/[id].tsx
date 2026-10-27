@@ -1,18 +1,27 @@
 import { hitungBayar } from "@opennael/domain";
 import { useMutation } from "@tanstack/react-query";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { kabarTercatat } from "../../../fitur/tagihan/inti/kabar-tercatat";
 import { nilaiDigit, PAPAN_BAYAR, tekanBayar } from "../../../fitur/tagihan/inti/papan";
 import { PapanTombol, tinggiTombolPapan } from "../../../fitur/tagihan/ui/papan-tombol";
-import { AvatarNasabah } from "../../../komponen/foto-nasabah";
 import { useGaya, useWarna, useWarnaMode } from "../../../komponen/tampilan";
 import { BAYANGAN, HURUF, RUANG, SUDUT, TEBAL, type Warna } from "../../../komponen/tema";
 import { Gulir, Ikon, Keterangan, Tombol } from "../../../komponen/ui";
-import { cobaAturan, rupiah } from "../../../lib/format";
+import { cobaAturan, rupiah, waktuStempel } from "../../../lib/format";
 import { tulis, useTagihan } from "../../../lib/lapangan";
+
+/** Jam HP, diperbarui tiap 15 detik — cap waktu di kepala layar. */
+function useJam(): Date {
+  const [sekarang, setSekarang] = useState(() => new Date());
+  useEffect(() => {
+    const t = setInterval(() => setSekarang(new Date()), 15_000);
+    return () => clearInterval(t);
+  }, []);
+  return sekarang;
+}
 
 /**
  * BAYAR ANGSURAN — layar sendiri, diisi kolektor berdiri di depan rumah
@@ -34,6 +43,7 @@ export default function Bayar() {
   const aksen = useWarnaMode(p?.jenis ?? "harian");
   const [digit, setDigit] = useState("");
   const bayar = useMutation({ mutationFn: tulis.bayar });
+  const sekarang = useJam();
 
   if (!p) {
     return (
@@ -74,19 +84,34 @@ export default function Bayar() {
 
       <View style={gaya.atas}>
         <View style={gaya.nasabah}>
-          <AvatarNasabah fotoId={p.fotoSerahTerimaId} nama={p.nasabah.nama} ukuran={48} />
-          <View style={gaya.isi}>
-            <Text style={gaya.nama} numberOfLines={1}>
-              {p.nasabah.nama}
-            </Text>
-            <Text style={gaya.kampung} numberOfLines={1}>
-              {p.nasabah.kampung.toLowerCase()}
+          <View
+            style={gaya.angsuranKe}
+            accessible
+            accessibilityLabel={`Angsuran ke-${p.angsuranKe}`}
+          >
+            <Text style={gaya.angsuranKeTeks} numberOfLines={1} adjustsFontSizeToFit>
+              {p.angsuranKe}
             </Text>
           </View>
-          <View style={[gaya.ke, { backgroundColor: aksen.lembut }]}>
-            <Text style={[gaya.keTeks, { color: aksen.teks }]}>
-              ke-{p.angsuranKe + 1}/{p.tenor}
-            </Text>
+          <View style={gaya.isi}>
+            <View style={gaya.barisKepala}>
+              <Text style={gaya.nama} numberOfLines={1}>
+                {p.nasabah.nama}
+              </Text>
+              <View style={[gaya.chip, { backgroundColor: aksen.lembut }]}>
+                <Text style={[gaya.chipTeks, { color: aksen.teks }]}>
+                  Pinjaman ke-{p.pinjamanKe}
+                </Text>
+              </View>
+            </View>
+            <View style={gaya.barisKepala}>
+              <Text style={gaya.kampung} numberOfLines={1}>
+                {p.nasabah.kampung}
+              </Text>
+              <View style={[gaya.chip, gaya.chipWaktu]}>
+                <Text style={[gaya.chipTeks, gaya.waktuTeks]}>{waktuStempel(sekarang)}</Text>
+              </View>
+            </View>
           </View>
         </View>
 
@@ -179,11 +204,30 @@ const buatGaya = (WARNA: Warna) =>
     layar: { flex: 1, backgroundColor: WARNA.latar },
     atas: { flex: 1, paddingHorizontal: RUANG[5], paddingTop: RUANG[4] },
     nasabah: { flexDirection: "row", alignItems: "center", gap: RUANG[3] },
-    isi: { flex: 1 },
-    nama: { ...HURUF.xl, fontWeight: TEBAL.ekstra, color: WARNA.teks },
-    kampung: { ...HURUF.sm, color: WARNA.redup },
-    ke: { paddingHorizontal: RUANG[2.5], paddingVertical: RUANG[1], borderRadius: SUDUT.bulat },
-    keTeks: { ...HURUF.xs, fontWeight: TEBAL.tebal, fontVariant: ["tabular-nums"] },
+    // Lingkaran angsuran ke- — sama dengan kotak angka di kartu nasabah.
+    angsuranKe: {
+      width: 48,
+      height: 48,
+      alignItems: "center",
+      justifyContent: "center",
+      paddingHorizontal: RUANG[1],
+      borderRadius: SUDUT.bulat,
+      backgroundColor: WARNA.abu,
+    },
+    angsuranKeTeks: {
+      ...HURUF.lg,
+      fontWeight: TEBAL.ekstra,
+      color: WARNA.teks,
+      fontVariant: ["tabular-nums"],
+    },
+    isi: { flex: 1, gap: RUANG[0.5] },
+    barisKepala: { flexDirection: "row", alignItems: "center", gap: RUANG[2] },
+    nama: { ...HURUF.xl, flex: 1, fontWeight: TEBAL.ekstra, color: WARNA.teks },
+    kampung: { ...HURUF.sm, flex: 1, color: WARNA.redup },
+    chip: { paddingHorizontal: RUANG[2], paddingVertical: 2, borderRadius: SUDUT.bulat },
+    chipTeks: { ...HURUF.xs, fontWeight: TEBAL.tebal, fontVariant: ["tabular-nums"] },
+    chipWaktu: { backgroundColor: WARNA.abu },
+    waktuTeks: { fontWeight: TEBAL.semi, color: WARNA.teksKedua },
     tengah: { flex: 1, justifyContent: "center", alignItems: "center", gap: RUANG[3] },
     patokan: {
       alignItems: "center",
