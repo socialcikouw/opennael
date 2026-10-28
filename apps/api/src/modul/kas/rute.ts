@@ -132,39 +132,76 @@ const daftarPencocokan = createRoute({
   },
 });
 
-export function ruteKas(kas: LayananKas, auth: LayananAuth) {
+export function ruteKas(kas: (kunci?: string) => LayananKas, auth: LayananAuth) {
   const router = buatRouter();
   router.use("/kas/*", wajibMasuk(auth));
   return router
-    .openapi(buka, async (c) => c.json(await kas.bukaKas(c.get("aktor"), c.req.valid("json")), 200))
+    .openapi(buka, async (c) =>
+      c.json(
+        await kas(c.req.header("Idempotency-Key")).bukaKas(c.get("aktor"), c.req.valid("json")),
+        200,
+      ),
+    )
     .openapi(ubahKasAwal, async (c) =>
-      c.json(await kas.ubahKasAwal(c.get("aktor"), c.req.valid("json")), 200),
+      c.json(
+        await kas(c.req.header("Idempotency-Key")).ubahKasAwal(c.get("aktor"), c.req.valid("json")),
+        200,
+      ),
     )
     .openapi(laporan, async (c) =>
-      c.json(await kas.laporan(c.get("aktor"), c.req.valid("query")), 200),
+      c.json(
+        await kas(c.req.header("Idempotency-Key")).laporan(c.get("aktor"), c.req.valid("query")),
+        200,
+      ),
     )
     .openapi(posisiModal, async (c) =>
-      c.json(await kas.posisiModal(c.get("aktor"), c.req.valid("query")), 200),
+      c.json(
+        await kas(c.req.header("Idempotency-Key")).posisiModal(
+          c.get("aktor"),
+          c.req.valid("query"),
+        ),
+        200,
+      ),
     )
     .openapi(catatMutasi, async (c) =>
-      c.json(await kas.catatMutasi(c.get("aktor"), c.req.valid("json")), 200),
+      c.json(
+        await kas(c.req.header("Idempotency-Key")).catatMutasi(c.get("aktor"), c.req.valid("json")),
+        200,
+      ),
     )
     .openapi(batalMutasi, async (c) =>
       c.json(
-        await kas.batalMutasi(c.get("aktor"), c.req.valid("param").id, c.req.valid("json")),
+        await kas(c.req.header("Idempotency-Key")).batalMutasi(
+          c.get("aktor"),
+          c.req.valid("param").id,
+          c.req.valid("json"),
+        ),
         200,
       ),
     )
     .openapi(cocokkan, async (c) =>
-      c.json(await kas.cocokkan(c.get("aktor"), c.req.valid("json")), 200),
+      c.json(
+        await kas(c.req.header("Idempotency-Key")).cocokkan(c.get("aktor"), c.req.valid("json")),
+        200,
+      ),
     )
     .openapi(batalPencocokan, async (c) =>
       c.json(
-        await kas.batalPencocokan(c.get("aktor"), c.req.valid("param").id, c.req.valid("json")),
+        await kas(c.req.header("Idempotency-Key")).batalPencocokan(
+          c.get("aktor"),
+          c.req.valid("param").id,
+          c.req.valid("json"),
+        ),
         200,
       ),
     )
     .openapi(daftarPencocokan, async (c) =>
-      c.json(await kas.daftarPencocokan(c.get("aktor"), c.req.valid("query")), 200),
+      c.json(
+        await kas(c.req.header("Idempotency-Key")).daftarPencocokan(
+          c.get("aktor"),
+          c.req.valid("query"),
+        ),
+        200,
+      ),
     );
 }

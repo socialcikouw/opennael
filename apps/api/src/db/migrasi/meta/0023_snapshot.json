@@ -1,0 +1,4859 @@
+{
+  "id": "41b74c28-7017-48d6-af9b-a592538fd3f4",
+  "prevId": "427e5873-fd6b-4a14-897b-24d2fcc38421",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.biaya_tak_terduga": {
+      "name": "biaya_tak_terduga",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "kantor_id": {
+          "name": "kantor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kolektor_id": {
+          "name": "kolektor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tanggal": {
+          "name": "tanggal",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nominal": {
+          "name": "nominal",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "keterangan": {
+          "name": "keterangan",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dibuat_oleh": {
+          "name": "dibuat_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dibuat_at": {
+          "name": "dibuat_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "dibatalkan_at": {
+          "name": "dibatalkan_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dibatalkan_oleh": {
+          "name": "dibatalkan_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "alasan_batal": {
+          "name": "alasan_batal",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "idx_biaya_tak_terduga_kolektor_tanggal": {
+          "name": "idx_biaya_tak_terduga_kolektor_tanggal",
+          "columns": [
+            {
+              "expression": "kolektor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "tanggal",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_biaya_tak_terduga_kantor_tanggal": {
+          "name": "idx_biaya_tak_terduga_kantor_tanggal",
+          "columns": [
+            {
+              "expression": "kantor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "tanggal",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "biaya_tak_terduga_kolektor_fk": {
+          "name": "biaya_tak_terduga_kolektor_fk",
+          "tableFrom": "biaya_tak_terduga",
+          "tableTo": "pengguna",
+          "columnsFrom": ["kolektor_id", "kantor_id"],
+          "columnsTo": ["id", "kolektor_kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "biaya_tak_terduga_dibuat_oleh_fk": {
+          "name": "biaya_tak_terduga_dibuat_oleh_fk",
+          "tableFrom": "biaya_tak_terduga",
+          "tableTo": "pengguna",
+          "columnsFrom": ["dibuat_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "biaya_tak_terduga_dibatalkan_oleh_fk": {
+          "name": "biaya_tak_terduga_dibatalkan_oleh_fk",
+          "tableFrom": "biaya_tak_terduga",
+          "tableTo": "pengguna",
+          "columnsFrom": ["dibatalkan_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "biaya_tak_terduga_nominal_check": {
+          "name": "biaya_tak_terduga_nominal_check",
+          "value": "\"biaya_tak_terduga\".\"nominal\" > 0"
+        },
+        "biaya_tak_terduga_keterangan_check": {
+          "name": "biaya_tak_terduga_keterangan_check",
+          "value": "length(btrim(\"biaya_tak_terduga\".\"keterangan\")) > 0"
+        },
+        "biaya_tak_terduga_batal_check": {
+          "name": "biaya_tak_terduga_batal_check",
+          "value": "(\"biaya_tak_terduga\".\"dibatalkan_at\" IS NULL AND \"biaya_tak_terduga\".\"dibatalkan_oleh\" IS NULL AND \"biaya_tak_terduga\".\"alasan_batal\" IS NULL)\n        OR (\"biaya_tak_terduga\".\"dibatalkan_at\" IS NOT NULL AND \"biaya_tak_terduga\".\"dibatalkan_oleh\" IS NOT NULL AND \"biaya_tak_terduga\".\"alasan_batal\" IS NOT NULL)"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.foto": {
+      "name": "foto",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "kantor_id": {
+          "name": "kantor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "jenis": {
+          "name": "jenis",
+          "type": "jenis_foto",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kunci_berkas": {
+          "name": "kunci_berkas",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sha256": {
+          "name": "sha256",
+          "type": "char(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ukuran_byte": {
+          "name": "ukuran_byte",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tipe_mime": {
+          "name": "tipe_mime",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "latitude": {
+          "name": "latitude",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "longitude": {
+          "name": "longitude",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "akurasi_meter": {
+          "name": "akurasi_meter",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "diambil_at": {
+          "name": "diambil_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "diunggah_oleh": {
+          "name": "diunggah_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dibuat_at": {
+          "name": "dibuat_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "idx_foto_dibuat": {
+          "name": "idx_foto_dibuat",
+          "columns": [
+            {
+              "expression": "dibuat_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "foto_kantor_fk": {
+          "name": "foto_kantor_fk",
+          "tableFrom": "foto",
+          "tableTo": "kantor",
+          "columnsFrom": ["kantor_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "foto_diunggah_oleh_fk": {
+          "name": "foto_diunggah_oleh_fk",
+          "tableFrom": "foto",
+          "tableTo": "pengguna",
+          "columnsFrom": ["diunggah_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "uniq_foto_id_kantor": {
+          "name": "uniq_foto_id_kantor",
+          "nullsNotDistinct": false,
+          "columns": ["id", "kantor_id"]
+        },
+        "uniq_foto_kantor_sha256": {
+          "name": "uniq_foto_kantor_sha256",
+          "nullsNotDistinct": false,
+          "columns": ["kantor_id", "sha256"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "foto_ukuran_check": {
+          "name": "foto_ukuran_check",
+          "value": "\"foto\".\"ukuran_byte\" > 0 AND \"foto\".\"ukuran_byte\" <= 2000000"
+        },
+        "foto_sha256_check": {
+          "name": "foto_sha256_check",
+          "value": "\"foto\".\"sha256\" ~ '^[0-9a-f]{64}$'"
+        },
+        "foto_lokasi_check": {
+          "name": "foto_lokasi_check",
+          "value": "(\"foto\".\"latitude\" IS NULL AND \"foto\".\"longitude\" IS NULL AND \"foto\".\"akurasi_meter\" IS NULL)\n    OR (\"foto\".\"latitude\" IS NOT NULL AND \"foto\".\"longitude\" IS NOT NULL AND \"foto\".\"akurasi_meter\" IS NOT NULL\n      AND \"foto\".\"latitude\" BETWEEN -11 AND 6 AND \"foto\".\"longitude\" BETWEEN 95 AND 141\n      AND \"foto\".\"akurasi_meter\" > 0)"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.hari_kolektor": {
+      "name": "hari_kolektor",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "kantor_id": {
+          "name": "kantor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kolektor_id": {
+          "name": "kolektor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tanggal": {
+          "name": "tanggal",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "absensi": {
+          "name": "absensi",
+          "type": "status_absensi",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "alasan_tidak_kerja": {
+          "name": "alasan_tidak_kerja",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kas_lapangan": {
+          "name": "kas_lapangan",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "uang_jalan": {
+          "name": "uang_jalan",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "laporan_dibuka_at": {
+          "name": "laporan_dibuka_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "transfer_lama": {
+          "name": "transfer_lama",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tekor_lama": {
+          "name": "tekor_lama",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dibuat_at": {
+          "name": "dibuat_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "diubah_at": {
+          "name": "diubah_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "idx_hari_kolektor_kantor_tanggal": {
+          "name": "idx_hari_kolektor_kantor_tanggal",
+          "columns": [
+            {
+              "expression": "kantor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "tanggal",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "hari_kolektor_kantor_fk": {
+          "name": "hari_kolektor_kantor_fk",
+          "tableFrom": "hari_kolektor",
+          "tableTo": "kantor",
+          "columnsFrom": ["kantor_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "hari_kolektor_kolektor_fk": {
+          "name": "hari_kolektor_kolektor_fk",
+          "tableFrom": "hari_kolektor",
+          "tableTo": "pengguna",
+          "columnsFrom": ["kolektor_id", "kantor_id"],
+          "columnsTo": ["id", "kolektor_kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "uniq_hari_kolektor_kolektor_tanggal": {
+          "name": "uniq_hari_kolektor_kolektor_tanggal",
+          "nullsNotDistinct": false,
+          "columns": ["kolektor_id", "tanggal"]
+        },
+        "uniq_hari_kolektor_id_kantor": {
+          "name": "uniq_hari_kolektor_id_kantor",
+          "nullsNotDistinct": false,
+          "columns": ["id", "kantor_id"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "hari_kolektor_absensi_check": {
+          "name": "hari_kolektor_absensi_check",
+          "value": "(\"hari_kolektor\".\"absensi\" = 'masuk_kerja' AND \"hari_kolektor\".\"alasan_tidak_kerja\" IS NULL)\n        OR (\"hari_kolektor\".\"absensi\" = 'tidak_kerja' AND \"hari_kolektor\".\"alasan_tidak_kerja\" IS NOT NULL\n          AND \"hari_kolektor\".\"kas_lapangan\" = 0 AND \"hari_kolektor\".\"uang_jalan\" = 0\n          AND \"hari_kolektor\".\"laporan_dibuka_at\" IS NULL AND \"hari_kolektor\".\"transfer_lama\" IS NULL)"
+        },
+        "hari_kolektor_nominal_check": {
+          "name": "hari_kolektor_nominal_check",
+          "value": "\"hari_kolektor\".\"kas_lapangan\" >= 0 AND \"hari_kolektor\".\"uang_jalan\" >= 0\n        AND (\"hari_kolektor\".\"transfer_lama\" IS NULL OR \"hari_kolektor\".\"transfer_lama\" >= 0)\n        AND (\"hari_kolektor\".\"tekor_lama\" IS NULL OR \"hari_kolektor\".\"tekor_lama\" > 0)"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.kantor": {
+      "name": "kantor",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "nama": {
+          "name": "nama",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "zona_waktu": {
+          "name": "zona_waktu",
+          "type": "zona_waktu",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'WIB'"
+        },
+        "jam_buka": {
+          "name": "jam_buka",
+          "type": "time",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'07:00'"
+        },
+        "jam_tutup": {
+          "name": "jam_tutup",
+          "type": "time",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'24:00'"
+        },
+        "tanggal_tutup_terakhir": {
+          "name": "tanggal_tutup_terakhir",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dibuat_at": {
+          "name": "dibuat_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "diubah_at": {
+          "name": "diubah_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "kantor_jam_check": {
+          "name": "kantor_jam_check",
+          "value": "\"kantor\".\"jam_buka\" < \"kantor\".\"jam_tutup\""
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.buku_kas": {
+      "name": "buku_kas",
+      "schema": "",
+      "columns": {
+        "kantor_id": {
+          "name": "kantor_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "tanggal_buka": {
+          "name": "tanggal_buka",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kas_awal_tunai": {
+          "name": "kas_awal_tunai",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "kas_awal_bank": {
+          "name": "kas_awal_bank",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "dibuka_oleh": {
+          "name": "dibuka_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dibuka_at": {
+          "name": "dibuka_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "diubah_at": {
+          "name": "diubah_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "buku_kas_kantor_fk": {
+          "name": "buku_kas_kantor_fk",
+          "tableFrom": "buku_kas",
+          "tableTo": "kantor",
+          "columnsFrom": ["kantor_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "buku_kas_dibuka_oleh_fk": {
+          "name": "buku_kas_dibuka_oleh_fk",
+          "tableFrom": "buku_kas",
+          "tableTo": "pengguna",
+          "columnsFrom": ["dibuka_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "buku_kas_nominal_check": {
+          "name": "buku_kas_nominal_check",
+          "value": "\"buku_kas\".\"kas_awal_tunai\" >= 0 AND \"buku_kas\".\"kas_awal_bank\" >= 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.mutasi_kas_kantor": {
+      "name": "mutasi_kas_kantor",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "kantor_id": {
+          "name": "kantor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tanggal": {
+          "name": "tanggal",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "jenis": {
+          "name": "jenis",
+          "type": "jenis_mutasi_kas",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dari_akun": {
+          "name": "dari_akun",
+          "type": "akun_kas",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ke_akun": {
+          "name": "ke_akun",
+          "type": "akun_kas",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "nominal": {
+          "name": "nominal",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "keterangan": {
+          "name": "keterangan",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dibuat_oleh": {
+          "name": "dibuat_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dibuat_at": {
+          "name": "dibuat_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "dibatalkan_at": {
+          "name": "dibatalkan_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dibatalkan_oleh": {
+          "name": "dibatalkan_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "alasan_batal": {
+          "name": "alasan_batal",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "idx_mutasi_kas_kantor_kantor_tanggal": {
+          "name": "idx_mutasi_kas_kantor_kantor_tanggal",
+          "columns": [
+            {
+              "expression": "kantor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "tanggal",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "mutasi_kas_kantor_kantor_fk": {
+          "name": "mutasi_kas_kantor_kantor_fk",
+          "tableFrom": "mutasi_kas_kantor",
+          "tableTo": "buku_kas",
+          "columnsFrom": ["kantor_id"],
+          "columnsTo": ["kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "mutasi_kas_kantor_dibuat_oleh_fk": {
+          "name": "mutasi_kas_kantor_dibuat_oleh_fk",
+          "tableFrom": "mutasi_kas_kantor",
+          "tableTo": "pengguna",
+          "columnsFrom": ["dibuat_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "mutasi_kas_kantor_dibatalkan_oleh_fk": {
+          "name": "mutasi_kas_kantor_dibatalkan_oleh_fk",
+          "tableFrom": "mutasi_kas_kantor",
+          "tableTo": "pengguna",
+          "columnsFrom": ["dibatalkan_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "mutasi_kas_kantor_nominal_check": {
+          "name": "mutasi_kas_kantor_nominal_check",
+          "value": "\"mutasi_kas_kantor\".\"nominal\" > 0"
+        },
+        "mutasi_kas_kantor_keterangan_check": {
+          "name": "mutasi_kas_kantor_keterangan_check",
+          "value": "length(btrim(\"mutasi_kas_kantor\".\"keterangan\")) > 0"
+        },
+        "mutasi_kas_kantor_akun_check": {
+          "name": "mutasi_kas_kantor_akun_check",
+          "value": "(\"mutasi_kas_kantor\".\"jenis\"::text IN ('setor_modal', 'lain_masuk')\n          AND \"mutasi_kas_kantor\".\"ke_akun\" IS NOT NULL AND \"mutasi_kas_kantor\".\"dari_akun\" IS NULL)\n        OR (\"mutasi_kas_kantor\".\"jenis\"::text IN ('tarik_modal', 'biaya_kantor', 'lain_keluar')\n          AND \"mutasi_kas_kantor\".\"dari_akun\" IS NOT NULL AND \"mutasi_kas_kantor\".\"ke_akun\" IS NULL)\n        OR (\"mutasi_kas_kantor\".\"jenis\"::text = 'pindah_akun'\n          AND \"mutasi_kas_kantor\".\"dari_akun\" IS NOT NULL AND \"mutasi_kas_kantor\".\"ke_akun\" IS NOT NULL AND \"mutasi_kas_kantor\".\"dari_akun\" <> \"mutasi_kas_kantor\".\"ke_akun\")"
+        },
+        "mutasi_kas_kantor_batal_check": {
+          "name": "mutasi_kas_kantor_batal_check",
+          "value": "(\"mutasi_kas_kantor\".\"dibatalkan_at\" IS NULL AND \"mutasi_kas_kantor\".\"dibatalkan_oleh\" IS NULL AND \"mutasi_kas_kantor\".\"alasan_batal\" IS NULL)\n    OR (\"mutasi_kas_kantor\".\"dibatalkan_at\" IS NOT NULL AND \"mutasi_kas_kantor\".\"dibatalkan_oleh\" IS NOT NULL AND \"mutasi_kas_kantor\".\"alasan_batal\" IS NOT NULL)"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.pencocokan_kas": {
+      "name": "pencocokan_kas",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "kantor_id": {
+          "name": "kantor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tanggal": {
+          "name": "tanggal",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "akun": {
+          "name": "akun",
+          "type": "akun_kas",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "saldo_buku": {
+          "name": "saldo_buku",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "saldo_nyata": {
+          "name": "saldo_nyata",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "selisih": {
+          "name": "selisih",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "generated": {
+            "as": "saldo_nyata - saldo_buku",
+            "type": "stored"
+          }
+        },
+        "keterangan": {
+          "name": "keterangan",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dicocokkan_oleh": {
+          "name": "dicocokkan_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dibuat_at": {
+          "name": "dibuat_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "dibatalkan_at": {
+          "name": "dibatalkan_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dibatalkan_oleh": {
+          "name": "dibatalkan_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "alasan_batal": {
+          "name": "alasan_batal",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "idx_pencocokan_kas_kantor_tanggal": {
+          "name": "idx_pencocokan_kas_kantor_tanggal",
+          "columns": [
+            {
+              "expression": "kantor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "tanggal",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "pencocokan_kas_kantor_fk": {
+          "name": "pencocokan_kas_kantor_fk",
+          "tableFrom": "pencocokan_kas",
+          "tableTo": "buku_kas",
+          "columnsFrom": ["kantor_id"],
+          "columnsTo": ["kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "pencocokan_kas_dicocokkan_oleh_fk": {
+          "name": "pencocokan_kas_dicocokkan_oleh_fk",
+          "tableFrom": "pencocokan_kas",
+          "tableTo": "pengguna",
+          "columnsFrom": ["dicocokkan_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "pencocokan_kas_dibatalkan_oleh_fk": {
+          "name": "pencocokan_kas_dibatalkan_oleh_fk",
+          "tableFrom": "pencocokan_kas",
+          "tableTo": "pengguna",
+          "columnsFrom": ["dibatalkan_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "pencocokan_kas_nominal_check": {
+          "name": "pencocokan_kas_nominal_check",
+          "value": "\"pencocokan_kas\".\"saldo_nyata\" >= 0"
+        },
+        "pencocokan_kas_keterangan_check": {
+          "name": "pencocokan_kas_keterangan_check",
+          "value": "\"pencocokan_kas\".\"saldo_nyata\" = \"pencocokan_kas\".\"saldo_buku\"\n        OR (\"pencocokan_kas\".\"keterangan\" IS NOT NULL AND length(btrim(\"pencocokan_kas\".\"keterangan\")) > 0)"
+        },
+        "pencocokan_kas_batal_check": {
+          "name": "pencocokan_kas_batal_check",
+          "value": "(\"pencocokan_kas\".\"dibatalkan_at\" IS NULL AND \"pencocokan_kas\".\"dibatalkan_oleh\" IS NULL AND \"pencocokan_kas\".\"alasan_batal\" IS NULL)\n    OR (\"pencocokan_kas\".\"dibatalkan_at\" IS NOT NULL AND \"pencocokan_kas\".\"dibatalkan_oleh\" IS NOT NULL AND \"pencocokan_kas\".\"alasan_batal\" IS NOT NULL)"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.kebijakan": {
+      "name": "kebijakan",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "kantor_id": {
+          "name": "kantor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kolektor_id": {
+          "name": "kolektor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "nasabah_id": {
+          "name": "nasabah_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pinjaman_baru_dikunci": {
+          "name": "pinjaman_baru_dikunci",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "naik_pinjaman_dikunci": {
+          "name": "naik_pinjaman_dikunci",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "gulung_pinjaman_dikunci": {
+          "name": "gulung_pinjaman_dikunci",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "alasan_kunci": {
+          "name": "alasan_kunci",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "diubah_oleh": {
+          "name": "diubah_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dibuat_at": {
+          "name": "dibuat_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "diubah_at": {
+          "name": "diubah_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "uniq_kebijakan_kantor": {
+          "name": "uniq_kebijakan_kantor",
+          "columns": [
+            {
+              "expression": "kantor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"kebijakan\".\"kolektor_id\" IS NULL AND \"kebijakan\".\"nasabah_id\" IS NULL",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "uniq_kebijakan_kolektor": {
+          "name": "uniq_kebijakan_kolektor",
+          "columns": [
+            {
+              "expression": "kolektor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"kebijakan\".\"kolektor_id\" IS NOT NULL",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "uniq_kebijakan_nasabah": {
+          "name": "uniq_kebijakan_nasabah",
+          "columns": [
+            {
+              "expression": "nasabah_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"kebijakan\".\"nasabah_id\" IS NOT NULL",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "kebijakan_kantor_fk": {
+          "name": "kebijakan_kantor_fk",
+          "tableFrom": "kebijakan",
+          "tableTo": "kantor",
+          "columnsFrom": ["kantor_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "kebijakan_kolektor_fk": {
+          "name": "kebijakan_kolektor_fk",
+          "tableFrom": "kebijakan",
+          "tableTo": "pengguna",
+          "columnsFrom": ["kolektor_id", "kantor_id"],
+          "columnsTo": ["id", "kolektor_kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "kebijakan_nasabah_fk": {
+          "name": "kebijakan_nasabah_fk",
+          "tableFrom": "kebijakan",
+          "tableTo": "nasabah",
+          "columnsFrom": ["nasabah_id", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "kebijakan_diubah_oleh_fk": {
+          "name": "kebijakan_diubah_oleh_fk",
+          "tableFrom": "kebijakan",
+          "tableTo": "pengguna",
+          "columnsFrom": ["diubah_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "kebijakan_sasaran_check": {
+          "name": "kebijakan_sasaran_check",
+          "value": "num_nonnulls(\"kebijakan\".\"kolektor_id\", \"kebijakan\".\"nasabah_id\") <= 1"
+        },
+        "kebijakan_lapis_nasabah_check": {
+          "name": "kebijakan_lapis_nasabah_check",
+          "value": "\"kebijakan\".\"nasabah_id\" IS NULL OR \"kebijakan\".\"pinjaman_baru_dikunci\" = false"
+        },
+        "kebijakan_menyala_check": {
+          "name": "kebijakan_menyala_check",
+          "value": "\"kebijakan\".\"pinjaman_baru_dikunci\" OR \"kebijakan\".\"naik_pinjaman_dikunci\" OR \"kebijakan\".\"gulung_pinjaman_dikunci\""
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.libur_kantor": {
+      "name": "libur_kantor",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "kantor_id": {
+          "name": "kantor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tanggal": {
+          "name": "tanggal",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "alasan_libur": {
+          "name": "alasan_libur",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dibuat_oleh": {
+          "name": "dibuat_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dibuat_at": {
+          "name": "dibuat_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "libur_kantor_kantor_fk": {
+          "name": "libur_kantor_kantor_fk",
+          "tableFrom": "libur_kantor",
+          "tableTo": "kantor",
+          "columnsFrom": ["kantor_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "libur_kantor_dibuat_oleh_fk": {
+          "name": "libur_kantor_dibuat_oleh_fk",
+          "tableFrom": "libur_kantor",
+          "tableTo": "pengguna",
+          "columnsFrom": ["dibuat_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "uniq_libur_kantor_kantor_tanggal": {
+          "name": "uniq_libur_kantor_kantor_tanggal",
+          "nullsNotDistinct": false,
+          "columns": ["kantor_id", "tanggal"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "libur_kantor_alasan_check": {
+          "name": "libur_kantor_alasan_check",
+          "value": "length(btrim(\"libur_kantor\".\"alasan_libur\")) > 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.libur_nasabah": {
+      "name": "libur_nasabah",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "kantor_id": {
+          "name": "kantor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pencatat_id": {
+          "name": "pencatat_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pinjaman_id": {
+          "name": "pinjaman_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tanggal": {
+          "name": "tanggal",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "alasan_libur": {
+          "name": "alasan_libur",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dibuat_at": {
+          "name": "dibuat_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "idx_libur_nasabah_pencatat_tanggal": {
+          "name": "idx_libur_nasabah_pencatat_tanggal",
+          "columns": [
+            {
+              "expression": "pencatat_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "tanggal",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_libur_nasabah_kantor_tanggal": {
+          "name": "idx_libur_nasabah_kantor_tanggal",
+          "columns": [
+            {
+              "expression": "kantor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "tanggal",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "libur_nasabah_kantor_fk": {
+          "name": "libur_nasabah_kantor_fk",
+          "tableFrom": "libur_nasabah",
+          "tableTo": "kantor",
+          "columnsFrom": ["kantor_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "libur_nasabah_pencatat_fk": {
+          "name": "libur_nasabah_pencatat_fk",
+          "tableFrom": "libur_nasabah",
+          "tableTo": "pengguna",
+          "columnsFrom": ["pencatat_id", "kantor_id"],
+          "columnsTo": ["id", "kolektor_kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "libur_nasabah_pinjaman_fk": {
+          "name": "libur_nasabah_pinjaman_fk",
+          "tableFrom": "libur_nasabah",
+          "tableTo": "pinjaman",
+          "columnsFrom": ["pinjaman_id", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "uniq_libur_nasabah_pinjaman_tanggal": {
+          "name": "uniq_libur_nasabah_pinjaman_tanggal",
+          "nullsNotDistinct": false,
+          "columns": ["pinjaman_id", "tanggal"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.nasabah": {
+      "name": "nasabah",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "kantor_id": {
+          "name": "kantor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kolektor_id": {
+          "name": "kolektor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nama": {
+          "name": "nama",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "wilayah_id": {
+          "name": "wilayah_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nomor_hp": {
+          "name": "nomor_hp",
+          "type": "varchar(16)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "nik": {
+          "name": "nik",
+          "type": "varchar(16)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "latitude": {
+          "name": "latitude",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "longitude": {
+          "name": "longitude",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "akurasi_meter": {
+          "name": "akurasi_meter",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "saldo_tabungan": {
+          "name": "saldo_tabungan",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "foto_ktp_id": {
+          "name": "foto_ktp_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "diblokir_at": {
+          "name": "diblokir_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "diblokir_oleh": {
+          "name": "diblokir_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "alasan_blokir": {
+          "name": "alasan_blokir",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dibuat_at": {
+          "name": "dibuat_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "diubah_at": {
+          "name": "diubah_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "uniq_nasabah_kantor_nik": {
+          "name": "uniq_nasabah_kantor_nik",
+          "columns": [
+            {
+              "expression": "kantor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "nik",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"nasabah\".\"nik\" IS NOT NULL",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_nasabah_kolektor_nama": {
+          "name": "idx_nasabah_kolektor_nama",
+          "columns": [
+            {
+              "expression": "kolektor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "nama",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_nasabah_kantor_nama": {
+          "name": "idx_nasabah_kantor_nama",
+          "columns": [
+            {
+              "expression": "kantor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "nama",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_nasabah_wilayah": {
+          "name": "idx_nasabah_wilayah",
+          "columns": [
+            {
+              "expression": "wilayah_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_nasabah_kunci_nama": {
+          "name": "idx_nasabah_kunci_nama",
+          "columns": [
+            {
+              "expression": "kantor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "wilayah_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "lower(btrim(regexp_replace(\"nama\", '\\s+', ' ', 'g')))",
+              "asc": true,
+              "isExpression": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "nasabah_kantor_fk": {
+          "name": "nasabah_kantor_fk",
+          "tableFrom": "nasabah",
+          "tableTo": "kantor",
+          "columnsFrom": ["kantor_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "nasabah_kolektor_fk": {
+          "name": "nasabah_kolektor_fk",
+          "tableFrom": "nasabah",
+          "tableTo": "pengguna",
+          "columnsFrom": ["kolektor_id", "kantor_id"],
+          "columnsTo": ["id", "kolektor_kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "nasabah_wilayah_fk": {
+          "name": "nasabah_wilayah_fk",
+          "tableFrom": "nasabah",
+          "tableTo": "wilayah",
+          "columnsFrom": ["wilayah_id", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "nasabah_diblokir_oleh_fk": {
+          "name": "nasabah_diblokir_oleh_fk",
+          "tableFrom": "nasabah",
+          "tableTo": "pengguna",
+          "columnsFrom": ["diblokir_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "nasabah_foto_ktp_fk": {
+          "name": "nasabah_foto_ktp_fk",
+          "tableFrom": "nasabah",
+          "tableTo": "foto",
+          "columnsFrom": ["foto_ktp_id", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "uniq_nasabah_id_kantor": {
+          "name": "uniq_nasabah_id_kantor",
+          "nullsNotDistinct": false,
+          "columns": ["id", "kantor_id"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "nasabah_saldo_tabungan_check": {
+          "name": "nasabah_saldo_tabungan_check",
+          "value": "\"nasabah\".\"saldo_tabungan\" >= 0"
+        },
+        "nasabah_nik_check": {
+          "name": "nasabah_nik_check",
+          "value": "\"nasabah\".\"nik\" IS NULL OR \"nasabah\".\"nik\" ~ '^[0-9]{16}$'"
+        },
+        "nasabah_nomor_hp_check": {
+          "name": "nasabah_nomor_hp_check",
+          "value": "\"nasabah\".\"nomor_hp\" IS NULL OR \"nasabah\".\"nomor_hp\" ~ '^\\+[0-9]{8,15}$'"
+        },
+        "nasabah_lokasi_check": {
+          "name": "nasabah_lokasi_check",
+          "value": "(\"nasabah\".\"latitude\" IS NULL AND \"nasabah\".\"longitude\" IS NULL AND \"nasabah\".\"akurasi_meter\" IS NULL)\n    OR (\"nasabah\".\"latitude\" IS NOT NULL AND \"nasabah\".\"longitude\" IS NOT NULL AND \"nasabah\".\"akurasi_meter\" IS NOT NULL\n      AND \"nasabah\".\"latitude\" BETWEEN -11 AND 6 AND \"nasabah\".\"longitude\" BETWEEN 95 AND 141\n      AND \"nasabah\".\"akurasi_meter\" > 0)"
+        },
+        "nasabah_blokir_check": {
+          "name": "nasabah_blokir_check",
+          "value": "(\"nasabah\".\"diblokir_at\" IS NULL AND \"nasabah\".\"diblokir_oleh\" IS NULL AND \"nasabah\".\"alasan_blokir\" IS NULL)\n        OR (\"nasabah\".\"diblokir_at\" IS NOT NULL AND \"nasabah\".\"diblokir_oleh\" IS NOT NULL AND \"nasabah\".\"alasan_blokir\" IS NOT NULL)"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.operasi_idempoten": {
+      "name": "operasi_idempoten",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "kantor_id": {
+          "name": "kantor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pengguna_id": {
+          "name": "pengguna_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kunci": {
+          "name": "kunci",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "operasi": {
+          "name": "operasi",
+          "type": "varchar(120)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sidik_isi": {
+          "name": "sidik_isi",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hasil": {
+          "name": "hasil",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dibuat_at": {
+          "name": "dibuat_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "operasi_idempoten_kantor_fk": {
+          "name": "operasi_idempoten_kantor_fk",
+          "tableFrom": "operasi_idempoten",
+          "tableTo": "kantor",
+          "columnsFrom": ["kantor_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "operasi_idempoten_pengguna_kantor_fk": {
+          "name": "operasi_idempoten_pengguna_kantor_fk",
+          "tableFrom": "operasi_idempoten",
+          "tableTo": "pengguna",
+          "columnsFrom": ["pengguna_id", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "uniq_operasi_idempoten_pelaku_kunci": {
+          "name": "uniq_operasi_idempoten_pelaku_kunci",
+          "nullsNotDistinct": false,
+          "columns": ["kantor_id", "pengguna_id", "kunci"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "operasi_idempoten_operasi_check": {
+          "name": "operasi_idempoten_operasi_check",
+          "value": "length(trim(\"operasi_idempoten\".\"operasi\")) > 0"
+        },
+        "operasi_idempoten_sidik_isi_check": {
+          "name": "operasi_idempoten_sidik_isi_check",
+          "value": "\"operasi_idempoten\".\"sidik_isi\" ~ '^[0-9a-f]{64}$'"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.pekan_kerja": {
+      "name": "pekan_kerja",
+      "schema": "",
+      "columns": {
+        "kantor_id": {
+          "name": "kantor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "berlaku_mulai": {
+          "name": "berlaku_mulai",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hari_kerja": {
+          "name": "hari_kerja",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dibuat_oleh": {
+          "name": "dibuat_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dibuat_at": {
+          "name": "dibuat_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "diubah_at": {
+          "name": "diubah_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "pekan_kerja_kantor_fk": {
+          "name": "pekan_kerja_kantor_fk",
+          "tableFrom": "pekan_kerja",
+          "tableTo": "kantor",
+          "columnsFrom": ["kantor_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "pekan_kerja_dibuat_oleh_fk": {
+          "name": "pekan_kerja_dibuat_oleh_fk",
+          "tableFrom": "pekan_kerja",
+          "tableTo": "pengguna",
+          "columnsFrom": ["dibuat_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "pekan_kerja_pkey": {
+          "name": "pekan_kerja_pkey",
+          "columns": ["kantor_id", "berlaku_mulai"]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "pekan_kerja_hari_check": {
+          "name": "pekan_kerja_hari_check",
+          "value": "\"pekan_kerja\".\"hari_kerja\" BETWEEN 1 AND 127"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.pembayaran_gaji": {
+      "name": "pembayaran_gaji",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "kantor_id": {
+          "name": "kantor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kolektor_id": {
+          "name": "kolektor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "periode_mulai": {
+          "name": "periode_mulai",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "periode_selesai": {
+          "name": "periode_selesai",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gaji_kotor": {
+          "name": "gaji_kotor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "potongan_tekor": {
+          "name": "potongan_tekor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gaji_bersih": {
+          "name": "gaji_bersih",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "generated": {
+            "as": "gaji_kotor - potongan_tekor",
+            "type": "stored"
+          }
+        },
+        "dari_akun": {
+          "name": "dari_akun",
+          "type": "akun_kas",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tanggal_bayar": {
+          "name": "tanggal_bayar",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "keterangan": {
+          "name": "keterangan",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dibuat_oleh": {
+          "name": "dibuat_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dibuat_at": {
+          "name": "dibuat_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "dibatalkan_at": {
+          "name": "dibatalkan_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dibatalkan_oleh": {
+          "name": "dibatalkan_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "alasan_batal": {
+          "name": "alasan_batal",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "idx_pembayaran_gaji_kolektor": {
+          "name": "idx_pembayaran_gaji_kolektor",
+          "columns": [
+            {
+              "expression": "kolektor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "periode_mulai",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_pembayaran_gaji_kantor_tanggal": {
+          "name": "idx_pembayaran_gaji_kantor_tanggal",
+          "columns": [
+            {
+              "expression": "kantor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "tanggal_bayar",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "pembayaran_gaji_kolektor_fk": {
+          "name": "pembayaran_gaji_kolektor_fk",
+          "tableFrom": "pembayaran_gaji",
+          "tableTo": "pengguna",
+          "columnsFrom": ["kolektor_id", "kantor_id"],
+          "columnsTo": ["id", "kolektor_kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "pembayaran_gaji_kantor_fk": {
+          "name": "pembayaran_gaji_kantor_fk",
+          "tableFrom": "pembayaran_gaji",
+          "tableTo": "buku_kas",
+          "columnsFrom": ["kantor_id"],
+          "columnsTo": ["kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "pembayaran_gaji_dibuat_oleh_fk": {
+          "name": "pembayaran_gaji_dibuat_oleh_fk",
+          "tableFrom": "pembayaran_gaji",
+          "tableTo": "pengguna",
+          "columnsFrom": ["dibuat_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "pembayaran_gaji_dibatalkan_oleh_fk": {
+          "name": "pembayaran_gaji_dibatalkan_oleh_fk",
+          "tableFrom": "pembayaran_gaji",
+          "tableTo": "pengguna",
+          "columnsFrom": ["dibatalkan_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "pembayaran_gaji_periode_check": {
+          "name": "pembayaran_gaji_periode_check",
+          "value": "\"pembayaran_gaji\".\"periode_mulai\" <= \"pembayaran_gaji\".\"periode_selesai\" AND \"pembayaran_gaji\".\"periode_selesai\" < \"pembayaran_gaji\".\"tanggal_bayar\""
+        },
+        "pembayaran_gaji_nominal_check": {
+          "name": "pembayaran_gaji_nominal_check",
+          "value": "\"pembayaran_gaji\".\"gaji_kotor\" >= 0 AND \"pembayaran_gaji\".\"potongan_tekor\" >= 0 AND \"pembayaran_gaji\".\"potongan_tekor\" <= \"pembayaran_gaji\".\"gaji_kotor\""
+        },
+        "pembayaran_gaji_batal_check": {
+          "name": "pembayaran_gaji_batal_check",
+          "value": "(\"pembayaran_gaji\".\"dibatalkan_at\" IS NULL AND \"pembayaran_gaji\".\"dibatalkan_oleh\" IS NULL AND \"pembayaran_gaji\".\"alasan_batal\" IS NULL)\n        OR (\"pembayaran_gaji\".\"dibatalkan_at\" IS NOT NULL AND \"pembayaran_gaji\".\"dibatalkan_oleh\" IS NOT NULL AND \"pembayaran_gaji\".\"alasan_batal\" IS NOT NULL)"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.pengguna": {
+      "name": "pengguna",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "kantor_id": {
+          "name": "kantor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "peran": {
+          "name": "peran",
+          "type": "peran_pengguna",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nama": {
+          "name": "nama",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nomor_hp": {
+          "name": "nomor_hp",
+          "type": "varchar(16)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hash_sandi": {
+          "name": "hash_sandi",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "resort": {
+          "name": "resort",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kolektor_kantor_id": {
+          "name": "kolektor_kantor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false,
+          "generated": {
+            "as": "CASE WHEN peran = 'kolektor' THEN kantor_id END",
+            "type": "stored"
+          }
+        },
+        "dinonaktifkan_at": {
+          "name": "dinonaktifkan_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dinonaktifkan_oleh": {
+          "name": "dinonaktifkan_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "alasan_nonaktif": {
+          "name": "alasan_nonaktif",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dibuat_at": {
+          "name": "dibuat_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "diubah_at": {
+          "name": "diubah_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "uniq_pengguna_bos_kantor": {
+          "name": "uniq_pengguna_bos_kantor",
+          "columns": [
+            {
+              "expression": "kantor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"pengguna\".\"peran\" = 'bos' AND \"pengguna\".\"dinonaktifkan_at\" IS NULL",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "uniq_pengguna_nomor_hp_bos": {
+          "name": "uniq_pengguna_nomor_hp_bos",
+          "columns": [
+            {
+              "expression": "nomor_hp",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"pengguna\".\"peran\" = 'bos' AND \"pengguna\".\"dinonaktifkan_at\" IS NULL",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_pengguna_kantor_peran": {
+          "name": "idx_pengguna_kantor_peran",
+          "columns": [
+            {
+              "expression": "kantor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "peran",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "pengguna_kantor_fk": {
+          "name": "pengguna_kantor_fk",
+          "tableFrom": "pengguna",
+          "tableTo": "kantor",
+          "columnsFrom": ["kantor_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "pengguna_dinonaktifkan_oleh_fk": {
+          "name": "pengguna_dinonaktifkan_oleh_fk",
+          "tableFrom": "pengguna",
+          "tableTo": "pengguna",
+          "columnsFrom": ["dinonaktifkan_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "uniq_pengguna_id_kantor": {
+          "name": "uniq_pengguna_id_kantor",
+          "nullsNotDistinct": false,
+          "columns": ["id", "kantor_id"]
+        },
+        "uniq_pengguna_id_kolektor_kantor": {
+          "name": "uniq_pengguna_id_kolektor_kantor",
+          "nullsNotDistinct": false,
+          "columns": ["id", "kolektor_kantor_id"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "pengguna_peran_check": {
+          "name": "pengguna_peran_check",
+          "value": "(\"pengguna\".\"peran\" = 'bos' AND \"pengguna\".\"nomor_hp\" IS NOT NULL AND \"pengguna\".\"hash_sandi\" IS NOT NULL)\n        OR (\"pengguna\".\"peran\" <> 'bos' AND \"pengguna\".\"hash_sandi\" IS NULL)"
+        },
+        "pengguna_resort_check": {
+          "name": "pengguna_resort_check",
+          "value": "\"pengguna\".\"resort\" IS NULL OR \"pengguna\".\"peran\" = 'kolektor'"
+        },
+        "pengguna_nomor_hp_check": {
+          "name": "pengguna_nomor_hp_check",
+          "value": "\"pengguna\".\"nomor_hp\" IS NULL OR \"pengguna\".\"nomor_hp\" ~ '^\\+[0-9]{8,15}$'"
+        },
+        "pengguna_nonaktif_check": {
+          "name": "pengguna_nonaktif_check",
+          "value": "(\"pengguna\".\"dinonaktifkan_at\" IS NULL AND \"pengguna\".\"dinonaktifkan_oleh\" IS NULL AND \"pengguna\".\"alasan_nonaktif\" IS NULL)\n        OR (\"pengguna\".\"dinonaktifkan_at\" IS NOT NULL AND \"pengguna\".\"dinonaktifkan_oleh\" IS NOT NULL AND \"pengguna\".\"alasan_nonaktif\" IS NOT NULL)"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.perangkat": {
+      "name": "perangkat",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "pengguna_id": {
+          "name": "pengguna_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kantor_id": {
+          "name": "kantor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nama": {
+          "name": "nama",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "platform": {
+          "name": "platform",
+          "type": "platform_perangkat",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "putaran": {
+          "name": "putaran",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 1
+        },
+        "kedaluwarsa_at": {
+          "name": "kedaluwarsa_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "terakhir_aktif_at": {
+          "name": "terakhir_aktif_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "diputus_at": {
+          "name": "diputus_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "diputus_oleh": {
+          "name": "diputus_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "alasan_putus": {
+          "name": "alasan_putus",
+          "type": "alasan_putus",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dibuat_at": {
+          "name": "dibuat_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "idx_perangkat_pengguna_aktif": {
+          "name": "idx_perangkat_pengguna_aktif",
+          "columns": [
+            {
+              "expression": "pengguna_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "where": "\"perangkat\".\"diputus_at\" IS NULL",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_perangkat_kantor_aktif": {
+          "name": "idx_perangkat_kantor_aktif",
+          "columns": [
+            {
+              "expression": "kantor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "where": "\"perangkat\".\"diputus_at\" IS NULL",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "perangkat_kantor_fk": {
+          "name": "perangkat_kantor_fk",
+          "tableFrom": "perangkat",
+          "tableTo": "kantor",
+          "columnsFrom": ["kantor_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "perangkat_pengguna_fk": {
+          "name": "perangkat_pengguna_fk",
+          "tableFrom": "perangkat",
+          "tableTo": "pengguna",
+          "columnsFrom": ["pengguna_id", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "perangkat_diputus_oleh_fk": {
+          "name": "perangkat_diputus_oleh_fk",
+          "tableFrom": "perangkat",
+          "tableTo": "pengguna",
+          "columnsFrom": ["diputus_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "perangkat_putaran_check": {
+          "name": "perangkat_putaran_check",
+          "value": "\"perangkat\".\"putaran\" >= 1"
+        },
+        "perangkat_putus_check": {
+          "name": "perangkat_putus_check",
+          "value": "(\"perangkat\".\"diputus_at\" IS NULL AND \"perangkat\".\"diputus_oleh\" IS NULL AND \"perangkat\".\"alasan_putus\" IS NULL)\n        OR (\"perangkat\".\"diputus_at\" IS NOT NULL AND \"perangkat\".\"alasan_putus\" IS NOT NULL\n          AND (\"perangkat\".\"alasan_putus\" IN ('pakai_ulang', 'kedaluwarsa')) = (\"perangkat\".\"diputus_oleh\" IS NULL))"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.pinjaman": {
+      "name": "pinjaman",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "kantor_id": {
+          "name": "kantor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pencair_id": {
+          "name": "pencair_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nasabah_id": {
+          "name": "nasabah_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pinjaman_ke": {
+          "name": "pinjaman_ke",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "jenis": {
+          "name": "jenis",
+          "type": "jenis_pinjaman",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tenor": {
+          "name": "tenor",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "asal": {
+          "name": "asal",
+          "type": "asal_pinjaman",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pinjaman_asal_id": {
+          "name": "pinjaman_asal_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "jenis_gulung": {
+          "name": "jenis_gulung",
+          "type": "jenis_gulung",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dibuat_oleh": {
+          "name": "dibuat_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "foto_serah_terima_id": {
+          "name": "foto_serah_terima_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tanggal_akad": {
+          "name": "tanggal_akad",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tanggal_disalin": {
+          "name": "tanggal_disalin",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "jatuh_tempo": {
+          "name": "jatuh_tempo",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false,
+          "generated": {
+            "as": "CASE WHEN jenis = 'tempoan' THEN tanggal_akad + tenor END",
+            "type": "stored"
+          }
+        },
+        "tanggal_macet": {
+          "name": "tanggal_macet",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tanggal_selesai": {
+          "name": "tanggal_selesai",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pokok": {
+          "name": "pokok",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "potongan_admin": {
+          "name": "potongan_admin",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tabungan_masuk": {
+          "name": "tabungan_masuk",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "saldo_lama": {
+          "name": "saldo_lama",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "pencairan": {
+          "name": "pencairan",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "total_kembali": {
+          "name": "total_kembali",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "angsuran": {
+          "name": "angsuran",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "saldo_awal": {
+          "name": "saldo_awal",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "drop_baru": {
+          "name": "drop_baru",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "drop_gulung": {
+          "name": "drop_gulung",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "droping": {
+          "name": "droping",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "generated": {
+            "as": "drop_baru + drop_gulung",
+            "type": "stored"
+          }
+        },
+        "pokok_berkurang": {
+          "name": "pokok_berkurang",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "status": {
+          "name": "status",
+          "type": "status_pinjaman",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'berjalan'"
+        },
+        "saldo": {
+          "name": "saldo",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "angsuran_ke": {
+          "name": "angsuran_ke",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "generated": {
+            "as": "((total_kembali - saldo) / angsuran)::integer",
+            "type": "stored"
+          }
+        },
+        "diputihkan_at": {
+          "name": "diputihkan_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "diputihkan_oleh": {
+          "name": "diputihkan_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "alasan_pemutihan": {
+          "name": "alasan_pemutihan",
+          "type": "alasan_pemutihan",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "keterangan_pemutihan": {
+          "name": "keterangan_pemutihan",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dibatalkan_at": {
+          "name": "dibatalkan_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dibatalkan_oleh": {
+          "name": "dibatalkan_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "alasan_batal": {
+          "name": "alasan_batal",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dibuat_at": {
+          "name": "dibuat_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "diubah_at": {
+          "name": "diubah_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "uniq_pinjaman_aktif_nasabah": {
+          "name": "uniq_pinjaman_aktif_nasabah",
+          "columns": [
+            {
+              "expression": "nasabah_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"pinjaman\".\"status\" IN ('berjalan', 'macet')",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "uniq_pinjaman_nasabah_ke": {
+          "name": "uniq_pinjaman_nasabah_ke",
+          "columns": [
+            {
+              "expression": "nasabah_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "pinjaman_ke",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"pinjaman\".\"status\" <> 'batal'",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "uniq_pinjaman_asal": {
+          "name": "uniq_pinjaman_asal",
+          "columns": [
+            {
+              "expression": "pinjaman_asal_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"pinjaman\".\"pinjaman_asal_id\" IS NOT NULL AND \"pinjaman\".\"status\" <> 'batal'",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "uniq_pinjaman_foto": {
+          "name": "uniq_pinjaman_foto",
+          "columns": [
+            {
+              "expression": "foto_serah_terima_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"pinjaman\".\"foto_serah_terima_id\" IS NOT NULL",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_pinjaman_kantor_status": {
+          "name": "idx_pinjaman_kantor_status",
+          "columns": [
+            {
+              "expression": "kantor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_pinjaman_pencair_akad": {
+          "name": "idx_pinjaman_pencair_akad",
+          "columns": [
+            {
+              "expression": "pencair_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "tanggal_akad",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_pinjaman_kantor_akad": {
+          "name": "idx_pinjaman_kantor_akad",
+          "columns": [
+            {
+              "expression": "kantor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "tanggal_akad",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_pinjaman_kantor_selesai": {
+          "name": "idx_pinjaman_kantor_selesai",
+          "columns": [
+            {
+              "expression": "kantor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "tanggal_selesai",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "where": "\"pinjaman\".\"tanggal_selesai\" IS NOT NULL",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "pinjaman_kantor_fk": {
+          "name": "pinjaman_kantor_fk",
+          "tableFrom": "pinjaman",
+          "tableTo": "kantor",
+          "columnsFrom": ["kantor_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "pinjaman_pencair_fk": {
+          "name": "pinjaman_pencair_fk",
+          "tableFrom": "pinjaman",
+          "tableTo": "pengguna",
+          "columnsFrom": ["pencair_id", "kantor_id"],
+          "columnsTo": ["id", "kolektor_kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "pinjaman_nasabah_fk": {
+          "name": "pinjaman_nasabah_fk",
+          "tableFrom": "pinjaman",
+          "tableTo": "nasabah",
+          "columnsFrom": ["nasabah_id", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "pinjaman_asal_fk": {
+          "name": "pinjaman_asal_fk",
+          "tableFrom": "pinjaman",
+          "tableTo": "pinjaman",
+          "columnsFrom": ["pinjaman_asal_id", "nasabah_id"],
+          "columnsTo": ["id", "nasabah_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "pinjaman_dibuat_oleh_fk": {
+          "name": "pinjaman_dibuat_oleh_fk",
+          "tableFrom": "pinjaman",
+          "tableTo": "pengguna",
+          "columnsFrom": ["dibuat_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "pinjaman_diputihkan_oleh_fk": {
+          "name": "pinjaman_diputihkan_oleh_fk",
+          "tableFrom": "pinjaman",
+          "tableTo": "pengguna",
+          "columnsFrom": ["diputihkan_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "pinjaman_dibatalkan_oleh_fk": {
+          "name": "pinjaman_dibatalkan_oleh_fk",
+          "tableFrom": "pinjaman",
+          "tableTo": "pengguna",
+          "columnsFrom": ["dibatalkan_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "pinjaman_foto_fk": {
+          "name": "pinjaman_foto_fk",
+          "tableFrom": "pinjaman",
+          "tableTo": "foto",
+          "columnsFrom": ["foto_serah_terima_id", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "uniq_pinjaman_id_kantor": {
+          "name": "uniq_pinjaman_id_kantor",
+          "nullsNotDistinct": false,
+          "columns": ["id", "kantor_id"]
+        },
+        "uniq_pinjaman_id_nasabah": {
+          "name": "uniq_pinjaman_id_nasabah",
+          "nullsNotDistinct": false,
+          "columns": ["id", "nasabah_id"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "pinjaman_ke_check": {
+          "name": "pinjaman_ke_check",
+          "value": "\"pinjaman\".\"pinjaman_ke\" >= 1"
+        },
+        "pinjaman_pokok_check": {
+          "name": "pinjaman_pokok_check",
+          "value": "\"pinjaman\".\"pokok\" > 0 AND \"pinjaman\".\"pokok\" % 100000 = 0"
+        },
+        "pinjaman_tenor_check": {
+          "name": "pinjaman_tenor_check",
+          "value": "(\"pinjaman\".\"jenis\" = 'harian' AND \"pinjaman\".\"tenor\" = 24)\n        OR (\"pinjaman\".\"jenis\" = 'mingguan' AND \"pinjaman\".\"tenor\" IN (6, 8, 10))\n        OR (\"pinjaman\".\"jenis\" = 'tempoan' AND \"pinjaman\".\"tenor\" IN (7, 10, 14))"
+        },
+        "pinjaman_nominal_check": {
+          "name": "pinjaman_nominal_check",
+          "value": "\"pinjaman\".\"potongan_admin\" >= 0 AND \"pinjaman\".\"tabungan_masuk\" >= 0 AND \"pinjaman\".\"saldo_lama\" >= 0\n        AND \"pinjaman\".\"pencairan\" >= 0 AND \"pinjaman\".\"drop_baru\" >= 0 AND \"pinjaman\".\"drop_gulung\" >= 0\n        AND \"pinjaman\".\"pokok_berkurang\" >= 0 AND \"pinjaman\".\"total_kembali\" >= \"pinjaman\".\"pokok\""
+        },
+        "pinjaman_angsuran_check": {
+          "name": "pinjaman_angsuran_check",
+          "value": "\"pinjaman\".\"angsuran\" > 0 AND (\n        (\"pinjaman\".\"jenis\" = 'tempoan' AND \"pinjaman\".\"angsuran\" = \"pinjaman\".\"total_kembali\")\n        OR (\"pinjaman\".\"jenis\" <> 'tempoan' AND \"pinjaman\".\"angsuran\" * \"pinjaman\".\"tenor\" = \"pinjaman\".\"total_kembali\"))"
+        },
+        "pinjaman_saldo_check": {
+          "name": "pinjaman_saldo_check",
+          "value": "0 <= \"pinjaman\".\"saldo\" AND \"pinjaman\".\"saldo\" <= \"pinjaman\".\"saldo_awal\" AND \"pinjaman\".\"saldo_awal\" <= \"pinjaman\".\"total_kembali\""
+        },
+        "pinjaman_pencairan_check": {
+          "name": "pinjaman_pencairan_check",
+          "value": "(\"pinjaman\".\"asal\" = 'migrasi' AND \"pinjaman\".\"pencairan\" = 0 AND \"pinjaman\".\"potongan_admin\" = 0\n          AND \"pinjaman\".\"drop_baru\" = 0 AND \"pinjaman\".\"drop_gulung\" = 0)\n        OR (\"pinjaman\".\"asal\" <> 'migrasi' AND \"pinjaman\".\"saldo_awal\" = \"pinjaman\".\"total_kembali\" AND \"pinjaman\".\"pencairan\" > 0\n          AND \"pinjaman\".\"pencairan\" = \"pinjaman\".\"pokok\" - \"pinjaman\".\"potongan_admin\" - \"pinjaman\".\"tabungan_masuk\" - \"pinjaman\".\"saldo_lama\"\n          AND \"pinjaman\".\"drop_baru\" + \"pinjaman\".\"drop_gulung\" = \"pinjaman\".\"pokok\")"
+        },
+        "pinjaman_disalin_check": {
+          "name": "pinjaman_disalin_check",
+          "value": "(\"pinjaman\".\"asal\" = 'migrasi' AND \"pinjaman\".\"tanggal_disalin\" IS NOT NULL AND \"pinjaman\".\"tanggal_disalin\" >= \"pinjaman\".\"tanggal_akad\")\n        OR (\"pinjaman\".\"asal\" <> 'migrasi' AND \"pinjaman\".\"tanggal_disalin\" IS NULL)"
+        },
+        "pinjaman_gulung_check": {
+          "name": "pinjaman_gulung_check",
+          "value": "(\"pinjaman\".\"asal\" = 'gulung' AND \"pinjaman\".\"pinjaman_asal_id\" IS NOT NULL AND \"pinjaman\".\"jenis_gulung\" IS NOT NULL)\n        OR (\"pinjaman\".\"asal\" <> 'gulung' AND \"pinjaman\".\"pinjaman_asal_id\" IS NULL AND \"pinjaman\".\"jenis_gulung\" IS NULL\n          AND \"pinjaman\".\"saldo_lama\" = 0 AND \"pinjaman\".\"drop_gulung\" = 0 AND \"pinjaman\".\"pokok_berkurang\" = 0)"
+        },
+        "pinjaman_status_check": {
+          "name": "pinjaman_status_check",
+          "value": "(\"pinjaman\".\"status\" IN ('berjalan', 'macet') AND \"pinjaman\".\"saldo\" > 0 AND \"pinjaman\".\"tanggal_selesai\" IS NULL)\n        OR (\"pinjaman\".\"status\" IN ('lunas', 'digulung') AND \"pinjaman\".\"saldo\" = 0 AND \"pinjaman\".\"tanggal_selesai\" IS NOT NULL)\n        OR (\"pinjaman\".\"status\" = 'batal' AND \"pinjaman\".\"tanggal_selesai\" IS NOT NULL)\n        OR (\"pinjaman\".\"status\" = 'diputihkan' AND \"pinjaman\".\"saldo\" > 0 AND \"pinjaman\".\"tanggal_selesai\" IS NOT NULL)"
+        },
+        "pinjaman_macet_check": {
+          "name": "pinjaman_macet_check",
+          "value": "(\"pinjaman\".\"status\" = 'macet' AND \"pinjaman\".\"tanggal_macet\" IS NOT NULL)\n        OR (\"pinjaman\".\"status\" <> 'macet' AND (\"pinjaman\".\"tanggal_macet\" IS NULL OR \"pinjaman\".\"status\" = 'diputihkan'))"
+        },
+        "pinjaman_pemutihan_check": {
+          "name": "pinjaman_pemutihan_check",
+          "value": "(\"pinjaman\".\"status\" = 'diputihkan' AND \"pinjaman\".\"diputihkan_at\" IS NOT NULL AND \"pinjaman\".\"diputihkan_oleh\" IS NOT NULL\n          AND \"pinjaman\".\"alasan_pemutihan\" IS NOT NULL AND \"pinjaman\".\"keterangan_pemutihan\" IS NOT NULL)\n        OR (\"pinjaman\".\"status\" <> 'diputihkan' AND \"pinjaman\".\"diputihkan_at\" IS NULL AND \"pinjaman\".\"diputihkan_oleh\" IS NULL\n          AND \"pinjaman\".\"alasan_pemutihan\" IS NULL AND \"pinjaman\".\"keterangan_pemutihan\" IS NULL)"
+        },
+        "pinjaman_batal_check": {
+          "name": "pinjaman_batal_check",
+          "value": "(\"pinjaman\".\"status\" = 'batal' AND \"pinjaman\".\"dibatalkan_at\" IS NOT NULL AND \"pinjaman\".\"dibatalkan_oleh\" IS NOT NULL\n          AND \"pinjaman\".\"alasan_batal\" IS NOT NULL)\n        OR (\"pinjaman\".\"status\" <> 'batal' AND \"pinjaman\".\"dibatalkan_at\" IS NULL AND \"pinjaman\".\"dibatalkan_oleh\" IS NULL\n          AND \"pinjaman\".\"alasan_batal\" IS NULL)"
+        },
+        "pinjaman_foto_check": {
+          "name": "pinjaman_foto_check",
+          "value": "\"pinjaman\".\"asal\" = 'migrasi' OR \"pinjaman\".\"foto_serah_terima_id\" IS NOT NULL"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.posisi_harian": {
+      "name": "posisi_harian",
+      "schema": "",
+      "columns": {
+        "kantor_id": {
+          "name": "kantor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kolektor_id": {
+          "name": "kolektor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tanggal": {
+          "name": "tanggal",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "jenis": {
+          "name": "jenis",
+          "type": "jenis_pinjaman",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "jumlah_berjalan": {
+          "name": "jumlah_berjalan",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "jumlah_macet": {
+          "name": "jumlah_macet",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "saldo_berjalan": {
+          "name": "saldo_berjalan",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "saldo_macet": {
+          "name": "saldo_macet",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "angsuran_berjalan": {
+          "name": "angsuran_berjalan",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "angsuran_macet": {
+          "name": "angsuran_macet",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "dibuat_at": {
+          "name": "dibuat_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "idx_posisi_harian_kantor_tanggal": {
+          "name": "idx_posisi_harian_kantor_tanggal",
+          "columns": [
+            {
+              "expression": "kantor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "tanggal",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "posisi_harian_kolektor_fk": {
+          "name": "posisi_harian_kolektor_fk",
+          "tableFrom": "posisi_harian",
+          "tableTo": "pengguna",
+          "columnsFrom": ["kolektor_id", "kantor_id"],
+          "columnsTo": ["id", "kolektor_kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "posisi_harian_pkey": {
+          "name": "posisi_harian_pkey",
+          "columns": ["kolektor_id", "tanggal", "jenis"]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "posisi_harian_nominal_check": {
+          "name": "posisi_harian_nominal_check",
+          "value": "\"posisi_harian\".\"jumlah_berjalan\" >= 0 AND \"posisi_harian\".\"jumlah_macet\" >= 0\n        AND \"posisi_harian\".\"saldo_berjalan\" >= 0 AND \"posisi_harian\".\"saldo_macet\" >= 0\n        AND \"posisi_harian\".\"angsuran_berjalan\" >= 0 AND \"posisi_harian\".\"angsuran_macet\" >= 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.riwayat_perubahan": {
+      "name": "riwayat_perubahan",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "kantor_id": {
+          "name": "kantor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tabel": {
+          "name": "tabel",
+          "type": "tabel_berjejak",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "baris_id": {
+          "name": "baris_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "aksi": {
+          "name": "aksi",
+          "type": "varchar(40)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sebelum": {
+          "name": "sebelum",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sesudah": {
+          "name": "sesudah",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "alasan_perubahan": {
+          "name": "alasan_perubahan",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pelaku_id": {
+          "name": "pelaku_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dibuat_at": {
+          "name": "dibuat_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "idx_riwayat_perubahan_baris": {
+          "name": "idx_riwayat_perubahan_baris",
+          "columns": [
+            {
+              "expression": "tabel",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "baris_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "dibuat_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_riwayat_perubahan_kantor": {
+          "name": "idx_riwayat_perubahan_kantor",
+          "columns": [
+            {
+              "expression": "kantor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "dibuat_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_riwayat_perubahan_pelaku": {
+          "name": "idx_riwayat_perubahan_pelaku",
+          "columns": [
+            {
+              "expression": "pelaku_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "dibuat_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "riwayat_perubahan_kantor_fk": {
+          "name": "riwayat_perubahan_kantor_fk",
+          "tableFrom": "riwayat_perubahan",
+          "tableTo": "kantor",
+          "columnsFrom": ["kantor_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "riwayat_perubahan_pelaku_fk": {
+          "name": "riwayat_perubahan_pelaku_fk",
+          "tableFrom": "riwayat_perubahan",
+          "tableTo": "pengguna",
+          "columnsFrom": ["pelaku_id", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "riwayat_perubahan_aksi_check": {
+          "name": "riwayat_perubahan_aksi_check",
+          "value": "\"riwayat_perubahan\".\"aksi\" ~ '^[a-z_]+$'"
+        },
+        "riwayat_perubahan_isi_check": {
+          "name": "riwayat_perubahan_isi_check",
+          "value": "\"riwayat_perubahan\".\"sebelum\" IS NOT NULL OR \"riwayat_perubahan\".\"sesudah\" IS NOT NULL"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.riwayat_status_pinjaman": {
+      "name": "riwayat_status_pinjaman",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "kantor_id": {
+          "name": "kantor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pinjaman_id": {
+          "name": "pinjaman_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status_sebelum": {
+          "name": "status_sebelum",
+          "type": "status_pinjaman",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status_sesudah": {
+          "name": "status_sesudah",
+          "type": "status_pinjaman",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tanggal": {
+          "name": "tanggal",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dibuat_at": {
+          "name": "dibuat_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "clock_timestamp()"
+        }
+      },
+      "indexes": {
+        "uniq_riwayat_status_pinjaman_lahir": {
+          "name": "uniq_riwayat_status_pinjaman_lahir",
+          "columns": [
+            {
+              "expression": "pinjaman_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"riwayat_status_pinjaman\".\"status_sebelum\" IS NULL",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_riwayat_status_pinjaman_pinjaman": {
+          "name": "idx_riwayat_status_pinjaman_pinjaman",
+          "columns": [
+            {
+              "expression": "pinjaman_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "dibuat_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "riwayat_status_pinjaman_kantor_fk": {
+          "name": "riwayat_status_pinjaman_kantor_fk",
+          "tableFrom": "riwayat_status_pinjaman",
+          "tableTo": "kantor",
+          "columnsFrom": ["kantor_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "riwayat_status_pinjaman_pinjaman_fk": {
+          "name": "riwayat_status_pinjaman_pinjaman_fk",
+          "tableFrom": "riwayat_status_pinjaman",
+          "tableTo": "pinjaman",
+          "columnsFrom": ["pinjaman_id", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "riwayat_status_pinjaman_urutan_check": {
+          "name": "riwayat_status_pinjaman_urutan_check",
+          "value": "(\"riwayat_status_pinjaman\".\"status_sebelum\" IS NULL AND \"riwayat_status_pinjaman\".\"status_sesudah\" = 'berjalan')\n        OR (\"riwayat_status_pinjaman\".\"status_sebelum\" IS NOT NULL AND \"riwayat_status_pinjaman\".\"status_sebelum\" <> \"riwayat_status_pinjaman\".\"status_sesudah\")"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.rute_kolektor": {
+      "name": "rute_kolektor",
+      "schema": "",
+      "columns": {
+        "kolektor_id": {
+          "name": "kolektor_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "kantor_id": {
+          "name": "kantor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "versi": {
+          "name": "versi",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 1
+        },
+        "diubah_oleh": {
+          "name": "diubah_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dibuat_at": {
+          "name": "dibuat_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "diubah_at": {
+          "name": "diubah_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "rute_kolektor_kolektor_fk": {
+          "name": "rute_kolektor_kolektor_fk",
+          "tableFrom": "rute_kolektor",
+          "tableTo": "pengguna",
+          "columnsFrom": ["kolektor_id", "kantor_id"],
+          "columnsTo": ["id", "kolektor_kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "rute_kolektor_diubah_oleh_fk": {
+          "name": "rute_kolektor_diubah_oleh_fk",
+          "tableFrom": "rute_kolektor",
+          "tableTo": "pengguna",
+          "columnsFrom": ["diubah_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "uniq_rute_kolektor_kolektor_kantor": {
+          "name": "uniq_rute_kolektor_kolektor_kantor",
+          "nullsNotDistinct": false,
+          "columns": ["kolektor_id", "kantor_id"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "rute_kolektor_versi_check": {
+          "name": "rute_kolektor_versi_check",
+          "value": "\"rute_kolektor\".\"versi\" >= 1"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.rute_wilayah": {
+      "name": "rute_wilayah",
+      "schema": "",
+      "columns": {
+        "kolektor_id": {
+          "name": "kolektor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kantor_id": {
+          "name": "kantor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "wilayah_id": {
+          "name": "wilayah_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "urutan": {
+          "name": "urutan",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "idx_rute_wilayah_wilayah": {
+          "name": "idx_rute_wilayah_wilayah",
+          "columns": [
+            {
+              "expression": "wilayah_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "rute_wilayah_rute_fk": {
+          "name": "rute_wilayah_rute_fk",
+          "tableFrom": "rute_wilayah",
+          "tableTo": "rute_kolektor",
+          "columnsFrom": ["kolektor_id", "kantor_id"],
+          "columnsTo": ["kolektor_id", "kantor_id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "rute_wilayah_wilayah_fk": {
+          "name": "rute_wilayah_wilayah_fk",
+          "tableFrom": "rute_wilayah",
+          "tableTo": "wilayah",
+          "columnsFrom": ["wilayah_id", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "rute_wilayah_pkey": {
+          "name": "rute_wilayah_pkey",
+          "columns": ["kolektor_id", "wilayah_id"]
+        }
+      },
+      "uniqueConstraints": {
+        "uniq_rute_wilayah_urutan": {
+          "name": "uniq_rute_wilayah_urutan",
+          "nullsNotDistinct": false,
+          "columns": ["kolektor_id", "urutan"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "rute_wilayah_urutan_check": {
+          "name": "rute_wilayah_urutan_check",
+          "value": "\"rute_wilayah\".\"urutan\" >= 1"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.serah_terima_kas": {
+      "name": "serah_terima_kas",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "kantor_id": {
+          "name": "kantor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hari_kolektor_id": {
+          "name": "hari_kolektor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tunai_seharusnya": {
+          "name": "tunai_seharusnya",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tunai_diterima": {
+          "name": "tunai_diterima",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "selisih_setor": {
+          "name": "selisih_setor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "generated": {
+            "as": "tunai_diterima - tunai_seharusnya",
+            "type": "stored"
+          }
+        },
+        "diterima_oleh": {
+          "name": "diterima_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dibuat_at": {
+          "name": "dibuat_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "dibatalkan_at": {
+          "name": "dibatalkan_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dibatalkan_oleh": {
+          "name": "dibatalkan_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "alasan_batal": {
+          "name": "alasan_batal",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "uniq_serah_terima_kas_hari": {
+          "name": "uniq_serah_terima_kas_hari",
+          "columns": [
+            {
+              "expression": "hari_kolektor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"serah_terima_kas\".\"dibatalkan_at\" IS NULL",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "serah_terima_kas_hari_fk": {
+          "name": "serah_terima_kas_hari_fk",
+          "tableFrom": "serah_terima_kas",
+          "tableTo": "hari_kolektor",
+          "columnsFrom": ["hari_kolektor_id", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "serah_terima_kas_diterima_oleh_fk": {
+          "name": "serah_terima_kas_diterima_oleh_fk",
+          "tableFrom": "serah_terima_kas",
+          "tableTo": "pengguna",
+          "columnsFrom": ["diterima_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "serah_terima_kas_dibatalkan_oleh_fk": {
+          "name": "serah_terima_kas_dibatalkan_oleh_fk",
+          "tableFrom": "serah_terima_kas",
+          "tableTo": "pengguna",
+          "columnsFrom": ["dibatalkan_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "serah_terima_kas_nominal_check": {
+          "name": "serah_terima_kas_nominal_check",
+          "value": "\"serah_terima_kas\".\"tunai_diterima\" >= 0"
+        },
+        "serah_terima_kas_batal_check": {
+          "name": "serah_terima_kas_batal_check",
+          "value": "(\"serah_terima_kas\".\"dibatalkan_at\" IS NULL AND \"serah_terima_kas\".\"dibatalkan_oleh\" IS NULL AND \"serah_terima_kas\".\"alasan_batal\" IS NULL)\n        OR (\"serah_terima_kas\".\"dibatalkan_at\" IS NOT NULL AND \"serah_terima_kas\".\"dibatalkan_oleh\" IS NOT NULL AND \"serah_terima_kas\".\"alasan_batal\" IS NOT NULL)"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.koreksi_tabungan": {
+      "name": "koreksi_tabungan",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "kantor_id": {
+          "name": "kantor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nasabah_id": {
+          "name": "nasabah_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tanggal": {
+          "name": "tanggal",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "saldo_sebelum": {
+          "name": "saldo_sebelum",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "selisih": {
+          "name": "selisih",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "alasan_koreksi": {
+          "name": "alasan_koreksi",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dibuat_oleh": {
+          "name": "dibuat_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dibuat_at": {
+          "name": "dibuat_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "idx_koreksi_tabungan_nasabah": {
+          "name": "idx_koreksi_tabungan_nasabah",
+          "columns": [
+            {
+              "expression": "nasabah_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "dibuat_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "koreksi_tabungan_nasabah_fk": {
+          "name": "koreksi_tabungan_nasabah_fk",
+          "tableFrom": "koreksi_tabungan",
+          "tableTo": "nasabah",
+          "columnsFrom": ["nasabah_id", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "koreksi_tabungan_dibuat_oleh_fk": {
+          "name": "koreksi_tabungan_dibuat_oleh_fk",
+          "tableFrom": "koreksi_tabungan",
+          "tableTo": "pengguna",
+          "columnsFrom": ["dibuat_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "koreksi_tabungan_nominal_check": {
+          "name": "koreksi_tabungan_nominal_check",
+          "value": "\"koreksi_tabungan\".\"selisih\" <> 0 AND \"koreksi_tabungan\".\"saldo_sebelum\" >= 0 AND \"koreksi_tabungan\".\"saldo_sebelum\" + \"koreksi_tabungan\".\"selisih\" >= 0"
+        },
+        "koreksi_tabungan_alasan_check": {
+          "name": "koreksi_tabungan_alasan_check",
+          "value": "length(btrim(\"koreksi_tabungan\".\"alasan_koreksi\")) > 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.penarikan_tabungan": {
+      "name": "penarikan_tabungan",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "kantor_id": {
+          "name": "kantor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nasabah_id": {
+          "name": "nasabah_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tanggal": {
+          "name": "tanggal",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nominal": {
+          "name": "nominal",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dari_akun": {
+          "name": "dari_akun",
+          "type": "akun_kas",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "saldo_sebelum": {
+          "name": "saldo_sebelum",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "alasan_penarikan": {
+          "name": "alasan_penarikan",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dibuat_oleh": {
+          "name": "dibuat_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dibuat_at": {
+          "name": "dibuat_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "dibatalkan_at": {
+          "name": "dibatalkan_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dibatalkan_oleh": {
+          "name": "dibatalkan_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "alasan_batal": {
+          "name": "alasan_batal",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "idx_penarikan_tabungan_nasabah": {
+          "name": "idx_penarikan_tabungan_nasabah",
+          "columns": [
+            {
+              "expression": "nasabah_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "dibuat_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_penarikan_tabungan_kantor_tanggal": {
+          "name": "idx_penarikan_tabungan_kantor_tanggal",
+          "columns": [
+            {
+              "expression": "kantor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "tanggal",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "penarikan_tabungan_kantor_fk": {
+          "name": "penarikan_tabungan_kantor_fk",
+          "tableFrom": "penarikan_tabungan",
+          "tableTo": "buku_kas",
+          "columnsFrom": ["kantor_id"],
+          "columnsTo": ["kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "penarikan_tabungan_nasabah_fk": {
+          "name": "penarikan_tabungan_nasabah_fk",
+          "tableFrom": "penarikan_tabungan",
+          "tableTo": "nasabah",
+          "columnsFrom": ["nasabah_id", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "penarikan_tabungan_dibuat_oleh_fk": {
+          "name": "penarikan_tabungan_dibuat_oleh_fk",
+          "tableFrom": "penarikan_tabungan",
+          "tableTo": "pengguna",
+          "columnsFrom": ["dibuat_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "penarikan_tabungan_dibatalkan_oleh_fk": {
+          "name": "penarikan_tabungan_dibatalkan_oleh_fk",
+          "tableFrom": "penarikan_tabungan",
+          "tableTo": "pengguna",
+          "columnsFrom": ["dibatalkan_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "penarikan_tabungan_nominal_check": {
+          "name": "penarikan_tabungan_nominal_check",
+          "value": "\"penarikan_tabungan\".\"nominal\" > 0 AND \"penarikan_tabungan\".\"nominal\" <= \"penarikan_tabungan\".\"saldo_sebelum\""
+        },
+        "penarikan_tabungan_alasan_check": {
+          "name": "penarikan_tabungan_alasan_check",
+          "value": "length(btrim(\"penarikan_tabungan\".\"alasan_penarikan\")) > 0"
+        },
+        "penarikan_tabungan_batal_check": {
+          "name": "penarikan_tabungan_batal_check",
+          "value": "(\"penarikan_tabungan\".\"dibatalkan_at\" IS NULL AND \"penarikan_tabungan\".\"dibatalkan_oleh\" IS NULL AND \"penarikan_tabungan\".\"alasan_batal\" IS NULL)\n        OR (\"penarikan_tabungan\".\"dibatalkan_at\" IS NOT NULL AND \"penarikan_tabungan\".\"dibatalkan_oleh\" IS NOT NULL AND \"penarikan_tabungan\".\"alasan_batal\" IS NOT NULL)"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.tarif_gaji": {
+      "name": "tarif_gaji",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "kantor_id": {
+          "name": "kantor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kolektor_id": {
+          "name": "kolektor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tarif_bp": {
+          "name": "tarif_bp",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "berlaku_mulai": {
+          "name": "berlaku_mulai",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dibuat_oleh": {
+          "name": "dibuat_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dibuat_at": {
+          "name": "dibuat_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "diubah_at": {
+          "name": "diubah_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "uniq_tarif_gaji_kantor": {
+          "name": "uniq_tarif_gaji_kantor",
+          "columns": [
+            {
+              "expression": "kantor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "berlaku_mulai",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"tarif_gaji\".\"kolektor_id\" IS NULL",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "uniq_tarif_gaji_kolektor": {
+          "name": "uniq_tarif_gaji_kolektor",
+          "columns": [
+            {
+              "expression": "kolektor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "berlaku_mulai",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"tarif_gaji\".\"kolektor_id\" IS NOT NULL",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "tarif_gaji_kantor_fk": {
+          "name": "tarif_gaji_kantor_fk",
+          "tableFrom": "tarif_gaji",
+          "tableTo": "kantor",
+          "columnsFrom": ["kantor_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "tarif_gaji_kolektor_fk": {
+          "name": "tarif_gaji_kolektor_fk",
+          "tableFrom": "tarif_gaji",
+          "tableTo": "pengguna",
+          "columnsFrom": ["kolektor_id", "kantor_id"],
+          "columnsTo": ["id", "kolektor_kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "tarif_gaji_dibuat_oleh_fk": {
+          "name": "tarif_gaji_dibuat_oleh_fk",
+          "tableFrom": "tarif_gaji",
+          "tableTo": "pengguna",
+          "columnsFrom": ["dibuat_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "tarif_gaji_tarif_check": {
+          "name": "tarif_gaji_tarif_check",
+          "value": "(\"tarif_gaji\".\"tarif_bp\" IS NULL AND \"tarif_gaji\".\"kolektor_id\" IS NOT NULL)\n        OR (\"tarif_gaji\".\"tarif_bp\" IS NOT NULL AND \"tarif_gaji\".\"tarif_bp\" BETWEEN 0 AND 10000)"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.tautan": {
+      "name": "tautan",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "kode": {
+          "name": "kode",
+          "type": "varchar(8)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hash_klaim": {
+          "name": "hash_klaim",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nama": {
+          "name": "nama",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "platform": {
+          "name": "platform",
+          "type": "platform_perangkat",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kedaluwarsa_at": {
+          "name": "kedaluwarsa_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kantor_id": {
+          "name": "kantor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pengguna_id": {
+          "name": "pengguna_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "disetujui_at": {
+          "name": "disetujui_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "disetujui_oleh": {
+          "name": "disetujui_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "perangkat_id": {
+          "name": "perangkat_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dibuat_at": {
+          "name": "dibuat_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "idx_tautan_kedaluwarsa": {
+          "name": "idx_tautan_kedaluwarsa",
+          "columns": [
+            {
+              "expression": "kedaluwarsa_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "tautan_kantor_fk": {
+          "name": "tautan_kantor_fk",
+          "tableFrom": "tautan",
+          "tableTo": "kantor",
+          "columnsFrom": ["kantor_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "tautan_pengguna_fk": {
+          "name": "tautan_pengguna_fk",
+          "tableFrom": "tautan",
+          "tableTo": "pengguna",
+          "columnsFrom": ["pengguna_id", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "tautan_disetujui_oleh_fk": {
+          "name": "tautan_disetujui_oleh_fk",
+          "tableFrom": "tautan",
+          "tableTo": "pengguna",
+          "columnsFrom": ["disetujui_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "tautan_perangkat_fk": {
+          "name": "tautan_perangkat_fk",
+          "tableFrom": "tautan",
+          "tableTo": "perangkat",
+          "columnsFrom": ["perangkat_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "uniq_tautan_kode": {
+          "name": "uniq_tautan_kode",
+          "nullsNotDistinct": false,
+          "columns": ["kode"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "tautan_setuju_check": {
+          "name": "tautan_setuju_check",
+          "value": "(\"tautan\".\"kantor_id\" IS NULL AND \"tautan\".\"pengguna_id\" IS NULL AND \"tautan\".\"disetujui_at\" IS NULL AND \"tautan\".\"disetujui_oleh\" IS NULL)\n        OR (\"tautan\".\"kantor_id\" IS NOT NULL AND \"tautan\".\"pengguna_id\" IS NOT NULL AND \"tautan\".\"disetujui_at\" IS NOT NULL AND \"tautan\".\"disetujui_oleh\" IS NOT NULL)"
+        },
+        "tautan_pakai_check": {
+          "name": "tautan_pakai_check",
+          "value": "\"tautan\".\"perangkat_id\" IS NULL OR \"tautan\".\"disetujui_at\" IS NOT NULL"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.transaksi": {
+      "name": "transaksi",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "kantor_id": {
+          "name": "kantor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pencatat_id": {
+          "name": "pencatat_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pinjaman_id": {
+          "name": "pinjaman_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tanggal": {
+          "name": "tanggal",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "jenis": {
+          "name": "jenis",
+          "type": "jenis_transaksi",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "setoran_murni": {
+          "name": "setoran_murni",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "setoran_pelunasan": {
+          "name": "setoran_pelunasan",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "tabungan_keluar": {
+          "name": "tabungan_keluar",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "storting": {
+          "name": "storting",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "generated": {
+            "as": "setoran_murni + setoran_pelunasan - tabungan_keluar",
+            "type": "stored"
+          }
+        },
+        "saldo_sesudah": {
+          "name": "saldo_sesudah",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dibatalkan_at": {
+          "name": "dibatalkan_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dibatalkan_oleh": {
+          "name": "dibatalkan_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "alasan_batal": {
+          "name": "alasan_batal",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dibuat_at": {
+          "name": "dibuat_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "uniq_transaksi_pinjaman_tanggal": {
+          "name": "uniq_transaksi_pinjaman_tanggal",
+          "columns": [
+            {
+              "expression": "pinjaman_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "tanggal",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"transaksi\".\"dibatalkan_at\" IS NULL",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "transaksi_kantor_fk": {
+          "name": "transaksi_kantor_fk",
+          "tableFrom": "transaksi",
+          "tableTo": "kantor",
+          "columnsFrom": ["kantor_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "transaksi_pencatat_fk": {
+          "name": "transaksi_pencatat_fk",
+          "tableFrom": "transaksi",
+          "tableTo": "pengguna",
+          "columnsFrom": ["pencatat_id", "kantor_id"],
+          "columnsTo": ["id", "kolektor_kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "transaksi_pinjaman_fk": {
+          "name": "transaksi_pinjaman_fk",
+          "tableFrom": "transaksi",
+          "tableTo": "pinjaman",
+          "columnsFrom": ["pinjaman_id", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "transaksi_dibatalkan_oleh_fk": {
+          "name": "transaksi_dibatalkan_oleh_fk",
+          "tableFrom": "transaksi",
+          "tableTo": "pengguna",
+          "columnsFrom": ["dibatalkan_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "uniq_transaksi_id_kantor": {
+          "name": "uniq_transaksi_id_kantor",
+          "nullsNotDistinct": false,
+          "columns": ["id", "kantor_id"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "transaksi_nominal_check": {
+          "name": "transaksi_nominal_check",
+          "value": "\"transaksi\".\"setoran_murni\" >= 0 AND \"transaksi\".\"setoran_pelunasan\" >= 0 AND \"transaksi\".\"tabungan_keluar\" >= 0\n        AND \"transaksi\".\"saldo_sesudah\" >= 0 AND \"transaksi\".\"setoran_murni\" + \"transaksi\".\"setoran_pelunasan\" > 0"
+        },
+        "transaksi_jenis_check": {
+          "name": "transaksi_jenis_check",
+          "value": "(\"transaksi\".\"jenis\" = 'angsuran' AND \"transaksi\".\"tabungan_keluar\" = 0 AND \"transaksi\".\"saldo_sesudah\" > 0)\n        OR (\"transaksi\".\"jenis\" = 'pelunasan' AND \"transaksi\".\"saldo_sesudah\" = 0 AND \"transaksi\".\"setoran_pelunasan\" <= \"transaksi\".\"tabungan_keluar\")\n        OR (\"transaksi\".\"jenis\" = 'gulung' AND \"transaksi\".\"setoran_murni\" = 0 AND \"transaksi\".\"tabungan_keluar\" = 0 AND \"transaksi\".\"saldo_sesudah\" = 0)"
+        },
+        "transaksi_batal_check": {
+          "name": "transaksi_batal_check",
+          "value": "(\"transaksi\".\"dibatalkan_at\" IS NULL AND \"transaksi\".\"dibatalkan_oleh\" IS NULL AND \"transaksi\".\"alasan_batal\" IS NULL)\n        OR (\"transaksi\".\"dibatalkan_at\" IS NOT NULL AND \"transaksi\".\"dibatalkan_oleh\" IS NOT NULL AND \"transaksi\".\"alasan_batal\" IS NOT NULL)"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.transfer_setoran": {
+      "name": "transfer_setoran",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "kantor_id": {
+          "name": "kantor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "transaksi_id": {
+          "name": "transaksi_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nominal": {
+          "name": "nominal",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dibuat_oleh": {
+          "name": "dibuat_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dibuat_at": {
+          "name": "dibuat_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "dibatalkan_at": {
+          "name": "dibatalkan_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dibatalkan_oleh": {
+          "name": "dibatalkan_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "alasan_batal": {
+          "name": "alasan_batal",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "uniq_transfer_setoran_transaksi": {
+          "name": "uniq_transfer_setoran_transaksi",
+          "columns": [
+            {
+              "expression": "transaksi_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"transfer_setoran\".\"dibatalkan_at\" IS NULL",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "transfer_setoran_transaksi_fk": {
+          "name": "transfer_setoran_transaksi_fk",
+          "tableFrom": "transfer_setoran",
+          "tableTo": "transaksi",
+          "columnsFrom": ["transaksi_id", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "transfer_setoran_dibuat_oleh_fk": {
+          "name": "transfer_setoran_dibuat_oleh_fk",
+          "tableFrom": "transfer_setoran",
+          "tableTo": "pengguna",
+          "columnsFrom": ["dibuat_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "transfer_setoran_dibatalkan_oleh_fk": {
+          "name": "transfer_setoran_dibatalkan_oleh_fk",
+          "tableFrom": "transfer_setoran",
+          "tableTo": "pengguna",
+          "columnsFrom": ["dibatalkan_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "transfer_setoran_nominal_check": {
+          "name": "transfer_setoran_nominal_check",
+          "value": "\"transfer_setoran\".\"nominal\" > 0"
+        },
+        "transfer_setoran_batal_check": {
+          "name": "transfer_setoran_batal_check",
+          "value": "(\"transfer_setoran\".\"dibatalkan_at\" IS NULL AND \"transfer_setoran\".\"dibatalkan_oleh\" IS NULL AND \"transfer_setoran\".\"alasan_batal\" IS NULL)\n        OR (\"transfer_setoran\".\"dibatalkan_at\" IS NOT NULL AND \"transfer_setoran\".\"dibatalkan_oleh\" IS NOT NULL AND \"transfer_setoran\".\"alasan_batal\" IS NOT NULL)"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.wilayah": {
+      "name": "wilayah",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "kantor_id": {
+          "name": "kantor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nama": {
+          "name": "nama",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kunci": {
+          "name": "kunci",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "generated": {
+            "as": "lower(btrim(regexp_replace(nama, '\\s+', ' ', 'g')))",
+            "type": "stored"
+          }
+        },
+        "dibuat_oleh": {
+          "name": "dibuat_oleh",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dibuat_at": {
+          "name": "dibuat_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "diubah_at": {
+          "name": "diubah_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "wilayah_kantor_fk": {
+          "name": "wilayah_kantor_fk",
+          "tableFrom": "wilayah",
+          "tableTo": "kantor",
+          "columnsFrom": ["kantor_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "wilayah_dibuat_oleh_fk": {
+          "name": "wilayah_dibuat_oleh_fk",
+          "tableFrom": "wilayah",
+          "tableTo": "pengguna",
+          "columnsFrom": ["dibuat_oleh", "kantor_id"],
+          "columnsTo": ["id", "kantor_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "uniq_wilayah_kantor_kunci": {
+          "name": "uniq_wilayah_kantor_kunci",
+          "nullsNotDistinct": false,
+          "columns": ["kantor_id", "kunci"]
+        },
+        "uniq_wilayah_id_kantor": {
+          "name": "uniq_wilayah_id_kantor",
+          "nullsNotDistinct": false,
+          "columns": ["id", "kantor_id"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "wilayah_nama_check": {
+          "name": "wilayah_nama_check",
+          "value": "\"wilayah\".\"nama\" <> '' AND \"wilayah\".\"nama\" = btrim(regexp_replace(\"wilayah\".\"nama\", '\\s+', ' ', 'g'))"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {
+    "public.jenis_foto": {
+      "name": "jenis_foto",
+      "schema": "public",
+      "values": ["serah_terima", "ktp"]
+    },
+    "public.status_absensi": {
+      "name": "status_absensi",
+      "schema": "public",
+      "values": ["masuk_kerja", "tidak_kerja"]
+    },
+    "public.zona_waktu": {
+      "name": "zona_waktu",
+      "schema": "public",
+      "values": ["WIB", "WITA", "WIT"]
+    },
+    "public.akun_kas": {
+      "name": "akun_kas",
+      "schema": "public",
+      "values": ["tunai", "bank"]
+    },
+    "public.jenis_mutasi_kas": {
+      "name": "jenis_mutasi_kas",
+      "schema": "public",
+      "values": [
+        "setor_modal",
+        "tarik_modal",
+        "biaya_kantor",
+        "pindah_akun",
+        "lain_masuk",
+        "lain_keluar"
+      ]
+    },
+    "public.peran_pengguna": {
+      "name": "peran_pengguna",
+      "schema": "public",
+      "values": ["bos", "kasir", "pengawas", "kolektor"]
+    },
+    "public.alasan_putus": {
+      "name": "alasan_putus",
+      "schema": "public",
+      "values": [
+        "keluar",
+        "diputus",
+        "ganti_sandi",
+        "tautan_baru",
+        "dinonaktifkan",
+        "pakai_ulang",
+        "kedaluwarsa"
+      ]
+    },
+    "public.platform_perangkat": {
+      "name": "platform_perangkat",
+      "schema": "public",
+      "values": ["android", "ios", "web"]
+    },
+    "public.alasan_pemutihan": {
+      "name": "alasan_pemutihan",
+      "schema": "public",
+      "values": ["macet_lama", "meninggal", "lainnya"]
+    },
+    "public.asal_pinjaman": {
+      "name": "asal_pinjaman",
+      "schema": "public",
+      "values": ["baru", "gulung", "migrasi"]
+    },
+    "public.jenis_gulung": {
+      "name": "jenis_gulung",
+      "schema": "public",
+      "values": ["tetap", "naik", "turun"]
+    },
+    "public.jenis_pinjaman": {
+      "name": "jenis_pinjaman",
+      "schema": "public",
+      "values": ["harian", "mingguan", "tempoan"]
+    },
+    "public.status_pinjaman": {
+      "name": "status_pinjaman",
+      "schema": "public",
+      "values": ["berjalan", "macet", "lunas", "digulung", "batal", "diputihkan"]
+    },
+    "public.tabel_berjejak": {
+      "name": "tabel_berjejak",
+      "schema": "public",
+      "values": [
+        "kantor",
+        "pekan_kerja",
+        "buku_kas",
+        "kebijakan",
+        "pengguna",
+        "wilayah",
+        "nasabah",
+        "pinjaman",
+        "hari_kolektor",
+        "libur_nasabah",
+        "libur_kantor",
+        "tarif_gaji",
+        "rute_kolektor",
+        "transaksi",
+        "biaya_tak_terduga",
+        "kebijakan_kantor",
+        "kebijakan_kolektor",
+        "perangkat"
+      ]
+    },
+    "public.jenis_transaksi": {
+      "name": "jenis_transaksi",
+      "schema": "public",
+      "values": ["angsuran", "pelunasan", "gulung"]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

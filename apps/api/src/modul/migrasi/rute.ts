@@ -27,10 +27,13 @@ const salin = createRoute({
   },
 });
 
-export function ruteMigrasi(layanan: LayananMigrasi, auth: LayananAuth) {
+export function ruteMigrasi(layanan: (kunci?: string) => LayananMigrasi, auth: LayananAuth) {
   const router = buatRouter();
   router.use("/pinjaman/migrasi", wajibMasuk(auth));
   return router.openapi(salin, async (c) =>
-    c.json(await layanan.salin(c.get("aktor"), c.req.valid("json")), 201),
+    c.json(
+      await layanan(c.req.header("Idempotency-Key")).salin(c.get("aktor"), c.req.valid("json")),
+      201,
+    ),
   );
 }

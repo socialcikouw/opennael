@@ -64,3 +64,5 @@ Setiap tahap diperiksa lalu di-commit/push ke `origin/dev`. Hasil dan
 keterbatasan dicatat agar pekerjaan dapat dilanjutkan tanpa menebak.
 
 28 Okt 2026 — awal: typecheck dan lint lolos; 64 uji domain, 48 API/database, 18 mobile lolos. Tautan workspace dipulihkan dengan bun install --frozen-lockfile; lockfile tidak berubah.
+
+29 Okt 2026 — tahap 2a: migrasi 0023 diterapkan ke Supabase dev. Backend melindungi operasi lapangan, setoran sore, kas, gaji, tabungan, pembatalan dan migrasi dengan Idempotency-Key opsional. 51 uji API/database, 64 domain dan 18 mobile lolos. Uji konkurensi memakai dua koneksi; fixture sudah dibersihkan. Integrasi retry/persistensi kunci klien menyusul bersama api-client.

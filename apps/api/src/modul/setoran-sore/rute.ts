@@ -160,7 +160,10 @@ const batalBiaya = batal(
   biayaSchema,
 );
 
-export function ruteSetoranSore(layanan: LayananSetoranSore, auth: LayananAuth) {
+export function ruteSetoranSore(
+  layanan: (kunci?: string) => LayananSetoranSore,
+  auth: LayananAuth,
+) {
   const router = buatRouter();
   for (const jalur of [
     "/hari-kolektor",
@@ -176,11 +179,17 @@ export function ruteSetoranSore(layanan: LayananSetoranSore, auth: LayananAuth) 
   }
   return router
     .openapi(daftarHari, async (c) =>
-      c.json(await layanan.daftarHari(c.get("aktor"), c.req.valid("query")), 200),
+      c.json(
+        await layanan(c.req.header("Idempotency-Key")).daftarHari(
+          c.get("aktor"),
+          c.req.valid("query"),
+        ),
+        200,
+      ),
     )
     .openapi(terimaKas, async (c) =>
       c.json(
-        await layanan.terimaKas(
+        await layanan(c.req.header("Idempotency-Key")).terimaKas(
           c.get("aktor"),
           c.req.valid("param").kolektorId,
           c.req.valid("json"),
@@ -190,7 +199,7 @@ export function ruteSetoranSore(layanan: LayananSetoranSore, auth: LayananAuth) 
     )
     .openapi(ubahHariIni, async (c) =>
       c.json(
-        await layanan.ubahHariIni(
+        await layanan(c.req.header("Idempotency-Key")).ubahHariIni(
           c.get("aktor"),
           c.req.valid("param").kolektorId,
           c.req.valid("json"),
@@ -200,7 +209,7 @@ export function ruteSetoranSore(layanan: LayananSetoranSore, auth: LayananAuth) 
     )
     .openapi(batalLaporan, async (c) =>
       c.json(
-        await layanan.batalLaporan(
+        await layanan(c.req.header("Idempotency-Key")).batalLaporan(
           c.get("aktor"),
           c.req.valid("param").kolektorId,
           c.req.valid("json"),
@@ -210,7 +219,7 @@ export function ruteSetoranSore(layanan: LayananSetoranSore, auth: LayananAuth) 
     )
     .openapi(batalSerahTerima, async (c) =>
       c.json(
-        await layanan.batalSerahTerima(
+        await layanan(c.req.header("Idempotency-Key")).batalSerahTerima(
           c.get("aktor"),
           c.req.valid("param").id,
           c.req.valid("json"),
@@ -219,29 +228,67 @@ export function ruteSetoranSore(layanan: LayananSetoranSore, auth: LayananAuth) 
       ),
     )
     .openapi(daftarTransaksi, async (c) =>
-      c.json(await layanan.daftarTransaksi(c.get("aktor"), c.req.valid("query")), 200),
+      c.json(
+        await layanan(c.req.header("Idempotency-Key")).daftarTransaksi(
+          c.get("aktor"),
+          c.req.valid("query"),
+        ),
+        200,
+      ),
     )
     .openapi(daftarTransfer, async (c) =>
-      c.json(await layanan.daftarTransfer(c.get("aktor"), c.req.valid("query")), 200),
+      c.json(
+        await layanan(c.req.header("Idempotency-Key")).daftarTransfer(
+          c.get("aktor"),
+          c.req.valid("query"),
+        ),
+        200,
+      ),
     )
     .openapi(catatTransfer, async (c) =>
-      c.json(await layanan.catatTransfer(c.get("aktor"), c.req.valid("json")), 201),
+      c.json(
+        await layanan(c.req.header("Idempotency-Key")).catatTransfer(
+          c.get("aktor"),
+          c.req.valid("json"),
+        ),
+        201,
+      ),
     )
     .openapi(batalTransfer, async (c) =>
       c.json(
-        await layanan.batalTransfer(c.get("aktor"), c.req.valid("param").id, c.req.valid("json")),
+        await layanan(c.req.header("Idempotency-Key")).batalTransfer(
+          c.get("aktor"),
+          c.req.valid("param").id,
+          c.req.valid("json"),
+        ),
         200,
       ),
     )
     .openapi(daftarBiaya, async (c) =>
-      c.json(await layanan.daftarBiaya(c.get("aktor"), c.req.valid("query")), 200),
+      c.json(
+        await layanan(c.req.header("Idempotency-Key")).daftarBiaya(
+          c.get("aktor"),
+          c.req.valid("query"),
+        ),
+        200,
+      ),
     )
     .openapi(catatBiaya, async (c) =>
-      c.json(await layanan.catatBiaya(c.get("aktor"), c.req.valid("json")), 201),
+      c.json(
+        await layanan(c.req.header("Idempotency-Key")).catatBiaya(
+          c.get("aktor"),
+          c.req.valid("json"),
+        ),
+        201,
+      ),
     )
     .openapi(batalBiaya, async (c) =>
       c.json(
-        await layanan.batalBiaya(c.get("aktor"), c.req.valid("param").id, c.req.valid("json")),
+        await layanan(c.req.header("Idempotency-Key")).batalBiaya(
+          c.get("aktor"),
+          c.req.valid("param").id,
+          c.req.valid("json"),
+        ),
         200,
       ),
     );

@@ -162,6 +162,13 @@
       "when": 1792787713384,
       "tag": "0022_rute_trigger",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1793206488153,
+      "tag": "0023_operasi_idempoten",
+      "breakpoints": true
     }
   ]
 }

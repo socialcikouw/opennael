@@ -8,7 +8,7 @@
     "start": "bun src/server.ts",
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
+    "db:migrate": "bun ../../tooling/migrer.ts",
     "test": "bun test",
     "tipe": "tsc -p tsconfig.tipe.json"
   },

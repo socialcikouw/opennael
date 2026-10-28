@@ -8,6 +8,7 @@ export * from "./auth";
 export * from "./foto";
 export * from "./gaji";
 export * from "./galat";
+export * from "./idempotensi";
 export * from "./kas";
 export * from "./lapangan";
 export * from "./migrasi";

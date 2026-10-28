@@ -84,33 +84,57 @@ const daftarKoreksi = riwayatNasabah(
   koreksiSchema,
 );
 
-export function ruteTabungan(tabungan: LayananTabungan, auth: LayananAuth) {
+export function ruteTabungan(tabungan: (kunci?: string) => LayananTabungan, auth: LayananAuth) {
   const router = buatRouter();
   router.use("/nasabah/*", wajibMasuk(auth));
   router.use("/penarikan-tabungan/*", wajibMasuk(auth));
   return router
     .openapi(tarik, async (c) =>
       c.json(
-        await tabungan.tarik(c.get("aktor"), c.req.valid("param").id, c.req.valid("json")),
+        await tabungan(c.req.header("Idempotency-Key")).tarik(
+          c.get("aktor"),
+          c.req.valid("param").id,
+          c.req.valid("json"),
+        ),
         201,
       ),
     )
     .openapi(daftarPenarikan, async (c) =>
-      c.json(await tabungan.daftarPenarikan(c.get("aktor"), c.req.valid("param").id), 200),
+      c.json(
+        await tabungan(c.req.header("Idempotency-Key")).daftarPenarikan(
+          c.get("aktor"),
+          c.req.valid("param").id,
+        ),
+        200,
+      ),
     )
     .openapi(batalPenarikan, async (c) =>
       c.json(
-        await tabungan.batalPenarikan(c.get("aktor"), c.req.valid("param").id, c.req.valid("json")),
+        await tabungan(c.req.header("Idempotency-Key")).batalPenarikan(
+          c.get("aktor"),
+          c.req.valid("param").id,
+          c.req.valid("json"),
+        ),
         200,
       ),
     )
     .openapi(koreksi, async (c) =>
       c.json(
-        await tabungan.koreksi(c.get("aktor"), c.req.valid("param").id, c.req.valid("json")),
+        await tabungan(c.req.header("Idempotency-Key")).koreksi(
+          c.get("aktor"),
+          c.req.valid("param").id,
+          c.req.valid("json"),
+        ),
         201,
       ),
     )
     .openapi(daftarKoreksi, async (c) =>
-      c.json(await tabungan.daftarKoreksi(c.get("aktor"), c.req.valid("param").id), 200),
+      c.json(
+        await tabungan(c.req.header("Idempotency-Key")).daftarKoreksi(
+          c.get("aktor"),
+          c.req.valid("param").id,
+        ),
+        200,
+      ),
     );
 }

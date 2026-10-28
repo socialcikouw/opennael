@@ -52,26 +52,38 @@ const hapusLibur = batal(
   liburTercatatSchema,
 );
 
-export function rutePembatalan(layanan: LayananPembatalan, auth: LayananAuth) {
+export function rutePembatalan(layanan: (kunci?: string) => LayananPembatalan, auth: LayananAuth) {
   const router = buatRouter();
   router.use("/transaksi/*", wajibMasuk(auth));
   router.use("/pinjaman/*", wajibMasuk(auth));
   return router
     .openapi(batalTransaksi, async (c) =>
       c.json(
-        await layanan.batalTransaksi(c.get("aktor"), c.req.valid("param").id, c.req.valid("json")),
+        await layanan(c.req.header("Idempotency-Key")).batalTransaksi(
+          c.get("aktor"),
+          c.req.valid("param").id,
+          c.req.valid("json"),
+        ),
         200,
       ),
     )
     .openapi(batalAkad, async (c) =>
       c.json(
-        await layanan.batalAkad(c.get("aktor"), c.req.valid("param").id, c.req.valid("json")),
+        await layanan(c.req.header("Idempotency-Key")).batalAkad(
+          c.get("aktor"),
+          c.req.valid("param").id,
+          c.req.valid("json"),
+        ),
         200,
       ),
     )
     .openapi(hapusLibur, async (c) =>
       c.json(
-        await layanan.hapusLibur(c.get("aktor"), c.req.valid("param").id, c.req.valid("json")),
+        await layanan(c.req.header("Idempotency-Key")).hapusLibur(
+          c.get("aktor"),
+          c.req.valid("param").id,
+          c.req.valid("json"),
+        ),
         200,
       ),
     );

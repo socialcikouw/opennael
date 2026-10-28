@@ -6,6 +6,7 @@ export * from "./kas";
 export * from "./kebijakan";
 export * from "./libur";
 export * from "./nasabah";
+export * from "./operasi-idempoten";
 export * from "./pekan-kerja";
 export * from "./pembayaran-gaji";
 export * from "./pengguna";

@@ -171,36 +171,71 @@ const nasabahLama = createRoute({
   },
 });
 
-export function ruteLapangan(lapangan: LayananLapangan, auth: LayananAuth) {
+export function ruteLapangan(lapangan: (kunci?: string) => LayananLapangan, auth: LayananAuth) {
   const router = buatRouter();
   router.use("/lapangan/*", wajibMasuk(auth));
   return router
-    .openapi(hariIni, async (c) => c.json(await lapangan.keadaanHariIni(c.get("aktor")), 200))
-    .openapi(absen, async (c) =>
-      c.json(await lapangan.absen(c.get("aktor"), c.req.valid("json")), 201),
+    .openapi(hariIni, async (c) =>
+      c.json(await lapangan(c.req.header("Idempotency-Key")).keadaanHariIni(c.get("aktor")), 200),
     )
-    .openapi(laporan, async (c) => c.json(await lapangan.bukaLaporan(c.get("aktor")), 200))
-    .openapi(daftar, async (c) => c.json(await lapangan.daftarPinjaman(c.get("aktor")), 200))
-    .openapi(kampung, async (c) => c.json(await lapangan.daftarKampung(c.get("aktor")), 200))
+    .openapi(absen, async (c) =>
+      c.json(
+        await lapangan(c.req.header("Idempotency-Key")).absen(c.get("aktor"), c.req.valid("json")),
+        201,
+      ),
+    )
+    .openapi(laporan, async (c) =>
+      c.json(await lapangan(c.req.header("Idempotency-Key")).bukaLaporan(c.get("aktor")), 200),
+    )
+    .openapi(daftar, async (c) =>
+      c.json(await lapangan(c.req.header("Idempotency-Key")).daftarPinjaman(c.get("aktor")), 200),
+    )
+    .openapi(kampung, async (c) =>
+      c.json(await lapangan(c.req.header("Idempotency-Key")).daftarKampung(c.get("aktor")), 200),
+    )
     .openapi(kalenderBulan, async (c) =>
-      c.json(await lapangan.kalenderBulan(c.get("aktor"), c.req.valid("query").bulan), 200),
+      c.json(
+        await lapangan(c.req.header("Idempotency-Key")).kalenderBulan(
+          c.get("aktor"),
+          c.req.valid("query").bulan,
+        ),
+        200,
+      ),
     )
     .openapi(nasabahLama, async (c) =>
-      c.json(await lapangan.daftarNasabahLama(c.get("aktor")), 200),
+      c.json(
+        await lapangan(c.req.header("Idempotency-Key")).daftarNasabahLama(c.get("aktor")),
+        200,
+      ),
     )
     .openapi(akad, async (c) =>
-      c.json(await lapangan.akad(c.get("aktor"), c.req.valid("json")), 201),
+      c.json(
+        await lapangan(c.req.header("Idempotency-Key")).akad(c.get("aktor"), c.req.valid("json")),
+        201,
+      ),
     )
     .openapi(bayar, async (c) =>
-      c.json(await lapangan.bayar(c.get("aktor"), c.req.valid("json")), 201),
+      c.json(
+        await lapangan(c.req.header("Idempotency-Key")).bayar(c.get("aktor"), c.req.valid("json")),
+        201,
+      ),
     )
     .openapi(lunas, async (c) =>
-      c.json(await lapangan.lunas(c.get("aktor"), c.req.valid("json")), 201),
+      c.json(
+        await lapangan(c.req.header("Idempotency-Key")).lunas(c.get("aktor"), c.req.valid("json")),
+        201,
+      ),
     )
     .openapi(gulung, async (c) =>
-      c.json(await lapangan.gulung(c.get("aktor"), c.req.valid("json")), 201),
+      c.json(
+        await lapangan(c.req.header("Idempotency-Key")).gulung(c.get("aktor"), c.req.valid("json")),
+        201,
+      ),
     )
     .openapi(libur, async (c) =>
-      c.json(await lapangan.libur(c.get("aktor"), c.req.valid("json")), 201),
+      c.json(
+        await lapangan(c.req.header("Idempotency-Key")).libur(c.get("aktor"), c.req.valid("json")),
+        201,
+      ),
     );
 }

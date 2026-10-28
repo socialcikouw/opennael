@@ -64,19 +64,37 @@ const daftar = createRoute({
   responses: { 200: { description: "Slip", ...json(z.array(slipGajiSchema)) }, ...galat },
 });
 
-export function ruteGaji(gaji: LayananGaji, auth: LayananAuth) {
+export function ruteGaji(gaji: (kunci?: string) => LayananGaji, auth: LayananAuth) {
   const router = buatRouter();
   router.use("/kas/gaji", wajibMasuk(auth));
   router.use("/kas/gaji/*", wajibMasuk(auth));
   return router
     .openapi(pratinjau, async (c) =>
-      c.json(await gaji.pratinjau(c.get("aktor"), c.req.valid("query")), 200),
+      c.json(
+        await gaji(c.req.header("Idempotency-Key")).pratinjau(c.get("aktor"), c.req.valid("query")),
+        200,
+      ),
     )
-    .openapi(bayar, async (c) => c.json(await gaji.bayar(c.get("aktor"), c.req.valid("json")), 201))
+    .openapi(bayar, async (c) =>
+      c.json(
+        await gaji(c.req.header("Idempotency-Key")).bayar(c.get("aktor"), c.req.valid("json")),
+        201,
+      ),
+    )
     .openapi(batal, async (c) =>
-      c.json(await gaji.batal(c.get("aktor"), c.req.valid("param").id, c.req.valid("json")), 200),
+      c.json(
+        await gaji(c.req.header("Idempotency-Key")).batal(
+          c.get("aktor"),
+          c.req.valid("param").id,
+          c.req.valid("json"),
+        ),
+        200,
+      ),
     )
     .openapi(daftar, async (c) =>
-      c.json(await gaji.daftar(c.get("aktor"), c.req.valid("query")), 200),
+      c.json(
+        await gaji(c.req.header("Idempotency-Key")).daftar(c.get("aktor"), c.req.valid("query")),
+        200,
+      ),
     );
 }
