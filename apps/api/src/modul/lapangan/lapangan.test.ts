@@ -1,9 +1,12 @@
 import { describe, expect, test } from "bun:test";
 import type { Sesi } from "@opennael/contracts";
-import { sql, TransactionRollbackError } from "drizzle-orm";
+import { and, eq, sql, TransactionRollbackError } from "drizzle-orm";
 import { buatApp } from "../../app";
 import { buatDb, type Db } from "../../db/klien";
 import { pastikanDatabasePengembangan } from "../../db/penjaga";
+import { hariKolektor, kantor, pengguna } from "../../db/skema";
+import type { Aktor } from "../auth/token";
+import { buatLayananLapangan } from "./layanan";
 
 /**
  * Operasi lapangan kolektor, ujung ke ujung (HTTP → layanan → database), di
@@ -419,5 +422,113 @@ describe.skipIf(!url)("lapangan kolektor", () => {
         (await kirim("/lapangan/kalender?bulan=2026-13", undefined, bos.tokenAkses)).status,
       ).toBe(400);
     });
+  }, 60_000);
+
+  test("dua koneksi: setoran dan buka laporan menunggu kunci baris hari kolektor", async () => {
+    pastikanDatabasePengembangan(url);
+    const a = buatDb(url as string);
+    const b = buatDb(url as string);
+    const kantorId = crypto.randomUUID();
+    const kolektorId = crypto.randomUUID();
+    const aktor: Aktor = {
+      kantorId,
+      penggunaId: kolektorId,
+      peran: "kolektor",
+      perangkatId: crypto.randomUUID(),
+    };
+    // Dua hari berbeda: hari pertama laporannya dibuka, hari kedua kolektor lalu "tidak kerja".
+    const [hariBuka, hariAbsen] = ["2026-10-28", "2026-10-29"] as const;
+    const layananHari = (tanggal: string) =>
+      buatLayananLapangan({
+        db: b.db,
+        sekarang: () => new Date(`${tanggal}T03:00:00Z`),
+        validasiKalender: { jamKerja: false, hariKerja: false, liburKantor: false },
+      });
+    const milik = (tanggal: string) =>
+      and(eq(hariKolektor.kolektorId, kolektorId), eq(hariKolektor.tanggal, tanggal));
+    const tunggu = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+    const penahan: { lepas: () => void; selesai: Promise<void> }[] = [];
+
+    /** Koneksi A mengunci baris hari itu, mengubahnya, dan baru commit setelah `lepas()`. */
+    async function tahan(tanggal: string, ubah: (tx: Db) => Promise<unknown>) {
+      let terkunci!: () => void;
+      let lepas!: () => void;
+      const sudahTerkunci = new Promise<void>((resolve) => {
+        terkunci = resolve;
+      });
+      const bolehLepas = new Promise<void>((resolve) => {
+        lepas = resolve;
+      });
+      const selesai = a.db.transaction(async (tx) => {
+        await tx
+          .select({ id: hariKolektor.id })
+          .from(hariKolektor)
+          .where(milik(tanggal))
+          .for("update");
+        terkunci();
+        await bolehLepas;
+        await ubah(tx);
+      });
+      penahan.push({ lepas, selesai });
+      await sudahTerkunci;
+      return { lepas, selesai };
+    }
+
+    try {
+      await a.db.insert(kantor).values({ id: kantorId, nama: "Uji kunci hari" });
+      await a.db
+        .insert(pengguna)
+        .values({ id: kolektorId, kantorId, peran: "kolektor", nama: "Uji kunci" });
+      await a.db.insert(hariKolektor).values(
+        [hariBuka, hariAbsen].map((tanggal) => ({
+          kantorId,
+          kolektorId,
+          tanggal,
+          absensi: "masuk_kerja" as const,
+        })),
+      );
+
+      // Setoran yang tiba saat laporan sedang dibuka menunggu lalu ditolak — bukan menyalip.
+      const membuka = await tahan(hariBuka, (tx) =>
+        tx.update(hariKolektor).set({ laporanDibukaAt: new Date() }).where(milik(hariBuka)),
+      );
+      const setoran = layananHari(hariBuka)
+        .bayar(aktor, {
+          pinjamanId: crypto.randomUUID(),
+          setoranMurni: 50_000,
+          setoranPelunasan: 0,
+        })
+        .catch((e: unknown) => e);
+      await tunggu(1500);
+      membuka.lepas();
+      await membuka.selesai;
+      expect(await setoran).toMatchObject({ kode: "LAPORAN_SUDAH_DIBUKA" });
+
+      // Buka laporan menunggu kunci lebih dulu, lalu membaca keadaan yang sudah di-commit.
+      const mengubah = await tahan(hariAbsen, (tx) =>
+        tx
+          .update(hariKolektor)
+          .set({ absensi: "tidak_kerja", alasanTidakKerja: "sakit" })
+          .where(milik(hariAbsen)),
+      );
+      const buka = layananHari(hariAbsen)
+        .bukaLaporan(aktor)
+        .catch((e: unknown) => e);
+      await tunggu(1500);
+      mengubah.lepas();
+      await mengubah.selesai;
+      expect(await buka).toMatchObject({ kode: "TIDAK_KERJA_HARI_INI" });
+    } finally {
+      for (const p of penahan) p.lepas();
+      await Promise.allSettled(penahan.map((p) => p.selesai));
+      // Hanya fixture UUID milik pengujian ini; tidak menyentuh kantor lain.
+      await a.db.transaction(async (tx) => {
+        await tx.execute(sql`select set_config('nael.hapus_data_uji', 'ya', true)`);
+        await tx.delete(hariKolektor).where(eq(hariKolektor.kantorId, kantorId));
+        await tx.delete(pengguna).where(eq(pengguna.kantorId, kantorId));
+        await tx.delete(kantor).where(eq(kantor.id, kantorId));
+      });
+      await Promise.all([a.sql.end(), b.sql.end()]);
+    }
   }, 60_000);
 });

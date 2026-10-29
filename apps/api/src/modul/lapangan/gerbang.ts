@@ -134,6 +134,7 @@ export async function bukaGerbang(
       .where(
         and(eq(hariKolektor.kolektorId, aktor.penggunaId), eq(hariKolektor.tanggal, kal.tanggal)),
       )
+      .for("update")
       .limit(1);
     if (!hari) throw melanggar("BELUM_ABSEN", "Isi absensi hari ini lebih dulu");
     if (hari.absensi !== "masuk_kerja") {
