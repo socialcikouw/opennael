@@ -7,20 +7,25 @@ dan OTA hanya atas perintah pemilik.
 
 ## Susunan tujuan
 
-- `apps/api/src/entrypoints`: HTTP dan pekerjaan terjadwal.
-- `apps/api/src/bootstrap`: perakitan dependensi.
+Disempurnakan 30 Okt 2026: rincian, peta pemindahan, dan kepemilikan tabel di
+[struktur.md](struktur.md); aturan umum di [pedoman-struktur.md](pedoman-struktur.md).
+
+- `apps/api/src/server.ts` (titik masuk), `app.ts` (perakitan), `jadwal.ts`
+  (pekerjaan terjadwal), `env.ts`.
 - `apps/api/src/platform`: database (skema/migrasi), HTTP, idempotensi,
-  penyimpanan dan observabilitas.
-- `apps/api/src/modul`: identitas, kantor, pembiayaan, hari-kolektor, kas,
+  penyimpanan, riwayat dan observabilitas.
+- `apps/api/src/modul`: identitas, kantor, hari-kolektor, pembiayaan, kas,
   penggajian, pelaporan dan migrasi. Modul besar memiliki submodul.
 - `apps/mobile/src/app`: rute/layout tipis; perilaku/UI di `fitur`, komponen
   lintas fitur di `komponen`, integrasi perangkat di `platform`.
-- `apps/web/src/rute`: navigasi; fitur mengelompokkan data, formulir dan UI.
+- `apps/web/src/rute`: rute berbasis berkas; fitur mengelompokkan data,
+  formulir dan UI.
 - `packages/domain`: rumus murni tanpa I/O.
-- `packages/contracts`: skema Zod input/output dan galat.
+- `packages/contracts`: skema Zod input/output dan galat, mengikuti modul API.
 - `packages/api-client`: transport bersama dan klien bertipe per modul;
   tipe server dihasilkan menjadi deklarasi, tanpa runtime server di klien.
-- `tooling`: pemeriksaan arsitektur dan rilis; `.github/workflows`: CI.
+- `packages/format`: format tampilan bersama web & HP.
+- `scripts`: rilis dan pemeriksaan arsitektur; `.github/workflows`: CI.
 
 ## Kepemilikan dan interface
 

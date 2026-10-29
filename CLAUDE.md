@@ -19,6 +19,7 @@ Dokumen yang dibaca lebih dulu:
 | [`docs/aturan-usaha.md`](docs/aturan-usaha.md) | Rumus & aturan bernomor dengan contoh angka — acuan `packages/domain` dan ujinya; ubah dokumen ini lebih dulu |
 | [`docs/keputusan.md`](docs/keputusan.md) | Keputusan besar beserta alasan dan yang ditolak — keputusan baru ditambahkan di sini |
 | [`docs/skema/`](docs/skema/README.md) | Rancangan database per tabel + konvensi penamaan |
+| [`docs/arsitektur/`](docs/arsitektur/README.md) | Susunan kode: [pedoman](docs/arsitektur/pedoman-struktur.md) (aturan umum struktur) dan [struktur](docs/arsitektur/struktur.md) (peta pemindahan, batas API, urutan kerja, gerbang verifikasi) |
 
 Skill proyek: **`tabel-baru`** (`.claude/skills/tabel-baru/`) — langkah baku
 membangun satu tabel dari `docs/skema/`.
