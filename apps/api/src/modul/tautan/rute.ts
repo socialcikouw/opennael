@@ -7,13 +7,12 @@ import {
   setujuiTautanSchema,
   tautanBaruSchema,
 } from "@opennael/contracts";
-import { type BatasPercobaan, pembatasPerIp } from "../../batas";
-import { buatRouter, jawabanGalat } from "../../router";
+import { type BatasPercobaan, pembatasPerIp } from "../../platform/http/batas";
+import { jawabanGalat, json } from "../../platform/http/openapi";
+import { buatRouter } from "../../platform/http/router";
+import { wajibMasuk } from "../../platform/http/wajib-masuk";
 import type { LayananAuth } from "../auth/layanan";
-import { wajibMasuk } from "../auth/wajib-masuk";
 import type { LayananTautan } from "./layanan";
-
-const json = <T>(schema: T) => ({ content: { "application/json": { schema } } });
 
 const minta = createRoute({
   method: "post",
@@ -74,7 +73,7 @@ export function ruteTautan(
   // Klaim TIDAK dibatasi per IP: HP bertanya tiap beberapa detik selama
   // menunggu; menebak kunci klaim 32 bait acak mustahil.
   router.use("/auth/tautan", pembatasPerIp(opsi.batas, opsi.percayaProxy));
-  router.use("/auth/tautan/setujui", wajibMasuk(auth));
+  router.use("/auth/tautan/setujui", wajibMasuk(auth.periksaTokenAkses));
   return router
     .openapi(minta, async (c) => c.json(await tautan.minta(c.req.valid("json").perangkat), 201))
     .openapi(setujui, async (c) =>

@@ -6,13 +6,12 @@ import {
   wilayahDihapusSchema,
   wilayahSchema,
 } from "@opennael/contracts";
-import { buatRouter, jawabanGalat } from "../../router";
+import { aman, jawabanGalat, json } from "../../platform/http/openapi";
+import { buatRouter } from "../../platform/http/router";
+import { wajibMasuk } from "../../platform/http/wajib-masuk";
 import type { LayananAuth } from "../auth/layanan";
-import { wajibMasuk } from "../auth/wajib-masuk";
 import type { LayananWilayah } from "./layanan";
 
-const json = <T>(schema: T) => ({ content: { "application/json": { schema } } });
-const aman = [{ bearer: [] }];
 const tag = ["kampung"];
 const galat = jawabanGalat(
   [400, "Data tidak sah"],
@@ -56,8 +55,9 @@ const hapus = createRoute({
 
 export function ruteWilayah(layanan: LayananWilayah, auth: LayananAuth) {
   const router = buatRouter();
-  router.use("/wilayah", wajibMasuk(auth));
-  router.use("/wilayah/*", wajibMasuk(auth));
+  const masuk = wajibMasuk(auth.periksaTokenAkses);
+  router.use("/wilayah", masuk);
+  router.use("/wilayah/*", masuk);
   return router
     .openapi(daftar, async (c) =>
       c.json(await layanan.daftar(c.get("aktor"), c.req.valid("query")), 200),

@@ -2,9 +2,6 @@ import { fileURLToPath } from "node:url";
 import { createRoute } from "@hono/zod-openapi";
 import { sehatSchema } from "@opennael/contracts";
 import { Scalar } from "@scalar/hono-api-reference";
-import { BATAS_BAWAAN, type BatasPercobaan } from "./batas";
-import type { Db } from "./db/klien";
-import { tanganiGalat } from "./galat";
 import { buatLayananAktivitas } from "./modul/aktivitas/layanan";
 import { ruteAktivitas } from "./modul/aktivitas/rute";
 import { buatLayananAuth } from "./modul/auth/layanan";
@@ -48,9 +45,12 @@ import { buatLayananTautan } from "./modul/tautan/layanan";
 import { ruteTautan } from "./modul/tautan/rute";
 import { buatLayananWilayah } from "./modul/wilayah/layanan";
 import { ruteWilayah } from "./modul/wilayah/rute";
-import { type Penyimpanan, penyimpananDisk } from "./penyimpanan";
+import type { Db } from "./platform/db/klien";
+import { BATAS_BAWAAN, type BatasPercobaan } from "./platform/http/batas";
+import { tanganiGalat } from "./platform/http/galat";
+import { buatRouter } from "./platform/http/router";
 import { denganIdempotensi } from "./platform/idempotensi";
-import { buatRouter } from "./router";
+import { type Penyimpanan, penyimpananDisk } from "./platform/penyimpanan";
 
 const sehat = createRoute({
   method: "get",

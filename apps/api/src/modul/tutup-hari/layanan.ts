@@ -6,8 +6,8 @@ import {
   tanggalMasukPembukuan,
 } from "@opennael/domain";
 import { and, between, eq, inArray, isNull, lt, lte, or, sql } from "drizzle-orm";
-import type { Db } from "../../db/klien";
-import { kantor, nasabah, pinjaman, posisiHarian, transaksi } from "../../db/skema";
+import type { Db } from "../../platform/db/klien";
+import { kantor, nasabah, pinjaman, posisiHarian, transaksi } from "../../platform/db/skema";
 import { hariTagihAntara } from "../lapangan/gerbang";
 
 /**

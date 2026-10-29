@@ -7,7 +7,7 @@ import type {
 } from "@opennael/contracts";
 import { geserTanggal, syaratAkunMutasi } from "@opennael/domain";
 import { and, asc, between, eq, sql } from "drizzle-orm";
-import type { Db } from "../../db/klien";
+import type { Db } from "../../platform/db/klien";
 import {
   bukuKas,
   mutasiKasKantor,
@@ -15,7 +15,8 @@ import {
   pengguna,
   pinjaman,
   posisiHarian,
-} from "../../db/skema";
+} from "../../platform/db/skema";
+import type { Aktor } from "../../platform/http/aktor";
 import {
   batalHanyaHariIni,
   bentrok,
@@ -23,10 +24,9 @@ import {
   melanggar,
   sudahDibatalkan,
   tidakDitemukan,
-} from "../../galat";
-import { wajibPeran } from "../../peran";
-import { catatRiwayat } from "../../riwayat";
-import type { Aktor } from "../auth/token";
+} from "../../platform/http/galat";
+import { wajibPeran } from "../../platform/http/peran";
+import { catatRiwayat } from "../../platform/riwayat";
 import { bacaKalender } from "../lapangan/gerbang";
 import { daftarGerakan, kasDiLapangan, saldoAkun, tabunganNasabah } from "./saldo";
 

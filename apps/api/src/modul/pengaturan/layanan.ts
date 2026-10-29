@@ -17,7 +17,7 @@ import {
 } from "@opennael/domain";
 import { and, asc, between, desc, eq, isNull, lte, ne, or } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
-import type { Db } from "../../db/klien";
+import type { Db } from "../../platform/db/klien";
 import {
   kantor,
   kebijakan,
@@ -29,11 +29,11 @@ import {
   pinjaman,
   tarifGaji,
   transaksi,
-} from "../../db/skema";
-import { dilarang, melanggar, tidakDitemukan } from "../../galat";
-import { wajibPeran } from "../../peran";
-import { catatRiwayat } from "../../riwayat";
-import type { Aktor } from "../auth/token";
+} from "../../platform/db/skema";
+import type { Aktor } from "../../platform/http/aktor";
+import { dilarang, melanggar, tidakDitemukan } from "../../platform/http/galat";
+import { wajibPeran } from "../../platform/http/peran";
+import { catatRiwayat } from "../../platform/riwayat";
 import { bacaKalender } from "../lapangan/gerbang";
 
 /**

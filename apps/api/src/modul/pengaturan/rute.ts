@@ -19,13 +19,12 @@ import {
   ubahKantorSchema,
 } from "@opennael/contracts";
 import type { ZodType } from "zod";
-import { buatRouter, jawabanGalat } from "../../router";
+import { aman, jawabanGalat, json } from "../../platform/http/openapi";
+import { buatRouter } from "../../platform/http/router";
+import { wajibMasuk } from "../../platform/http/wajib-masuk";
 import type { LayananAuth } from "../auth/layanan";
-import { wajibMasuk } from "../auth/wajib-masuk";
 import type { LayananPengaturan } from "./layanan";
 
-const json = <T>(schema: T) => ({ content: { "application/json": { schema } } });
-const aman = [{ bearer: [] }];
 const tag = ["pengaturan"];
 const galat = jawabanGalat(
   [400, "Data tidak sah"],
@@ -174,6 +173,7 @@ const aturTarif = tulis(
 
 export function rutePengaturan(layanan: LayananPengaturan, auth: LayananAuth) {
   const router = buatRouter();
+  const masuk = wajibMasuk(auth.periksaTokenAkses);
   for (const jalur of [
     "/kantor",
     "/kantor/*",
@@ -184,7 +184,7 @@ export function rutePengaturan(layanan: LayananPengaturan, auth: LayananAuth) {
     "/tarif-gaji",
     "/tarif-gaji/*",
   ]) {
-    router.use(jalur, wajibMasuk(auth));
+    router.use(jalur, masuk);
   }
   return router
     .openapi(kantor, async (c) => c.json(await layanan.kantor(c.get("aktor")), 200))

@@ -1,5 +1,6 @@
 import { Cron } from "croner";
-import type { LayananTutupHari } from "./layanan";
+import { buatLayananTutupHari, type LayananTutupHari } from "./modul/tutup-hari/layanan";
+import type { Db } from "./platform/db/klien";
 
 /**
  * Penjadwal tutup hari: berdetak tiap jam (menit ke-5) dan sekali saat server
@@ -7,7 +8,7 @@ import type { LayananTutupHari } from "./layanan";
  * memilih kantor mana yang tengah malamnya sudah lewat (zona masing-masing);
  * detak yang tumpang tindih dilewati (`protect`).
  */
-export function jadwalkanTutupHari(layanan: LayananTutupHari) {
+function jadwalkanTutupHari(layanan: LayananTutupHari) {
   const detak = async () => {
     const { selesai, gagal } = await layanan.sapu();
     for (const h of selesai) {
@@ -20,4 +21,9 @@ export function jadwalkanTutupHari(layanan: LayananTutupHari) {
   const tugas = new Cron("5 * * * *", { name: "tutup-hari", protect: true, catch: true }, detak);
   void tugas.trigger();
   return tugas;
+}
+
+/** Memulai semua pekerjaan terjadwal server (kini: sapuan tutup hari). */
+export function mulaiJadwal(db: Db) {
+  return { tutupHari: jadwalkanTutupHari(buatLayananTutupHari({ db })) };
 }

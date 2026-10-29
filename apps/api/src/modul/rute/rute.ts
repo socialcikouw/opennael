@@ -1,11 +1,11 @@
 import { createRoute } from "@hono/zod-openapi";
 import { ruteSchema, saringRuteSchema, simpanRuteSchema } from "@opennael/contracts";
-import { buatRouter, jawabanGalat } from "../../router";
+import { jawabanGalat, json } from "../../platform/http/openapi";
+import { buatRouter } from "../../platform/http/router";
+import { wajibMasuk } from "../../platform/http/wajib-masuk";
 import type { LayananAuth } from "../auth/layanan";
-import { wajibMasuk } from "../auth/wajib-masuk";
 import type { LayananRute } from "./layanan";
 
-const json = <T>(schema: T) => ({ content: { "application/json": { schema } } });
 const galat = jawabanGalat(
   [400, "Data tidak sah"],
   [401, "Belum masuk"],
@@ -36,7 +36,7 @@ const simpan = createRoute({
 
 export function ruteRuteKolektor(layanan: LayananRute, auth: LayananAuth) {
   const router = buatRouter();
-  router.use("/rute-kolektor", wajibMasuk(auth));
+  router.use("/rute-kolektor", wajibMasuk(auth.periksaTokenAkses));
   return router
     .openapi(baca, async (c) =>
       c.json(await layanan.baca(c.get("aktor"), c.req.valid("query")), 200),

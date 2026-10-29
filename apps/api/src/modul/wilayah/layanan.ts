@@ -1,12 +1,19 @@
 import type { WilayahJawaban } from "@opennael/contracts";
 import { kunciWilayah, rapikanNamaWilayah } from "@opennael/domain";
 import { and, asc, eq, gte, inArray, ne, sql } from "drizzle-orm";
-import type { Db } from "../../db/klien";
-import { nasabah, pengguna, pinjaman, ruteKolektor, ruteWilayah, wilayah } from "../../db/skema";
-import { bentrok, galatPostgres, melanggar, tidakDitemukan } from "../../galat";
-import { wajibPeran } from "../../peran";
-import { catatRiwayat } from "../../riwayat";
-import type { Aktor } from "../auth/token";
+import type { Db } from "../../platform/db/klien";
+import {
+  nasabah,
+  pengguna,
+  pinjaman,
+  ruteKolektor,
+  ruteWilayah,
+  wilayah,
+} from "../../platform/db/skema";
+import type { Aktor } from "../../platform/http/aktor";
+import { bentrok, galatPostgres, melanggar, tidakDitemukan } from "../../platform/http/galat";
+import { wajibPeran } from "../../platform/http/peran";
+import { catatRiwayat } from "../../platform/riwayat";
 
 /**
  * KAMPUNG — daftar dengan pemakaian (semua peran), ganti nama atau gabung,

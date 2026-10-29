@@ -1,6 +1,6 @@
 import type { BatalInput } from "@opennael/contracts";
 import { and, desc, eq, inArray, isNull, ne, sql } from "drizzle-orm";
-import type { Db } from "../../db/klien";
+import type { Db } from "../../platform/db/klien";
 import {
   liburNasabah,
   nasabah,
@@ -8,17 +8,17 @@ import {
   riwayatStatusPinjaman,
   transaksi,
   transferSetoran,
-} from "../../db/skema";
+} from "../../platform/db/skema";
+import type { Aktor } from "../../platform/http/aktor";
 import {
   batalHanyaHariIni,
   kasSudahDiterimaGalat,
   melanggar,
   sudahDibatalkan,
   tidakDitemukan,
-} from "../../galat";
-import { wajibPeran } from "../../peran";
-import { catatRiwayat } from "../../riwayat";
-import type { Aktor } from "../auth/token";
+} from "../../platform/http/galat";
+import { wajibPeran } from "../../platform/http/peran";
+import { catatRiwayat } from "../../platform/riwayat";
 import { bacaKalender } from "../lapangan/gerbang";
 import { kasSudahDiterima } from "../setoran-sore/kunci-hari";
 

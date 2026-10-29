@@ -1,8 +1,8 @@
 import type { Sesi } from "@opennael/contracts";
 import { sql, TransactionRollbackError } from "drizzle-orm";
 import { type AppDeps, buatApp } from "../app";
-import { buatDb, type Db } from "../db/klien";
-import { pastikanDatabasePengembangan } from "../db/penjaga";
+import { buatDb, type Db } from "../platform/db/klien";
+import { pastikanDatabasePengembangan } from "../platform/db/penjaga";
 
 /**
  * PEMBANTU UJI yang menyentuh database: semuanya berjalan di SATU transaksi

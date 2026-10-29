@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { sql } from "drizzle-orm";
-import { penyimpananMemori } from "../../penyimpanan";
+import { penyimpananMemori } from "../../platform/penyimpanan";
 import { dalamTransaksi, siapkanKantor, URL_DB } from "../../uji/bantu";
 
 /** Isi berkas WebP / JPEG minimal (cukup tanda pengenal di depannya). */

@@ -6,12 +6,12 @@ import {
   putihkanSchema,
 } from "@opennael/contracts";
 import type { ZodType } from "zod";
-import { buatRouter, jawabanGalat } from "../../router";
+import { jawabanGalat, json } from "../../platform/http/openapi";
+import { buatRouter } from "../../platform/http/router";
+import { wajibMasuk } from "../../platform/http/wajib-masuk";
 import type { LayananAuth } from "../auth/layanan";
-import { wajibMasuk } from "../auth/wajib-masuk";
 import type { LayananPemutihan } from "./layanan";
 
-const json = <T>(schema: T) => ({ content: { "application/json": { schema } } });
 const galat = jawabanGalat(
   [400, "Data tidak sah"],
   [401, "Belum masuk"],
@@ -61,8 +61,9 @@ const bukaBlokir = tulis(
 
 export function rutePemutihan(layanan: LayananPemutihan, auth: LayananAuth) {
   const router = buatRouter();
-  router.use("/pinjaman/*", wajibMasuk(auth));
-  router.use("/nasabah/*", wajibMasuk(auth));
+  const masuk = wajibMasuk(auth.periksaTokenAkses);
+  router.use("/pinjaman/*", masuk);
+  router.use("/nasabah/*", masuk);
   return router
     .openapi(putihkan, async (c) =>
       c.json(

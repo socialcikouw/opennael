@@ -1,10 +1,10 @@
 import type { PerangkatJawaban } from "@opennael/contracts";
 import { and, desc, eq, isNull } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
-import type { Db } from "../../db/klien";
-import { pengguna, perangkat } from "../../db/skema";
-import { bentrok, dilarang, tidakDitemukan } from "../../galat";
-import type { Aktor } from "../auth/token";
+import type { Db } from "../../platform/db/klien";
+import { pengguna, perangkat } from "../../platform/db/skema";
+import type { Aktor } from "../../platform/http/aktor";
+import { bentrok, dilarang, tidakDitemukan } from "../../platform/http/galat";
 
 /**
  * PERANGKAT YANG MASUK — daftar (bos: seluruh kantor, peran lain: miliknya)

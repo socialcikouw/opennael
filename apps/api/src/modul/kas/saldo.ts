@@ -1,6 +1,6 @@
 import type { JenisMutasiKas } from "@opennael/domain";
 import { sql } from "drizzle-orm";
-import type { Db } from "../../db/klien";
+import type { Db } from "../../platform/db/klien";
 
 /**
  * GERAKAN BUKU KAS — setiap rupiah dibaca dari tabel asalnya, tidak disalin

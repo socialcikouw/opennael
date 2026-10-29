@@ -1,8 +1,7 @@
 import { buatApp } from "./app";
-import { buatDb } from "./db/klien";
 import { bacaEnv } from "./env";
-import { jadwalkanTutupHari } from "./modul/tutup-hari/jadwal";
-import { buatLayananTutupHari } from "./modul/tutup-hari/layanan";
+import { mulaiJadwal } from "./jadwal";
+import { buatDb } from "./platform/db/klien";
 
 const env = bacaEnv();
 const { db } = buatDb(env.DATABASE_URL);
@@ -31,4 +30,4 @@ if (gerbangMati.length > 0) {
   console.log(`Gerbang lapangan TIDAK memeriksa: ${gerbangMati.join(", ")} (pengembangan)`);
 }
 
-jadwalkanTutupHari(buatLayananTutupHari({ db }));
+mulaiJadwal(db);

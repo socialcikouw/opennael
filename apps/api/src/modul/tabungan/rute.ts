@@ -7,13 +7,12 @@ import {
   penarikanSchema,
 } from "@opennael/contracts";
 import type { ZodType } from "zod";
-import { buatRouter, jawabanGalat } from "../../router";
+import { aman, jawabanGalat, json } from "../../platform/http/openapi";
+import { buatRouter } from "../../platform/http/router";
+import { wajibMasuk } from "../../platform/http/wajib-masuk";
 import type { LayananAuth } from "../auth/layanan";
-import { wajibMasuk } from "../auth/wajib-masuk";
 import type { LayananTabungan } from "./layanan";
 
-const json = <T>(schema: T) => ({ content: { "application/json": { schema } } });
-const aman = [{ bearer: [] }];
 const tag = ["tabungan nasabah"];
 const galat = jawabanGalat(
   [400, "Data tidak sah"],
@@ -86,8 +85,9 @@ const daftarKoreksi = riwayatNasabah(
 
 export function ruteTabungan(tabungan: (kunci?: string) => LayananTabungan, auth: LayananAuth) {
   const router = buatRouter();
-  router.use("/nasabah/*", wajibMasuk(auth));
-  router.use("/penarikan-tabungan/*", wajibMasuk(auth));
+  const masuk = wajibMasuk(auth.periksaTokenAkses);
+  router.use("/nasabah/*", masuk);
+  router.use("/penarikan-tabungan/*", masuk);
   return router
     .openapi(tarik, async (c) =>
       c.json(

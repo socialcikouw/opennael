@@ -285,7 +285,7 @@ Database (`cd apps/api`, membaca `apps/api/.env`):
 
 | Perintah | Isi |
 |---|---|
-| `bun run db:generate` | Skema Drizzle (`src/db/skema/`) → berkas SQL baru di `src/db/migrasi/`. Periksa SQL-nya sebelum diterapkan. |
+| `bun run db:generate` | Skema Drizzle (`src/platform/db/skema/`) → berkas SQL baru di `src/platform/db/migrasi/`. Periksa SQL-nya sebelum diterapkan. |
 | `bunx --bun drizzle-kit generate --custom --name <nama>` | Migrasi SQL kustom kosong — untuk fungsi, trigger, `EXCLUDE`. |
 | `bun run db:migrate` | Terapkan migrasi yang belum jalan (dicatat di `drizzle.__drizzle_migrations`). Lewat `scripts/migrasi.ts`, yang menolak berjalan bila host bukan Supabase dev. |
 

@@ -2,7 +2,7 @@ import type { Aktivitas, JejakRiwayat, Peran } from "@opennael/contracts";
 import { rentangTanggalKantor } from "@opennael/domain";
 import { and, desc, eq, gte, inArray, isNotNull, lt, ne, or } from "drizzle-orm";
 import { type AnyPgColumn, alias } from "drizzle-orm/pg-core";
-import type { Db } from "../../db/klien";
+import type { Db } from "../../platform/db/klien";
 import {
   biayaTakTerduga,
   hariKolektor,
@@ -20,9 +20,9 @@ import {
   type tabelBerjejakEnum,
   transaksi,
   transferSetoran,
-} from "../../db/skema";
-import { wajibPeran } from "../../peran";
-import type { Aktor } from "../auth/token";
+} from "../../platform/db/skema";
+import type { Aktor } from "../../platform/http/aktor";
+import { wajibPeran } from "../../platform/http/peran";
 import { bacaKalender } from "../lapangan/gerbang";
 
 /**

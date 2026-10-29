@@ -17,6 +17,7 @@ export * from "./macet";
 export * from "./nik";
 export * from "./nomor-hp";
 export * from "./performa";
+export * from "./rem";
 export * from "./setoran";
 export * from "./tabungan";
 export * from "./tagih";

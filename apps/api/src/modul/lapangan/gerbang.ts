@@ -6,11 +6,11 @@ import {
   waktuKantor,
 } from "@opennael/domain";
 import { and, between, desc, eq, lte } from "drizzle-orm";
-import type { Db } from "../../db/klien";
-import { hariKolektor, kantor, liburKantor, pekanKerja } from "../../db/skema";
-import { melanggar } from "../../galat";
-import { wajibPeran } from "../../peran";
-import type { Aktor } from "../auth/token";
+import type { Db } from "../../platform/db/klien";
+import { hariKolektor, kantor, liburKantor, pekanKerja } from "../../platform/db/skema";
+import type { Aktor } from "../../platform/http/aktor";
+import { melanggar } from "../../platform/http/galat";
+import { wajibPeran } from "../../platform/http/peran";
 
 export interface KalenderHari {
   /** Tanggal pembukuan kantor hari ini. */

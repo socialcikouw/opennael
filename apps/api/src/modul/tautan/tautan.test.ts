@@ -2,8 +2,8 @@ import { describe, expect, test } from "bun:test";
 import type { Sesi } from "@opennael/contracts";
 import { TransactionRollbackError } from "drizzle-orm";
 import { buatApp } from "../../app";
-import { buatDb, type Db } from "../../db/klien";
-import { pastikanDatabasePengembangan } from "../../db/penjaga";
+import { buatDb, type Db } from "../../platform/db/klien";
+import { pastikanDatabasePengembangan } from "../../platform/db/penjaga";
 
 /**
  * Penautan HP lewat QR, ujung ke ujung, di SATU transaksi yang dibatalkan.

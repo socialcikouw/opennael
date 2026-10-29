@@ -7,13 +7,12 @@ import {
   saringSlipGajiSchema,
   slipGajiSchema,
 } from "@opennael/contracts";
-import { buatRouter, jawabanGalat } from "../../router";
+import { aman, jawabanGalat, json } from "../../platform/http/openapi";
+import { buatRouter } from "../../platform/http/router";
+import { wajibMasuk } from "../../platform/http/wajib-masuk";
 import type { LayananAuth } from "../auth/layanan";
-import { wajibMasuk } from "../auth/wajib-masuk";
 import type { LayananGaji } from "./layanan";
 
-const json = <T>(schema: T) => ({ content: { "application/json": { schema } } });
-const aman = [{ bearer: [] }];
 const tag = ["gaji kolektor"];
 const galat = jawabanGalat(
   [400, "Data tidak sah"],
@@ -66,8 +65,9 @@ const daftar = createRoute({
 
 export function ruteGaji(gaji: (kunci?: string) => LayananGaji, auth: LayananAuth) {
   const router = buatRouter();
-  router.use("/kas/gaji", wajibMasuk(auth));
-  router.use("/kas/gaji/*", wajibMasuk(auth));
+  const masuk = wajibMasuk(auth.periksaTokenAkses);
+  router.use("/kas/gaji", masuk);
+  router.use("/kas/gaji/*", masuk);
   return router
     .openapi(pratinjau, async (c) =>
       c.json(

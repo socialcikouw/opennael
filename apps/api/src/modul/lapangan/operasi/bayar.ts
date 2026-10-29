@@ -1,7 +1,7 @@
 import { hitungBayar } from "@opennael/domain";
 import { eq } from "drizzle-orm";
-import { pinjaman, transaksi } from "../../../db/skema";
-import type { Aktor } from "../../auth/token";
+import { pinjaman, transaksi } from "../../../platform/db/skema";
+import type { Aktor } from "../../../platform/http/aktor";
 import {
   kolomTransaksi,
   kunciPinjaman,

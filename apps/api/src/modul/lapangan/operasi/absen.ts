@@ -1,6 +1,6 @@
 import type { AbsenInput } from "@opennael/contracts";
-import { hariKolektor } from "../../../db/skema";
-import type { Aktor } from "../../auth/token";
+import { hariKolektor } from "../../../platform/db/skema";
+import type { Aktor } from "../../../platform/http/aktor";
 import { hariIni, type LapanganDeps } from "../data";
 import { bukaGerbang, VALIDASI_PENUH } from "../gerbang";
 export function buatAbsen(deps: LapanganDeps) {

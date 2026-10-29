@@ -14,12 +14,12 @@ tanyakan pemilik bila menyangkut aturan usaha), baru kodenya.
 1. `docs/skema/schema-<tabel>.md` — kolom, aturan database (PK, FK, UNIQUE,
    CHECK, index, trigger), catatan migrasi.
 2. `docs/skema/README.md` — konvensi penamaan (#1–#9).
-3. Tabel yang dirujuk FK-nya harus sudah ada di `apps/api/src/db/skema/`.
+3. Tabel yang dirujuk FK-nya harus sudah ada di `apps/api/src/platform/db/skema/`.
    Belum ada → bangun tabel itu lebih dulu.
 4. Abaikan kolom "Sekarang" & "Catatan migrasi" — itu untuk memindahkan data
    dari sistem lama, bukan untuk membuat tabel.
 
-## 2. Skema Drizzle — `apps/api/src/db/skema/<tabel-kebab>.ts`
+## 2. Skema Drizzle — `apps/api/src/platform/db/skema/<tabel-kebab>.ts`
 
 Ikuti pola berkas yang sudah ada (`pengguna.ts`, `tarif-gaji.ts`, `tautan.ts`):
 
@@ -37,14 +37,14 @@ Ikuti pola berkas yang sudah ada (`pengguna.ts`, `tarif-gaji.ts`, `tautan.ts`):
 - CHECK yang melibatkan kolom boleh kosong ditulis dengan `IS NOT NULL`
   eksplisit (CHECK meloloskan NULL). Nilai enum yang ditambahkan belakangan
   dibandingkan lewat `::text`.
-- Ekspor dari `apps/api/src/db/skema/index.ts`.
+- Ekspor dari `apps/api/src/platform/db/skema/index.ts`.
 
 ## 3. Migrasi
 
 Di `apps/api`:
 
 1. `bun run db:generate --name <nama_singkat>` → periksa SQL di
-   `src/db/migrasi/`: nama constraint, `IS NOT NULL`, urutan FK.
+   `src/platform/db/migrasi/`: nama constraint, `IS NOT NULL`, urutan FK.
 2. Trigger, fungsi, `EXCLUDE`, ekstensi → migrasi kustom:
    `bunx --bun drizzle-kit generate --custom --name <nama>`, lalu isi SQL-nya.
    Pakai ulang fungsi yang ada (cek migrasi sebelumnya):
@@ -60,7 +60,7 @@ Di `apps/api`:
    lewat migrasi baru.
 4. `bun run db:migrate` (Supabase dev; `.env` di `apps/api`).
 
-## 4. Uji skema — `apps/api/src/db/skema.test.ts`
+## 4. Uji skema — `apps/api/src/platform/db/skema.test.ts`
 
 Tambahkan bagian untuk tabel itu di dalam transaksi yang dibatalkan (pola
 `tolak(tx, "<nama_constraint>", (sp) => sp\`...\`)` yang sudah ada):

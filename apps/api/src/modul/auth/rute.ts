@@ -7,13 +7,15 @@ import {
   sesiSchema,
   tokenSchema,
 } from "@opennael/contracts";
-import { type BatasPercobaan, pembatasLoginPerNomor, pembatasPerIp } from "../../batas";
-import { buatRouter, jawabanGalat } from "../../router";
+import {
+  type BatasPercobaan,
+  pembatasLoginPerNomor,
+  pembatasPerIp,
+} from "../../platform/http/batas";
+import { aman, jawabanGalat, json } from "../../platform/http/openapi";
+import { buatRouter } from "../../platform/http/router";
+import { wajibMasuk } from "../../platform/http/wajib-masuk";
 import type { LayananAuth } from "./layanan";
-import { wajibMasuk } from "./wajib-masuk";
-
-const json = <T>(schema: T) => ({ content: { "application/json": { schema } } });
-const aman = [{ bearer: [] }];
 
 const register = createRoute({
   method: "post",
@@ -87,7 +89,7 @@ export function ruteAuth(
   auth: LayananAuth,
   opsi: { batas: BatasPercobaan; percayaProxy: boolean },
 ) {
-  const masuk = wajibMasuk(auth);
+  const masuk = wajibMasuk(auth.periksaTokenAkses);
   const router = buatRouter();
   const perIp = pembatasPerIp(opsi.batas, opsi.percayaProxy);
   router.use("/auth/register", perIp);

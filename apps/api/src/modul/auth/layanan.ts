@@ -1,17 +1,12 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 import type { LoginInput, Profil, RegistrasiInput, Sesi } from "@opennael/contracts";
 import { and, eq, isNull, sql } from "drizzle-orm";
-import type { Db } from "../../db/klien";
-import { kantor, pekanKerja, pengguna, perangkat, tarifGaji } from "../../db/skema";
-import { bentrok, dilarang, galatPostgres, tidakSah } from "../../galat";
+import type { Db } from "../../platform/db/klien";
+import { kantor, pekanKerja, pengguna, perangkat, tarifGaji } from "../../platform/db/skema";
+import type { Aktor } from "../../platform/http/aktor";
+import { bentrok, dilarang, galatPostgres, tidakSah } from "../../platform/http/galat";
 import { cocokSandi, hashSandi, samakanWaktu } from "./sandi";
-import {
-  AKSES_BERLAKU_DETIK,
-  type Aktor,
-  buatTokenAkses,
-  buatTokenSegar,
-  SESI_BERLAKU_MS,
-} from "./token";
+import { AKSES_BERLAKU_DETIK, buatTokenAkses, buatTokenSegar, SESI_BERLAKU_MS } from "./token";
 
 /** Pekan kerja pertama setiap kantor: Senin–Sabtu. */
 const HARI_KERJA_AWAL = 126;

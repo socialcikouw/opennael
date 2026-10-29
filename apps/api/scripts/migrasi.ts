@@ -1,5 +1,5 @@
 import { fileURLToPath } from "node:url";
-import { pastikanDatabasePengembangan } from "../src/db/penjaga";
+import { pastikanDatabasePengembangan } from "../src/platform/db/penjaga";
 
 // Skrip lokal ini tidak pernah boleh menerapkan migrasi ke produksi.
 pastikanDatabasePengembangan(process.env.DATABASE_URL);

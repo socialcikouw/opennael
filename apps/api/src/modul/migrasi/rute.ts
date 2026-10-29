@@ -1,11 +1,10 @@
 import { createRoute } from "@hono/zod-openapi";
 import { hasilMigrasiSchema, migrasiSchema } from "@opennael/contracts";
-import { buatRouter, jawabanGalat } from "../../router";
+import { jawabanGalat, json } from "../../platform/http/openapi";
+import { buatRouter } from "../../platform/http/router";
+import { wajibMasuk } from "../../platform/http/wajib-masuk";
 import type { LayananAuth } from "../auth/layanan";
-import { wajibMasuk } from "../auth/wajib-masuk";
 import type { LayananMigrasi } from "./layanan";
-
-const json = <T>(schema: T) => ({ content: { "application/json": { schema } } });
 
 const salin = createRoute({
   method: "post",
@@ -29,7 +28,7 @@ const salin = createRoute({
 
 export function ruteMigrasi(layanan: (kunci?: string) => LayananMigrasi, auth: LayananAuth) {
   const router = buatRouter();
-  router.use("/pinjaman/migrasi", wajibMasuk(auth));
+  router.use("/pinjaman/migrasi", wajibMasuk(auth.periksaTokenAkses));
   return router.openapi(salin, async (c) =>
     c.json(
       await layanan(c.req.header("Idempotency-Key")).salin(c.get("aktor"), c.req.valid("json")),

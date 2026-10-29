@@ -1,9 +1,9 @@
 import { wajibDitagihHariIni } from "@opennael/domain";
 import { and, asc, eq, inArray, isNull } from "drizzle-orm";
-import { hariKolektor, nasabah, pinjaman } from "../../../db/skema";
-import { melanggar } from "../../../galat";
-import { wajibPeran } from "../../../peran";
-import type { Aktor } from "../../auth/token";
+import { hariKolektor, nasabah, pinjaman } from "../../../platform/db/skema";
+import type { Aktor } from "../../../platform/http/aktor";
+import { melanggar } from "../../../platform/http/galat";
+import { wajibPeran } from "../../../platform/http/peran";
 import { catatanHari, hariIni, type LapanganDeps } from "../data";
 import { bacaKalender } from "../gerbang";
 

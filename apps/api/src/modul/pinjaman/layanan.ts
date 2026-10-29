@@ -2,6 +2,8 @@ import type { KartuPinjaman, RincianPinjaman } from "@opennael/contracts";
 import {
   ATURAN_MACET,
   awalJendelaMacet,
+  type BarisRem,
+  gabungRem,
   geserTanggal,
   mulaiDitagih,
   nilaiMacet,
@@ -22,7 +24,7 @@ import {
   sql,
 } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
-import type { Db } from "../../db/klien";
+import type { Db } from "../../platform/db/klien";
 import {
   kebijakan,
   liburNasabah,
@@ -32,12 +34,11 @@ import {
   riwayatStatusPinjaman,
   transaksi,
   wilayah,
-} from "../../db/skema";
-import { dilarang, melanggar, tidakDitemukan } from "../../galat";
-import { wajibPeran } from "../../peran";
-import { type BarisRem, gabungRem } from "../../rem";
-import { catatRiwayat } from "../../riwayat";
-import type { Aktor } from "../auth/token";
+} from "../../platform/db/skema";
+import type { Aktor } from "../../platform/http/aktor";
+import { dilarang, melanggar, tidakDitemukan } from "../../platform/http/galat";
+import { wajibPeran } from "../../platform/http/peran";
+import { catatRiwayat } from "../../platform/riwayat";
 import { bacaKalender, hariTagihAntara } from "../lapangan/gerbang";
 import { keKartu, kolomKartu, kolomRem } from "../lapangan/layanan";
 

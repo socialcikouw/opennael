@@ -14,13 +14,12 @@ import {
   ubahKasAwalSchema,
 } from "@opennael/contracts";
 import type { ZodType } from "zod";
-import { buatRouter, jawabanGalat } from "../../router";
+import { aman, jawabanGalat, json } from "../../platform/http/openapi";
+import { buatRouter } from "../../platform/http/router";
+import { wajibMasuk } from "../../platform/http/wajib-masuk";
 import type { LayananAuth } from "../auth/layanan";
-import { wajibMasuk } from "../auth/wajib-masuk";
 import type { LayananKas } from "./layanan";
 
-const json = <T>(schema: T) => ({ content: { "application/json": { schema } } });
-const aman = [{ bearer: [] }];
 const tag = ["kas kantor"];
 const galat = jawabanGalat(
   [400, "Data tidak sah"],
@@ -134,7 +133,7 @@ const daftarPencocokan = createRoute({
 
 export function ruteKas(kas: (kunci?: string) => LayananKas, auth: LayananAuth) {
   const router = buatRouter();
-  router.use("/kas/*", wajibMasuk(auth));
+  router.use("/kas/*", wajibMasuk(auth.periksaTokenAkses));
   return router
     .openapi(buka, async (c) =>
       c.json(

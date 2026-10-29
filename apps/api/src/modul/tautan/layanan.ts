@@ -1,13 +1,13 @@
 import type { HasilKlaim, SetujuiTautanInput } from "@opennael/contracts";
 import { isiQr, tampilanKode } from "@opennael/domain";
 import { and, eq, gt, isNull, lt } from "drizzle-orm";
-import type { Db } from "../../db/klien";
-import { pengguna, perangkat, tautan } from "../../db/skema";
-import { bentrok, dilarang, GalatApp, galatPostgres } from "../../galat";
-import { wajibPeran } from "../../peran";
-import { catatRiwayat } from "../../riwayat";
+import type { Db } from "../../platform/db/klien";
+import { pengguna, perangkat, tautan } from "../../platform/db/skema";
+import type { Aktor } from "../../platform/http/aktor";
+import { bentrok, dilarang, GalatApp, galatPostgres } from "../../platform/http/galat";
+import { wajibPeran } from "../../platform/http/peran";
+import { catatRiwayat } from "../../platform/riwayat";
 import type { LayananAuth } from "../auth/layanan";
-import type { Aktor } from "../auth/token";
 import { buatKlaim, buatKode, klaimCocok } from "./kode";
 
 /** Kode menunggu dipindai bos. */

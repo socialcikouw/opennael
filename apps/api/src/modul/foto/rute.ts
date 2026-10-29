@@ -1,10 +1,11 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import { fotoTersimpanSchema, UKURAN_FOTO_MAKS, unggahFotoSchema } from "@opennael/contracts";
 import { bodyLimit } from "hono/body-limit";
-import { GalatApp } from "../../galat";
-import { buatRouter, jawabanGalat } from "../../router";
+import { GalatApp } from "../../platform/http/galat";
+import { jawabanGalat } from "../../platform/http/openapi";
+import { buatRouter } from "../../platform/http/router";
+import { wajibMasuk } from "../../platform/http/wajib-masuk";
 import type { LayananAuth } from "../auth/layanan";
-import { wajibMasuk } from "../auth/wajib-masuk";
 import type { LayananFoto } from "./layanan";
 
 // `z.file()` belum dikenal penyusun OpenAPI — dinyatakan sebagai biner multipart.
@@ -55,8 +56,9 @@ const baca = createRoute({
 
 export function ruteFoto(foto: LayananFoto, auth: LayananAuth) {
   const router = buatRouter();
-  router.use("/foto", wajibMasuk(auth));
-  router.use("/foto/*", wajibMasuk(auth));
+  const masuk = wajibMasuk(auth.periksaTokenAkses);
+  router.use("/foto", masuk);
+  router.use("/foto/*", masuk);
   // Ruang sedikit di atas 2 MB untuk kepala multipart.
   router.use(
     "/foto",

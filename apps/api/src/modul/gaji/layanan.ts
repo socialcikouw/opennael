@@ -1,7 +1,7 @@
 import type { BatalInput, BayarGajiInput } from "@opennael/contracts";
 import { GalatAturan, gajiBersih, gajiKotor, tarifBerlaku } from "@opennael/domain";
 import { and, between, desc, eq, gte, isNull, lte, or, sql } from "drizzle-orm";
-import type { Db } from "../../db/klien";
+import type { Db } from "../../platform/db/klien";
 import {
   bukuKas,
   hariKolektor,
@@ -10,7 +10,8 @@ import {
   serahTerimaKas,
   tarifGaji,
   transaksi,
-} from "../../db/skema";
+} from "../../platform/db/skema";
+import type { Aktor } from "../../platform/http/aktor";
 import {
   batalHanyaHariIni,
   bentrok,
@@ -19,9 +20,8 @@ import {
   melanggar,
   sudahDibatalkan,
   tidakDitemukan,
-} from "../../galat";
-import { wajibPeran } from "../../peran";
-import type { Aktor } from "../auth/token";
+} from "../../platform/http/galat";
+import { wajibPeran } from "../../platform/http/peran";
 import { bacaKalender } from "../lapangan/gerbang";
 
 /**

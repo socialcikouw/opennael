@@ -1,6 +1,6 @@
 import { geserTanggal, hitungPerforma, selisihHari } from "@opennael/domain";
 import { and, asc, between, eq, inArray, isNull, ne, sql } from "drizzle-orm";
-import type { Db } from "../../db/klien";
+import type { Db } from "../../platform/db/klien";
 import {
   biayaTakTerduga,
   hariKolektor,
@@ -11,10 +11,10 @@ import {
   serahTerimaKas,
   transaksi,
   transferSetoran,
-} from "../../db/skema";
-import { dilarang, melanggar } from "../../galat";
-import { wajibPeran } from "../../peran";
-import type { Aktor } from "../auth/token";
+} from "../../platform/db/skema";
+import type { Aktor } from "../../platform/http/aktor";
+import { dilarang, melanggar } from "../../platform/http/galat";
+import { wajibPeran } from "../../platform/http/peran";
 import { bacaKalender } from "../lapangan/gerbang";
 
 /**

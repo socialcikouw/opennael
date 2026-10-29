@@ -1,12 +1,12 @@
 import { createHash } from "node:crypto";
 import { type FotoTersimpan, UKURAN_FOTO_MAKS } from "@opennael/contracts";
 import { and, eq, or } from "drizzle-orm";
-import type { Db } from "../../db/klien";
-import { foto, nasabah, pinjaman } from "../../db/skema";
-import { dilarang, GalatApp, tidakDitemukan } from "../../galat";
-import { jenisGambar, type Penyimpanan } from "../../penyimpanan";
-import { wajibPeran } from "../../peran";
-import type { Aktor } from "../auth/token";
+import type { Db } from "../../platform/db/klien";
+import { foto, nasabah, pinjaman } from "../../platform/db/skema";
+import type { Aktor } from "../../platform/http/aktor";
+import { dilarang, GalatApp, tidakDitemukan } from "../../platform/http/galat";
+import { wajibPeran } from "../../platform/http/peran";
+import { jenisGambar, type Penyimpanan } from "../../platform/penyimpanan";
 
 export interface FotoDeps {
   db: Db;

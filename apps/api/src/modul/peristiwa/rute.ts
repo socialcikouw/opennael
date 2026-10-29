@@ -7,13 +7,12 @@ import {
   selRekapSchema,
   transaksiLengkapSchema,
 } from "@opennael/contracts";
-import { buatRouter, jawabanGalat } from "../../router";
+import { aman, jawabanGalat, json } from "../../platform/http/openapi";
+import { buatRouter } from "../../platform/http/router";
+import { wajibMasuk } from "../../platform/http/wajib-masuk";
 import type { LayananAuth } from "../auth/layanan";
-import { wajibMasuk } from "../auth/wajib-masuk";
 import type { LayananPeristiwa } from "./layanan";
 
-const json = <T>(schema: T) => ({ content: { "application/json": { schema } } });
-const aman = [{ bearer: [] }];
 const tag = ["peristiwa"];
 const idParam = z.object({ id: z.uuid() });
 const galat = jawabanGalat(
@@ -64,8 +63,9 @@ const buku = createRoute({
 
 export function rutePeristiwa(layanan: LayananPeristiwa, auth: LayananAuth) {
   const router = buatRouter();
-  router.use("/transaksi/*", wajibMasuk(auth));
-  router.use("/nasabah/*", wajibMasuk(auth));
+  const masuk = wajibMasuk(auth.periksaTokenAkses);
+  router.use("/transaksi/*", masuk);
+  router.use("/nasabah/*", masuk);
   return router
     .openapi(daftar, async (c) =>
       c.json(await layanan.daftar(c.get("aktor"), c.req.valid("query")), 200),

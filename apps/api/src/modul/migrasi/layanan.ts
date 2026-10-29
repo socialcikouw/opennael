@@ -1,11 +1,11 @@
 import type { HasilMigrasi, MigrasiInput, NasabahBaruInput } from "@opennael/contracts";
 import { syaratMigrasi } from "@opennael/domain";
 import { and, eq, inArray, isNull, sql } from "drizzle-orm";
-import type { Db } from "../../db/klien";
-import { nasabah, pengguna, pinjaman } from "../../db/skema";
-import { bentrok, melanggar, tidakDitemukan } from "../../galat";
-import { wajibPeran } from "../../peran";
-import type { Aktor } from "../auth/token";
+import type { Db } from "../../platform/db/klien";
+import { nasabah, pengguna, pinjaman } from "../../platform/db/skema";
+import type { Aktor } from "../../platform/http/aktor";
+import { bentrok, melanggar, tidakDitemukan } from "../../platform/http/galat";
+import { wajibPeran } from "../../platform/http/peran";
 import { bacaKalender } from "../lapangan/gerbang";
 import { daftarkanNasabahBaru, pinjamanKeBerikut } from "../lapangan/layanan";
 

@@ -1,19 +1,12 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import type { Peran } from "@opennael/contracts";
 import { sign, verify } from "hono/jwt";
+import type { Aktor } from "../../platform/http/aktor";
 
 /** Umur token akses (JWT). Pendek: pencabutan sesi berlaku paling lambat sekian. */
 export const AKSES_BERLAKU_DETIK = 15 * 60;
 /** Umur sesi perangkat; bergeser maju tiap refresh. */
 export const SESI_BERLAKU_MS = 90 * 24 * 60 * 60 * 1000;
-
-/** Siapa yang memanggil API — dibaca dari token akses. */
-export interface Aktor {
-  penggunaId: string;
-  kantorId: string;
-  peran: Peran;
-  perangkatId: string;
-}
 
 export function buatTokenAkses(rahasia: string) {
   return {

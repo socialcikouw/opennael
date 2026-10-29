@@ -1,9 +1,9 @@
 import type { AkadInput, PinjamanKartu } from "@opennael/contracts";
 import { syaratAkad } from "@opennael/domain";
 import { and, eq, inArray, sql } from "drizzle-orm";
-import { nasabah, pinjaman } from "../../../db/skema";
-import { bentrok, dilarang, melanggar, tidakDitemukan } from "../../../galat";
-import type { Aktor } from "../../auth/token";
+import { nasabah, pinjaman } from "../../../platform/db/skema";
+import type { Aktor } from "../../../platform/http/aktor";
+import { bentrok, dilarang, melanggar, tidakDitemukan } from "../../../platform/http/galat";
 import {
   daftarkanNasabahBaru,
   kartu,

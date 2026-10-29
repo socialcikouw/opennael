@@ -1,7 +1,7 @@
 import type { KartuTagih, NasabahBaruInput, PinjamanKartu } from "@opennael/contracts";
-import { kunciWilayah, rapikanNamaWilayah } from "@opennael/domain";
+import { gabungRem, kunciWilayah, rapikanNamaWilayah } from "@opennael/domain";
 import { and, eq, inArray, isNull, ne, or, sql } from "drizzle-orm";
-import type { Db } from "../../db/klien";
+import type { Db } from "../../platform/db/klien";
 import {
   foto,
   hariKolektor,
@@ -11,10 +11,9 @@ import {
   pinjaman,
   transaksi,
   wilayah,
-} from "../../db/skema";
-import { bentrok, dilarang, melanggar, tidakDitemukan } from "../../galat";
-import { gabungRem } from "../../rem";
-import type { Aktor } from "../auth/token";
+} from "../../platform/db/skema";
+import type { Aktor } from "../../platform/http/aktor";
+import { bentrok, dilarang, melanggar, tidakDitemukan } from "../../platform/http/galat";
 import type { ValidasiKalender } from "./gerbang";
 
 export const UMUR_FOTO_MS = 60 * 60 * 1000;

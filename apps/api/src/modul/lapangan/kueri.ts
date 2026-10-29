@@ -1,8 +1,8 @@
 import type { KalenderBulan, KartuTagih, NasabahLama } from "@opennael/contracts";
 import { and, asc, between, desc, eq, inArray, isNull, ne, notExists, sql } from "drizzle-orm";
-import { liburKantor, nasabah, pinjaman, ruteWilayah, wilayah } from "../../db/skema";
-import { wajibPeran } from "../../peran";
-import type { Aktor } from "../auth/token";
+import { liburKantor, nasabah, pinjaman, ruteWilayah, wilayah } from "../../platform/db/skema";
+import type { Aktor } from "../../platform/http/aktor";
+import { wajibPeran } from "../../platform/http/peran";
 import { catatanHari, hariIni, keKartu, kolomKartu, type LapanganDeps } from "./data";
 import { bacaKalender, hariTagihAntara, kalenderGerbang, VALIDASI_PENUH } from "./gerbang";
 export function buatKueriLapangan(deps: LapanganDeps) {

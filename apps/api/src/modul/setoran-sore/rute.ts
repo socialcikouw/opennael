@@ -15,13 +15,12 @@ import {
   ubahHariIniSchema,
 } from "@opennael/contracts";
 import type { ZodObject, ZodType } from "zod";
-import { buatRouter, jawabanGalat } from "../../router";
+import { aman, jawabanGalat, json } from "../../platform/http/openapi";
+import { buatRouter } from "../../platform/http/router";
+import { wajibMasuk } from "../../platform/http/wajib-masuk";
 import type { LayananAuth } from "../auth/layanan";
-import { wajibMasuk } from "../auth/wajib-masuk";
 import type { LayananSetoranSore } from "./layanan";
 
-const json = <T>(schema: T) => ({ content: { "application/json": { schema } } });
-const aman = [{ bearer: [] }];
 const tag = ["setoran sore"];
 const galat = jawabanGalat(
   [400, "Data tidak sah"],
@@ -165,6 +164,7 @@ export function ruteSetoranSore(
   auth: LayananAuth,
 ) {
   const router = buatRouter();
+  const masuk = wajibMasuk(auth.periksaTokenAkses);
   for (const jalur of [
     "/hari-kolektor",
     "/hari-kolektor/*",
@@ -175,7 +175,7 @@ export function ruteSetoranSore(
     "/biaya-tak-terduga",
     "/biaya-tak-terduga/*",
   ]) {
-    router.use(jalur, wajibMasuk(auth));
+    router.use(jalur, masuk);
   }
   return router
     .openapi(daftarHari, async (c) =>

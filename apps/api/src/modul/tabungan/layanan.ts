@@ -1,7 +1,7 @@
 import type { BatalInput, KoreksiInput, PenarikanInput } from "@opennael/contracts";
 import { hitungKoreksi, syaratPenarikan } from "@opennael/domain";
 import { and, desc, eq, ne, sql } from "drizzle-orm";
-import type { Db } from "../../db/klien";
+import type { Db } from "../../platform/db/klien";
 import {
   bukuKas,
   koreksiTabungan,
@@ -9,15 +9,15 @@ import {
   penarikanTabungan,
   pengguna,
   pinjaman,
-} from "../../db/skema";
+} from "../../platform/db/skema";
+import type { Aktor } from "../../platform/http/aktor";
 import {
   batalHanyaHariIni,
   bukuKasBelumDibuka,
   sudahDibatalkan,
   tidakDitemukan,
-} from "../../galat";
-import { wajibPeran } from "../../peran";
-import type { Aktor } from "../auth/token";
+} from "../../platform/http/galat";
+import { wajibPeran } from "../../platform/http/peran";
 import { bacaKalender } from "../lapangan/gerbang";
 
 /**

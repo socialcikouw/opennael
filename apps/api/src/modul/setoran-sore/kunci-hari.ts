@@ -1,6 +1,6 @@
 import { and, eq, isNull } from "drizzle-orm";
-import type { Db } from "../../db/klien";
-import { hariKolektor, serahTerimaKas } from "../../db/skema";
+import type { Db } from "../../platform/db/klien";
+import { hariKolektor, serahTerimaKas } from "../../platform/db/skema";
 
 /**
  * Hari kolektor itu sudah punya serah terima berlaku? (aturan-usaha I4: hari

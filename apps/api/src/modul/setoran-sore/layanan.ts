@@ -10,7 +10,7 @@ import type {
 import { batasTransfer, tekorDanLebih, tunaiSeharusnya } from "@opennael/domain";
 import { type AnyColumn, and, asc, eq, gte, isNull, lte, ne, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
-import type { Db } from "../../db/klien";
+import type { Db } from "../../platform/db/klien";
 import {
   biayaTakTerduga,
   hariKolektor,
@@ -20,7 +20,8 @@ import {
   serahTerimaKas,
   transaksi,
   transferSetoran,
-} from "../../db/skema";
+} from "../../platform/db/skema";
+import type { Aktor } from "../../platform/http/aktor";
 import {
   batalHanyaHariIni,
   bentrok,
@@ -29,10 +30,9 @@ import {
   melanggar,
   sudahDibatalkan,
   tidakDitemukan,
-} from "../../galat";
-import { wajibPeran } from "../../peran";
-import { catatRiwayat } from "../../riwayat";
-import type { Aktor } from "../auth/token";
+} from "../../platform/http/galat";
+import { wajibPeran } from "../../platform/http/peran";
+import { catatRiwayat } from "../../platform/riwayat";
 import { bacaKalender } from "../lapangan/gerbang";
 import { kasSudahDiterima } from "./kunci-hari";
 

@@ -1,10 +1,10 @@
 import { createHash } from "node:crypto";
 import { kunciIdempotenSchema } from "@opennael/contracts";
 import { and, eq, sql } from "drizzle-orm";
-import type { Db } from "../../db/klien";
-import { operasiIdempoten } from "../../db/skema";
-import { bentrok, GalatApp } from "../../galat";
-import type { Aktor } from "../../modul/auth/token";
+import type { Db } from "../db/klien";
+import { operasiIdempoten } from "../db/skema";
+import type { Aktor } from "../http/aktor";
+import { bentrok, GalatApp } from "../http/galat";
 
 /** Urutan properti JSON tidak mengubah identitas input. */
 function kanonik(isi: unknown): unknown {

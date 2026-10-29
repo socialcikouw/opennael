@@ -1,7 +1,7 @@
 import { hitungLunas } from "@opennael/domain";
 import { eq, sql } from "drizzle-orm";
-import { nasabah, pinjaman, transaksi } from "../../../db/skema";
-import type { Aktor } from "../../auth/token";
+import { nasabah, pinjaman, transaksi } from "../../../platform/db/skema";
+import type { Aktor } from "../../../platform/http/aktor";
 import {
   kolomTransaksi,
   kunciPinjaman,

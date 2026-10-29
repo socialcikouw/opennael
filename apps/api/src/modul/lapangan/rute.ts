@@ -18,13 +18,12 @@ import {
   transaksiSchema,
 } from "@opennael/contracts";
 import type { ZodType } from "zod";
-import { buatRouter, jawabanGalat } from "../../router";
+import { aman, jawabanGalat, json } from "../../platform/http/openapi";
+import { buatRouter } from "../../platform/http/router";
+import { wajibMasuk } from "../../platform/http/wajib-masuk";
 import type { LayananAuth } from "../auth/layanan";
-import { wajibMasuk } from "../auth/wajib-masuk";
 import type { LayananLapangan } from "./layanan";
 
-const json = <T>(schema: T) => ({ content: { "application/json": { schema } } });
-const aman = [{ bearer: [] }];
 const galatLapangan = jawabanGalat(
   [400, "Data tidak sah"],
   [401, "Belum masuk"],
@@ -173,7 +172,7 @@ const nasabahLama = createRoute({
 
 export function ruteLapangan(lapangan: (kunci?: string) => LayananLapangan, auth: LayananAuth) {
   const router = buatRouter();
-  router.use("/lapangan/*", wajibMasuk(auth));
+  router.use("/lapangan/*", wajibMasuk(auth.periksaTokenAkses));
   return router
     .openapi(hariIni, async (c) =>
       c.json(await lapangan(c.req.header("Idempotency-Key")).keadaanHariIni(c.get("aktor")), 200),

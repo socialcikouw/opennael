@@ -5,12 +5,12 @@ import {
   saringAktivitasSchema,
   saringRiwayatSchema,
 } from "@opennael/contracts";
-import { buatRouter, jawabanGalat } from "../../router";
+import { jawabanGalat, json } from "../../platform/http/openapi";
+import { buatRouter } from "../../platform/http/router";
+import { wajibMasuk } from "../../platform/http/wajib-masuk";
 import type { LayananAuth } from "../auth/layanan";
-import { wajibMasuk } from "../auth/wajib-masuk";
 import type { LayananAktivitas } from "./layanan";
 
-const json = <T>(schema: T) => ({ content: { "application/json": { schema } } });
 const galat = jawabanGalat(
   [400, "Data tidak sah"],
   [401, "Belum masuk"],
@@ -39,8 +39,9 @@ const riwayat = createRoute({
 
 export function ruteAktivitas(layanan: LayananAktivitas, auth: LayananAuth) {
   const router = buatRouter();
-  router.use("/aktivitas", wajibMasuk(auth));
-  router.use("/riwayat", wajibMasuk(auth));
+  const masuk = wajibMasuk(auth.periksaTokenAkses);
+  router.use("/aktivitas", masuk);
+  router.use("/riwayat", masuk);
   return router
     .openapi(aktivitas, async (c) =>
       c.json(await layanan.aktivitas(c.get("aktor"), c.req.valid("query")), 200),

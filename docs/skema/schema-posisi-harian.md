@@ -122,7 +122,7 @@ posisi modal (tanggal X) = saldo tunai buku + saldo bank buku   (rumus buku kas 
   Pinjaman yang masuk pembukuan **sesudah** hari yang ditutup (akad lewat
   tengah malam sebelum sapuan) tidak ikut dinilai maupun dipotret.
   Penjadwal berdetak tiap jam (menit ke-5) dan sekali saat server menyala
-  (`modul/tutup-hari/jadwal.ts`).
+  (`src/jadwal.ts`).
 
 ## Catatan migrasi (tidak dijalankan di sesi desain)
 

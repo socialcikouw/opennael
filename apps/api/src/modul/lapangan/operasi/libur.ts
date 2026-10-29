@@ -1,7 +1,7 @@
 import { angsuranKe, tolakLibur } from "@opennael/domain";
-import { liburNasabah } from "../../../db/skema";
-import { melanggar } from "../../../galat";
-import type { Aktor } from "../../auth/token";
+import { liburNasabah } from "../../../platform/db/skema";
+import type { Aktor } from "../../../platform/http/aktor";
+import { melanggar } from "../../../platform/http/galat";
 import { kunciPinjaman, type LapanganDeps, pastikanBelumAdaPeristiwa } from "../data";
 import { bukaGerbang, VALIDASI_PENUH } from "../gerbang";
 export function buatLibur(deps: LapanganDeps) {

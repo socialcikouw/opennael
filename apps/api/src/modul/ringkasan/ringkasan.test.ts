@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import type { Sesi } from "@opennael/contracts";
 import { geserTanggal } from "@opennael/domain";
 import { sql } from "drizzle-orm";
-import type { Db } from "../../db/klien";
+import type { Db } from "../../platform/db/klien";
 import { dalamTransaksi, siapkanKantor, URL_DB } from "../../uji/bantu";
 
 /** Pembantu data uji: pinjaman langsung lewat SQL (tanggal bebas). */

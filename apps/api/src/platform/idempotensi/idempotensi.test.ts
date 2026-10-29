@@ -1,10 +1,10 @@
 import { describe, expect, test } from "bun:test";
 import { eq, sql } from "drizzle-orm";
-import { buatDb } from "../../db/klien";
-import { pastikanDatabasePengembangan } from "../../db/penjaga";
-import { kantor, operasiIdempoten, pengguna } from "../../db/skema";
-import type { Aktor } from "../../modul/auth/token";
 import { dalamTransaksi, siapkanKantor, URL_DB } from "../../uji/bantu";
+import { buatDb } from "../db/klien";
+import { pastikanDatabasePengembangan } from "../db/penjaga";
+import { kantor, operasiIdempoten, pengguna } from "../db/skema";
+import type { Aktor } from "../http/aktor";
 import { jalankanIdempoten } from "./index";
 
 describe.skipIf(!URL_DB)("idempotensi", () => {

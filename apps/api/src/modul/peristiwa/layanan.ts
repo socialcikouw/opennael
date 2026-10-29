@@ -2,11 +2,11 @@ import type { Peristiwa, SaringPeristiwa } from "@opennael/contracts";
 import { geserTanggal, selisihHari } from "@opennael/domain";
 import { and, eq, gte, isNull, lte, type SQL } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
-import type { Db } from "../../db/klien";
-import { liburNasabah, nasabah, pengguna, pinjaman, transaksi } from "../../db/skema";
-import { dilarang, melanggar, tidakDitemukan } from "../../galat";
-import { wajibPeran } from "../../peran";
-import type { Aktor } from "../auth/token";
+import type { Db } from "../../platform/db/klien";
+import { liburNasabah, nasabah, pengguna, pinjaman, transaksi } from "../../platform/db/skema";
+import type { Aktor } from "../../platform/http/aktor";
+import { dilarang, melanggar, tidakDitemukan } from "../../platform/http/galat";
+import { wajibPeran } from "../../platform/http/peran";
 import type { LayananNasabah } from "../nasabah/layanan";
 import type { LayananPinjaman } from "../pinjaman/layanan";
 
