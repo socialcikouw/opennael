@@ -5,10 +5,10 @@ import {
   nilaiMacet,
   tanggalMasukPembukuan,
 } from "@opennael/domain";
-import { and, between, eq, inArray, isNull, lt, lte, or, sql } from "drizzle-orm";
+import { and, between, eq, inArray, isNull, lte, sql } from "drizzle-orm";
 import type { Db } from "../../../platform/db/klien";
 import { kantor, nasabah, pinjaman, posisiHarian, transaksi } from "../../../platform/db/skema";
-import { hariTagihAntara } from "../../kantor";
+import { hariTagihAntara, klaimTanggalTutup } from "../../kantor";
 
 /**
  * TUTUP HARI — sapuan tengah malam per kantor (aturan-usaha F, docs/skema/
@@ -157,17 +157,7 @@ export function buatLayananTutupHari(deps: TutupHariDeps) {
    */
   async function tutupHari(kantorId: string, tanggal: string): Promise<HasilTutupHari | null> {
     return deps.db.transaction(async (tx) => {
-      const klaim = await tx
-        .update(kantor)
-        .set({ tanggalTutupTerakhir: tanggal })
-        .where(
-          and(
-            eq(kantor.id, kantorId),
-            or(isNull(kantor.tanggalTutupTerakhir), lt(kantor.tanggalTutupTerakhir, tanggal)),
-          ),
-        )
-        .returning({ id: kantor.id });
-      if (klaim.length === 0) return null;
+      if (!(await klaimTanggalTutup(tx, kantorId, tanggal))) return null;
       // Trigger riwayat status membaca tanggal pembukuan pulih dari sini.
       await tx.execute(sql`select set_config('nael.tanggal_pembukuan', ${tanggal}, true)`);
       const macet = await nilaiSemua(tx, kantorId, tanggal);

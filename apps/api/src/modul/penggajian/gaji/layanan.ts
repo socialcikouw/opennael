@@ -22,6 +22,7 @@ import {
   tidakDitemukan,
 } from "../../../platform/http/galat";
 import { wajibPeran } from "../../../platform/http/peran";
+import { denganIdempotensi } from "../../../platform/idempotensi";
 import { bacaKalender } from "../../kantor";
 
 /**
@@ -314,3 +315,15 @@ export function buatLayananGaji(deps: GajiDeps) {
 }
 
 export type LayananGaji = ReturnType<typeof buatLayananGaji>;
+
+/**
+ * Layanan dengan operasi tulis idempoten (header `Idempotency-Key`): tiap
+ * operasi di bawah dijalankan sekali dalam satu transaksi dan hasilnya diputar
+ * ulang untuk kunci yang sama.
+ */
+export function buatLayananGajiIdempoten(deps: GajiDeps) {
+  return denganIdempotensi(deps.db, "gaji", (db) => buatLayananGaji({ ...deps, db }), [
+    "bayar",
+    "batal",
+  ]);
+}

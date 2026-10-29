@@ -32,6 +32,7 @@ import {
   tidakDitemukan,
 } from "../../../platform/http/galat";
 import { wajibPeran } from "../../../platform/http/peran";
+import { denganIdempotensi } from "../../../platform/idempotensi";
 import { catatRiwayat } from "../../../platform/riwayat";
 import { bacaKalender } from "../../kantor";
 import { kasSudahDiterima } from "./kunci-hari";
@@ -740,3 +741,26 @@ export function buatLayananSetoranSore(deps: SetoranSoreDeps) {
 }
 
 export type LayananSetoranSore = ReturnType<typeof buatLayananSetoranSore>;
+
+/**
+ * Layanan dengan operasi tulis idempoten (header `Idempotency-Key`): tiap
+ * operasi di bawah dijalankan sekali dalam satu transaksi dan hasilnya diputar
+ * ulang untuk kunci yang sama.
+ */
+export function buatLayananSetoranSoreIdempoten(deps: SetoranSoreDeps) {
+  return denganIdempotensi(
+    deps.db,
+    "setoran-sore",
+    (db) => buatLayananSetoranSore({ ...deps, db }),
+    [
+      "terimaKas",
+      "batalSerahTerima",
+      "ubahHariIni",
+      "batalLaporan",
+      "catatTransfer",
+      "batalTransfer",
+      "catatBiaya",
+      "batalBiaya",
+    ],
+  );
+}

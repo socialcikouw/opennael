@@ -1,5 +1,5 @@
-import { type SQL, sql } from "drizzle-orm";
-import { doublePrecision, type PgColumn, smallint, timestamp } from "drizzle-orm/pg-core";
+import { type AnyColumn, type SQL, sql } from "drizzle-orm";
+import { bigint, doublePrecision, type PgColumn, smallint, timestamp } from "drizzle-orm/pg-core";
 
 /** `timestamptz` — semua kolom `*_at` (konvensi #9). */
 export const waktu = () => timestamp({ withTimezone: true, mode: "date" });
@@ -36,3 +36,15 @@ export function cekLokasi(t: {
       AND ${t.latitude} BETWEEN -11 AND 6 AND ${t.longitude} BETWEEN 95 AND 141
       AND ${t.akurasiMeter} > 0)`;
 }
+
+/** Kolom uang: `bigint` rupiah tanpa pecahan (konvensi #4). */
+export const rupiah = () => bigint({ mode: "number" });
+
+/** Kolom batal terisi bersamaan atau kosong bersamaan. */
+export const cekBatal = (t: {
+  dibatalkanAt: AnyColumn;
+  dibatalkanOleh: AnyColumn;
+  alasanBatal: AnyColumn;
+}) =>
+  sql`(${t.dibatalkanAt} IS NULL AND ${t.dibatalkanOleh} IS NULL AND ${t.alasanBatal} IS NULL)
+    OR (${t.dibatalkanAt} IS NOT NULL AND ${t.dibatalkanOleh} IS NOT NULL AND ${t.alasanBatal} IS NOT NULL)`;

@@ -60,15 +60,21 @@ Di `apps/api`:
    lewat migrasi baru.
 4. `bun run db:migrate` (Supabase dev; `.env` di `apps/api`).
 
-## 4. Uji skema — `apps/api/src/platform/db/skema.test.ts`
+## 4. Uji skema — `apps/api/src/platform/db/skema/<tabel>.test.ts`
 
-Tambahkan bagian untuk tabel itu di dalam transaksi yang dibatalkan (pola
-`tolak(tx, "<nama_constraint>", (sp) => sp\`...\`)` yang sudah ada):
+Berkas `<tabel>.test.ts` di sebelah skemanya (tabel yang selalu diuji bersama
+tabel induknya boleh di berkas tabel utamanya). Pembantu `tolak`, `Batalkan`,
+dan `Tx` dari `apps/api/src/uji/skema.ts`; semuanya di dalam transaksi yang
+dibatalkan (pola `tolak(tx, "<nama_constraint>", (sp) => sp\`...\`)` yang sudah
+ada):
 
 - satu sisipan sah;
 - **setiap** CHECK, UNIQUE, FK (termasuk FK gabungan lintas kantor), dan
   trigger dibuktikan menolak data salah dengan nama constraint yang tepat;
 - jalan pintas yang sah (`nael.migrasi_data`, `nael.hapus_data_uji`) bila ada.
+
+Lalu catat konteks pemilik tabel itu di tabel kepemilikan
+`docs/arsitektur/struktur.md` §4.2 (kelak juga peta `scripts/cek-arsitektur.ts`).
 
 Sesudahnya pastikan database dev kembali bersih (hitung baris tabel itu = 0).
 

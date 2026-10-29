@@ -1,6 +1,5 @@
 import { sql } from "drizzle-orm";
 import {
-  bigint,
   check,
   date,
   foreignKey,
@@ -10,11 +9,9 @@ import {
   primaryKey,
   uuid,
 } from "drizzle-orm/pg-core";
-import { waktu } from "./kolom";
+import { rupiah, waktu } from "./kolom";
 import { pengguna } from "./pengguna";
 import { jenisPinjamanEnum } from "./pinjaman";
-
-const rupiah = () => bigint({ mode: "number" });
 
 /**
  * POSISI HARIAN — potret portofolio satu kolektor (pemegang) untuk satu jenis

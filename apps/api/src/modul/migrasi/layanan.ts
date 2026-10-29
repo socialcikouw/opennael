@@ -1,13 +1,14 @@
 import type { HasilMigrasi, MigrasiInput, NasabahBaruInput } from "@opennael/contracts";
 import { syaratMigrasi } from "@opennael/domain";
-import { and, eq, inArray, isNull, sql } from "drizzle-orm";
+import { and, eq, inArray, isNull } from "drizzle-orm";
 import type { Db } from "../../platform/db/klien";
 import { nasabah, pengguna, pinjaman } from "../../platform/db/skema";
 import type { Aktor } from "../../platform/http/aktor";
 import { bentrok, melanggar, tidakDitemukan } from "../../platform/http/galat";
 import { wajibPeran } from "../../platform/http/peran";
+import { denganIdempotensi } from "../../platform/idempotensi";
 import { bacaKalender } from "../kantor";
-import { daftarkanNasabahBaru, pinjamanKeBerikut } from "../pembiayaan";
+import { daftarkanNasabahBaru, pinjamanKeBerikut, salinPinjaman } from "../pembiayaan";
 
 /**
  * SALINAN MIGRASI (bos, aturan-usaha A10) — pinjaman yang masih berjalan di
@@ -100,44 +101,19 @@ export function buatLayananMigrasi(deps: MigrasiDeps) {
             `Nomor pinjaman ${pinjamanKe} sudah terpakai — paling kecil ${berikut}`,
           );
         }
-        const status = input.macet ? ("macet" as const) : ("berjalan" as const);
-
-        const [p] = await tx
-          .insert(pinjaman)
-          .values({
-            kantorId: aktor.kantorId,
-            pencairId: kolektorId,
-            dibuatOleh: aktor.penggunaId,
-            nasabahId,
-            pinjamanKe,
-            jenis: syarat.jenis,
-            tenor: syarat.tenor,
-            asal: "migrasi",
-            tanggalAkad: input.tanggalAkad,
-            tanggalDisalin: tanggal,
-            tanggalMacet: input.macet ? tanggal : null,
-            pokok: syarat.pokok,
-            potonganAdmin: 0,
-            tabunganMasuk: syarat.tabunganMasuk,
-            pencairan: 0,
-            totalKembali: syarat.totalKembali,
-            angsuran: syarat.angsuran,
-            saldoAwal: syarat.saldoAwal,
-            dropBaru: 0,
-            saldo: syarat.saldoAwal,
-            status,
-          })
-          .returning({ id: pinjaman.id });
-        if (!p) throw new Error("gagal menyalin pinjaman");
-        const [n] = await tx
-          .update(nasabah)
-          .set({ saldoTabungan: sql`${nasabah.saldoTabungan} + ${syarat.tabunganMasuk}` })
-          .where(eq(nasabah.id, nasabahId))
-          .returning({ nama: nasabah.nama });
+        const salinan = await salinPinjaman(tx, aktor, {
+          kolektorId,
+          nasabahId,
+          pinjamanKe,
+          syarat,
+          tanggalAkad: input.tanggalAkad,
+          tanggalDisalin: tanggal,
+          macet: Boolean(input.macet),
+        });
 
         return {
-          id: p.id,
-          nasabah: { id: nasabahId, nama: n?.nama ?? "", baru },
+          id: salinan.id,
+          nasabah: { id: nasabahId, nama: salinan.namaNasabah, baru },
           kolektor: { id: kolektorId, nama: k.nama },
           pinjamanKe,
           jenis: syarat.jenis,
@@ -148,7 +124,7 @@ export function buatLayananMigrasi(deps: MigrasiDeps) {
           angsuranKe: syarat.angsuranKe,
           saldo: syarat.saldoAwal,
           tabunganMasuk: syarat.tabunganMasuk,
-          status,
+          status: salinan.status,
           tanggalAkad: input.tanggalAkad,
           tanggalDisalin: tanggal,
         };
@@ -158,3 +134,14 @@ export function buatLayananMigrasi(deps: MigrasiDeps) {
 }
 
 export type LayananMigrasi = ReturnType<typeof buatLayananMigrasi>;
+
+/**
+ * Layanan dengan operasi tulis idempoten (header `Idempotency-Key`): tiap
+ * operasi di bawah dijalankan sekali dalam satu transaksi dan hasilnya diputar
+ * ulang untuk kunci yang sama.
+ */
+export function buatLayananMigrasiIdempoten(deps: MigrasiDeps) {
+  return denganIdempotensi(deps.db, "migrasi", (db) => buatLayananMigrasi({ ...deps, db }), [
+    "salin",
+  ]);
+}

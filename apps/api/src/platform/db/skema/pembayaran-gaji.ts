@@ -1,19 +1,9 @@
 import { sql } from "drizzle-orm";
-import {
-  bigint,
-  check,
-  date,
-  foreignKey,
-  index,
-  pgTable,
-  uuid,
-  varchar,
-} from "drizzle-orm/pg-core";
-import { akunKasEnum, bukuKas } from "./kas";
-import { waktu } from "./kolom";
+import { check, date, foreignKey, index, pgTable, uuid, varchar } from "drizzle-orm/pg-core";
+import { bukuKas } from "./buku-kas";
+import { rupiah, waktu } from "./kolom";
+import { akunKasEnum } from "./mutasi-kas-kantor";
 import { pengguna } from "./pengguna";
-
-const rupiah = () => bigint({ mode: "number" });
 
 /**
  * PEMBAYARAN GAJI — gaji seorang kolektor untuk satu periode yang sudah

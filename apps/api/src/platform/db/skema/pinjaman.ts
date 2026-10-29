@@ -1,6 +1,5 @@
 import { sql } from "drizzle-orm";
 import {
-  bigint,
   check,
   date,
   foreignKey,
@@ -15,7 +14,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { foto } from "./foto";
 import { kantor } from "./kantor";
-import { jejakWaktu, waktu } from "./kolom";
+import { jejakWaktu, rupiah, waktu } from "./kolom";
 import { nasabah } from "./nasabah";
 import { pengguna } from "./pengguna";
 
@@ -35,8 +34,6 @@ export const alasanPemutihanEnum = pgEnum("alasan_pemutihan", [
   "meninggal",
   "lainnya",
 ]);
-
-const rupiah = () => bigint({ mode: "number" });
 
 /**
  * PINJAMAN — satu akad. Syarat akad (pokok, potongan, pencairan, total,

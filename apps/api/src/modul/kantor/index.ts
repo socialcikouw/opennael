@@ -12,6 +12,8 @@ export { kolomRem, remBerlaku } from "./kebijakan/data";
 export { buatLayananKebijakan } from "./kebijakan/layanan";
 export { ruteKebijakan } from "./kebijakan/rute";
 export { buatLayananProfil } from "./profil/layanan";
+export { aturPekanKerjaAwal, bukaKantor } from "./profil/operasi/buka-kantor";
+export { klaimTanggalTutup } from "./profil/operasi/klaim-tanggal-tutup";
 export { ruteProfil } from "./profil/rute";
 export { pastikanWilayah } from "./wilayah/data";
 export { buatLayananWilayah } from "./wilayah/layanan";

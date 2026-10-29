@@ -3,9 +3,9 @@ import { createRoute } from "@hono/zod-openapi";
 import { sehatSchema } from "@opennael/contracts";
 import { Scalar } from "@scalar/hono-api-reference";
 import {
-  buatLayananAbsensi,
+  buatLayananAbsensiIdempoten,
   buatLayananRute,
-  buatLayananSetoranSore,
+  buatLayananSetoranSoreIdempoten,
   ruteAbsensi,
   ruteRuteKolektor,
   ruteSetoranSore,
@@ -31,8 +31,8 @@ import {
   ruteWilayah,
   type ValidasiKalender,
 } from "./modul/kantor";
-import { buatLayananKas, ruteKas } from "./modul/kas";
-import { buatLayananMigrasi, ruteMigrasi } from "./modul/migrasi";
+import { buatLayananKasIdempoten, ruteKas } from "./modul/kas";
+import { buatLayananMigrasiIdempoten, ruteMigrasi } from "./modul/migrasi";
 import {
   buatLayananAktivitas,
   buatLayananRingkasan,
@@ -40,14 +40,14 @@ import {
   ruteRingkasan,
 } from "./modul/pelaporan";
 import {
-  buatLayananAkad,
+  buatLayananAkadIdempoten,
   buatLayananFoto,
   buatLayananNasabah,
-  buatLayananPembatalan,
+  buatLayananPembatalanIdempoten,
   buatLayananPemutihan,
-  buatLayananPeristiwa,
+  buatLayananPeristiwaIdempoten,
   buatLayananPinjaman,
-  buatLayananTabungan,
+  buatLayananTabunganIdempoten,
   ruteAkad,
   ruteFoto,
   ruteNasabah,
@@ -57,12 +57,16 @@ import {
   rutePinjaman,
   ruteTabungan,
 } from "./modul/pembiayaan";
-import { buatLayananGaji, buatLayananTarif, ruteGaji, ruteTarif } from "./modul/penggajian";
+import {
+  buatLayananGajiIdempoten,
+  buatLayananTarif,
+  ruteGaji,
+  ruteTarif,
+} from "./modul/penggajian";
 import type { Db } from "./platform/db/klien";
 import { BATAS_BAWAAN, type BatasPercobaan } from "./platform/http/batas";
 import { tanganiGalat } from "./platform/http/galat";
 import { buatRouter } from "./platform/http/router";
-import { denganIdempotensi } from "./platform/idempotensi";
 import { type Penyimpanan, penyimpananDisk } from "./platform/penyimpanan";
 
 const sehat = createRoute({
@@ -104,89 +108,34 @@ export function buatApp(deps: AppDeps) {
   const auth = buatLayananAuth(deps);
   const periksa = auth.periksaTokenAkses;
   const tautan = buatLayananTautan({ db: deps.db, auth, sekarang: deps.sekarang });
-  // Nama operasi idempoten tetap "lapangan" supaya kunci yang beredar tetap berlaku.
-  const gerbang = (db: Db) => ({
-    db,
-    sekarang: deps.sekarang,
-    validasiKalender: deps.validasiKalender,
-  });
-  const absensi = denganIdempotensi(deps.db, "lapangan", (db) => buatLayananAbsensi(gerbang(db)), [
-    "absen",
-    "bukaLaporan",
-  ]);
-  const akad = denganIdempotensi(deps.db, "lapangan", (db) => buatLayananAkad(gerbang(db)), [
-    "akad",
-    "gulung",
-  ]);
-  const setoranSore = denganIdempotensi(
-    deps.db,
-    "setoran-sore",
-    (db) => buatLayananSetoranSore({ db, sekarang: deps.sekarang }),
-    [
-      "terimaKas",
-      "batalSerahTerima",
-      "ubahHariIni",
-      "batalLaporan",
-      "catatTransfer",
-      "batalTransfer",
-      "catatBiaya",
-      "batalBiaya",
-    ],
-  );
-  const kas = denganIdempotensi(
-    deps.db,
-    "kas",
-    (db) => buatLayananKas({ db, sekarang: deps.sekarang }),
-    ["bukaKas", "ubahKasAwal", "catatMutasi", "batalMutasi", "cocokkan", "batalPencocokan"],
-  );
-  const gaji = denganIdempotensi(
-    deps.db,
-    "gaji",
-    (db) => buatLayananGaji({ db, sekarang: deps.sekarang }),
-    ["bayar", "batal"],
-  );
-  const pembatalan = denganIdempotensi(
-    deps.db,
-    "pembatalan",
-    (db) => buatLayananPembatalan({ db, sekarang: deps.sekarang }),
-    ["batalTransaksi", "batalAkad", "hapusLibur"],
-  );
-  const pemutihan = buatLayananPemutihan({ db: deps.db, sekarang: deps.sekarang });
-  const penggunaKantor = buatLayananPengguna({ db: deps.db, sekarang: deps.sekarang });
+  const sekarang = deps.sekarang;
+  const gerbang = { db: deps.db, sekarang, validasiKalender: deps.validasiKalender };
+  const absensi = buatLayananAbsensiIdempoten(gerbang);
+  const akad = buatLayananAkadIdempoten(gerbang);
+  const setoranSore = buatLayananSetoranSoreIdempoten({ db: deps.db, sekarang });
+  const kas = buatLayananKasIdempoten({ db: deps.db, sekarang });
+  const gaji = buatLayananGajiIdempoten({ db: deps.db, sekarang });
+  const pembatalan = buatLayananPembatalanIdempoten({ db: deps.db, sekarang });
+  const pemutihan = buatLayananPemutihan({ db: deps.db, sekarang });
+  const penggunaKantor = buatLayananPengguna({ db: deps.db, sekarang });
   const nasabahKantor = buatLayananNasabah({ db: deps.db });
-  const pinjamanKantor = buatLayananPinjaman({ db: deps.db, sekarang: deps.sekarang });
-  const kampung = buatLayananWilayah({ db: deps.db, sekarang: deps.sekarang });
-  const perangkatMasuk = buatLayananPerangkat({ db: deps.db, sekarang: deps.sekarang });
-  const peristiwa = denganIdempotensi(
-    deps.db,
-    "lapangan",
-    (db) =>
-      buatLayananPeristiwa({
-        ...gerbang(db),
-        nasabah: nasabahKantor,
-        pinjaman: pinjamanKantor,
-      }),
-    ["bayar", "lunas", "libur"],
-  );
-  const profil = buatLayananProfil({ db: deps.db, sekarang: deps.sekarang });
-  const kalender = buatLayananKalender({ db: deps.db, sekarang: deps.sekarang });
+  const pinjamanKantor = buatLayananPinjaman({ db: deps.db, sekarang });
+  const kampung = buatLayananWilayah({ db: deps.db, sekarang });
+  const perangkatMasuk = buatLayananPerangkat({ db: deps.db, sekarang });
+  const peristiwa = buatLayananPeristiwaIdempoten({
+    ...gerbang,
+    nasabah: nasabahKantor,
+    pinjaman: pinjamanKantor,
+  });
+  const profil = buatLayananProfil({ db: deps.db, sekarang });
+  const kalender = buatLayananKalender({ db: deps.db, sekarang });
   const kebijakan = buatLayananKebijakan({ db: deps.db });
-  const tarif = buatLayananTarif({ db: deps.db, sekarang: deps.sekarang });
-  const ringkasan = buatLayananRingkasan({ db: deps.db, sekarang: deps.sekarang });
+  const tarif = buatLayananTarif({ db: deps.db, sekarang });
+  const ringkasan = buatLayananRingkasan({ db: deps.db, sekarang });
   const rute = buatLayananRute({ db: deps.db });
-  const migrasi = denganIdempotensi(
-    deps.db,
-    "migrasi",
-    (db) => buatLayananMigrasi({ db, sekarang: deps.sekarang }),
-    ["salin"],
-  );
-  const aktivitas = buatLayananAktivitas({ db: deps.db, sekarang: deps.sekarang });
-  const tabungan = denganIdempotensi(
-    deps.db,
-    "tabungan",
-    (db) => buatLayananTabungan({ db, sekarang: deps.sekarang }),
-    ["tarik", "batalPenarikan", "koreksi"],
-  );
+  const migrasi = buatLayananMigrasiIdempoten({ db: deps.db, sekarang });
+  const aktivitas = buatLayananAktivitas({ db: deps.db, sekarang });
+  const tabungan = buatLayananTabunganIdempoten({ db: deps.db, sekarang });
   const foto = buatLayananFoto({
     db: deps.db,
     penyimpanan:

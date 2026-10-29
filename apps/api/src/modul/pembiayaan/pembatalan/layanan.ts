@@ -7,7 +7,6 @@ import {
   pinjaman,
   riwayatStatusPinjaman,
   transaksi,
-  transferSetoran,
 } from "../../../platform/db/skema";
 import type { Aktor } from "../../../platform/http/aktor";
 import {
@@ -18,8 +17,9 @@ import {
   tidakDitemukan,
 } from "../../../platform/http/galat";
 import { wajibPeran } from "../../../platform/http/peran";
+import { denganIdempotensi } from "../../../platform/idempotensi";
 import { catatRiwayat } from "../../../platform/riwayat";
-import { kasSudahDiterima } from "../../hari-kolektor/setoran-sore/kunci-hari";
+import { batalTransferTransaksi, kasSudahDiterima } from "../../hari-kolektor";
 import { bacaKalender } from "../../kantor";
 
 /**
@@ -176,11 +176,7 @@ export function buatLayananPembatalan(deps: PembatalanDeps) {
           .update(transaksi)
           .set(tandaBatal(aktor, input.alasan))
           .where(eq(transaksi.id, t.id));
-        const transfer = await tx
-          .update(transferSetoran)
-          .set(tandaBatal(aktor, "transaksi dibatalkan"))
-          .where(and(eq(transferSetoran.transaksiId, t.id), isNull(transferSetoran.dibatalkanAt)))
-          .returning({ id: transferSetoran.id });
+        const transferDibatalkan = await batalTransferTransaksi(tx, aktor, t.id, sekarang());
 
         const kembali =
           t.jenis === "angsuran"
@@ -201,7 +197,7 @@ export function buatLayananPembatalan(deps: PembatalanDeps) {
           alasanBatal: input.alasan,
           pinjaman: sesudah,
           penerusDibatalkanId,
-          transferDibatalkan: transfer.length,
+          transferDibatalkan,
         };
       });
     },
@@ -296,3 +292,16 @@ export function buatLayananPembatalan(deps: PembatalanDeps) {
 }
 
 export type LayananPembatalan = ReturnType<typeof buatLayananPembatalan>;
+
+/**
+ * Layanan dengan operasi tulis idempoten (header `Idempotency-Key`): tiap
+ * operasi di bawah dijalankan sekali dalam satu transaksi dan hasilnya diputar
+ * ulang untuk kunci yang sama.
+ */
+export function buatLayananPembatalanIdempoten(deps: PembatalanDeps) {
+  return denganIdempotensi(deps.db, "pembatalan", (db) => buatLayananPembatalan({ ...deps, db }), [
+    "batalTransaksi",
+    "batalAkad",
+    "hapusLibur",
+  ]);
+}

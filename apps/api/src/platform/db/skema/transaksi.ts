@@ -1,6 +1,5 @@
 import { sql } from "drizzle-orm";
 import {
-  bigint,
   check,
   date,
   foreignKey,
@@ -12,13 +11,11 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { kantor } from "./kantor";
-import { waktu } from "./kolom";
+import { rupiah, waktu } from "./kolom";
 import { pengguna } from "./pengguna";
 import { pinjaman } from "./pinjaman";
 
 export const jenisTransaksiEnum = pgEnum("jenis_transaksi", ["angsuran", "pelunasan", "gulung"]);
-
-const rupiah = () => bigint({ mode: "number" });
 
 /**
  * TRANSAKSI — satu peristiwa uang atas satu pinjaman pada satu hari. HANYA

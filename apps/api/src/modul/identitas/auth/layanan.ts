@@ -1,17 +1,14 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 import type { LoginInput, Profil, RegistrasiInput, Sesi } from "@opennael/contracts";
-import { and, eq, isNull, sql } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 import type { Db } from "../../../platform/db/klien";
-import { kantor, pekanKerja, pengguna, perangkat, tarifGaji } from "../../../platform/db/skema";
+import { kantor, pengguna, perangkat } from "../../../platform/db/skema";
 import type { Aktor } from "../../../platform/http/aktor";
 import { bentrok, dilarang, galatPostgres, tidakSah } from "../../../platform/http/galat";
+import { aturPekanKerjaAwal, bukaKantor } from "../../kantor";
+import { aturTarifAwal } from "../../penggajian";
 import { cocokSandi, hashSandi, samakanWaktu } from "./sandi";
 import { AKSES_BERLAKU_DETIK, buatTokenAkses, buatTokenSegar, SESI_BERLAKU_MS } from "./token";
-
-/** Pekan kerja pertama setiap kantor: Senin–Sabtu. */
-const HARI_KERJA_AWAL = 126;
-/** Tarif gaji kantor pertama: 5% storting (docs/skema/schema-tarif-gaji.md). */
-const TARIF_AWAL_BP = 500;
 
 type InfoPerangkat = RegistrasiInput["perangkat"];
 
@@ -117,11 +114,7 @@ export function buatLayananAuth(deps: AuthDeps) {
       const hash = await hashSandi(input.sandi);
       try {
         return await deps.db.transaction(async (tx) => {
-          const [k] = await tx
-            .insert(kantor)
-            .values({ nama: input.namaKantor, zonaWaktu: input.zonaWaktu })
-            .returning({ id: kantor.id });
-          if (!k) throw new Error("gagal membuat kantor");
+          const k = await bukaKantor(tx, { nama: input.namaKantor, zonaWaktu: input.zonaWaktu });
           const [bos] = await tx
             .insert(pengguna)
             .values({
@@ -133,19 +126,8 @@ export function buatLayananAuth(deps: AuthDeps) {
             })
             .returning({ id: pengguna.id, kantorId: pengguna.kantorId, peran: pengguna.peran });
           if (!bos) throw new Error("gagal membuat akun bos");
-          const hariIni = sql`kantor_hari_ini(${k.id})`;
-          await tx.insert(pekanKerja).values({
-            kantorId: k.id,
-            berlakuMulai: hariIni,
-            hariKerja: HARI_KERJA_AWAL,
-            dibuatOleh: bos.id,
-          });
-          await tx.insert(tarifGaji).values({
-            kantorId: k.id,
-            tarifBp: TARIF_AWAL_BP,
-            berlakuMulai: hariIni,
-            dibuatOleh: bos.id,
-          });
+          await aturPekanKerjaAwal(tx, k.id, bos.id);
+          await aturTarifAwal(tx, k.id, bos.id);
           return (await mulaiSesi(tx, bos, input.perangkat)).sesi;
         });
       } catch (e) {

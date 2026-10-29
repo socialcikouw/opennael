@@ -18,6 +18,7 @@ import {
   tidakDitemukan,
 } from "../../../platform/http/galat";
 import { wajibPeran } from "../../../platform/http/peran";
+import { denganIdempotensi } from "../../../platform/idempotensi";
 import { bacaKalender } from "../../kantor";
 
 /**
@@ -259,3 +260,16 @@ export function buatLayananTabungan(deps: TabunganDeps) {
 }
 
 export type LayananTabungan = ReturnType<typeof buatLayananTabungan>;
+
+/**
+ * Layanan dengan operasi tulis idempoten (header `Idempotency-Key`): tiap
+ * operasi di bawah dijalankan sekali dalam satu transaksi dan hasilnya diputar
+ * ulang untuk kunci yang sama.
+ */
+export function buatLayananTabunganIdempoten(deps: TabunganDeps) {
+  return denganIdempotensi(deps.db, "tabungan", (db) => buatLayananTabungan({ ...deps, db }), [
+    "tarik",
+    "batalPenarikan",
+    "koreksi",
+  ]);
+}

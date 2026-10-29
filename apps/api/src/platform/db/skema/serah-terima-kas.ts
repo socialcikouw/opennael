@@ -1,18 +1,8 @@
 import { sql } from "drizzle-orm";
-import {
-  bigint,
-  check,
-  foreignKey,
-  pgTable,
-  uniqueIndex,
-  uuid,
-  varchar,
-} from "drizzle-orm/pg-core";
+import { check, foreignKey, pgTable, uniqueIndex, uuid, varchar } from "drizzle-orm/pg-core";
 import { hariKolektor } from "./hari-kolektor";
-import { waktu } from "./kolom";
+import { rupiah, waktu } from "./kolom";
 import { pengguna } from "./pengguna";
-
-const rupiah = () => bigint({ mode: "number" });
 
 /**
  * SERAH TERIMA KAS — kantor menerima uang tunai seorang kolektor untuk satu

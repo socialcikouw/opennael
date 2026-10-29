@@ -1,2 +1,2 @@
-export { buatLayananKas } from "./layanan";
+export { buatLayananKasIdempoten } from "./layanan";
 export { ruteKas } from "./rute";

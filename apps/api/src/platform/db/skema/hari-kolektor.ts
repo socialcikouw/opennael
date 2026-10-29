@@ -1,6 +1,5 @@
 import { sql } from "drizzle-orm";
 import {
-  bigint,
   check,
   date,
   foreignKey,
@@ -12,12 +11,10 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { kantor } from "./kantor";
-import { jejakWaktu, waktu } from "./kolom";
+import { jejakWaktu, rupiah, waktu } from "./kolom";
 import { pengguna } from "./pengguna";
 
 export const statusAbsensiEnum = pgEnum("status_absensi", ["masuk_kerja", "tidak_kerja"]);
-
-const rupiah = () => bigint({ mode: "number" });
 
 /**
  * HARI KOLEKTOR — satu kolektor pada satu hari: absensi pagi, dana yang

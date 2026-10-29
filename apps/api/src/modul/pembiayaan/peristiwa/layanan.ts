@@ -6,6 +6,7 @@ import { liburNasabah, nasabah, pengguna, pinjaman, transaksi } from "../../../p
 import type { Aktor } from "../../../platform/http/aktor";
 import { dilarang, melanggar, tidakDitemukan } from "../../../platform/http/galat";
 import { wajibPeran } from "../../../platform/http/peran";
+import { denganIdempotensi } from "../../../platform/idempotensi";
 import type { GerbangDeps } from "../../hari-kolektor";
 import type { LayananNasabah } from "../nasabah/layanan";
 import type { LayananPinjaman } from "../pinjaman/layanan";
@@ -262,3 +263,17 @@ export function buatLayananPeristiwa(deps: PeristiwaDeps) {
 }
 
 export type LayananPeristiwa = ReturnType<typeof buatLayananPeristiwa>;
+
+/**
+ * Layanan dengan operasi tulis idempoten (header `Idempotency-Key`): tiap
+ * operasi di bawah dijalankan sekali dalam satu transaksi dan hasilnya diputar
+ * ulang untuk kunci yang sama.
+ * Nama operasi tersimpan tetap "lapangan/<metode>" (kunci yang beredar tetap berlaku).
+ */
+export function buatLayananPeristiwaIdempoten(deps: PeristiwaDeps) {
+  return denganIdempotensi(deps.db, "lapangan", (db) => buatLayananPeristiwa({ ...deps, db }), [
+    "bayar",
+    "lunas",
+    "libur",
+  ]);
+}
