@@ -21,8 +21,7 @@ import {
 import type { ZodType } from "zod";
 import { aman, jawabanGalat, json } from "../../platform/http/openapi";
 import { buatRouter } from "../../platform/http/router";
-import { wajibMasuk } from "../../platform/http/wajib-masuk";
-import type { LayananAuth } from "../auth/layanan";
+import { type PeriksaTokenAkses, wajibMasuk } from "../../platform/http/wajib-masuk";
 import type { LayananPengaturan } from "./layanan";
 
 const tag = ["pengaturan"];
@@ -171,9 +170,9 @@ const aturTarif = tulis(
   tarifSchema,
 );
 
-export function rutePengaturan(layanan: LayananPengaturan, auth: LayananAuth) {
+export function rutePengaturan(layanan: LayananPengaturan, periksa: PeriksaTokenAkses) {
   const router = buatRouter();
-  const masuk = wajibMasuk(auth.periksaTokenAkses);
+  const masuk = wajibMasuk(periksa);
   for (const jalur of [
     "/kantor",
     "/kantor/*",

@@ -20,8 +20,7 @@ import {
 import type { ZodType } from "zod";
 import { aman, jawabanGalat, json } from "../../platform/http/openapi";
 import { buatRouter } from "../../platform/http/router";
-import { wajibMasuk } from "../../platform/http/wajib-masuk";
-import type { LayananAuth } from "../auth/layanan";
+import { type PeriksaTokenAkses, wajibMasuk } from "../../platform/http/wajib-masuk";
 import type { LayananLapangan } from "./layanan";
 
 const galatLapangan = jawabanGalat(
@@ -170,9 +169,12 @@ const nasabahLama = createRoute({
   },
 });
 
-export function ruteLapangan(lapangan: (kunci?: string) => LayananLapangan, auth: LayananAuth) {
+export function ruteLapangan(
+  lapangan: (kunci?: string) => LayananLapangan,
+  periksa: PeriksaTokenAkses,
+) {
   const router = buatRouter();
-  router.use("/lapangan/*", wajibMasuk(auth.periksaTokenAkses));
+  router.use("/lapangan/*", wajibMasuk(periksa));
   return router
     .openapi(hariIni, async (c) =>
       c.json(await lapangan(c.req.header("Idempotency-Key")).keadaanHariIni(c.get("aktor")), 200),

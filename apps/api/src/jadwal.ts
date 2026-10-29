@@ -1,5 +1,5 @@
 import { Cron } from "croner";
-import { buatLayananTutupHari, type LayananTutupHari } from "./modul/tutup-hari/layanan";
+import { buatLayananTutupHari, type LayananTutupHari } from "./modul/pembiayaan";
 import type { Db } from "./platform/db/klien";
 
 /**

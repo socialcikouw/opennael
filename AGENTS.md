@@ -143,8 +143,11 @@ memantau `.env`**: sesudah mengubahnya, matikan lalu nyalakan ulang
 
 ### Catatan Hono
 
-- **Rute dipecah per modul** (`kantor`, `pengguna`, `pinjaman`, …) dan klien
-  RPC dibuat per modul — satu tipe gabungan raksasa memperlambat `tsc`.
+- **Rute dipecah per konteks dan submodul** (`modul/<konteks>/<submodul>/rute.ts`;
+  konteks lain hanya diimpor lewat `modul/<konteks>/index.ts`) dan klien RPC
+  dibuat per modul — satu tipe gabungan raksasa memperlambat `tsc`. Pembantu
+  definisi rute (`json`, `aman`, `jawabanGalat`) ada sekali di
+  `platform/http/openapi.ts`; pemeriksa token disuntik ke `wajibMasuk`.
 - **Bentuk data tetap di `packages/contracts`** (Zod); rute Hono memakainya,
   bukan mendefinisikan ulang.
 - **Tipe untuk klien `hc` = berkas deklarasi**: `apps/api` menghasilkan

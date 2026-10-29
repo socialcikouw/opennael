@@ -16,8 +16,7 @@ import {
 import type { ZodType } from "zod";
 import { aman, jawabanGalat, json } from "../../platform/http/openapi";
 import { buatRouter } from "../../platform/http/router";
-import { wajibMasuk } from "../../platform/http/wajib-masuk";
-import type { LayananAuth } from "../auth/layanan";
+import { type PeriksaTokenAkses, wajibMasuk } from "../../platform/http/wajib-masuk";
 import type { LayananKas } from "./layanan";
 
 const tag = ["kas kantor"];
@@ -131,9 +130,9 @@ const daftarPencocokan = createRoute({
   },
 });
 
-export function ruteKas(kas: (kunci?: string) => LayananKas, auth: LayananAuth) {
+export function ruteKas(kas: (kunci?: string) => LayananKas, periksa: PeriksaTokenAkses) {
   const router = buatRouter();
-  router.use("/kas/*", wajibMasuk(auth.periksaTokenAkses));
+  router.use("/kas/*", wajibMasuk(periksa));
   return router
     .openapi(buka, async (c) =>
       c.json(

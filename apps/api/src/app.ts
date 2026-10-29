@@ -2,49 +2,53 @@ import { fileURLToPath } from "node:url";
 import { createRoute } from "@hono/zod-openapi";
 import { sehatSchema } from "@opennael/contracts";
 import { Scalar } from "@scalar/hono-api-reference";
-import { buatLayananAktivitas } from "./modul/aktivitas/layanan";
-import { ruteAktivitas } from "./modul/aktivitas/rute";
-import { buatLayananAuth } from "./modul/auth/layanan";
-import { ruteAuth } from "./modul/auth/rute";
-import { buatLayananFoto } from "./modul/foto/layanan";
-import { ruteFoto } from "./modul/foto/rute";
-import { buatLayananGaji } from "./modul/gaji/layanan";
-import { ruteGaji } from "./modul/gaji/rute";
-import { buatLayananKas } from "./modul/kas/layanan";
-import { ruteKas } from "./modul/kas/rute";
+import {
+  buatLayananRute,
+  buatLayananSetoranSore,
+  ruteRuteKolektor,
+  ruteSetoranSore,
+} from "./modul/hari-kolektor";
+import {
+  buatLayananAuth,
+  buatLayananPengguna,
+  buatLayananPerangkat,
+  buatLayananTautan,
+  ruteAuth,
+  rutePengguna,
+  rutePerangkat,
+  ruteTautan,
+} from "./modul/identitas";
+import { buatLayananWilayah, ruteWilayah } from "./modul/kantor";
+import { buatLayananKas, ruteKas } from "./modul/kas";
 import type { ValidasiKalender } from "./modul/lapangan/gerbang";
 import { buatLayananLapangan } from "./modul/lapangan/layanan";
 import { ruteLapangan } from "./modul/lapangan/rute";
-import { buatLayananMigrasi } from "./modul/migrasi/layanan";
-import { ruteMigrasi } from "./modul/migrasi/rute";
-import { buatLayananNasabah } from "./modul/nasabah/layanan";
-import { ruteNasabah } from "./modul/nasabah/rute";
-import { buatLayananPembatalan } from "./modul/pembatalan/layanan";
-import { rutePembatalan } from "./modul/pembatalan/rute";
-import { buatLayananPemutihan } from "./modul/pemutihan/layanan";
-import { rutePemutihan } from "./modul/pemutihan/rute";
+import { buatLayananMigrasi, ruteMigrasi } from "./modul/migrasi";
+import {
+  buatLayananAktivitas,
+  buatLayananRingkasan,
+  ruteAktivitas,
+  ruteRingkasan,
+} from "./modul/pelaporan";
+import {
+  buatLayananFoto,
+  buatLayananNasabah,
+  buatLayananPembatalan,
+  buatLayananPemutihan,
+  buatLayananPeristiwa,
+  buatLayananPinjaman,
+  buatLayananTabungan,
+  ruteFoto,
+  ruteNasabah,
+  rutePembatalan,
+  rutePemutihan,
+  rutePeristiwa,
+  rutePinjaman,
+  ruteTabungan,
+} from "./modul/pembiayaan";
 import { buatLayananPengaturan } from "./modul/pengaturan/layanan";
 import { rutePengaturan } from "./modul/pengaturan/rute";
-import { buatLayananPengguna } from "./modul/pengguna/layanan";
-import { rutePengguna } from "./modul/pengguna/rute";
-import { buatLayananPerangkat } from "./modul/perangkat/layanan";
-import { rutePerangkat } from "./modul/perangkat/rute";
-import { buatLayananPeristiwa } from "./modul/peristiwa/layanan";
-import { rutePeristiwa } from "./modul/peristiwa/rute";
-import { buatLayananPinjaman } from "./modul/pinjaman/layanan";
-import { rutePinjaman } from "./modul/pinjaman/rute";
-import { buatLayananRingkasan } from "./modul/ringkasan/layanan";
-import { ruteRingkasan } from "./modul/ringkasan/rute";
-import { buatLayananRute } from "./modul/rute/layanan";
-import { ruteRuteKolektor } from "./modul/rute/rute";
-import { buatLayananSetoranSore } from "./modul/setoran-sore/layanan";
-import { ruteSetoranSore } from "./modul/setoran-sore/rute";
-import { buatLayananTabungan } from "./modul/tabungan/layanan";
-import { ruteTabungan } from "./modul/tabungan/rute";
-import { buatLayananTautan } from "./modul/tautan/layanan";
-import { ruteTautan } from "./modul/tautan/rute";
-import { buatLayananWilayah } from "./modul/wilayah/layanan";
-import { ruteWilayah } from "./modul/wilayah/rute";
+import { buatLayananGaji, ruteGaji } from "./modul/penggajian";
 import type { Db } from "./platform/db/klien";
 import { BATAS_BAWAAN, type BatasPercobaan } from "./platform/http/batas";
 import { tanganiGalat } from "./platform/http/galat";
@@ -89,6 +93,7 @@ export interface AppDeps {
  */
 export function buatApp(deps: AppDeps) {
   const auth = buatLayananAuth(deps);
+  const periksa = auth.periksaTokenAkses;
   const tautan = buatLayananTautan({ db: deps.db, auth, sekarang: deps.sekarang });
   const lapangan = denganIdempotensi(
     deps.db,
@@ -172,26 +177,26 @@ export function buatApp(deps: AppDeps) {
   const app = buatRouter()
     .openapi(sehat, (c) => c.json({ status: "ok" as const, waktu: new Date().toISOString() }, 200))
     .route("/", ruteAuth(auth, opsi))
-    .route("/", ruteTautan(tautan, auth, opsi))
-    .route("/", ruteLapangan(lapangan, auth))
-    .route("/", ruteFoto(foto, auth))
-    .route("/", ruteSetoranSore(setoranSore, auth))
-    .route("/", ruteGaji(gaji, auth))
-    .route("/", ruteKas(kas, auth))
-    .route("/", ruteTabungan(tabungan, auth))
-    .route("/", ruteMigrasi(migrasi, auth))
-    .route("/", rutePembatalan(pembatalan, auth))
-    .route("/", rutePemutihan(pemutihan, auth))
-    .route("/", rutePengguna(penggunaKantor, auth))
-    .route("/", ruteNasabah(nasabahKantor, auth))
-    .route("/", rutePinjaman(pinjamanKantor, auth))
-    .route("/", rutePeristiwa(peristiwa, auth))
-    .route("/", ruteWilayah(kampung, auth))
-    .route("/", rutePerangkat(perangkatMasuk, auth))
-    .route("/", rutePengaturan(pengaturan, auth))
-    .route("/", ruteRuteKolektor(rute, auth))
-    .route("/", ruteRingkasan(ringkasan, auth))
-    .route("/", ruteAktivitas(aktivitas, auth));
+    .route("/", ruteTautan(tautan, periksa, opsi))
+    .route("/", ruteLapangan(lapangan, periksa))
+    .route("/", ruteFoto(foto, periksa))
+    .route("/", ruteSetoranSore(setoranSore, periksa))
+    .route("/", ruteGaji(gaji, periksa))
+    .route("/", ruteKas(kas, periksa))
+    .route("/", ruteTabungan(tabungan, periksa))
+    .route("/", ruteMigrasi(migrasi, periksa))
+    .route("/", rutePembatalan(pembatalan, periksa))
+    .route("/", rutePemutihan(pemutihan, periksa))
+    .route("/", rutePengguna(penggunaKantor, periksa))
+    .route("/", ruteNasabah(nasabahKantor, periksa))
+    .route("/", rutePinjaman(pinjamanKantor, periksa))
+    .route("/", rutePeristiwa(peristiwa, periksa))
+    .route("/", ruteWilayah(kampung, periksa))
+    .route("/", rutePerangkat(perangkatMasuk, periksa))
+    .route("/", rutePengaturan(pengaturan, periksa))
+    .route("/", ruteRuteKolektor(rute, periksa))
+    .route("/", ruteRingkasan(ringkasan, periksa))
+    .route("/", ruteAktivitas(aktivitas, periksa));
 
   app.onError(tanganiGalat);
   app.openAPIRegistry.registerComponent("securitySchemes", "bearer", {
