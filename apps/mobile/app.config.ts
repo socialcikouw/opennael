@@ -3,7 +3,7 @@ import type { ConfigContext, ExpoConfig } from "expo/config";
 /**
  * VARIAN APLIKASI — `APP_VARIANT` disetel per profil di `eas.json`. Satu nama
  * jalur dipakai di mana-mana: profil EAS = channel = branch EAS Update
- * (lihat "Jalur rilis aplikasi HP" di CLAUDE.md).
+ * (lihat "Jalur rilis aplikasi HP" di AGENTS.md).
  *
  * `development` tidak punya varian di sini: aplikasi dibuka di Expo Go
  * (tanpa build, `APP_VARIANT` kosong) dengan JS dari Metro di laptop.
