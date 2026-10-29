@@ -20,7 +20,7 @@ import {
 import { wajibPeran } from "../../../platform/http/peran";
 import { catatRiwayat } from "../../../platform/riwayat";
 import { kasSudahDiterima } from "../../hari-kolektor/setoran-sore/kunci-hari";
-import { bacaKalender } from "../../lapangan/gerbang";
+import { bacaKalender } from "../../kantor";
 
 /**
  * PEMBATALAN OLEH BOS (aturan-usaha L) — hari yang sama, alasan wajib,

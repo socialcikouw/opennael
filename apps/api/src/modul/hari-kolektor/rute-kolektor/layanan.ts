@@ -6,7 +6,7 @@ import type { Aktor } from "../../../platform/http/aktor";
 import { bentrok, dilarang, melanggar, tidakDitemukan } from "../../../platform/http/galat";
 import { wajibPeran } from "../../../platform/http/peran";
 import { catatRiwayat } from "../../../platform/riwayat";
-import { pastikanWilayah } from "../../lapangan/layanan";
+import { pastikanWilayah } from "../../kantor";
 
 /**
  * RUTE KOLEKTOR — dibaca kolektor (miliknya), bos & pengawas; disimpan

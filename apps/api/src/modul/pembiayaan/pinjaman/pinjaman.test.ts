@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { geserTanggal } from "@opennael/domain";
 import { sql } from "drizzle-orm";
 import { dalamTransaksi, siapkanKantor, URL_DB } from "../../../uji/bantu";
+import { kode, siapkanLapangan } from "../../../uji/lapangan";
 
 /**
  * Kartu & rincian pinjaman ujung ke ujung. Tanggal relatif terhadap hari ini
@@ -191,4 +192,34 @@ describe.skipIf(!URL_DB)("pinjaman", () => {
       ).toBe(404);
     });
   }, 60_000);
+
+  test("lapangan: daftar pegangan kolektor dengan catatan hari ini", async () => {
+    await dalamTransaksi(async (tx) => {
+      const { kirim, bos, k, absen, akadBaru } = await siapkanLapangan(tx);
+      expect(kode(await kirim("/lapangan/pinjaman", undefined, bos.tokenAkses))).toBe(
+        "PERAN_DILARANG",
+      );
+      await absen();
+      const sari = await akadBaru("Sari");
+      const tono = await akadBaru("Tono");
+      await akadBaru("Wati", { jenis: "tempoan", tenor: 14 });
+      await kirim("/lapangan/bayar", { pinjamanId: sari.isi.id, setoranMurni: 50_000 }, k);
+      await tx.execute(sql`update pinjaman set saldo = 1100000 where id = ${tono.isi.id}`);
+      await kirim("/lapangan/libur", { pinjamanId: tono.isi.id, alasan: "sakit" }, k);
+
+      const daftar = await kirim("/lapangan/pinjaman", undefined, k);
+      expect(daftar.isi.map((p: { nasabah: { nama: string } }) => p.nasabah.nama)).toEqual([
+        "Sari",
+        "Tono",
+        "Wati",
+      ]);
+      // Catatan hari ini: Sari sudah setor, penerus Tono libur, Wati belum.
+      expect(daftar.isi.map((p: { hariIni: unknown }) => p.hariIni)).toEqual([
+        { jenis: "angsuran", storting: 50_000 },
+        { jenis: "libur", alasan: "sakit" },
+        null,
+      ]);
+      expect(daftar.isi[0].tabungan).toBe(50_000);
+    });
+  }, 120_000);
 });

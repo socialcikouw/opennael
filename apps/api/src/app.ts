@@ -3,8 +3,10 @@ import { createRoute } from "@hono/zod-openapi";
 import { sehatSchema } from "@opennael/contracts";
 import { Scalar } from "@scalar/hono-api-reference";
 import {
+  buatLayananAbsensi,
   buatLayananRute,
   buatLayananSetoranSore,
+  ruteAbsensi,
   ruteRuteKolektor,
   ruteSetoranSore,
 } from "./modul/hari-kolektor";
@@ -18,11 +20,18 @@ import {
   rutePerangkat,
   ruteTautan,
 } from "./modul/identitas";
-import { buatLayananWilayah, ruteWilayah } from "./modul/kantor";
+import {
+  buatLayananKalender,
+  buatLayananKebijakan,
+  buatLayananProfil,
+  buatLayananWilayah,
+  ruteKalender,
+  ruteKebijakan,
+  ruteProfil,
+  ruteWilayah,
+  type ValidasiKalender,
+} from "./modul/kantor";
 import { buatLayananKas, ruteKas } from "./modul/kas";
-import type { ValidasiKalender } from "./modul/lapangan/gerbang";
-import { buatLayananLapangan } from "./modul/lapangan/layanan";
-import { ruteLapangan } from "./modul/lapangan/rute";
 import { buatLayananMigrasi, ruteMigrasi } from "./modul/migrasi";
 import {
   buatLayananAktivitas,
@@ -31,6 +40,7 @@ import {
   ruteRingkasan,
 } from "./modul/pelaporan";
 import {
+  buatLayananAkad,
   buatLayananFoto,
   buatLayananNasabah,
   buatLayananPembatalan,
@@ -38,6 +48,7 @@ import {
   buatLayananPeristiwa,
   buatLayananPinjaman,
   buatLayananTabungan,
+  ruteAkad,
   ruteFoto,
   ruteNasabah,
   rutePembatalan,
@@ -46,9 +57,7 @@ import {
   rutePinjaman,
   ruteTabungan,
 } from "./modul/pembiayaan";
-import { buatLayananPengaturan } from "./modul/pengaturan/layanan";
-import { rutePengaturan } from "./modul/pengaturan/rute";
-import { buatLayananGaji, ruteGaji } from "./modul/penggajian";
+import { buatLayananGaji, buatLayananTarif, ruteGaji, ruteTarif } from "./modul/penggajian";
 import type { Db } from "./platform/db/klien";
 import { BATAS_BAWAAN, type BatasPercobaan } from "./platform/http/batas";
 import { tanganiGalat } from "./platform/http/galat";
@@ -95,17 +104,20 @@ export function buatApp(deps: AppDeps) {
   const auth = buatLayananAuth(deps);
   const periksa = auth.periksaTokenAkses;
   const tautan = buatLayananTautan({ db: deps.db, auth, sekarang: deps.sekarang });
-  const lapangan = denganIdempotensi(
-    deps.db,
-    "lapangan",
-    (db) =>
-      buatLayananLapangan({
-        db,
-        sekarang: deps.sekarang,
-        validasiKalender: deps.validasiKalender,
-      }),
-    ["absen", "bukaLaporan", "akad", "bayar", "lunas", "gulung", "libur"],
-  );
+  // Nama operasi idempoten tetap "lapangan" supaya kunci yang beredar tetap berlaku.
+  const gerbang = (db: Db) => ({
+    db,
+    sekarang: deps.sekarang,
+    validasiKalender: deps.validasiKalender,
+  });
+  const absensi = denganIdempotensi(deps.db, "lapangan", (db) => buatLayananAbsensi(gerbang(db)), [
+    "absen",
+    "bukaLaporan",
+  ]);
+  const akad = denganIdempotensi(deps.db, "lapangan", (db) => buatLayananAkad(gerbang(db)), [
+    "akad",
+    "gulung",
+  ]);
   const setoranSore = denganIdempotensi(
     deps.db,
     "setoran-sore",
@@ -145,12 +157,21 @@ export function buatApp(deps: AppDeps) {
   const pinjamanKantor = buatLayananPinjaman({ db: deps.db, sekarang: deps.sekarang });
   const kampung = buatLayananWilayah({ db: deps.db, sekarang: deps.sekarang });
   const perangkatMasuk = buatLayananPerangkat({ db: deps.db, sekarang: deps.sekarang });
-  const peristiwa = buatLayananPeristiwa({
-    db: deps.db,
-    nasabah: nasabahKantor,
-    pinjaman: pinjamanKantor,
-  });
-  const pengaturan = buatLayananPengaturan({ db: deps.db, sekarang: deps.sekarang });
+  const peristiwa = denganIdempotensi(
+    deps.db,
+    "lapangan",
+    (db) =>
+      buatLayananPeristiwa({
+        ...gerbang(db),
+        nasabah: nasabahKantor,
+        pinjaman: pinjamanKantor,
+      }),
+    ["bayar", "lunas", "libur"],
+  );
+  const profil = buatLayananProfil({ db: deps.db, sekarang: deps.sekarang });
+  const kalender = buatLayananKalender({ db: deps.db, sekarang: deps.sekarang });
+  const kebijakan = buatLayananKebijakan({ db: deps.db });
+  const tarif = buatLayananTarif({ db: deps.db, sekarang: deps.sekarang });
   const ringkasan = buatLayananRingkasan({ db: deps.db, sekarang: deps.sekarang });
   const rute = buatLayananRute({ db: deps.db });
   const migrasi = denganIdempotensi(
@@ -178,7 +199,8 @@ export function buatApp(deps: AppDeps) {
     .openapi(sehat, (c) => c.json({ status: "ok" as const, waktu: new Date().toISOString() }, 200))
     .route("/", ruteAuth(auth, opsi))
     .route("/", ruteTautan(tautan, periksa, opsi))
-    .route("/", ruteLapangan(lapangan, periksa))
+    .route("/", ruteAbsensi(absensi, periksa))
+    .route("/", ruteAkad(akad, periksa))
     .route("/", ruteFoto(foto, periksa))
     .route("/", ruteSetoranSore(setoranSore, periksa))
     .route("/", ruteGaji(gaji, periksa))
@@ -193,7 +215,10 @@ export function buatApp(deps: AppDeps) {
     .route("/", rutePeristiwa(peristiwa, periksa))
     .route("/", ruteWilayah(kampung, periksa))
     .route("/", rutePerangkat(perangkatMasuk, periksa))
-    .route("/", rutePengaturan(pengaturan, periksa))
+    .route("/", ruteProfil(profil, periksa))
+    .route("/", ruteKalender(kalender, periksa))
+    .route("/", ruteKebijakan(kebijakan, periksa))
+    .route("/", ruteTarif(tarif, periksa))
     .route("/", ruteRuteKolektor(rute, periksa))
     .route("/", ruteRingkasan(ringkasan, periksa))
     .route("/", ruteAktivitas(aktivitas, periksa));

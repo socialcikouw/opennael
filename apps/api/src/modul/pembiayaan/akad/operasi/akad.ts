@@ -1,19 +1,15 @@
 import type { AkadInput, PinjamanKartu } from "@opennael/contracts";
 import { syaratAkad } from "@opennael/domain";
 import { and, eq, inArray, sql } from "drizzle-orm";
-import { nasabah, pinjaman } from "../../../platform/db/skema";
-import type { Aktor } from "../../../platform/http/aktor";
-import { bentrok, dilarang, melanggar, tidakDitemukan } from "../../../platform/http/galat";
-import {
-  daftarkanNasabahBaru,
-  kartu,
-  type LapanganDeps,
-  pastikanFoto,
-  pinjamanKeBerikut,
-  remBerlaku,
-} from "../data";
-import { bukaGerbang, VALIDASI_PENUH } from "../gerbang";
-export function buatAkad(deps: LapanganDeps) {
+import { nasabah, pinjaman } from "../../../../platform/db/skema";
+import type { Aktor } from "../../../../platform/http/aktor";
+import { bentrok, dilarang, melanggar, tidakDitemukan } from "../../../../platform/http/galat";
+import { bukaGerbang, type GerbangDeps } from "../../../hari-kolektor";
+import { remBerlaku, VALIDASI_PENUH } from "../../../kantor";
+import { pastikanFoto } from "../../foto/data";
+import { daftarkanNasabahBaru } from "../../nasabah/data";
+import { kartu, pinjamanKeBerikut } from "../../pinjaman/data";
+export function buatAkad(deps: GerbangDeps) {
   const sekarang = deps.sekarang ?? (() => new Date());
   const validasi = deps.validasiKalender ?? VALIDASI_PENUH;
   return async function akad(aktor: Aktor, input: AkadInput): Promise<PinjamanKartu> {

@@ -2,11 +2,12 @@ import { createRoute, z } from "@hono/zod-openapi";
 import {
   gantiNamaWilayahSchema,
   hasilGantiNamaWilayahSchema,
+  kampungPilihanSchema,
   saringWilayahSchema,
   wilayahDihapusSchema,
   wilayahSchema,
 } from "@opennael/contracts";
-import { aman, jawabanGalat, json } from "../../../platform/http/openapi";
+import { aman, galatLapangan, jawabanGalat, json } from "../../../platform/http/openapi";
 import { buatRouter } from "../../../platform/http/router";
 import { type PeriksaTokenAkses, wajibMasuk } from "../../../platform/http/wajib-masuk";
 import type { LayananWilayah } from "./layanan";
@@ -52,9 +53,22 @@ const hapus = createRoute({
   responses: { 200: { description: "Dihapus", ...json(wilayahDihapusSchema) }, ...galat },
 });
 
+const kampung = createRoute({
+  method: "get",
+  path: "/lapangan/kampung",
+  tags: ["lapangan"],
+  summary: "Kampung kantor ini — pilihan formulir akad (kolektor) & salinan migrasi (bos)",
+  security: aman,
+  responses: {
+    200: { description: "Kampung", ...json(z.array(kampungPilihanSchema)) },
+    ...galatLapangan,
+  },
+});
+
 export function ruteWilayah(layanan: LayananWilayah, periksa: PeriksaTokenAkses) {
   const router = buatRouter();
   const masuk = wajibMasuk(periksa);
+  router.use("/lapangan/*", masuk);
   router.use("/wilayah", masuk);
   router.use("/wilayah/*", masuk);
   return router
@@ -66,5 +80,6 @@ export function ruteWilayah(layanan: LayananWilayah, periksa: PeriksaTokenAkses)
     )
     .openapi(hapus, async (c) =>
       c.json(await layanan.hapus(c.get("aktor"), c.req.valid("param").id), 200),
-    );
+    )
+    .openapi(kampung, async (c) => c.json(await layanan.daftarKampung(c.get("aktor")), 200));
 }

@@ -22,7 +22,7 @@ import {
   tidakDitemukan,
 } from "../../../platform/http/galat";
 import { wajibPeran } from "../../../platform/http/peran";
-import { bacaKalender } from "../../lapangan/gerbang";
+import { bacaKalender } from "../../kantor";
 
 /**
  * GAJI KOLEKTOR — pratinjau & pembayaran memakai SATU perhitungan (aturan-

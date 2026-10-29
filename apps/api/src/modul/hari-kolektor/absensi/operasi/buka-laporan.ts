@@ -1,13 +1,14 @@
 import { wajibDitagihHariIni } from "@opennael/domain";
 import { and, asc, eq, inArray, isNull } from "drizzle-orm";
-import { hariKolektor, nasabah, pinjaman } from "../../../platform/db/skema";
-import type { Aktor } from "../../../platform/http/aktor";
-import { melanggar } from "../../../platform/http/galat";
-import { wajibPeran } from "../../../platform/http/peran";
-import { catatanHari, hariIni, type LapanganDeps } from "../data";
-import { bacaKalender } from "../gerbang";
+import { hariKolektor, nasabah, pinjaman } from "../../../../platform/db/skema";
+import type { Aktor } from "../../../../platform/http/aktor";
+import { melanggar } from "../../../../platform/http/galat";
+import { wajibPeran } from "../../../../platform/http/peran";
+import { bacaKalender } from "../../../kantor";
+import type { GerbangDeps } from "../../gerbang";
+import { catatanHari, hariIni } from "../data";
 
-export function buatBukaLaporan(deps: LapanganDeps) {
+export function buatBukaLaporan(deps: GerbangDeps) {
   const sekarang = deps.sekarang ?? (() => new Date());
 
   /**

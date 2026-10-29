@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { geserTanggal } from "@opennael/domain";
 import { sql } from "drizzle-orm";
 import { dalamTransaksi, type Jawaban, siapkanKantor, URL_DB } from "../../../uji/bantu";
+import { kode, siapkanLapangan } from "../../../uji/lapangan";
 
 /**
  * Peristiwa, grid bulanan, satu transaksi, Buku nasabah — ujung ke ujung.
@@ -184,4 +185,61 @@ describe.skipIf(!URL_DB)("peristiwa & buku nasabah", () => {
       expect((await kirim(`/nasabah/${c}/buku`, { token: b })).isi.peristiwa).toHaveLength(1);
     });
   }, 60_000);
+
+  test("lapangan: bayar, lunas, libur — dan aturannya", async () => {
+    await dalamTransaksi(async (tx) => {
+      const { kirim, k, absen, akadBaru } = await siapkanLapangan(tx);
+      await absen();
+      const sari = await akadBaru("Sari");
+
+      // ---- bayar (C) -----------------------------------------------------------
+      const pSari = sari.isi.id as string;
+      expect(
+        kode(await kirim("/lapangan/bayar", { pinjamanId: pSari, setoranMurni: 52_000 }, k)),
+      ).toBe("NOMINAL_SETORAN_TIDAK_SESUAI");
+      const bayar = await kirim("/lapangan/bayar", { pinjamanId: pSari, setoranMurni: 50_000 }, k);
+      expect(bayar.status).toBe(201);
+      expect(bayar.isi).toMatchObject({
+        jenis: "angsuran",
+        storting: 50_000,
+        saldoSesudah: 1_150_000,
+      });
+      expect(
+        kode(await kirim("/lapangan/bayar", { pinjamanId: pSari, setoranMurni: 50_000 }, k)),
+      ).toBe("PERISTIWA_SUDAH_ADA");
+      expect(kode(await kirim("/lapangan/libur", { pinjamanId: pSari }, k))).toBe(
+        "PERISTIWA_SUDAH_ADA",
+      );
+
+      // ---- lunas (D) -----------------------------------------------------------
+      const budi = await akadBaru("Budi", { pokok: 500_000 });
+      const lunas = await kirim("/lapangan/lunas", { pinjamanId: budi.isi.id }, k);
+      expect(lunas.status).toBe(201);
+      // Saldo 600.000, tabungan 25.000 → nasabah membayar 575.000.
+      expect(lunas.isi).toMatchObject({
+        jenis: "pelunasan",
+        setoranMurni: 575_000,
+        setoranPelunasan: 25_000,
+        tabunganKeluar: 25_000,
+        storting: 575_000,
+        saldoSesudah: 0,
+      });
+
+      // ---- libur (G) -----------------------------------------------------------
+      const penerus = (await akadBaru("Tono")).isi.id as string;
+      expect(kode(await kirim("/lapangan/libur", { pinjamanId: penerus }, k))).toBe(
+        "LIBUR_BELUM_BOLEH",
+      );
+      await tx.execute(sql`update pinjaman set saldo = 1100000 where id = ${penerus}`);
+      const libur = await kirim("/lapangan/libur", { pinjamanId: penerus, alasan: "sakit" }, k);
+      expect(libur.status).toBe(201);
+      expect(
+        kode(await kirim("/lapangan/bayar", { pinjamanId: penerus, setoranMurni: 50_000 }, k)),
+      ).toBe("PERISTIWA_SUDAH_ADA");
+      const wati = await akadBaru("Wati", { jenis: "tempoan", tenor: 14 });
+      expect(kode(await kirim("/lapangan/libur", { pinjamanId: wati.isi.id }, k))).toBe(
+        "LIBUR_TIDAK_BERLAKU",
+      );
+    });
+  }, 120_000);
 });

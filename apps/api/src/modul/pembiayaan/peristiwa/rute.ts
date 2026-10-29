@@ -1,13 +1,18 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import {
+  bayarSchema,
   bukuNasabahSchema,
+  liburSchema,
+  liburTercatatSchema,
+  lunasSchema,
   peristiwaSchema,
   saringPeristiwaSchema,
   saringRekapBulananSchema,
   selRekapSchema,
   transaksiLengkapSchema,
+  transaksiSchema,
 } from "@opennael/contracts";
-import { aman, jawabanGalat, json } from "../../../platform/http/openapi";
+import { aman, jawabanGalat, json, tulisLapangan } from "../../../platform/http/openapi";
 import { buatRouter } from "../../../platform/http/router";
 import { type PeriksaTokenAkses, wajibMasuk } from "../../../platform/http/wajib-masuk";
 import type { LayananPeristiwa } from "./layanan";
@@ -60,22 +65,58 @@ const buku = createRoute({
   responses: { 200: { description: "Buku", ...json(bukuNasabahSchema) }, ...galat },
 });
 
-export function rutePeristiwa(layanan: LayananPeristiwa, periksa: PeriksaTokenAkses) {
+const bayar = tulisLapangan("/lapangan/bayar", "Setoran angsuran", bayarSchema, transaksiSchema);
+const lunas = tulisLapangan(
+  "/lapangan/lunas",
+  "Pelunasan — tabungan menutup saldo lebih dulu",
+  lunasSchema,
+  transaksiSchema,
+);
+const libur = tulisLapangan(
+  "/lapangan/libur",
+  "Libur nasabah — tidak ditagih hari ini",
+  liburSchema,
+  liburTercatatSchema,
+);
+
+export function rutePeristiwa(
+  layanan: (kunci?: string) => LayananPeristiwa,
+  periksa: PeriksaTokenAkses,
+) {
   const router = buatRouter();
   const masuk = wajibMasuk(periksa);
   router.use("/transaksi/*", masuk);
   router.use("/nasabah/*", masuk);
+  router.use("/lapangan/*", masuk);
   return router
     .openapi(daftar, async (c) =>
-      c.json(await layanan.daftar(c.get("aktor"), c.req.valid("query")), 200),
+      c.json(await layanan().daftar(c.get("aktor"), c.req.valid("query")), 200),
     )
     .openapi(rekap, async (c) =>
-      c.json(await layanan.rekapBulanan(c.get("aktor"), c.req.valid("query")), 200),
+      c.json(await layanan().rekapBulanan(c.get("aktor"), c.req.valid("query")), 200),
     )
     .openapi(satu, async (c) =>
-      c.json(await layanan.transaksi(c.get("aktor"), c.req.valid("param").id), 200),
+      c.json(await layanan().transaksi(c.get("aktor"), c.req.valid("param").id), 200),
     )
     .openapi(buku, async (c) =>
-      c.json(await layanan.buku(c.get("aktor"), c.req.valid("param").id), 200),
+      c.json(await layanan().buku(c.get("aktor"), c.req.valid("param").id), 200),
+    )
+    .openapi(bayar, async (c) =>
+      c.json(
+        await layanan(c.req.header("Idempotency-Key")).bayar(c.get("aktor"), c.req.valid("json")),
+        201,
+      ),
+    )
+    .openapi(lunas, async (c) =>
+      c.json(
+        await layanan(c.req.header("Idempotency-Key")).lunas(c.get("aktor"), c.req.valid("json")),
+        201,
+      ),
+    )
+    .openapi(libur, async (c) =>
+      c.json(
+        await layanan(c.req.header("Idempotency-Key")).libur(c.get("aktor"), c.req.valid("json")),
+        201,
+      ),
     );
 }

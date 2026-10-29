@@ -1,5 +1,8 @@
+export { buatLayananAkad } from "./akad/layanan";
+export { ruteAkad } from "./akad/rute";
 export { buatLayananFoto } from "./foto/layanan";
 export { ruteFoto } from "./foto/rute";
+export { daftarkanNasabahBaru } from "./nasabah/data";
 export { buatLayananNasabah } from "./nasabah/layanan";
 export { ruteNasabah } from "./nasabah/rute";
 export { buatLayananPembatalan } from "./pembatalan/layanan";
@@ -8,6 +11,7 @@ export { buatLayananPemutihan } from "./pemutihan/layanan";
 export { rutePemutihan } from "./pemutihan/rute";
 export { buatLayananPeristiwa } from "./peristiwa/layanan";
 export { rutePeristiwa } from "./peristiwa/rute";
+export { pinjamanKeBerikut } from "./pinjaman/data";
 export { buatLayananPinjaman } from "./pinjaman/layanan";
 export { rutePinjaman } from "./pinjaman/rute";
 export { buatLayananTabungan } from "./tabungan/layanan";

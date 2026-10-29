@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { sql } from "drizzle-orm";
 import { dalamTransaksi, siapkanKantor, URL_DB } from "../../../uji/bantu";
+import { siapkanLapangan } from "../../../uji/lapangan";
 
 /**
  * Kampung ujung ke ujung: daftar & pemakaian, ganti nama, gabung (nasabah &
@@ -128,4 +129,15 @@ describe.skipIf(!URL_DB)("kampung", () => {
       expect((await hapus(kosong)).status).toBe(404);
     });
   }, 60_000);
+
+  test("lapangan: daftar kampung untuk formulir akad", async () => {
+    await dalamTransaksi(async (tx) => {
+      const { kirim, k, absen, akadBaru } = await siapkanLapangan(tx);
+      await absen();
+      await akadBaru("Sari");
+      expect((await kirim("/lapangan/kampung", undefined, k)).isi).toEqual([
+        { id: expect.any(String), nama: "Pule Barat" },
+      ]);
+    });
+  }, 120_000);
 });

@@ -1,15 +1,12 @@
 import { hitungLunas } from "@opennael/domain";
 import { eq, sql } from "drizzle-orm";
-import { nasabah, pinjaman, transaksi } from "../../../platform/db/skema";
-import type { Aktor } from "../../../platform/http/aktor";
-import {
-  kolomTransaksi,
-  kunciPinjaman,
-  type LapanganDeps,
-  pastikanBelumAdaPeristiwa,
-} from "../data";
-import { bukaGerbang, VALIDASI_PENUH } from "../gerbang";
-export function buatLunas(deps: LapanganDeps) {
+import { nasabah, pinjaman, transaksi } from "../../../../platform/db/skema";
+import type { Aktor } from "../../../../platform/http/aktor";
+import { bukaGerbang, type GerbangDeps } from "../../../hari-kolektor";
+import { VALIDASI_PENUH } from "../../../kantor";
+import { kunciPinjaman } from "../../pinjaman/data";
+import { kolomTransaksi, pastikanBelumAdaPeristiwa } from "../data";
+export function buatLunas(deps: GerbangDeps) {
   const sekarang = deps.sekarang ?? (() => new Date());
   const validasi = deps.validasiKalender ?? VALIDASI_PENUH;
   return async function lunas(aktor: Aktor, input: { pinjamanId: string }) {

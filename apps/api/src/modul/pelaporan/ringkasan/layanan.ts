@@ -15,7 +15,7 @@ import {
 import type { Aktor } from "../../../platform/http/aktor";
 import { dilarang, melanggar } from "../../../platform/http/galat";
 import { wajibPeran } from "../../../platform/http/peran";
-import { bacaKalender } from "../../lapangan/gerbang";
+import { bacaKalender } from "../../kantor";
 
 /**
  * RINGKASAN — angka satu rentang tanggal (penagihan, akad, kas lapangan),

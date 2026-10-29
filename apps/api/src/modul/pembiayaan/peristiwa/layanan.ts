@@ -2,13 +2,16 @@ import type { Peristiwa, SaringPeristiwa } from "@opennael/contracts";
 import { geserTanggal, selisihHari } from "@opennael/domain";
 import { and, eq, gte, isNull, lte, type SQL } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
-import type { Db } from "../../../platform/db/klien";
 import { liburNasabah, nasabah, pengguna, pinjaman, transaksi } from "../../../platform/db/skema";
 import type { Aktor } from "../../../platform/http/aktor";
 import { dilarang, melanggar, tidakDitemukan } from "../../../platform/http/galat";
 import { wajibPeran } from "../../../platform/http/peran";
+import type { GerbangDeps } from "../../hari-kolektor";
 import type { LayananNasabah } from "../nasabah/layanan";
 import type { LayananPinjaman } from "../pinjaman/layanan";
+import { buatBayar } from "./operasi/bayar";
+import { buatLibur } from "./operasi/libur";
+import { buatLunas } from "./operasi/lunas";
 
 /**
  * PERISTIWA PINJAMAN — transaksi berlaku + libur nasabah dalam satu bentuk
@@ -16,8 +19,7 @@ import type { LayananPinjaman } from "../pinjaman/layanan";
  * Buku nasabah. Bos & pengawas: semua; kolektor: pinjaman pegangannya
  * (pemegang saat ini, bukan pencatat). Docs: schema-transaksi.md.
  */
-export interface PeristiwaDeps {
-  db: Db;
+export interface PeristiwaDeps extends GerbangDeps {
   nasabah: LayananNasabah;
   pinjaman: LayananPinjaman;
 }
@@ -144,7 +146,9 @@ export function buatLayananPeristiwa(deps: PeristiwaDeps) {
   }
 
   return {
-    /** Peristiwa berlaku menurut saringan; tanpa pinjaman wajib bertanggal (≤ 62 hari). */
+    bayar: buatBayar(deps),
+    lunas: buatLunas(deps),
+    libur: buatLibur(deps),
     async daftar(aktor: Aktor, saring: SaringPeristiwa) {
       const kolektorId = pegangan(aktor, saring.kolektorId);
       const mulai = saring.tanggal ?? saring.tanggalMulai;

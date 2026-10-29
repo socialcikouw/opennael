@@ -39,8 +39,9 @@ import type { Aktor } from "../../../platform/http/aktor";
 import { dilarang, melanggar, tidakDitemukan } from "../../../platform/http/galat";
 import { wajibPeran } from "../../../platform/http/peran";
 import { catatRiwayat } from "../../../platform/riwayat";
-import { bacaKalender, hariTagihAntara } from "../../lapangan/gerbang";
-import { keKartu, kolomKartu, kolomRem } from "../../lapangan/layanan";
+import { bacaKalender, hariTagihAntara, kolomRem } from "../../kantor";
+import { keKartu, kolomKartu } from "./data";
+import { buatKueriPinjaman } from "./kueri";
 
 /**
  * PINJAMAN — kartu & rincian (bos, pengawas: semua; kolektor: pegangannya),
@@ -279,6 +280,7 @@ export function buatLayananPinjaman(deps: PinjamanDeps) {
   }
 
   return {
+    ...buatKueriPinjaman(deps),
     /** Kartu pinjaman, urut nama nasabah lalu `pinjamanKe` menurun (paling banyak 500). */
     async daftar(
       aktor: Aktor,

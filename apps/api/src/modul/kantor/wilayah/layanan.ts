@@ -14,6 +14,7 @@ import type { Aktor } from "../../../platform/http/aktor";
 import { bentrok, galatPostgres, melanggar, tidakDitemukan } from "../../../platform/http/galat";
 import { wajibPeran } from "../../../platform/http/peran";
 import { catatRiwayat } from "../../../platform/riwayat";
+import { buatKueriWilayah } from "./kueri";
 
 /**
  * KAMPUNG — daftar dengan pemakaian (semua peran), ganti nama atau gabung,
@@ -98,6 +99,7 @@ export function buatLayananWilayah(deps: WilayahDeps) {
   }
 
   return {
+    ...buatKueriWilayah(deps),
     /** Kampung kantor ini dengan pemakaiannya, urut nama. */
     async daftar(aktor: Aktor, saring: { baru?: number | undefined }) {
       if (saring.baru !== undefined) wajibPeran(aktor, "bos");

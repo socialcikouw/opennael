@@ -30,6 +30,12 @@ export const melanggar = (kode: string, pesan: string) => new GalatApp(422, kode
 export const sudahDibatalkan = () => bentrok("SUDAH_DIBATALKAN", "Catatan ini sudah dibatalkan");
 export const batalHanyaHariIni = () =>
   melanggar("BATAL_HANYA_HARI_INI", "Pembatalan hanya pada hari yang sama");
+/** Pengaturan bertanggal (pekan kerja, libur, tarif) tidak boleh berlaku mundur. */
+export const tidakBolehMundur = () =>
+  melanggar(
+    "TIDAK_BOLEH_MUNDUR",
+    "Tidak bisa diberlakukan mundur — mulai hari ini atau sesudahnya",
+  );
 /** Hari kolektor terkunci sesudah kas diterima (aturan-usaha I4). */
 export const kasSudahDiterimaGalat = () => bentrok("KAS_SUDAH_DITERIMA", KAS_DITERIMA);
 export const bukuKasBelumDibuka = () =>

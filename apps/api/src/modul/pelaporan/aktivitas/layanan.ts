@@ -23,7 +23,7 @@ import {
 } from "../../../platform/db/skema";
 import type { Aktor } from "../../../platform/http/aktor";
 import { wajibPeran } from "../../../platform/http/peran";
-import { bacaKalender } from "../../lapangan/gerbang";
+import { bacaKalender } from "../../kantor";
 
 /**
  * AKTIVITAS — siapa melakukan apa pada satu tanggal kantor. Menggabungkan

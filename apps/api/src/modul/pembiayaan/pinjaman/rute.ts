@@ -1,12 +1,13 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import {
   kartuPinjamanSchema,
+  kartuTagihSchema,
   rincianPinjamanSchema,
   riwayatStatusSchema,
   saringPinjamanSchema,
   ubahPinjamanSchema,
 } from "@opennael/contracts";
-import { aman, jawabanGalat, json } from "../../../platform/http/openapi";
+import { aman, galatLapangan, jawabanGalat, json } from "../../../platform/http/openapi";
 import { buatRouter } from "../../../platform/http/router";
 import { type PeriksaTokenAkses, wajibMasuk } from "../../../platform/http/wajib-masuk";
 import type { LayananPinjaman } from "./layanan";
@@ -62,9 +63,22 @@ const riwayatStatus = createRoute({
   },
 });
 
+const daftarPegangan = createRoute({
+  method: "get",
+  path: "/lapangan/pinjaman",
+  tags: ["lapangan"],
+  summary: "Pinjaman aktif yang dipegang kolektor ini",
+  security: aman,
+  responses: {
+    200: { description: "Kartu tagih", ...json(z.array(kartuTagihSchema)) },
+    ...galatLapangan,
+  },
+});
+
 export function rutePinjaman(layanan: LayananPinjaman, periksa: PeriksaTokenAkses) {
   const router = buatRouter();
   const masuk = wajibMasuk(periksa);
+  router.use("/lapangan/*", masuk);
   router.use("/pinjaman", masuk);
   router.use("/pinjaman/*", masuk);
   return router
@@ -79,5 +93,8 @@ export function rutePinjaman(layanan: LayananPinjaman, periksa: PeriksaTokenAkse
     )
     .openapi(riwayatStatus, async (c) =>
       c.json(await layanan.riwayatStatus(c.get("aktor"), c.req.valid("param").id), 200),
+    )
+    .openapi(daftarPegangan, async (c) =>
+      c.json(await layanan.daftarPinjaman(c.get("aktor")), 200),
     );
 }

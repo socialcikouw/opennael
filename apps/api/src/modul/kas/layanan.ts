@@ -27,7 +27,7 @@ import {
 } from "../../platform/http/galat";
 import { wajibPeran } from "../../platform/http/peran";
 import { catatRiwayat } from "../../platform/riwayat";
-import { bacaKalender } from "../lapangan/gerbang";
+import { bacaKalender } from "../kantor";
 import { daftarGerakan, kasDiLapangan, saldoAkun, tabunganNasabah } from "./saldo";
 
 /**

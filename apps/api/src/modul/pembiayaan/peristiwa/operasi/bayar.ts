@@ -1,15 +1,12 @@
 import { hitungBayar } from "@opennael/domain";
 import { eq } from "drizzle-orm";
-import { pinjaman, transaksi } from "../../../platform/db/skema";
-import type { Aktor } from "../../../platform/http/aktor";
-import {
-  kolomTransaksi,
-  kunciPinjaman,
-  type LapanganDeps,
-  pastikanBelumAdaPeristiwa,
-} from "../data";
-import { bukaGerbang, VALIDASI_PENUH } from "../gerbang";
-export function buatBayar(deps: LapanganDeps) {
+import { pinjaman, transaksi } from "../../../../platform/db/skema";
+import type { Aktor } from "../../../../platform/http/aktor";
+import { bukaGerbang, type GerbangDeps } from "../../../hari-kolektor";
+import { VALIDASI_PENUH } from "../../../kantor";
+import { kunciPinjaman } from "../../pinjaman/data";
+import { kolomTransaksi, pastikanBelumAdaPeristiwa } from "../data";
+export function buatBayar(deps: GerbangDeps) {
   const sekarang = deps.sekarang ?? (() => new Date());
   const validasi = deps.validasiKalender ?? VALIDASI_PENUH;
   return async function bayar(

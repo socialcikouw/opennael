@@ -1,10 +1,12 @@
 import { angsuranKe, tolakLibur } from "@opennael/domain";
-import { liburNasabah } from "../../../platform/db/skema";
-import type { Aktor } from "../../../platform/http/aktor";
-import { melanggar } from "../../../platform/http/galat";
-import { kunciPinjaman, type LapanganDeps, pastikanBelumAdaPeristiwa } from "../data";
-import { bukaGerbang, VALIDASI_PENUH } from "../gerbang";
-export function buatLibur(deps: LapanganDeps) {
+import { liburNasabah } from "../../../../platform/db/skema";
+import type { Aktor } from "../../../../platform/http/aktor";
+import { melanggar } from "../../../../platform/http/galat";
+import { bukaGerbang, type GerbangDeps } from "../../../hari-kolektor";
+import { VALIDASI_PENUH } from "../../../kantor";
+import { kunciPinjaman } from "../../pinjaman/data";
+import { pastikanBelumAdaPeristiwa } from "../data";
+export function buatLibur(deps: GerbangDeps) {
   const sekarang = deps.sekarang ?? (() => new Date());
   const validasi = deps.validasiKalender ?? VALIDASI_PENUH;
   return async function libur(

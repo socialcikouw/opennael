@@ -6,8 +6,8 @@ import { nasabah, pengguna, pinjaman } from "../../platform/db/skema";
 import type { Aktor } from "../../platform/http/aktor";
 import { bentrok, melanggar, tidakDitemukan } from "../../platform/http/galat";
 import { wajibPeran } from "../../platform/http/peran";
-import { bacaKalender } from "../lapangan/gerbang";
-import { daftarkanNasabahBaru, pinjamanKeBerikut } from "../lapangan/layanan";
+import { bacaKalender } from "../kantor";
+import { daftarkanNasabahBaru, pinjamanKeBerikut } from "../pembiayaan";
 
 /**
  * SALINAN MIGRASI (bos, aturan-usaha A10) — pinjaman yang masih berjalan di

@@ -1,19 +1,13 @@
 import { angsuranKe, hitungGulung } from "@opennael/domain";
 import { eq, sql } from "drizzle-orm";
-import { nasabah, pinjaman, transaksi } from "../../../platform/db/skema";
-import type { Aktor } from "../../../platform/http/aktor";
-import {
-  kartu,
-  kolomTransaksi,
-  kunciPinjaman,
-  type LapanganDeps,
-  pastikanBelumAdaPeristiwa,
-  pastikanFoto,
-  pinjamanKeBerikut,
-  remBerlaku,
-} from "../data";
-import { bukaGerbang, VALIDASI_PENUH } from "../gerbang";
-export function buatGulung(deps: LapanganDeps) {
+import { nasabah, pinjaman, transaksi } from "../../../../platform/db/skema";
+import type { Aktor } from "../../../../platform/http/aktor";
+import { bukaGerbang, type GerbangDeps } from "../../../hari-kolektor";
+import { remBerlaku, VALIDASI_PENUH } from "../../../kantor";
+import { pastikanFoto } from "../../foto/data";
+import { kolomTransaksi, pastikanBelumAdaPeristiwa } from "../../peristiwa/data";
+import { kartu, kunciPinjaman, pinjamanKeBerikut } from "../../pinjaman/data";
+export function buatGulung(deps: GerbangDeps) {
   const sekarang = deps.sekarang ?? (() => new Date());
   const validasi = deps.validasiKalender ?? VALIDASI_PENUH;
   return async function gulung(

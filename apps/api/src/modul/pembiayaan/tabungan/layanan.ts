@@ -18,7 +18,7 @@ import {
   tidakDitemukan,
 } from "../../../platform/http/galat";
 import { wajibPeran } from "../../../platform/http/peran";
-import { bacaKalender } from "../../lapangan/gerbang";
+import { bacaKalender } from "../../kantor";
 
 /**
  * TABUNGAN NASABAH (bos) — penarikan di luar pelunasan (uang sungguhan, kas

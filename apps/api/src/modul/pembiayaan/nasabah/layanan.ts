@@ -15,7 +15,8 @@ import type { Aktor } from "../../../platform/http/aktor";
 import { dilarang, melanggar, tidakDitemukan } from "../../../platform/http/galat";
 import { wajibPeran } from "../../../platform/http/peran";
 import { catatRiwayat } from "../../../platform/riwayat";
-import { pastikanWilayah } from "../../lapangan/layanan";
+import { pastikanWilayah } from "../../kantor";
+import { buatKueriNasabah } from "./kueri";
 
 /**
  * KELOLA NASABAH — daftar & cari (bos, pengawas: semua; kolektor: pegangannya;
@@ -127,6 +128,7 @@ export function buatLayananNasabah(deps: NasabahDeps) {
   }
 
   return {
+    ...buatKueriNasabah(deps),
     /** Satu nasabah (bos, pengawas; kolektor: pegangannya) — dipakai Buku nasabah. */
     async baca(aktor: Aktor, id: string): Promise<NasabahJawaban> {
       wajibPeran(aktor, "bos", "pengawas", "kolektor");

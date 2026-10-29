@@ -8,7 +8,7 @@ import {
 import { and, between, eq, inArray, isNull, lt, lte, or, sql } from "drizzle-orm";
 import type { Db } from "../../../platform/db/klien";
 import { kantor, nasabah, pinjaman, posisiHarian, transaksi } from "../../../platform/db/skema";
-import { hariTagihAntara } from "../../lapangan/gerbang";
+import { hariTagihAntara } from "../../kantor";
 
 /**
  * TUTUP HARI — sapuan tengah malam per kantor (aturan-usaha F, docs/skema/

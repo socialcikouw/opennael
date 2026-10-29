@@ -1,9 +1,10 @@
 import type { AbsenInput } from "@opennael/contracts";
-import { hariKolektor } from "../../../platform/db/skema";
-import type { Aktor } from "../../../platform/http/aktor";
-import { hariIni, type LapanganDeps } from "../data";
-import { bukaGerbang, VALIDASI_PENUH } from "../gerbang";
-export function buatAbsen(deps: LapanganDeps) {
+import { hariKolektor } from "../../../../platform/db/skema";
+import type { Aktor } from "../../../../platform/http/aktor";
+import { VALIDASI_PENUH } from "../../../kantor";
+import { bukaGerbang, type GerbangDeps } from "../../gerbang";
+import { hariIni } from "../data";
+export function buatAbsen(deps: GerbangDeps) {
   const sekarang = deps.sekarang ?? (() => new Date());
   const validasi = deps.validasiKalender ?? VALIDASI_PENUH;
   return async function absen(aktor: Aktor, input: AbsenInput) {
