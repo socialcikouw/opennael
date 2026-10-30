@@ -3,6 +3,7 @@ import { GalatAturan } from "@opennael/domain";
 import type { Context } from "hono";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 import type { ZodError } from "zod";
+import { type Log, logDiam } from "../log";
 
 /**
  * Galat yang SENGAJA dijawab ke klien: status HTTP + `kode` stabil + pesan
@@ -94,8 +95,12 @@ const CONSTRAINT_BENTROK: Record<string, [kode: string, pesan: string]> = {
   ],
 };
 
-/** `app.onError` — satu tempat penerjemah galat → jawaban HTTP. */
-export function tanganiGalat(err: Error, c: Context) {
+/**
+ * `app.onError` — satu tempat penerjemah galat → jawaban HTTP. Hanya galat
+ * tak terduga (bug) yang dicatat di log; galat sengaja sudah tercatat sebagai
+ * status di log permintaan.
+ */
+export function tanganiGalat(err: Error, c: Context, log: Log = logDiam) {
   if (err instanceof GalatApp) {
     return c.json<Galat>({ kode: err.kode, pesan: err.message }, err.status);
   }
@@ -104,8 +109,38 @@ export function tanganiGalat(err: Error, c: Context) {
   }
   const bentrokDb = CONSTRAINT_BENTROK[galatPostgres(err)?.constraint_name ?? ""];
   if (bentrokDb) return c.json<Galat>({ kode: bentrokDb[0], pesan: bentrokDb[1] }, 409);
-  console.error(err);
+  log.error({ requestId: c.get("requestId"), galat: ringkasGalat(err) }, "galat tak terduga");
   return c.json<Galat>({ kode: "GALAT_SERVER", pesan: "Terjadi kesalahan di server" }, 500);
+}
+
+/**
+ * Ringkasan galat untuk log, tanpa data pengguna: pesan `DrizzleQueryError`
+ * memuat SQL beserta nilai parameternya, dan `detail` galat Postgres memuat
+ * nilai kolom (mis. NIK) — keduanya, juga baris pertama `stack` yang
+ * mengulang pesan, sengaja tidak dicatat. Yang dicatat: jenis, kode,
+ * constraint, tabel, kolom, dan tumpukan pemanggilan.
+ */
+export function ringkasGalat(e: unknown) {
+  const tumpukan =
+    e instanceof Error
+      ? e.stack
+          ?.split("\n")
+          .filter((baris) => baris.trimStart().startsWith("at "))
+          .join("\n")
+      : undefined;
+  const pg = galatPostgres(e);
+  if (pg) {
+    return {
+      jenis: "Postgres",
+      kode: pg.code,
+      constraint: pg.constraint_name,
+      tabel: pg.table_name,
+      kolom: pg.column_name,
+      tumpukan,
+    };
+  }
+  if (e instanceof Error) return { jenis: e.name, pesan: e.message, tumpukan };
+  return { jenis: typeof e };
 }
 
 /** Galat validasi Zod → 400 dengan rincian per field. */
@@ -117,12 +152,19 @@ export function jawabanValidasi(error: ZodError): Galat {
   };
 }
 
+interface GalatPostgres {
+  code?: string;
+  constraint_name?: string;
+  table_name?: string;
+  column_name?: string;
+}
+
 /** Galat Postgres di balik bungkus Drizzle (`DrizzleQueryError.cause`). */
-export function galatPostgres(e: unknown): { code?: string; constraint_name?: string } | null {
+export function galatPostgres(e: unknown): GalatPostgres | null {
   let saat: unknown = e;
   for (let i = 0; i < 4 && saat; i++) {
     if (typeof saat === "object" && saat !== null && "code" in saat && "severity" in saat) {
-      return saat as { code?: string; constraint_name?: string };
+      return saat as GalatPostgres;
     }
     saat = (saat as { cause?: unknown }).cause;
   }

@@ -180,11 +180,11 @@ apps/api/
     │   │   ├── klien.ts · penjaga.ts · penjaga.test.ts
     │   │   ├── skema/           index.ts · kolom.ts · <tabel>.ts × 29 · <tabel>.test.ts
     │   │   └── migrasi/         0000…0023 + meta/ — dipindah utuh
-    │   ├── http/                router · openapi · galat · aktor · wajib-masuk · peran · batas
+    │   ├── http/                router · openapi · galat · log · aktor · wajib-masuk · peran · batas
     │   ├── idempotensi/         index.ts · idempotensi.test.ts
     │   ├── penyimpanan.ts
     │   ├── riwayat.ts
-    │   └── log.ts               tahap 5 (pino)
+    │   └── log.ts               pino (langkah 9d)
     ├── modul/
     │   ├── identitas/           index.ts · auth/ · tautan/ · perangkat/ · pengguna/
     │   ├── kantor/              index.ts · profil/ · kalender/ · kebijakan/ · wilayah/

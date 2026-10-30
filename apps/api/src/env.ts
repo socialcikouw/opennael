@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { TINGKAT_LOG } from "./platform/log";
 
 const rahasia = (nama: string) =>
   z.string().min(32, `${nama} minimal 32 karakter acak (mis. \`openssl rand -base64 48\`)`);
@@ -24,6 +25,8 @@ const envSchema = z.object({
    * "kantor" sendiri di server ini.
    */
   KODE_REGISTRASI: z.preprocess((v) => (v === "" ? undefined : v), z.string().min(16).optional()),
+  /** Tingkat log pino; `silent` mematikan log. */
+  LOG_LEVEL: z.enum(TINGKAT_LOG).default("info"),
   /**
    * Gerbang kalender lapangan (aturan-usaha C4). Bawaan `true`; `false` hanya
    * di laptop pengembangan — lihat `bacaEnv`.

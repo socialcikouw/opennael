@@ -79,7 +79,7 @@ bila perlu tipe); `packages/format` hanya pada `domain` (tipe);
 | **`Bun.password`** (argon2id) | Hash kata sandi bos — tanpa paket native. |
 | **`hono/jwt`** | Token akses; token refresh per perangkat sesuai [schema-perangkat.md](docs/skema/schema-perangkat.md). |
 | **hono-rate-limiter** (memori) | Batas permintaan — satu proses, tanpa Redis. |
-| **pino** | Log terstruktur JSON. |
+| **pino** | Log terstruktur JSON ke stdout (`platform/log.ts`; tingkat dari `LOG_LEVEL`, bawaan `info`). Satu baris per permintaan (`platform/http/log.ts`: metode, jalur tanpa query, status, ms, `requestId` yang juga dikirim sebagai header `X-Request-Id`); isi permintaan, query string, token, dan alamat klien **tidak dicatat**; galat tak terduga lewat `ringkasGalat` (tanpa SQL/parameter/detail Postgres). Uji memakai log diam. |
 | **croner** | Jadwal dalam proses: sapuan tengah malam, pembersihan foto sementara. |
 | Penyimpanan berkas: satu antarmuka, dua penggerak | **Disk lokal** (dev & VPS) atau **S3** via `Bun.s3` (mis. Cloudflare R2). |
 
