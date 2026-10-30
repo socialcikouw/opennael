@@ -34,3 +34,17 @@ atau upload berkas; cakupan awal seluruh operasi uang dan keadaan hari.
 
 Uji: CHECK/FK/UNIQUE, pelaku lintas kantor, replay, isi berbeda, kegagalan
 atomik, dua koneksi bersamaan, dan kontrak HTTP. Semua ke Supabase dev.
+
+## Klien
+
+Hanya operasi di `OPERASI_IDEMPOTEN` (`packages/contracts`, diuji terhadap
+OpenAPI) yang disisipi `Idempotency-Key` dan diulang otomatis oleh transport
+`packages/api-client`, dan hanya bila hasilnya tak pasti (jaringan putus, batas
+waktu 30 dtk, 502–504). Kunci dibuat per kejadian, disimpan sebelum dikirim
+menurut sidik permintaan (pengguna + metode + jalur + isi kanonik), dan dibuang
+begitu ada jawaban pasti; yang masih tertunda dipakai lagi oleh permintaan
+identik sampai berumur 10 menit. Server tidak membuang kunci lama, jadi
+batas umur ini milik klien: kunci tua dari kejadian yang sudah lewat tidak
+boleh menimpa permintaan serupa yang sah di kemudian hari (mis. dua mutasi kas
+berjumlah sama). Operasi tulis baru yang dibungkus `denganIdempotensi` wajib
+ditambahkan ke daftar itu.
