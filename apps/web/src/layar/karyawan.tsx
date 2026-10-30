@@ -1,4 +1,5 @@
 import type { Peran } from "@opennael/contracts";
+import { LABEL_PERAN, tanggal, waktu } from "@opennael/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getRouteApi, Link } from "@tanstack/react-router";
 import { Pencil, Power, PowerOff, QrCode, Smartphone, Unplug } from "lucide-react";
@@ -12,10 +13,8 @@ import { Button } from "@/komponen/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/komponen/ui/tabs";
 import { Textarea } from "@/komponen/ui/textarea";
 import { ambil, api } from "@/lib/api";
-import { tanggal, waktu } from "@/lib/format";
 import { useKantor } from "@/lib/kantor";
 import { useSesi } from "@/lib/sesi";
-import { LABEL_PERAN } from "./aktivitas";
 
 const rute = getRouteApi("/bos/karyawan");
 
@@ -342,7 +341,7 @@ export function LayarKaryawan() {
             <span className="space-y-0.5">
               <Badge variant="destructive">Nonaktif</Badge>
               <span className="block max-w-56 truncate text-xs text-muted-foreground">
-                {o.dinonaktifkanAt ? tanggal(o.dinonaktifkanAt.slice(0, 10), false) : ""}
+                {o.dinonaktifkanAt ? tanggal(o.dinonaktifkanAt.slice(0, 10), "tanpa") : ""}
                 {o.alasanNonaktif ? ` · ${o.alasanNonaktif}` : ""}
               </span>
             </span>

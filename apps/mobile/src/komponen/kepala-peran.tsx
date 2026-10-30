@@ -1,5 +1,5 @@
+import { tanggal as formatTanggal } from "@opennael/format";
 import { StyleSheet, Text, View } from "react-native";
-import { tanggalPanjang } from "../lib/format";
 import { hariIniKantor } from "../lib/peran";
 import { useSesi } from "../lib/sesi";
 import { useGaya } from "./tampilan";
@@ -15,7 +15,9 @@ export function KepalaPeran() {
   const { pengguna } = s;
   return (
     <View style={g.tumpuk05}>
-      <Text style={gaya.tanggal}>{tanggalPanjang(hariIniKantor(pengguna.kantor.zonaWaktu))}</Text>
+      <Text style={gaya.tanggal}>
+        {formatTanggal(hariIniKantor(pengguna.kantor.zonaWaktu), "panjang")}
+      </Text>
       <Text style={g.judul}>Halo, {pengguna.nama}</Text>
       <Text style={g.teksRedup}>{pengguna.kantor.nama}</Text>
     </View>

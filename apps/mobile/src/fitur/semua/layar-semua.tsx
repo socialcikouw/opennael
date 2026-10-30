@@ -1,4 +1,5 @@
 import { kunciWilayah } from "@opennael/domain";
+import { rupiah } from "@opennael/format";
 import { router } from "expo-router";
 import { memo, useCallback, useDeferredValue, useMemo, useRef, useState } from "react";
 import {
@@ -24,7 +25,6 @@ import {
   type Warna,
 } from "../../komponen/tema";
 import { Ikon, PesanGalat, Tombol } from "../../komponen/ui";
-import { rupiah } from "../../lib/format";
 import { useHariIni, useTagihan } from "../../lib/lapangan";
 import { MODE } from "../mode/mode";
 import { susunBahanGrid } from "../tagihan/inti/grid";

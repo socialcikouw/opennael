@@ -1,4 +1,5 @@
 import { geserTanggal } from "@opennael/domain";
+import { angka, tanggal as formatTanggal, persen, rupiah, tanggalPendek } from "@opennael/format";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi, Link } from "@tanstack/react-router";
 import {
@@ -30,7 +31,6 @@ import {
   CardTitle,
 } from "@/komponen/ui/card";
 import { ambil, api } from "@/lib/api";
-import { angka, tanggal as formatTanggal, persen, rupiah, tanggalPendek } from "@/lib/format";
 import { useHariIni } from "@/lib/kantor";
 import { DaftarAktivitas } from "./aktivitas";
 
@@ -214,7 +214,7 @@ export function LayarBeranda() {
         <CardHeader>
           <CardTitle>Per kolektor</CardTitle>
           <CardDescription>
-            Penagihan, akad, dan setoran sore {formatTanggal(t, false)}
+            Penagihan, akad, dan setoran sore {formatTanggal(t, "tanpa")}
           </CardDescription>
         </CardHeader>
         <CardContent>

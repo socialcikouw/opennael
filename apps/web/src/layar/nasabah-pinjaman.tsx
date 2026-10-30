@@ -1,4 +1,12 @@
 import type { KartuPinjaman, Peristiwa, RincianPinjaman } from "@opennael/contracts";
+import {
+  tanggal as formatTanggal,
+  LABEL_JENIS,
+  LABEL_PERISTIWA,
+  namaTenor,
+  rupiah,
+  waktu,
+} from "@opennael/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { History, ListOrdered, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -17,16 +25,8 @@ import {
   DialogTitle,
 } from "@/komponen/ui/dialog";
 import { ambil, api } from "@/lib/api";
-import {
-  tanggal as formatTanggal,
-  LABEL_JENIS,
-  LABEL_PERISTIWA,
-  LABEL_STATUS,
-  namaTenor,
-  rupiah,
-  waktu,
-} from "@/lib/format";
 import { useHariIni, useKantor } from "@/lib/kantor";
+import { LABEL_STATUS } from "@/lib/status-pinjaman";
 import { DialogRiwayat } from "./aktivitas";
 
 /**
@@ -97,14 +97,14 @@ export function TabPinjaman({ nasabahId }: { nasabahId: string }) {
                 <LencanaTagih p={p} />
               </span>
               <span className="block text-xs text-muted-foreground tabular-nums">
-                Akad {formatTanggal(p.tanggalAkad, false)} · pokok {rupiah(p.pokok)} · saldo{" "}
+                Akad {formatTanggal(p.tanggalAkad, "tanpa")} · pokok {rupiah(p.pokok)} · saldo{" "}
                 {rupiah(p.saldo)}
                 {p.jenis === "tempoan"
                   ? p.jatuhTempo
-                    ? ` · jatuh tempo ${formatTanggal(p.jatuhTempo, false)}`
+                    ? ` · jatuh tempo ${formatTanggal(p.jatuhTempo, "tanpa")}`
                     : ""
                   : ` · angsuran ${rupiah(p.angsuran)} · ke-${p.angsuranKe}/${p.tenor}`}
-                {p.tanggalSelesai ? ` · selesai ${formatTanggal(p.tanggalSelesai, false)}` : ""}
+                {p.tanggalSelesai ? ` · selesai ${formatTanggal(p.tanggalSelesai, "tanpa")}` : ""}
               </span>
             </button>
           </li>
@@ -235,9 +235,9 @@ function AturanMacet({ p }: { p: RincianPinjaman }) {
         </p>
       ) : (
         <p>
-          Setoran {formatTanggal(m.jendelaAwal, false)} – {formatTanggal(m.jendelaAkhir, false)}:{" "}
-          <span className="font-medium tabular-nums">{rupiah(m.setoranJendela)}</span> dari minimal{" "}
-          <span className="tabular-nums">{rupiah(m.ambang ?? 0)}</span>.
+          Setoran {formatTanggal(m.jendelaAwal, "tanpa")} – {formatTanggal(m.jendelaAkhir, "tanpa")}
+          : <span className="font-medium tabular-nums">{rupiah(m.setoranJendela)}</span> dari
+          minimal <span className="tabular-nums">{rupiah(m.ambang ?? 0)}</span>.
           {!m.dievaluasi && m.hariTagih !== null
             ? ` Belum dinilai — baru ${m.hariTagih} hari tagih (perlu 15).`
             : ""}
@@ -267,7 +267,7 @@ function GarisStatus({ id }: { id: string }) {
       {q.data.map((r) => (
         <li key={r.id} className="flex flex-wrap items-center gap-2">
           <span className="w-28 shrink-0 text-muted-foreground">
-            {formatTanggal(r.tanggal, false)}
+            {formatTanggal(r.tanggal, "tanpa")}
           </span>
           {r.statusSebelum ? (
             <>

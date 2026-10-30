@@ -1,10 +1,10 @@
+import { LABEL_JENIS, namaTenor, rupiah } from "@opennael/format";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { ActivityIndicator, RefreshControl, ScrollView, Text, View } from "react-native";
 import { useWarna } from "../../komponen/tampilan";
 import { Keterangan, KotakAngka, Lencana, PesanGalat, Pilihan, useG } from "../../komponen/ui";
 import { api, panggil } from "../../lib/api";
-import { NAMA_JENIS, namaTenor, rupiah } from "../../lib/format";
 
 /**
  * PINJAMAN MENUNGGAK (pengawas) — kartu pinjaman aktif yang tertinggal
@@ -65,7 +65,7 @@ export default function Tunggakan() {
                 </Text>
               </View>
               <Text style={g.teksKecil}>
-                {p.nasabah.kampung} · {p.kolektor.nama} · {NAMA_JENIS[p.jenis]}{" "}
+                {p.nasabah.kampung} · {p.kolektor.nama} · {LABEL_JENIS[p.jenis]}{" "}
                 {namaTenor(p.jenis, p.tenor)} ke-{p.pinjamanKe}
               </Text>
               <View style={g.bungkus}>

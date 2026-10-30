@@ -1,3 +1,4 @@
+import { rupiah } from "@opennael/format";
 import { router } from "expo-router";
 import { ActivityIndicator, Pressable, RefreshControl, ScrollView, Text, View } from "react-native";
 import { TombolKeluar } from "../../komponen/keluar";
@@ -5,7 +6,6 @@ import { KepalaPeran } from "../../komponen/kepala-peran";
 import { PilihTampilan } from "../../komponen/pilih-tampilan";
 import { useWarna } from "../../komponen/tampilan";
 import { Ikon, Keterangan, KotakAngka, Lencana, PesanGalat, Tombol, useG } from "../../komponen/ui";
-import { rupiah } from "../../lib/format";
 import { type HariKolektor, keadaanHari, useHariKolektor } from "../../lib/setoran";
 
 /** Urutan kerja kasir: siap diterima → di lapangan → sudah diterima → tidak kerja. */

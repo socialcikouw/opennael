@@ -1,3 +1,4 @@
+import { bacaUang, tulisUang } from "@opennael/format";
 import { type ReactNode, useState } from "react";
 import {
   ActivityIndicator,
@@ -10,7 +11,6 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { bacaUang, tulisUang } from "../lib/format";
 import { IKON, type NamaIkon } from "./ikon";
 import { useGaya, useWarna } from "./tampilan";
 import { BAYANGAN, GELAP, HURUF, RUANG, SENTUH, SUDUT, TEBAL, type Warna } from "./tema";

@@ -1,10 +1,10 @@
 import { geserTanggal } from "@opennael/domain";
+import { tanggal as formatTanggal } from "@opennael/format";
 import { ChevronLeft, ChevronRight, LoaderCircle } from "lucide-react";
 import type { ReactNode } from "react";
 import { Button } from "@/komponen/ui/button";
 import { Card } from "@/komponen/ui/card";
 import { Input } from "@/komponen/ui/input";
-import { tanggal as formatTanggal } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 /** Judul halaman, keterangan pendek, dan tombol aksi di kanan. */

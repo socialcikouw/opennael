@@ -1,4 +1,5 @@
 import type { NasabahJawaban } from "@opennael/contracts";
+import { rupiah } from "@opennael/format";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi, Link } from "@tanstack/react-router";
 import { BookCopy, Search } from "lucide-react";
@@ -10,7 +11,6 @@ import { Badge } from "@/komponen/ui/badge";
 import { Button } from "@/komponen/ui/button";
 import { Input } from "@/komponen/ui/input";
 import { ambil, api } from "@/lib/api";
-import { rupiah } from "@/lib/format";
 import { DialogNasabah } from "./nasabah-detail";
 
 const rute = getRouteApi("/bos/nasabah");

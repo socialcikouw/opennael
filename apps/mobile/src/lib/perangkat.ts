@@ -1,7 +1,7 @@
+import { waktuPendek } from "@opennael/format";
 import Constants, { ExecutionEnvironment } from "expo-constants";
 import * as Updates from "expo-updates";
 import { Platform } from "react-native";
-import { waktuPendek } from "./format";
 
 /** Keterangan HP ini untuk daftar perangkat tertaut di aplikasi bos (web). */
 export function infoPerangkat(): { nama?: string; platform: "android" | "ios" } {

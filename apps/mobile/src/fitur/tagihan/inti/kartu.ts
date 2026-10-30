@@ -8,8 +8,8 @@ import {
   tolakLibur,
   wajibDitagihHariIni,
 } from "@opennael/domain";
+import { tanggalBertahun } from "@opennael/format";
 import type { NamaIkon } from "../../../komponen/ikon";
-import { tanggalBertahun } from "../../../lib/format";
 import { type BahanGrid, type BarisPekan, nominalK, susunGrid } from "./grid";
 import { type MingguanVM, susunMingguan, susunTempo, type TempoVM } from "./khusus";
 

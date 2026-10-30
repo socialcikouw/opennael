@@ -1,5 +1,6 @@
 import type { Aktivitas, HasilMigrasi } from "@opennael/contracts";
 import { GalatAturan, type JenisPinjaman, syaratMigrasi, TENOR_PINJAMAN } from "@opennael/domain";
+import { jam, LABEL_JENIS, rupiah } from "@opennael/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft, BookCopy, Undo2, UserCheck } from "lucide-react";
@@ -14,7 +15,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/kom
 import { Input } from "@/komponen/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/komponen/ui/tabs";
 import { ambil, api } from "@/lib/api";
-import { jam, LABEL_JENIS, rupiah } from "@/lib/format";
 import { useHariIni, useKantor } from "@/lib/kantor";
 import { cn } from "@/lib/utils";
 

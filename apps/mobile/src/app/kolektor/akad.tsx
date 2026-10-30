@@ -1,5 +1,6 @@
 import type { NasabahLama } from "@opennael/contracts";
 import { type JenisPinjaman, kunciWilayah, syaratAkad, TENOR_PINJAMAN } from "@opennael/domain";
+import { LABEL_JENIS, namaTenor, rupiah } from "@opennael/format";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
 import { ActivityIndicator, Alert, Pressable, Text, View } from "react-native";
@@ -22,7 +23,7 @@ import {
   TombolTeks,
   useG,
 } from "../../komponen/ui";
-import { cobaAturan, NAMA_JENIS, namaTenor, rupiah } from "../../lib/format";
+import { cobaAturan } from "../../lib/aturan";
 import { tulis, useKampung, useNasabahLama, useTulis } from "../../lib/lapangan";
 
 const POKOK_CEPAT = [500_000, 1_000_000, 1_500_000, 2_000_000];
@@ -144,14 +145,14 @@ export default function Akad() {
       )}
 
       {jenisTetap ? (
-        <Stack.Screen options={{ title: `Akad ${NAMA_JENIS[jenisTetap]}` }} />
+        <Stack.Screen options={{ title: `Akad ${LABEL_JENIS[jenisTetap]}` }} />
       ) : (
         <Pilihan
           segmen
           label="Jenis pinjaman"
           pilihan={(["harian", "mingguan", "tempoan"] as const).map((j) => ({
             nilai: j,
-            teks: NAMA_JENIS[j],
+            teks: LABEL_JENIS[j],
           }))}
           nilai={jenis}
           onPilih={pilihJenis}
@@ -270,7 +271,7 @@ function PilihNasabahLama(props: {
         <Text style={g.teksKecil}>{n.kampung}</Text>
         {n.terakhir ? (
           <Baris
-            label={`Terakhir: ${NAMA_JENIS[n.terakhir.jenis]} ke-${n.terakhir.pinjamanKe}`}
+            label={`Terakhir: ${LABEL_JENIS[n.terakhir.jenis]} ke-${n.terakhir.pinjamanKe}`}
             nilai={rupiah(n.terakhir.pokok)}
           />
         ) : null}
@@ -305,7 +306,7 @@ function PilihNasabahLama(props: {
           <Text style={g.teksKecil}>
             {n.kampung}
             {n.terakhir
-              ? ` · terakhir ${NAMA_JENIS[n.terakhir.jenis]} ${rupiah(n.terakhir.pokok)}`
+              ? ` · terakhir ${LABEL_JENIS[n.terakhir.jenis]} ${rupiah(n.terakhir.pokok)}`
               : ""}
           </Text>
         </Pressable>

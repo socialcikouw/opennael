@@ -1,4 +1,5 @@
 import type { NasabahJawaban } from "@opennael/contracts";
+import { tanggal as formatTanggal, rupiah } from "@opennael/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowRightLeft,
@@ -30,7 +31,6 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/komponen/ui/tabs";
 import { Textarea } from "@/komponen/ui/textarea";
 import { ambil, api } from "@/lib/api";
-import { tanggal as formatTanggal, rupiah } from "@/lib/format";
 import { useHariIni } from "@/lib/kantor";
 import { cn } from "@/lib/utils";
 import { DialogRiwayat } from "./aktivitas";

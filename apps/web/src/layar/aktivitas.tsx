@@ -1,5 +1,6 @@
-import type { Aktivitas, Peran, TabelBerjejak } from "@opennael/contracts";
+import type { Aktivitas, TabelBerjejak } from "@opennael/contracts";
 import { tabelBerjejakSchema } from "@opennael/contracts";
+import { tanggal as formatTanggal, jam, LABEL_PERAN, rupiah, waktu } from "@opennael/format";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import {
@@ -33,18 +34,10 @@ import {
   DialogTitle,
 } from "@/komponen/ui/dialog";
 import { ambil, api } from "@/lib/api";
-import { tanggal as formatTanggal, jam, rupiah, waktu } from "@/lib/format";
 import { useHariIni, useKantor } from "@/lib/kantor";
 import { cn } from "@/lib/utils";
 
 const rute = getRouteApi("/bos/aktivitas");
-
-export const LABEL_PERAN: Record<Peran, string> = {
-  bos: "Bos",
-  kasir: "Kasir",
-  pengawas: "Pengawas",
-  kolektor: "Kolektor",
-};
 
 const IKON: Record<string, LucideIcon> = {
   akad: HandCoins,

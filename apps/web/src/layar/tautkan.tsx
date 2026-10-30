@@ -1,4 +1,5 @@
 import { bakukanKode, tampilanKode } from "@opennael/domain";
+import { LABEL_PERAN } from "@opennael/format";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import QrScanner from "qr-scanner";
@@ -6,7 +7,6 @@ import { type FormEvent, useEffect, useRef, useState } from "react";
 import { Isian, KartuFormulir, PesanGalat, Pilihan, Tombol } from "@/komponen/formulir";
 import { Tabs, TabsList, TabsTrigger } from "@/komponen/ui/tabs";
 import { ambil, api, panggil } from "@/lib/api";
-import { LABEL_PERAN } from "./aktivitas";
 
 type PeranTertaut = "kolektor" | "kasir" | "pengawas";
 

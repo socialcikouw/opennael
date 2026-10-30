@@ -1,7 +1,7 @@
+import { angka } from "@opennael/format";
 import type { InputHTMLAttributes, ReactNode } from "react";
 import { Medan } from "@/komponen/formulir";
 import { Input } from "@/komponen/ui/input";
-import { angka } from "@/lib/format";
 
 /**
  * ISIAN RUPIAH — diketik dengan pemisah ribuan otomatis ("1.250.000");

@@ -1,4 +1,5 @@
 import type { HariKas } from "@opennael/contracts";
+import { tanggal as formatTanggal, jam, LABEL_JENIS_TRANSAKSI, rupiah } from "@opennael/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import { ArrowLeftRight, HandCoins, Pencil, Plus, RotateCcw, Trash2, Undo2 } from "lucide-react";
@@ -13,7 +14,6 @@ import { Badge } from "@/komponen/ui/badge";
 import { Button } from "@/komponen/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/komponen/ui/tabs";
 import { ambil, api } from "@/lib/api";
-import { tanggal as formatTanggal, jam, rupiah } from "@/lib/format";
 import { useHariIni, useKantor } from "@/lib/kantor";
 import { cn } from "@/lib/utils";
 import { DialogHapusLibur } from "./nasabah-pinjaman";
@@ -383,8 +383,6 @@ const ambilTransaksi = (tanggal: string, kolektorId?: string) =>
   ambil(() => api.transaksi.$get({ query: { tanggal, ...(kolektorId ? { kolektorId } : {}) } }));
 type Transaksi = Awaited<ReturnType<typeof ambilTransaksi>>[number];
 
-const LABEL_JENIS = { angsuran: "Angsuran", pelunasan: "Pelunasan", gulung: "Gulung" } as const;
-
 function DialogTransfer({ t, tutup }: { t: Transaksi; tutup: () => void }) {
   const klien = useQueryClient();
   const [nominal, setNominal] = useState<number | null>(t.batasTransfer);
@@ -453,7 +451,7 @@ function SetoranNasabah({
         cell: (c) => <span className="font-medium">{c.getValue()}</span>,
         footer: (c) => `${c.table.getRowModel().rows.length} setoran`,
       }),
-      k.accessor("jenis", { header: "Jenis", cell: (c) => LABEL_JENIS[c.getValue()] }),
+      k.accessor("jenis", { header: "Jenis", cell: (c) => LABEL_JENIS_TRANSAKSI[c.getValue()] }),
       uang("setoranMurni", "Murni"),
       uang("setoranPelunasan", "Pelunasan"),
       uang("tabunganKeluar", "Tabungan keluar"),
@@ -513,7 +511,7 @@ function SetoranNasabah({
       {batal ? (
         <DialogBatal
           judul={`Batalkan setoran ${batal.nasabah.nama}?`}
-          keterangan={`${LABEL_JENIS[batal.jenis]} ${rupiah(batal.storting)}. Pinjaman kembali seperti sebelum setoran; gulung ikut membatalkan pinjaman penerusnya; transfer yang menempel ikut batal. Hanya sebelum kas kolektornya diterima.`}
+          keterangan={`${LABEL_JENIS_TRANSAKSI[batal.jenis]} ${rupiah(batal.storting)}. Pinjaman kembali seperti sebelum setoran; gulung ikut membatalkan pinjaman penerusnya; transfer yang menempel ikut batal. Hanya sebelum kas kolektornya diterima.`}
           segarkan={KUNCI_HARIAN.concat([["nasabah"]])}
           tutup={() => setBatal(null)}
           kirim={(alasan) =>
@@ -552,7 +550,7 @@ function DaftarTransfer({ tanggal, hariIni }: { tanggal: string; hariIni: string
           </span>
         ),
       }),
-      k.accessor("jenis", { header: "Jenis", cell: (c) => LABEL_JENIS[c.getValue()] }),
+      k.accessor("jenis", { header: "Jenis", cell: (c) => LABEL_JENIS_TRANSAKSI[c.getValue()] }),
       k.accessor("dibuatAt", {
         header: "Dicatat",
         cell: (c) => jam(c.getValue(), kantor.zonaWaktu),

@@ -1,3 +1,4 @@
+import { rupiah } from "@opennael/format";
 import { type Href, router } from "expo-router";
 import { useState } from "react";
 import { ActivityIndicator, Pressable, RefreshControl, ScrollView, Text, View } from "react-native";
@@ -7,7 +8,6 @@ import { PilihTampilan } from "../../komponen/pilih-tampilan";
 import { RincianKas } from "../../komponen/rincian-kas";
 import { useWarna } from "../../komponen/tampilan";
 import { Ikon, Keterangan, Lencana, type NamaIkon, PesanGalat, useG } from "../../komponen/ui";
-import { rupiah } from "../../lib/format";
 import { type HariKolektor, keadaanHari, useHariKolektor } from "../../lib/setoran";
 
 /**

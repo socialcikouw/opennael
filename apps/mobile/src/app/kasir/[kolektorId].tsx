@@ -1,3 +1,4 @@
+import { LABEL_JENIS_TRANSAKSI, rupiah } from "@opennael/format";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { ActivityIndicator, Alert, Text, View } from "react-native";
@@ -17,7 +18,6 @@ import {
   TombolTeks,
   useG,
 } from "../../komponen/ui";
-import { rupiah } from "../../lib/format";
 import {
   type HariKolektor,
   tulisSetoran,
@@ -26,8 +26,6 @@ import {
   useSetoranKolektor,
   useTulisSetoran,
 } from "../../lib/setoran";
-
-const LABEL_JENIS = { angsuran: "Angsuran", pelunasan: "Pelunasan", gulung: "Gulung" } as const;
 
 /**
  * SATU KOLEKTOR (kasir) — urutan kerja sore: catat transfer & biaya tak
@@ -99,7 +97,7 @@ function Transfer({ kolektorId, terkunci }: { kolektorId: string; terkunci: bool
             <View style={[g.isi, g.tumpuk05]}>
               <Text style={g.teksTebal}>{t.nasabah.nama}</Text>
               <Text style={g.teksKecil}>
-                {LABEL_JENIS[t.jenis]} · storting {rupiah(t.storting)}
+                {LABEL_JENIS_TRANSAKSI[t.jenis]} · storting {rupiah(t.storting)}
               </Text>
             </View>
             {t.transfer ? (

@@ -1,4 +1,5 @@
 import type { KartuPinjaman } from "@opennael/contracts";
+import { LABEL_JENIS, namaTenor, rupiah } from "@opennael/format";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import { useMemo } from "react";
@@ -7,7 +8,7 @@ import { GalatMuat, KartuAngka, KepalaHalaman, Memuat } from "@/komponen/halaman
 import { type Kolom, pembantuKolom, TabelData } from "@/komponen/tabel-data";
 import { Badge } from "@/komponen/ui/badge";
 import { ambil, api } from "@/lib/api";
-import { LABEL_JENIS, LABEL_STATUS, namaTenor, rupiah } from "@/lib/format";
+import { LABEL_STATUS } from "@/lib/status-pinjaman";
 import { DialogPinjaman } from "./nasabah-pinjaman";
 
 const rute = getRouteApi("/bos/pinjaman");

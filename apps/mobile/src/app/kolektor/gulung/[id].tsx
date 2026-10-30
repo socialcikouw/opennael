@@ -1,4 +1,5 @@
 import { angsuranKe, hitungGulung, TENOR_PINJAMAN } from "@opennael/domain";
+import { LABEL_JENIS, namaTenor, rupiah } from "@opennael/format";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import {
@@ -23,7 +24,7 @@ import {
 import { useGaya, useWarna, useWarnaMode } from "../../../komponen/tampilan";
 import { BAYANGAN, HURUF, RUANG, SUDUT, TEBAL, type Warna } from "../../../komponen/tema";
 import { Gulir, Ikon, Keterangan, type NamaIkon, Tombol } from "../../../komponen/ui";
-import { cobaAturan, NAMA_JENIS, namaTenor, rupiah } from "../../../lib/format";
+import { cobaAturan } from "../../../lib/aturan";
 import { tulis, useTagihan, useTulis } from "../../../lib/lapangan";
 
 /** Lencana jenis gulung di bawah nominal — ikon sama dengan lencana kartu Droping. */
@@ -144,7 +145,7 @@ export default function Gulung() {
           </View>
           <View style={[gaya.chip, { backgroundColor: aksen.lembut }]}>
             <Text style={[gaya.chipTeks, { color: aksen.teks }]}>
-              {NAMA_JENIS[p.jenis]} ke-{p.pinjamanKe}
+              {LABEL_JENIS[p.jenis]} ke-{p.pinjamanKe}
             </Text>
           </View>
         </View>

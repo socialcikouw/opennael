@@ -1,4 +1,5 @@
 import { hitungBayar } from "@opennael/domain";
+import { rupiah, tanggalBertahun } from "@opennael/format";
 import { useMutation } from "@tanstack/react-query";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
@@ -10,7 +11,7 @@ import { PapanTombol, tinggiTombolPapan } from "../../../fitur/tagihan/ui/papan-
 import { useGaya, useWarna, useWarnaMode } from "../../../komponen/tampilan";
 import { BAYANGAN, HURUF, RUANG, SUDUT, TEBAL, type Warna } from "../../../komponen/tema";
 import { Gulir, Ikon, Keterangan, Tombol } from "../../../komponen/ui";
-import { cobaAturan, rupiah, tanggalBertahun } from "../../../lib/format";
+import { cobaAturan } from "../../../lib/aturan";
 import { tulis, useTagihan } from "../../../lib/lapangan";
 
 /**

@@ -17,6 +17,7 @@
     "@hookform/resolvers": "^6.0.0",
     "@opennael/contracts": "workspace:*",
     "@opennael/domain": "workspace:*",
+    "@opennael/format": "workspace:*",
     "@tanstack/react-query": "^5.104.5",
     "expo": "~58.0.19",
     "expo-camera": "~58.0.12",

@@ -38,6 +38,7 @@
         "@hookform/resolvers": "^6.0.0",
         "@opennael/contracts": "workspace:*",
         "@opennael/domain": "workspace:*",
+        "@opennael/format": "workspace:*",
         "@tanstack/react-query": "^5.104.5",
         "expo": "~58.0.19",
         "expo-camera": "~58.0.12",
@@ -83,6 +84,7 @@
       "dependencies": {
         "@opennael/contracts": "workspace:*",
         "@opennael/domain": "workspace:*",
+        "@opennael/format": "workspace:*",
         "@tanstack/react-query": "^5.104.5",
         "@tanstack/react-router": "^1.170.45",
         "@tanstack/react-table": "^9.3.1",
@@ -118,6 +120,13 @@
     "packages/domain": {
       "name": "@opennael/domain",
       "version": "0.0.0",
+    },
+    "packages/format": {
+      "name": "@opennael/format",
+      "version": "0.0.0",
+      "dependencies": {
+        "@opennael/domain": "workspace:*",
+      },
     },
   },
   "packages": {
@@ -482,6 +491,8 @@
     "@opennael/contracts": ["@opennael/contracts@workspace:packages/contracts"],
 
     "@opennael/domain": ["@opennael/domain@workspace:packages/domain"],
+
+    "@opennael/format": ["@opennael/format@workspace:packages/format"],
 
     "@opennael/mobile": ["@opennael/mobile@workspace:apps/mobile"],
 

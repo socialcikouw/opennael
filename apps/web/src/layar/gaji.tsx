@@ -1,4 +1,5 @@
 import { geserTanggal } from "@opennael/domain";
+import { tanggal as formatTanggal, persen, rupiah } from "@opennael/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import { Banknote, Undo2 } from "lucide-react";
@@ -13,7 +14,6 @@ import { Button } from "@/komponen/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/komponen/ui/card";
 import { Input } from "@/komponen/ui/input";
 import { ambil, api } from "@/lib/api";
-import { tanggal as formatTanggal, persen, rupiah } from "@/lib/format";
 import { useHariIni } from "@/lib/kantor";
 import { cn } from "@/lib/utils";
 
@@ -95,7 +95,7 @@ function DialogBayar({ p, tutup }: { p: Pratinjau; tutup: () => void }) {
   return (
     <DialogFormulir
       judul={`Bayar gaji ${p.kolektor.nama}`}
-      keterangan={`${formatTanggal(p.periodeMulai, false)} – ${formatTanggal(p.periodeSelesai, false)} · gaji bersih ${rupiah(p.gajiBersih)}. Angka dihitung ulang & dibekukan server.`}
+      keterangan={`${formatTanggal(p.periodeMulai, "tanpa")} – ${formatTanggal(p.periodeSelesai, "tanpa")} · gaji bersih ${rupiah(p.gajiBersih)}. Angka dihitung ulang & dibekukan server.`}
       buka
       ubahBuka={(b) => !b && tutup()}
       kirim={() => m.mutate()}
@@ -192,7 +192,7 @@ function RiwayatSlip({ kolektorId, hariIni }: { kolektorId?: string; hariIni: st
       k.accessor("periodeMulai", {
         header: "Periode",
         cell: (c) =>
-          `${formatTanggal(c.getValue(), false)} – ${formatTanggal(c.row.original.periodeSelesai, false)}`,
+          `${formatTanggal(c.getValue(), "tanpa")} – ${formatTanggal(c.row.original.periodeSelesai, "tanpa")}`,
       }),
       k.accessor("gajiKotor", {
         header: "Kotor",
@@ -211,7 +211,7 @@ function RiwayatSlip({ kolektorId, hariIni }: { kolektorId?: string; hariIni: st
       }),
       k.accessor("tanggalBayar", {
         header: "Dibayar",
-        cell: (c) => `${formatTanggal(c.getValue(), false)} · ${c.row.original.dariAkun}`,
+        cell: (c) => `${formatTanggal(c.getValue(), "tanpa")} · ${c.row.original.dariAkun}`,
       }),
       k.display({
         id: "aksi",

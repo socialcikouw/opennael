@@ -11,6 +11,7 @@
   "dependencies": {
     "@opennael/contracts": "workspace:*",
     "@opennael/domain": "workspace:*",
+    "@opennael/format": "workspace:*",
     "@tanstack/react-query": "^5.104.5",
     "@tanstack/react-router": "^1.170.45",
     "@tanstack/react-table": "^9.3.1",

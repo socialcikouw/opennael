@@ -1,4 +1,5 @@
 import { hitungLunas, kunciWilayah } from "@opennael/domain";
+import { rupiah } from "@opennael/format";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
@@ -47,7 +48,6 @@ import { useRuangTab } from "../../../komponen/tab-mengambang";
 import { useGaya, useWarnaMode } from "../../../komponen/tampilan";
 import { RUANG, type Warna } from "../../../komponen/tema";
 import { PesanGalat, Tombol } from "../../../komponen/ui";
-import { rupiah } from "../../../lib/format";
 import {
   bacaGerbang,
   tulis,

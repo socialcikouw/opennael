@@ -1,4 +1,5 @@
 import { wajibDitagihHariIni } from "@opennael/domain";
+import { tanggal as formatTanggal, rupiah } from "@opennael/format";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Alert, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
@@ -19,7 +20,6 @@ import {
   Tombol,
   useG,
 } from "../../../komponen/ui";
-import { rupiah, tanggalPanjang } from "../../../lib/format";
 import { bacaGerbang, tulis, useHariIni, useTagihan, useTulis } from "../../../lib/lapangan";
 import { useSesi } from "../../../lib/sesi";
 
@@ -75,7 +75,7 @@ export default function Beranda() {
       }
     >
       <View style={g.tumpuk05}>
-        <Text style={gaya.tanggal}>{tanggalPanjang(keadaan.kalender.tanggal)}</Text>
+        <Text style={gaya.tanggal}>{formatTanggal(keadaan.kalender.tanggal, "panjang")}</Text>
         <Text style={g.judul}>Halo, {s?.pengguna.nama}</Text>
         <Text style={g.teksRedup}>{s?.pengguna.kantor.nama}</Text>
       </View>

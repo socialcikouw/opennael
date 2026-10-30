@@ -1,4 +1,5 @@
 import { geserTanggal } from "@opennael/domain";
+import { tanggal as formatTanggal, rupiah } from "@opennael/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import { Pencil, Plus, Scale, Undo2 } from "lucide-react";
@@ -14,7 +15,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/kom
 import { Input } from "@/komponen/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/komponen/ui/tabs";
 import { ambil, api } from "@/lib/api";
-import { tanggal as formatTanggal, rupiah } from "@/lib/format";
 import { useHariIni } from "@/lib/kantor";
 import { cn } from "@/lib/utils";
 
@@ -334,7 +334,7 @@ function DaftarPencocokan({
         header: "Tanggal",
         cell: (c) => (
           <span className={cn(c.row.original.dibatalkanAt && "line-through")}>
-            {formatTanggal(c.getValue(), false)}
+            {formatTanggal(c.getValue(), "tanpa")}
           </span>
         ),
       }),
@@ -485,7 +485,10 @@ export function LayarKas() {
   const kolom = useMemo(() => {
     const k = pembantuKolom<Gerakan>();
     return [
-      k.accessor("tanggal", { header: "Tanggal", cell: (c) => formatTanggal(c.getValue(), false) }),
+      k.accessor("tanggal", {
+        header: "Tanggal",
+        cell: (c) => formatTanggal(c.getValue(), "tanpa"),
+      }),
       k.accessor("akun", { header: "Akun" }),
       k.accessor(
         (g) => (g.sumber === "mutasi" && g.jenis ? LABEL_MUTASI[g.jenis] : LABEL_SUMBER[g.sumber]),
@@ -553,7 +556,7 @@ export function LayarKas() {
     <>
       <KepalaHalaman
         judul="Kas"
-        keterangan={`${mulai === selesai ? formatTanggal(selesai) : `${formatTanggal(mulai, false)} – ${formatTanggal(selesai, false)}`} · buku dibuka ${formatTanggal(buku.tanggalBuka, false)}`}
+        keterangan={`${mulai === selesai ? formatTanggal(selesai) : `${formatTanggal(mulai, "tanpa")} – ${formatTanggal(selesai, "tanpa")}`} · buku dibuka ${formatTanggal(buku.tanggalBuka, "tanpa")}`}
         aksi={
           <>
             {buku.tanggalBuka === hariIni ? (

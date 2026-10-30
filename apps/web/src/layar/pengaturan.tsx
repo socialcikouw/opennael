@@ -1,4 +1,5 @@
 import { geserTanggal, kunciWilayah, rapikanNamaWilayah } from "@opennael/domain";
+import { tanggal as formatTanggal, persen, waktu } from "@opennael/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import { ArrowDown, ArrowUp, Pencil, Plus, Trash2, Undo2 } from "lucide-react";
@@ -14,7 +15,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/kom
 import { Input } from "@/komponen/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/komponen/ui/tabs";
 import { ambil, api } from "@/lib/api";
-import { tanggal as formatTanggal, persen, waktu } from "@/lib/format";
 import { useHariIni, useKantor } from "@/lib/kantor";
 import { sesi } from "@/lib/sesi";
 
@@ -677,7 +677,7 @@ function TarifGaji() {
               <span>
                 {t.kolektor?.nama ?? "Seluruh kantor"}{" "}
                 <span className="text-muted-foreground">
-                  · mulai {formatTanggal(t.berlakuMulai, false)}
+                  · mulai {formatTanggal(t.berlakuMulai, "tanpa")}
                 </span>
               </span>
               <span className="font-medium tabular-nums">

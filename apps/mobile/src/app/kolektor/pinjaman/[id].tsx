@@ -1,5 +1,6 @@
 import type { KartuTagih } from "@opennael/contracts";
 import { hitungBayar, hitungLunas } from "@opennael/domain";
+import { LABEL_JENIS, namaTenor, rupiah, tanggalPendek } from "@opennael/format";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Alert, Text, View } from "react-native";
@@ -19,7 +20,7 @@ import {
   Tombol,
   useG,
 } from "../../../komponen/ui";
-import { cobaAturan, NAMA_JENIS, namaTenor, rupiah, tanggalPendek } from "../../../lib/format";
+import { cobaAturan } from "../../../lib/aturan";
 import { bacaGerbang, tulis, useHariIni, useTagihan, useTulis } from "../../../lib/lapangan";
 
 type Aksi = "setor" | "lunas" | "libur" | "gulung";
@@ -71,7 +72,7 @@ export default function KartuPinjaman() {
       <Kartu>
         <View style={g.bungkus}>
           <Text style={g.subjudul}>
-            {NAMA_JENIS[p.jenis]} {namaTenor(p.jenis, p.tenor)} · ke-{p.pinjamanKe}
+            {LABEL_JENIS[p.jenis]} {namaTenor(p.jenis, p.tenor)} · ke-{p.pinjamanKe}
           </Text>
           {p.status === "macet" ? <Lencana teks="Macet" warna="merah" /> : null}
         </View>
