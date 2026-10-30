@@ -6,20 +6,15 @@ import { Alert, RefreshControl, ScrollView, StyleSheet, Text, View } from "react
 import { TombolKeluar } from "@/komponen/keluar";
 import { PilihTampilan } from "@/komponen/pilih-tampilan";
 import { useRuangTab } from "@/komponen/tab-mengambang";
-import { useGaya } from "@/komponen/tampilan";
-import { HURUF, RUANG, TEBAL, type Warna } from "@/komponen/tema";
-import {
-  Isian,
-  IsianUang,
-  Kartu,
-  KotakAngka,
-  Memuat,
-  PesanGalat,
-  Pilihan,
-  Spanduk,
-  Tombol,
-  useG,
-} from "@/komponen/ui";
+import { useG } from "@/komponen/ui/gaya-bersama";
+import { Isian, IsianUang, PesanGalat } from "@/komponen/ui/isian";
+import { Kartu, KotakAngka } from "@/komponen/ui/kartu";
+import { Memuat } from "@/komponen/ui/layar";
+import { Pilihan } from "@/komponen/ui/pilihan";
+import { Spanduk } from "@/komponen/ui/spanduk";
+import { useGaya } from "@/komponen/ui/tampilan";
+import { HURUF, RUANG, TEBAL, type Warna } from "@/komponen/ui/tema";
+import { Tombol } from "@/komponen/ui/tombol";
 import { bacaGerbang, tulis, useHariIni, useTagihan, useTulis } from "@/lib/lapangan";
 import { useSesi } from "@/lib/sesi";
 

@@ -1,9 +1,9 @@
 import { useMemo } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { LembarBawah } from "@/komponen/lembar-bawah";
-import { useGaya, useWarna, useWarnaMode } from "@/komponen/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/tema";
-import { Ikon } from "@/komponen/ui";
+import { Ikon } from "@/komponen/ui/ikon";
+import { useGaya, useWarna, useWarnaMode } from "@/komponen/ui/tampilan";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
 import { useHariIni, useTagihan } from "@/lib/lapangan";
 import { MODE, type ModeApp, modeAktif, ringkasPerMode, URUTAN_MODE, useMode } from "./mode";
 

@@ -8,9 +8,12 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { kabarTercatat } from "@/fitur/tagihan/inti/kabar-tercatat";
 import { nilaiDigit, PAPAN_BAYAR, tekanBayar } from "@/fitur/tagihan/inti/papan";
 import { PapanTombol, tinggiTombolPapan } from "@/fitur/tagihan/ui/papan-tombol";
-import { useGaya, useWarna, useWarnaMode } from "@/komponen/tampilan";
-import { BAYANGAN, HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/tema";
-import { Gulir, Ikon, Keterangan, Tombol } from "@/komponen/ui";
+import { Ikon } from "@/komponen/ui/ikon";
+import { Gulir } from "@/komponen/ui/layar";
+import { useGaya, useWarna, useWarnaMode } from "@/komponen/ui/tampilan";
+import { Keterangan } from "@/komponen/ui/teks";
+import { BAYANGAN, HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
+import { Tombol } from "@/komponen/ui/tombol";
 import { cobaAturan } from "@/lib/aturan";
 import { tulis, useTagihan } from "@/lib/lapangan";
 

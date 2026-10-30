@@ -2,9 +2,9 @@ import { type ReactNode, useState, useSyncExternalStore } from "react";
 import { type LayoutChangeEvent, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import Animated, { interpolate, type SharedValue, useAnimatedStyle } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useGaya, useWarna } from "@/komponen/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/komponen/tema";
-import { Ikon } from "@/komponen/ui";
+import { Ikon } from "@/komponen/ui/ikon";
+import { useGaya, useWarna } from "@/komponen/ui/tampilan";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/komponen/ui/tema";
 import { TAB_KERJA, type TabKerja } from "../inti/daftar";
 
 /** Rute kartu teratas — dilaporkan daftar, hanya didengar chip rute (menggulung tak merender ulang layar). */

@@ -6,8 +6,13 @@ import { TombolKeluar } from "@/komponen/keluar";
 import { KepalaPeran } from "@/komponen/kepala-peran";
 import { PilihTampilan } from "@/komponen/pilih-tampilan";
 import { RincianKas } from "@/komponen/rincian-kas";
-import { useWarna } from "@/komponen/tampilan";
-import { Ikon, Keterangan, Lencana, type NamaIkon, PesanGalat, useG } from "@/komponen/ui";
+import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
+import { useG } from "@/komponen/ui/gaya-bersama";
+import { Ikon } from "@/komponen/ui/ikon";
+import { PesanGalat } from "@/komponen/ui/isian";
+import { Lencana } from "@/komponen/ui/lencana";
+import { useWarna } from "@/komponen/ui/tampilan";
+import { Keterangan } from "@/komponen/ui/teks";
 import { type HariKolektor, keadaanHari, useHariKolektor } from "@/lib/setoran";
 
 /**

@@ -14,9 +14,19 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRuangTab } from "@/komponen/tab-mengambang";
-import { useGaya, useGelap, useWarna, useWarnaMode } from "@/komponen/tampilan";
-import { HURUF, MODE_GELAP, MODE_TERANG, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/tema";
-import { Ikon, PesanGalat, Tombol } from "@/komponen/ui";
+import { Ikon } from "@/komponen/ui/ikon";
+import { PesanGalat } from "@/komponen/ui/isian";
+import { useGaya, useGelap, useWarna, useWarnaMode } from "@/komponen/ui/tampilan";
+import {
+  HURUF,
+  MODE_GELAP,
+  MODE_TERANG,
+  RUANG,
+  SUDUT,
+  TEBAL,
+  type Warna,
+} from "@/komponen/ui/tema";
+import { Tombol } from "@/komponen/ui/tombol";
 import { useHariIni, useTagihan } from "@/lib/lapangan";
 import { MODE } from "../mode/mode";
 import { susunBahanGrid } from "../tagihan/inti/grid";

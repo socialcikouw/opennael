@@ -1,8 +1,11 @@
 import { Redirect } from "expo-router";
 import { View } from "react-native";
 import { TombolKeluar } from "@/komponen/keluar";
-import { Judul, Keterangan, Layar, Merek, Spanduk, useG } from "@/komponen/ui";
-import { layarAwal } from "@/lib/peran";
+import { useG } from "@/komponen/ui/gaya-bersama";
+import { Layar } from "@/komponen/ui/layar";
+import { Spanduk } from "@/komponen/ui/spanduk";
+import { Judul, Keterangan, Merek } from "@/komponen/ui/teks";
+import { layarAwal } from "@/lib/navigasi";
 import { useSesi } from "@/lib/sesi";
 
 /**

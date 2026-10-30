@@ -1,10 +1,13 @@
 import { Redirect } from "expo-router";
 import { ActivityIndicator, View } from "react-native";
-import { useWarna } from "@/komponen/tampilan";
-import { RUANG } from "@/komponen/tema";
-import { Judul, Keterangan, Layar, Merek, Spanduk, useG } from "@/komponen/ui";
+import { useG } from "@/komponen/ui/gaya-bersama";
+import { Layar } from "@/komponen/ui/layar";
+import { Spanduk } from "@/komponen/ui/spanduk";
+import { useWarna } from "@/komponen/ui/tampilan";
+import { Judul, Keterangan, Merek } from "@/komponen/ui/teks";
+import { RUANG } from "@/komponen/ui/tema";
 import { ALAMAT_API } from "@/lib/api";
-import { layarAwal } from "@/lib/peran";
+import { layarAwal } from "@/lib/navigasi";
 import { useSesi } from "@/lib/sesi";
 
 /**

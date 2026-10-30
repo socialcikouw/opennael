@@ -1,6 +1,6 @@
 import { Redirect, Stack } from "expo-router";
-import { useOpsiStack } from "@/komponen/ui";
-import { layarAwal } from "@/lib/peran";
+import { useOpsiStack } from "@/komponen/ui/tampilan";
+import { layarAwal } from "@/lib/navigasi";
 import { useSesi } from "@/lib/sesi";
 
 /** Layar-layar pengawas — hanya untuk sesi berperan pengawas. */

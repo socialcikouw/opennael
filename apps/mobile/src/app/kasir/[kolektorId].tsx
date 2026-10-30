@@ -3,21 +3,15 @@ import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { ActivityIndicator, Alert, Text, View } from "react-native";
 import { RincianKas } from "@/komponen/rincian-kas";
-import { useWarna } from "@/komponen/tampilan";
-import {
-  Baris,
-  Gulir,
-  Isian,
-  IsianUang,
-  Kartu,
-  Keterangan,
-  Lencana,
-  PesanGalat,
-  Spanduk,
-  Tombol,
-  TombolTeks,
-  useG,
-} from "@/komponen/ui";
+import { useG } from "@/komponen/ui/gaya-bersama";
+import { Isian, IsianUang, PesanGalat } from "@/komponen/ui/isian";
+import { Baris, Kartu } from "@/komponen/ui/kartu";
+import { Gulir } from "@/komponen/ui/layar";
+import { Lencana } from "@/komponen/ui/lencana";
+import { Spanduk } from "@/komponen/ui/spanduk";
+import { useWarna } from "@/komponen/ui/tampilan";
+import { Keterangan } from "@/komponen/ui/teks";
+import { Tombol, TombolTeks } from "@/komponen/ui/tombol";
 import {
   type HariKolektor,
   tulisSetoran,

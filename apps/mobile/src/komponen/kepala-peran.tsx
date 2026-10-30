@@ -1,10 +1,10 @@
 import { tanggal as formatTanggal } from "@opennael/format";
 import { StyleSheet, Text, View } from "react-native";
-import { hariIniKantor } from "@/lib/peran";
+import { useG } from "@/komponen/ui/gaya-bersama";
+import { useGaya } from "@/komponen/ui/tampilan";
+import { HURUF, TEBAL, type Warna } from "@/komponen/ui/tema";
+import { hariIniKantor } from "@/lib/kantor";
 import { useSesi } from "@/lib/sesi";
-import { useGaya } from "./tampilan";
-import { HURUF, TEBAL, type Warna } from "./tema";
-import { useG } from "./ui";
 
 /** Kepala layar kerja kasir / pengawas: tanggal kantor, sapaan, nama kantor. */
 export function KepalaPeran() {

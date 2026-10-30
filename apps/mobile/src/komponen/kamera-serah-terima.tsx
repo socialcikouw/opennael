@@ -2,10 +2,13 @@ import { CameraView, useCameraPermissions } from "expo-camera";
 import { useRef, useState } from "react";
 import { Image, Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { unggahFotoSerahTerima } from "@/lib/foto";
-import { useGaya } from "./tampilan";
-import { HURUF, RUANG, SUDUT, type Warna } from "./tema";
-import { Keterangan, PesanGalat, Tombol, useG } from "./ui";
+import { useG } from "@/komponen/ui/gaya-bersama";
+import { PesanGalat } from "@/komponen/ui/isian";
+import { useGaya } from "@/komponen/ui/tampilan";
+import { Keterangan } from "@/komponen/ui/teks";
+import { HURUF, RUANG, SUDUT, type Warna } from "@/komponen/ui/tema";
+import { Tombol } from "@/komponen/ui/tombol";
+import { unggahFotoSerahTerima } from "@/platform/foto";
 
 interface Potret {
   uri: string;

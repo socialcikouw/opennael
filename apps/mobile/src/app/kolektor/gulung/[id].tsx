@@ -21,9 +21,13 @@ import {
   fotoMasihBerlaku,
   KameraSerahTerima,
 } from "@/komponen/kamera-serah-terima";
-import { useGaya, useWarna, useWarnaMode } from "@/komponen/tampilan";
-import { BAYANGAN, HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/tema";
-import { Gulir, Ikon, Keterangan, type NamaIkon, Tombol } from "@/komponen/ui";
+import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
+import { Ikon } from "@/komponen/ui/ikon";
+import { Gulir } from "@/komponen/ui/layar";
+import { useGaya, useWarna, useWarnaMode } from "@/komponen/ui/tampilan";
+import { Keterangan } from "@/komponen/ui/teks";
+import { BAYANGAN, HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
+import { Tombol } from "@/komponen/ui/tombol";
 import { cobaAturan } from "@/lib/aturan";
 import { tulis, useTagihan, useTulis } from "@/lib/lapangan";
 

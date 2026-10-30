@@ -3,7 +3,7 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { PenyediaTampilan, tampilan, useGelap, useWarna } from "@/komponen/tampilan";
+import { PenyediaTampilan, tampilan, useGelap, useWarna } from "@/komponen/ui/tampilan";
 import { sesi } from "@/lib/sesi";
 
 export default function TataLetakAkar() {

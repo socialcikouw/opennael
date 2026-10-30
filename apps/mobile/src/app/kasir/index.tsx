@@ -4,8 +4,14 @@ import { ActivityIndicator, Pressable, RefreshControl, ScrollView, Text, View } 
 import { TombolKeluar } from "@/komponen/keluar";
 import { KepalaPeran } from "@/komponen/kepala-peran";
 import { PilihTampilan } from "@/komponen/pilih-tampilan";
-import { useWarna } from "@/komponen/tampilan";
-import { Ikon, Keterangan, KotakAngka, Lencana, PesanGalat, Tombol, useG } from "@/komponen/ui";
+import { useG } from "@/komponen/ui/gaya-bersama";
+import { Ikon } from "@/komponen/ui/ikon";
+import { PesanGalat } from "@/komponen/ui/isian";
+import { KotakAngka } from "@/komponen/ui/kartu";
+import { Lencana } from "@/komponen/ui/lencana";
+import { useWarna } from "@/komponen/ui/tampilan";
+import { Keterangan } from "@/komponen/ui/teks";
+import { Tombol } from "@/komponen/ui/tombol";
 import { type HariKolektor, keadaanHari, useHariKolektor } from "@/lib/setoran";
 
 /** Urutan kerja kasir: siap diterima → di lapangan → sudah diterima → tidak kerja. */

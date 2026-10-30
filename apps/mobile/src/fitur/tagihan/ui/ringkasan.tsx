@@ -1,8 +1,8 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { LembarBawah } from "@/komponen/lembar-bawah";
-import { useGaya, useWarna } from "@/komponen/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/komponen/tema";
-import { Ikon } from "@/komponen/ui";
+import { Ikon } from "@/komponen/ui/ikon";
+import { useGaya, useWarna } from "@/komponen/ui/tampilan";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/komponen/ui/tema";
 import type { LompatRute } from "../inti/daftar";
 
 /**

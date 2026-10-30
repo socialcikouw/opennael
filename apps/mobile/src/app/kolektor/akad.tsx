@@ -9,20 +9,14 @@ import {
   fotoMasihBerlaku,
   IsianFotoSerahTerima,
 } from "@/komponen/kamera-serah-terima";
-import { useWarna } from "@/komponen/tampilan";
-import {
-  Baris,
-  Gulir,
-  Isian,
-  IsianUang,
-  Kartu,
-  Keterangan,
-  PesanGalat,
-  Pilihan,
-  Tombol,
-  TombolTeks,
-  useG,
-} from "@/komponen/ui";
+import { useG } from "@/komponen/ui/gaya-bersama";
+import { Isian, IsianUang, PesanGalat } from "@/komponen/ui/isian";
+import { Baris, Kartu } from "@/komponen/ui/kartu";
+import { Gulir } from "@/komponen/ui/layar";
+import { Pilihan } from "@/komponen/ui/pilihan";
+import { useWarna } from "@/komponen/ui/tampilan";
+import { Keterangan } from "@/komponen/ui/teks";
+import { Tombol, TombolTeks } from "@/komponen/ui/tombol";
 import { cobaAturan } from "@/lib/aturan";
 import { tulis, useKampung, useNasabahLama, useTulis } from "@/lib/lapangan";
 

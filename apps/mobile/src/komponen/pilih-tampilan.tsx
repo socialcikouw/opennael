@@ -1,5 +1,5 @@
-import { type PilihanTampilan, tampilan, usePilihanTampilan } from "./tampilan";
-import { Pilihan } from "./ui";
+import { Pilihan } from "@/komponen/ui/pilihan";
+import { type PilihanTampilan, tampilan, usePilihanTampilan } from "@/komponen/ui/tampilan";
 
 const PILIHAN: { nilai: PilihanTampilan; teks: string }[] = [
   { nilai: "sistem", teks: "Ikuti HP" },

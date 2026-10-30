@@ -5,21 +5,15 @@ import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Alert, Text, View } from "react-native";
 import { FotoSerahTerima } from "@/komponen/foto-nasabah";
-import {
-  Baris,
-  Gulir,
-  Isian,
-  IsianUang,
-  Kartu,
-  Keterangan,
-  Lencana,
-  Memuat,
-  PesanGalat,
-  Pilihan,
-  Spanduk,
-  Tombol,
-  useG,
-} from "@/komponen/ui";
+import { useG } from "@/komponen/ui/gaya-bersama";
+import { Isian, IsianUang, PesanGalat } from "@/komponen/ui/isian";
+import { Baris, Kartu } from "@/komponen/ui/kartu";
+import { Gulir, Memuat } from "@/komponen/ui/layar";
+import { Lencana } from "@/komponen/ui/lencana";
+import { Pilihan } from "@/komponen/ui/pilihan";
+import { Spanduk } from "@/komponen/ui/spanduk";
+import { Keterangan } from "@/komponen/ui/teks";
+import { Tombol } from "@/komponen/ui/tombol";
 import { cobaAturan } from "@/lib/aturan";
 import { bacaGerbang, tulis, useHariIni, useTagihan, useTulis } from "@/lib/lapangan";
 

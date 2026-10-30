@@ -41,9 +41,10 @@ import { KartuDroping, KartuSudah } from "@/fitur/tagihan/ui/kartu-sudah";
 import { buatSimpananRute, KepalaTagihan } from "@/fitur/tagihan/ui/kepala-tagihan";
 import { KartuJatuhTempo, KartuRasio, LembarRute } from "@/fitur/tagihan/ui/ringkasan";
 import { useRuangTab } from "@/komponen/tab-mengambang";
-import { useGaya, useWarnaMode } from "@/komponen/tampilan";
-import { RUANG, type Warna } from "@/komponen/tema";
-import { PesanGalat, Tombol } from "@/komponen/ui";
+import { PesanGalat } from "@/komponen/ui/isian";
+import { useGaya, useWarnaMode } from "@/komponen/ui/tampilan";
+import { RUANG, type Warna } from "@/komponen/ui/tema";
+import { Tombol } from "@/komponen/ui/tombol";
 import {
   bacaGerbang,
   tulis,

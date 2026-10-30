@@ -1,8 +1,9 @@
 import { rupiah } from "@opennael/format";
 import { Text, View } from "react-native";
+import { useG } from "@/komponen/ui/gaya-bersama";
+import { Baris, Kartu } from "@/komponen/ui/kartu";
+import { useWarna } from "@/komponen/ui/tampilan";
 import type { HariKolektor } from "@/lib/setoran";
-import { useWarna } from "./tampilan";
-import { Baris, Kartu, useG } from "./ui";
 
 /**
  * Rincian tunai seharusnya satu hari kolektor (aturan-usaha I2) — hanya ada

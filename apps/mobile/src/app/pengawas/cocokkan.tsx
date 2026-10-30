@@ -3,23 +3,18 @@ import { rupiah, tanggalPendek } from "@opennael/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { ActivityIndicator, Alert, Text, View } from "react-native";
-import { useWarna } from "@/komponen/tampilan";
-import {
-  Baris,
-  Gulir,
-  Isian,
-  IsianUang,
-  Kartu,
-  Keterangan,
-  Lencana,
-  PesanGalat,
-  Pilihan,
-  Spanduk,
-  Tombol,
-  useG,
-} from "@/komponen/ui";
+import { useG } from "@/komponen/ui/gaya-bersama";
+import { Isian, IsianUang, PesanGalat } from "@/komponen/ui/isian";
+import { Baris, Kartu } from "@/komponen/ui/kartu";
+import { Gulir } from "@/komponen/ui/layar";
+import { Lencana } from "@/komponen/ui/lencana";
+import { Pilihan } from "@/komponen/ui/pilihan";
+import { Spanduk } from "@/komponen/ui/spanduk";
+import { useWarna } from "@/komponen/ui/tampilan";
+import { Keterangan } from "@/komponen/ui/teks";
+import { Tombol } from "@/komponen/ui/tombol";
 import { api, panggil } from "@/lib/api";
-import { hariIniKantor } from "@/lib/peran";
+import { hariIniKantor } from "@/lib/kantor";
 import { useSesi } from "@/lib/sesi";
 
 const KUNCI = ["pencocokan"] as const;

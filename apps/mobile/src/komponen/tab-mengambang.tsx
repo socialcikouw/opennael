@@ -2,9 +2,18 @@ import type { BottomTabBarProps } from "expo-router/js-tabs";
 import type { ReactNode } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useGaya, useWarna } from "./tampilan";
-import { BAYANGAN, HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "./tema";
-import { Ikon, type NamaIkon } from "./ui";
+import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
+import { Ikon } from "@/komponen/ui/ikon";
+import { useGaya, useWarna } from "@/komponen/ui/tampilan";
+import {
+  BAYANGAN,
+  HURUF,
+  RUANG,
+  SUDUT,
+  TEBAL,
+  type Warna,
+  type WarnaMode,
+} from "@/komponen/ui/tema";
 
 /** Tinggi pil tab. */
 const TINGGI = 64;

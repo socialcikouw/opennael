@@ -1,7 +1,7 @@
 import { UKURAN_FOTO_MAKS } from "@opennael/contracts";
 import { File } from "expo-file-system";
 import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
-import { ALAMAT_API, ambilDenganSesi, bacaGalat, PESAN_JARINGAN } from "./api";
+import { ALAMAT_API, ambilDenganSesi, bacaGalat, PESAN_JARINGAN } from "@/lib/api";
 
 /** Sisi terpanjang foto bukti — cukup untuk mengenali wajah & uang, kecil di sinyal lemah. */
 const SISI_MAKS = 1280;

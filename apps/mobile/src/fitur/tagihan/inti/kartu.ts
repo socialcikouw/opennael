@@ -9,7 +9,7 @@ import {
   wajibDitagihHariIni,
 } from "@opennael/domain";
 import { tanggalBertahun } from "@opennael/format";
-import type { NamaIkon } from "../../../komponen/ikon";
+import type { NamaIkon } from "../../../komponen/ui/daftar-ikon";
 import { type BahanGrid, type BarisPekan, nominalK, susunGrid } from "./grid";
 import { type MingguanVM, susunMingguan, susunTempo, type TempoVM } from "./khusus";
 

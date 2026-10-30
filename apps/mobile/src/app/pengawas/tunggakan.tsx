@@ -2,8 +2,13 @@ import { LABEL_JENIS, namaTenor, rupiah } from "@opennael/format";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { ActivityIndicator, RefreshControl, ScrollView, Text, View } from "react-native";
-import { useWarna } from "@/komponen/tampilan";
-import { Keterangan, KotakAngka, Lencana, PesanGalat, Pilihan, useG } from "@/komponen/ui";
+import { useG } from "@/komponen/ui/gaya-bersama";
+import { PesanGalat } from "@/komponen/ui/isian";
+import { KotakAngka } from "@/komponen/ui/kartu";
+import { Lencana } from "@/komponen/ui/lencana";
+import { Pilihan } from "@/komponen/ui/pilihan";
+import { useWarna } from "@/komponen/ui/tampilan";
+import { Keterangan } from "@/komponen/ui/teks";
 import { api, panggil } from "@/lib/api";
 
 /**

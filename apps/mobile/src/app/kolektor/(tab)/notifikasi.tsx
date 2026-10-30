@@ -1,8 +1,10 @@
 import { ScrollView, StyleSheet, View } from "react-native";
 import { useRuangTab } from "@/komponen/tab-mengambang";
-import { useGaya, useWarna } from "@/komponen/tampilan";
-import { RUANG, SUDUT, type Warna } from "@/komponen/tema";
-import { Ikon, Keterangan, useG } from "@/komponen/ui";
+import { useG } from "@/komponen/ui/gaya-bersama";
+import { Ikon } from "@/komponen/ui/ikon";
+import { useGaya, useWarna } from "@/komponen/ui/tampilan";
+import { Keterangan } from "@/komponen/ui/teks";
+import { RUANG, SUDUT, type Warna } from "@/komponen/ui/tema";
 
 /**
  * NOTIFIKASI — belum ada isinya: apa yang diberitahukan ke kolektor (dan

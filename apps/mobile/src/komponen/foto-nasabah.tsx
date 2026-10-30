@@ -2,11 +2,11 @@ import { Image, type ImageSource } from "expo-image";
 import { useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Ikon } from "@/komponen/ui/ikon";
+import { useGaya, useWarna } from "@/komponen/ui/tampilan";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
 import { ALAMAT_API } from "@/lib/api";
 import { sesi } from "@/lib/sesi";
-import { useGaya, useWarna } from "./tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "./tema";
-import { Ikon } from "./ui";
 
 /**
  * Berkas `GET /foto/:id` bertoken. Disimpan di disk HP per id foto — tiap foto

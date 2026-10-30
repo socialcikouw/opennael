@@ -1,7 +1,7 @@
 import * as SecureStore from "expo-secure-store";
 import { createContext, type ReactNode, useContext, useMemo, useSyncExternalStore } from "react";
 import { useColorScheme } from "react-native";
-import { GELAP, MODE_GELAP, MODE_TERANG, TERANG, type Warna, type WarnaMode } from "./tema";
+import { GELAP, MODE_GELAP, MODE_TERANG, TEBAL, TERANG, type Warna, type WarnaMode } from "./tema";
 
 /**
  * MODE TAMPILAN — terang / gelap. Bawaan mengikuti HP; pengguna boleh memilih
@@ -87,4 +87,19 @@ export function useGaya<T>(buat: (w: Warna) => T): T {
 /** Warna mode aplikasi kolektor (Harian/Mingguan/Tempoan/Semua) di tema yang berlaku. */
 export function useWarnaMode(mode: keyof typeof MODE_TERANG): WarnaMode {
   return (useGelap() ? MODE_GELAP : MODE_TERANG)[mode];
+}
+
+const buatOpsiStack = (WARNA: Warna) =>
+  ({
+    headerTintColor: WARNA.utama,
+    headerTitleStyle: { color: WARNA.teks, fontWeight: TEBAL.tebal },
+    headerStyle: { backgroundColor: WARNA.latar },
+    headerShadowVisible: false,
+    headerBackButtonDisplayMode: "minimal",
+    contentStyle: { backgroundColor: WARNA.latar },
+  }) as const;
+
+/** Header Stack baku layar-layar peran (kolektor, kasir, pengawas), sesuai mode tampilan. */
+export function useOpsiStack() {
+  return useGaya(buatOpsiStack);
 }

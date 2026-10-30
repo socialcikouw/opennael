@@ -5,8 +5,8 @@ import { Alert } from "react-native";
 import { HurufMode, LembarMode } from "@/fitur/mode/lembar-mode";
 import { jenisDariMode, MODE, useMode } from "@/fitur/mode/mode";
 import { TabMengambang } from "@/komponen/tab-mengambang";
-import { useWarna, useWarnaMode } from "@/komponen/tampilan";
-import { TEBAL } from "@/komponen/tema";
+import { useWarna, useWarnaMode } from "@/komponen/ui/tampilan";
+import { TEBAL } from "@/komponen/ui/tema";
 import { bacaGerbang, useHariIni } from "@/lib/lapangan";
 
 /** Ikon Lucide tiap tab. */

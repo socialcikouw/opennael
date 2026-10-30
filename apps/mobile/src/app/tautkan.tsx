@@ -3,13 +3,17 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Platform, ScrollView, StyleSheet, Text, View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useGaya, useWarna } from "@/komponen/tampilan";
-import { BAYANGAN, HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/tema";
-import { Ikon, Judul, Keterangan, Merek, PesanGalat, Tombol, useG } from "@/komponen/ui";
+import { useG } from "@/komponen/ui/gaya-bersama";
+import { Ikon } from "@/komponen/ui/ikon";
+import { PesanGalat } from "@/komponen/ui/isian";
+import { useGaya, useWarna } from "@/komponen/ui/tampilan";
+import { Judul, Keterangan, Merek } from "@/komponen/ui/teks";
+import { BAYANGAN, HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
+import { Tombol } from "@/komponen/ui/tombol";
 import { api, panggil } from "@/lib/api";
-import { layarAwal } from "@/lib/peran";
-import { infoPerangkat, versiAplikasi } from "@/lib/perangkat";
+import { layarAwal } from "@/lib/navigasi";
 import { sesi } from "@/lib/sesi";
+import { infoPerangkat, versiAplikasi } from "@/platform/perangkat";
 
 /** Jeda bertanya ke server selama menunggu bos memindai. */
 const JEDA_TANYA_MS = 2000;

@@ -1,8 +1,8 @@
 import { memo } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { useGaya, useWarna } from "@/komponen/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/komponen/tema";
-import { Ikon } from "@/komponen/ui";
+import { Ikon } from "@/komponen/ui/ikon";
+import { useGaya, useWarna } from "@/komponen/ui/tampilan";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/komponen/ui/tema";
 import type { Baris, TabKerja } from "../inti/daftar";
 
 /** Judul kelompok: "RUTE 1 - PULE BARAT" · "10 = 500K", atau "SUDAH DITAGIH" · "4 nasabah". */
