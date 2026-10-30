@@ -5,6 +5,7 @@
  * `@opennael/api/tipe/*` — tanpa runtime server di klien.
  */
 export * from "./klien";
+export * from "./kunci-tertunda";
 export * from "./panggil";
 export * from "./sesi";
 export * from "./transport";
