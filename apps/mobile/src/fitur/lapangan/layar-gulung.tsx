@@ -13,15 +13,6 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { tulis, useTagihan, useTulis } from "@/fitur/lapangan/data";
-import { jumlahKetukan, PAPAN_POKOK, tekanPokok } from "@/fitur/lapangan/inti/papan";
-import { AvatarNasabah } from "@/fitur/lapangan/komponen/foto-nasabah";
-import {
-  type FotoSerahTerima,
-  fotoMasihBerlaku,
-  KameraSerahTerima,
-} from "@/fitur/lapangan/komponen/kamera-serah-terima";
-import { PapanTombol, tinggiTombolPapan } from "@/fitur/lapangan/komponen/papan-tombol";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Gulir } from "@/komponen/ui/layar";
@@ -30,6 +21,15 @@ import { Keterangan } from "@/komponen/ui/teks";
 import { BAYANGAN, HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
 import { Tombol } from "@/komponen/ui/tombol";
 import { cobaAturan } from "@/lib/aturan";
+import { tulis, useTagihan, useTulis } from "./data";
+import { jumlahKetukan, PAPAN_POKOK, tekanPokok } from "./inti/papan";
+import { AvatarNasabah } from "./komponen/foto-nasabah";
+import {
+  type FotoSerahTerima,
+  fotoMasihBerlaku,
+  KameraSerahTerima,
+} from "./komponen/kamera-serah-terima";
+import { PapanTombol, tinggiTombolPapan } from "./komponen/papan-tombol";
 
 /** Lencana jenis gulung di bawah nominal — ikon sama dengan lencana kartu Droping. */
 const LENCANA_GULUNG = {

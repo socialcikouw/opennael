@@ -29,6 +29,11 @@ import {
   useRiwayatPinjaman,
   useTagihan,
 } from "@/fitur/lapangan";
+import { useRuangTab } from "@/komponen/tab-mengambang";
+import { PesanGalat } from "@/komponen/ui/isian";
+import { useGaya, useWarnaMode } from "@/komponen/ui/tampilan";
+import { RUANG, type Warna } from "@/komponen/ui/tema";
+import { Tombol } from "@/komponen/ui/tombol";
 import {
   type Baris,
   daftarLompat,
@@ -39,22 +44,17 @@ import {
   ringkasDroping,
   susunBaris,
   type TabKerja,
-} from "@/fitur/tagihan/inti/daftar";
-import { susunBahanGrid } from "@/fitur/tagihan/inti/grid";
-import { kartuVM } from "@/fitur/tagihan/inti/kartu";
-import { ringkasJatuhTempo } from "@/fitur/tagihan/inti/khusus";
-import { JudulKelompok, KerangkaKartu, Kosong } from "@/fitur/tagihan/komponen/daftar-bagian";
-import { type AksiKartu, KartuNasabah } from "@/fitur/tagihan/komponen/kartu-nasabah";
-import { KartuDroping, KartuSudah } from "@/fitur/tagihan/komponen/kartu-sudah";
-import { buatSimpananRute, KepalaTagihan } from "@/fitur/tagihan/komponen/kepala-tagihan";
-import { KartuJatuhTempo, KartuRasio, LembarRute } from "@/fitur/tagihan/komponen/ringkasan";
-import { LayarSemua } from "@/fitur/tagihan/layar-semua";
-import { jenisDariMode, MODE, useMode } from "@/fitur/tagihan/mode";
-import { useRuangTab } from "@/komponen/tab-mengambang";
-import { PesanGalat } from "@/komponen/ui/isian";
-import { useGaya, useWarnaMode } from "@/komponen/ui/tampilan";
-import { RUANG, type Warna } from "@/komponen/ui/tema";
-import { Tombol } from "@/komponen/ui/tombol";
+} from "./inti/daftar";
+import { susunBahanGrid } from "./inti/grid";
+import { kartuVM } from "./inti/kartu";
+import { ringkasJatuhTempo } from "./inti/khusus";
+import { JudulKelompok, KerangkaKartu, Kosong } from "./komponen/daftar-bagian";
+import { type AksiKartu, KartuNasabah } from "./komponen/kartu-nasabah";
+import { KartuDroping, KartuSudah } from "./komponen/kartu-sudah";
+import { buatSimpananRute, KepalaTagihan } from "./komponen/kepala-tagihan";
+import { KartuJatuhTempo, KartuRasio, LembarRute } from "./komponen/ringkasan";
+import { LayarSemua } from "./layar-semua";
+import { jenisDariMode, MODE, useMode } from "./mode";
 
 const gagal = (judul: string) => (e: Error) => Alert.alert(judul, e.message);
 

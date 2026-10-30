@@ -3,7 +3,6 @@ import { type Href, router } from "expo-router";
 import { useState } from "react";
 import { ActivityIndicator, Pressable, RefreshControl, ScrollView, Text, View } from "react-native";
 import { KepalaPeran, TombolKeluar } from "@/fitur/akun";
-import { RincianKas } from "@/fitur/setoran-sore/komponen/rincian-kas";
 import { PilihTampilan } from "@/komponen/pilih-tampilan";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { useG } from "@/komponen/ui/gaya-bersama";
@@ -14,6 +13,7 @@ import { useWarna } from "@/komponen/ui/tampilan";
 import { Keterangan } from "@/komponen/ui/teks";
 import { type HariKolektor, useHariKolektor } from "./data";
 import { keadaanHari } from "./inti";
+import { RincianKas } from "./komponen/rincian-kas";
 
 /**
  * BERANDA PENGAWAS — pemeriksa: mencocokkan kas kantor (hitung buta), melihat

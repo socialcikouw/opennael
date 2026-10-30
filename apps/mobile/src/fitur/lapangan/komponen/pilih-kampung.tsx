@@ -1,9 +1,9 @@
 import { kunciWilayah } from "@opennael/domain";
 import { useMemo } from "react";
 import { Pressable, Text, View } from "react-native";
-import { useKampung } from "@/fitur/lapangan/data";
 import { useG } from "@/komponen/ui/gaya-bersama";
 import { Isian } from "@/komponen/ui/isian";
+import { useKampung } from "../data";
 
 /** Kampung: ketik bebas, atau ketuk kampung yang sudah ada (ejaan baku). */
 export function PilihKampung(props: {

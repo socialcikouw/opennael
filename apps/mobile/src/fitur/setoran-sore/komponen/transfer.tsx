@@ -1,7 +1,6 @@
 import { LABEL_JENIS_TRANSAKSI, rupiah } from "@opennael/format";
 import { useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
-import { tulisSetoran, useSetoranKolektor, useTulisSetoran } from "@/fitur/setoran-sore/data";
 import { useG } from "@/komponen/ui/gaya-bersama";
 import { IsianUang, PesanGalat } from "@/komponen/ui/isian";
 import { Kartu } from "@/komponen/ui/kartu";
@@ -9,6 +8,7 @@ import { Lencana } from "@/komponen/ui/lencana";
 import { useWarna } from "@/komponen/ui/tampilan";
 import { Keterangan } from "@/komponen/ui/teks";
 import { Tombol, TombolTeks } from "@/komponen/ui/tombol";
+import { tulisSetoran, useSetoranKolektor, useTulisSetoran } from "../data";
 
 export function Transfer({ kolektorId, terkunci }: { kolektorId: string; terkunci: boolean }) {
   const WARNA = useWarna();

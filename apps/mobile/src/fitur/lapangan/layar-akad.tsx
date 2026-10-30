@@ -4,12 +4,6 @@ import { LABEL_JENIS, namaTenor, rupiah } from "@opennael/format";
 import { router, Stack } from "expo-router";
 import { useState } from "react";
 import { Alert } from "react-native";
-import { tulis, useTulis } from "@/fitur/lapangan/data";
-import {
-  type FotoSerahTerima,
-  fotoMasihBerlaku,
-  IsianFotoSerahTerima,
-} from "@/fitur/lapangan/komponen/kamera-serah-terima";
 import { Isian, IsianUang, PesanGalat } from "@/komponen/ui/isian";
 import { Baris, Kartu } from "@/komponen/ui/kartu";
 import { Gulir } from "@/komponen/ui/layar";
@@ -17,6 +11,12 @@ import { Pilihan } from "@/komponen/ui/pilihan";
 import { useWarna } from "@/komponen/ui/tampilan";
 import { Tombol } from "@/komponen/ui/tombol";
 import { cobaAturan } from "@/lib/aturan";
+import { tulis, useTulis } from "./data";
+import {
+  type FotoSerahTerima,
+  fotoMasihBerlaku,
+  IsianFotoSerahTerima,
+} from "./komponen/kamera-serah-terima";
 import { PilihKampung } from "./komponen/pilih-kampung";
 import { PilihNasabahLama } from "./komponen/pilih-nasabah-lama";
 

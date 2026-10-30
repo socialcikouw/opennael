@@ -5,10 +5,6 @@ import { router, Stack } from "expo-router";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { tulis, useTagihan } from "@/fitur/lapangan/data";
-import { nilaiDigit, PAPAN_BAYAR, tekanBayar } from "@/fitur/lapangan/inti/papan";
-import { kabarTercatat } from "@/fitur/lapangan/kabar-tercatat";
-import { PapanTombol, tinggiTombolPapan } from "@/fitur/lapangan/komponen/papan-tombol";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Gulir } from "@/komponen/ui/layar";
 import { useGaya, useWarna, useWarnaMode } from "@/komponen/ui/tampilan";
@@ -16,6 +12,10 @@ import { Keterangan } from "@/komponen/ui/teks";
 import { BAYANGAN, HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
 import { Tombol } from "@/komponen/ui/tombol";
 import { cobaAturan } from "@/lib/aturan";
+import { tulis, useTagihan } from "./data";
+import { nilaiDigit, PAPAN_BAYAR, tekanBayar } from "./inti/papan";
+import { kabarTercatat } from "./kabar-tercatat";
+import { PapanTombol, tinggiTombolPapan } from "./komponen/papan-tombol";
 
 /**
  * BAYAR ANGSURAN — layar sendiri, diisi kolektor berdiri di depan rumah

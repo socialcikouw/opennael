@@ -2,7 +2,6 @@ import { LABEL_JENIS, namaTenor, rupiah, tanggalPendek } from "@opennael/format"
 import { router, Stack } from "expo-router";
 import { useState } from "react";
 import { Text, View } from "react-native";
-import { FotoSerahTerima } from "@/fitur/lapangan/komponen/foto-nasabah";
 import { useG } from "@/komponen/ui/gaya-bersama";
 import { Baris, Kartu } from "@/komponen/ui/kartu";
 import { Gulir, Memuat } from "@/komponen/ui/layar";
@@ -13,6 +12,7 @@ import { Keterangan } from "@/komponen/ui/teks";
 import { Tombol } from "@/komponen/ui/tombol";
 import { useHariIni, useTagihan } from "./data";
 import { bacaGerbang } from "./gerbang";
+import { FotoSerahTerima } from "./komponen/foto-nasabah";
 import { PanelLibur } from "./komponen/panel-libur";
 import { PanelLunas } from "./komponen/panel-lunas";
 import { PanelSetor } from "./komponen/panel-setor";

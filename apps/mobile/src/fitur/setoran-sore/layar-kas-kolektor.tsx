@@ -1,13 +1,13 @@
 import { Stack } from "expo-router";
 import { ActivityIndicator } from "react-native";
-import { useHariKolektor } from "@/fitur/setoran-sore/data";
-import { RincianKas } from "@/fitur/setoran-sore/komponen/rincian-kas";
 import { useG } from "@/komponen/ui/gaya-bersama";
 import { PesanGalat } from "@/komponen/ui/isian";
 import { Gulir } from "@/komponen/ui/layar";
 import { Spanduk } from "@/komponen/ui/spanduk";
 import { useWarna } from "@/komponen/ui/tampilan";
+import { useHariKolektor } from "./data";
 import { Biaya } from "./komponen/biaya";
+import { RincianKas } from "./komponen/rincian-kas";
 import { TerimaKas } from "./komponen/terima-kas";
 import { Transfer } from "./komponen/transfer";
 

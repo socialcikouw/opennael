@@ -1,12 +1,12 @@
 import { rupiah } from "@opennael/format";
 import { useState } from "react";
 import { Alert, Text } from "react-native";
-import { type HariKolektor, tulisSetoran, useTulisSetoran } from "@/fitur/setoran-sore/data";
 import { useG } from "@/komponen/ui/gaya-bersama";
 import { IsianUang, PesanGalat } from "@/komponen/ui/isian";
 import { Kartu } from "@/komponen/ui/kartu";
 import { Keterangan } from "@/komponen/ui/teks";
 import { Tombol } from "@/komponen/ui/tombol";
+import { type HariKolektor, tulisSetoran, useTulisSetoran } from "../data";
 
 export function TerimaKas({ hari }: { hari: HariKolektor }) {
   const g = useG();

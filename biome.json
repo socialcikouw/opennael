@@ -67,6 +67,53 @@
           }
         }
       }
+    },
+    {
+      "includes": ["apps/web/src/komponen/**", "apps/mobile/src/komponen/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@/fitur/**",
+                      "@/rute/**",
+                      "@/app/**",
+                      "@/platform/**",
+                      "@/lib/api",
+                      "@/lib/sesi"
+                    ],
+                    "message": "komponen/ tanpa data dan sesi — pindahkan ke fitur/."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["apps/web/src/fitur/**", "apps/mobile/src/fitur/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": ["@/fitur/*/**", "@/rute/**", "@/app/**"],
+                    "message": "Fitur lain hanya lewat @/fitur/<nama>; fitur tidak mengimpor rute."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
     }
   ],
   "css": {

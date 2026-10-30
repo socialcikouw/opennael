@@ -3,13 +3,13 @@ import { kunciWilayah } from "@opennael/domain";
 import { LABEL_JENIS, rupiah } from "@opennael/format";
 import { useMemo, useState } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
-import { useNasabahLama } from "@/fitur/lapangan/data";
 import { useG } from "@/komponen/ui/gaya-bersama";
 import { Isian, PesanGalat } from "@/komponen/ui/isian";
 import { Baris, Kartu } from "@/komponen/ui/kartu";
 import { useWarna } from "@/komponen/ui/tampilan";
 import { Keterangan } from "@/komponen/ui/teks";
 import { TombolTeks } from "@/komponen/ui/tombol";
+import { useNasabahLama } from "../data";
 
 export function PilihNasabahLama(props: {
   terpilih: NasabahLama | null;

@@ -1,18 +1,13 @@
 import { rupiah } from "@opennael/format";
 import { useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
-import {
-  type HariKolektor,
-  tulisSetoran,
-  useBiayaKolektor,
-  useTulisSetoran,
-} from "@/fitur/setoran-sore/data";
 import { useG } from "@/komponen/ui/gaya-bersama";
 import { Isian, IsianUang, PesanGalat } from "@/komponen/ui/isian";
 import { Baris, Kartu } from "@/komponen/ui/kartu";
 import { useWarna } from "@/komponen/ui/tampilan";
 import { Keterangan } from "@/komponen/ui/teks";
 import { Tombol } from "@/komponen/ui/tombol";
+import { type HariKolektor, tulisSetoran, useBiayaKolektor, useTulisSetoran } from "../data";
 
 export function Biaya({ hari, terkunci }: { hari: HariKolektor; terkunci: boolean }) {
   const WARNA = useWarna();
