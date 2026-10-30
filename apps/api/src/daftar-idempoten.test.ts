@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { OPERASI_IDEMPOTEN, operasiIdempoten } from "@opennael/contracts";
-import { buatApp } from "../../app";
-import type { Db } from "../db/klien";
+import { buatApp } from "./app";
+import type { Db } from "./platform/db/klien";
 
 describe("daftar operasi idempoten (contracts)", () => {
   test("setiap entri adalah rute tulis yang ada di dokumen OpenAPI", async () => {

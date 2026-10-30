@@ -13,7 +13,7 @@ export const kepalaIdempotenSchema = z.object({
  * Hanya operasi ini yang disisipi kunci dan diulang otomatis oleh klien —
  * operasi tulis lain TIDAK aman diulang. Bentuk `METODE /jalur` persis seperti
  * di dokumen OpenAPI (`{param}` untuk parameter jalur). Diuji terhadap
- * OpenAPI (`apps/api/src/platform/idempotensi/daftar.test.ts`) agar tidak
+ * OpenAPI (`apps/api/src/daftar-idempoten.test.ts`) agar tidak
  * melenceng dari rute; menambah operasi baru ke `denganIdempotensi` berarti
  * menambahkannya di sini juga.
  */
