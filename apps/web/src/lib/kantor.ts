@@ -16,13 +16,3 @@ export function hariIniKantor(zona: ZonaWaktu): string {
 export function useHariIni(): string {
   return hariIniKantor(useKantor().zonaWaktu);
 }
-
-/** Saringan pencarian rute: tanggal `YYYY-MM-DD` yang sah atau tidak ada. */
-export function tanggalSah(nilai: unknown): string | undefined {
-  return typeof nilai === "string" && /^\d{4}-\d{2}-\d{2}$/.test(nilai) ? nilai : undefined;
-}
-
-/** Saringan pencarian rute: teks tak kosong atau tidak ada. */
-export function teksSah(nilai: unknown): string | undefined {
-  return typeof nilai === "string" && nilai.length > 0 ? nilai : undefined;
-}

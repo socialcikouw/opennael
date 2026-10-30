@@ -1,5 +1,6 @@
 import { fileURLToPath } from "node:url";
 import tailwindcss from "@tailwindcss/vite";
+import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
@@ -9,7 +10,12 @@ import { defineConfig } from "vite";
  * melakukan hal yang sama (`location /api/ { proxy_pass http://127.0.0.1:3000/; }`).
  */
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  // Plugin rute harus sebelum react(): membuat src/routeTree.gen.ts dan memecah kode per rute.
+  plugins: [
+    tanstackRouter({ target: "react", autoCodeSplitting: true, routesDirectory: "./src/rute" }),
+    react(),
+    tailwindcss(),
+  ],
   resolve: { alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) } },
   server: {
     proxy: {
