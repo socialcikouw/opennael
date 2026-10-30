@@ -4,6 +4,7 @@ import ReanimatedSwipeable, {
   type SwipeableMethods,
 } from "react-native-gesture-handler/ReanimatedSwipeable";
 import Animated, { ZoomIn } from "react-native-reanimated";
+import type { Stempel } from "@/fitur/lapangan";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
 import { useGaya, useWarna } from "@/komponen/ui/tampilan";
@@ -21,7 +22,6 @@ export interface AksiKartu {
 }
 
 /** Transaksi yang baru tercatat: kartu menampilkan stempelnya sebentar sebelum turun ke "Sudah ditagih". */
-export type Stempel = "bayar" | "libur" | "lunas";
 
 const LEBAR_LUNASI = 92;
 

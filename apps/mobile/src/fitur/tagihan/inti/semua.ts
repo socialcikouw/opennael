@@ -1,6 +1,6 @@
 import type { JenisPinjaman } from "@opennael/domain";
 import { hariPekanDari } from "@opennael/domain";
-import type { KartuVM } from "../tagihan/inti/kartu";
+import type { KartuVM } from "./kartu";
 
 /**
  * DIREKTORI MODE SEMUA — seluruh pinjaman aktif ketiga jenis, hanya-baca

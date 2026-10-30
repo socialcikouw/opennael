@@ -1,8 +1,8 @@
 import { describe, expect, test } from "bun:test";
 import type { KartuTagih } from "@opennael/contracts";
-import { susunBahanGrid } from "../tagihan/inti/grid";
-import { kartuVM } from "../tagihan/inti/kartu";
-import { jumlahSaringan, saringSemua, susunBarisSemua } from "./inti";
+import { susunBahanGrid } from "./grid";
+import { kartuVM } from "./kartu";
+import { jumlahSaringan, saringSemua, susunBarisSemua } from "./semua";
 
 // Kamis 29 Okt 2026.
 const KAMIS = "2026-10-29";

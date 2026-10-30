@@ -13,6 +13,7 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useHariIni, useTagihan } from "@/fitur/lapangan";
 import { useRuangTab } from "@/komponen/tab-mengambang";
 import { Ikon } from "@/komponen/ui/ikon";
 import { PesanGalat } from "@/komponen/ui/isian";
@@ -27,10 +28,8 @@ import {
   type Warna,
 } from "@/komponen/ui/tema";
 import { Tombol } from "@/komponen/ui/tombol";
-import { useHariIni, useTagihan } from "@/lib/lapangan";
-import { MODE } from "../mode/mode";
-import { susunBahanGrid } from "../tagihan/inti/grid";
-import { kartuVM, rupiahPendek } from "../tagihan/inti/kartu";
+import { susunBahanGrid } from "./inti/grid";
+import { kartuVM, rupiahPendek } from "./inti/kartu";
 import {
   type BarisSemua,
   jumlahSaringan,
@@ -42,7 +41,8 @@ import {
   susunBarisSemua,
   URUTAN_SEMUA,
   type UrutanSemua,
-} from "./inti";
+} from "./inti/semua";
+import { MODE } from "./mode";
 
 /**
  * Tab Tagihan mode SEMUA — DIREKTORI hanya-baca seluruh pinjaman aktif

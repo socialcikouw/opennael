@@ -1,4 +1,5 @@
-import type { Stempel } from "../ui/kartu-nasabah";
+/** Stempel sementara di kartu yang baru dicatat. */
+export type Stempel = "bayar" | "libur" | "lunas";
 
 type Pendengar = (pinjamanId: string, stempel: Stempel) => void;
 const pendengar = new Set<Pendengar>();
