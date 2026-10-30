@@ -1,8 +1,8 @@
 import { router } from "expo-router";
 import { useState } from "react";
 import { Alert } from "react-native";
-import { api } from "../lib/api";
-import { sesi } from "../lib/sesi";
+import { api } from "@/lib/api";
+import { sesi } from "@/lib/sesi";
 import { Tombol } from "./ui";
 
 /** Keluar dari HP ini — diputus di server bila terjangkau; sesi di HP tetap dihapus walau tidak. */

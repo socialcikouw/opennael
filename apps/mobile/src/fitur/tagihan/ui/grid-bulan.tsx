@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { useGaya, useWarna } from "../../../komponen/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "../../../komponen/tema";
+import { useGaya, useWarna } from "@/komponen/tampilan";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/tema";
 import { type BarisPekan, type KategoriSel, LABEL_HARI, type Sel } from "../inti/grid";
 
 /**

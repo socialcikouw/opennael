@@ -3,11 +3,11 @@ import { tanggal as formatTanggal, rupiah } from "@opennael/format";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Alert, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
-import { TombolKeluar } from "../../../komponen/keluar";
-import { PilihTampilan } from "../../../komponen/pilih-tampilan";
-import { useRuangTab } from "../../../komponen/tab-mengambang";
-import { useGaya } from "../../../komponen/tampilan";
-import { HURUF, RUANG, TEBAL, type Warna } from "../../../komponen/tema";
+import { TombolKeluar } from "@/komponen/keluar";
+import { PilihTampilan } from "@/komponen/pilih-tampilan";
+import { useRuangTab } from "@/komponen/tab-mengambang";
+import { useGaya } from "@/komponen/tampilan";
+import { HURUF, RUANG, TEBAL, type Warna } from "@/komponen/tema";
 import {
   Isian,
   IsianUang,
@@ -19,9 +19,9 @@ import {
   Spanduk,
   Tombol,
   useG,
-} from "../../../komponen/ui";
-import { bacaGerbang, tulis, useHariIni, useTagihan, useTulis } from "../../../lib/lapangan";
-import { useSesi } from "../../../lib/sesi";
+} from "@/komponen/ui";
+import { bacaGerbang, tulis, useHariIni, useTagihan, useTulis } from "@/lib/lapangan";
+import { useSesi } from "@/lib/sesi";
 
 /**
  * BERANDA KOLEKTOR — absen pagi, ringkasan setoran hari ini, dan buka laporan

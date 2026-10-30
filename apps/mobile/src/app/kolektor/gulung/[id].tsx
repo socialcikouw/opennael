@@ -13,19 +13,19 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { jumlahKetukan, PAPAN_POKOK, tekanPokok } from "../../../fitur/tagihan/inti/papan";
-import { PapanTombol, tinggiTombolPapan } from "../../../fitur/tagihan/ui/papan-tombol";
-import { AvatarNasabah } from "../../../komponen/foto-nasabah";
+import { jumlahKetukan, PAPAN_POKOK, tekanPokok } from "@/fitur/tagihan/inti/papan";
+import { PapanTombol, tinggiTombolPapan } from "@/fitur/tagihan/ui/papan-tombol";
+import { AvatarNasabah } from "@/komponen/foto-nasabah";
 import {
   type FotoSerahTerima,
   fotoMasihBerlaku,
   KameraSerahTerima,
-} from "../../../komponen/kamera-serah-terima";
-import { useGaya, useWarna, useWarnaMode } from "../../../komponen/tampilan";
-import { BAYANGAN, HURUF, RUANG, SUDUT, TEBAL, type Warna } from "../../../komponen/tema";
-import { Gulir, Ikon, Keterangan, type NamaIkon, Tombol } from "../../../komponen/ui";
-import { cobaAturan } from "../../../lib/aturan";
-import { tulis, useTagihan, useTulis } from "../../../lib/lapangan";
+} from "@/komponen/kamera-serah-terima";
+import { useGaya, useWarna, useWarnaMode } from "@/komponen/tampilan";
+import { BAYANGAN, HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/tema";
+import { Gulir, Ikon, Keterangan, type NamaIkon, Tombol } from "@/komponen/ui";
+import { cobaAturan } from "@/lib/aturan";
+import { tulis, useTagihan, useTulis } from "@/lib/lapangan";
 
 /** Lencana jenis gulung di bawah nominal — ikon sama dengan lencana kartu Droping. */
 const LENCANA_GULUNG = {

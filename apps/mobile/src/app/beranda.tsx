@@ -1,9 +1,9 @@
 import { Redirect } from "expo-router";
 import { View } from "react-native";
-import { TombolKeluar } from "../komponen/keluar";
-import { Judul, Keterangan, Layar, Merek, Spanduk, useG } from "../komponen/ui";
-import { layarAwal } from "../lib/peran";
-import { useSesi } from "../lib/sesi";
+import { TombolKeluar } from "@/komponen/keluar";
+import { Judul, Keterangan, Layar, Merek, Spanduk, useG } from "@/komponen/ui";
+import { layarAwal } from "@/lib/peran";
+import { useSesi } from "@/lib/sesi";
 
 /**
  * Cadangan untuk akun tanpa layar HP (bos): pekerjaan bos ada di web.

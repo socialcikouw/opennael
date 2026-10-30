@@ -1,7 +1,7 @@
 import { Redirect, Stack } from "expo-router";
-import { useOpsiStack } from "../../komponen/ui";
-import { layarAwal } from "../../lib/peran";
-import { useSesi } from "../../lib/sesi";
+import { useOpsiStack } from "@/komponen/ui";
+import { layarAwal } from "@/lib/peran";
+import { useSesi } from "@/lib/sesi";
 
 /** Layar-layar pengawas — hanya untuk sesi berperan pengawas. */
 export default function TataLetakPengawas() {

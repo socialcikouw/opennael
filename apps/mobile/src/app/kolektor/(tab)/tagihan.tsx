@@ -18,8 +18,8 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { jenisDariMode, MODE, useMode } from "../../../fitur/mode/mode";
-import { LayarSemua } from "../../../fitur/semua/layar-semua";
+import { jenisDariMode, MODE, useMode } from "@/fitur/mode/mode";
+import { LayarSemua } from "@/fitur/semua/layar-semua";
 import {
   type Baris,
   daftarLompat,
@@ -30,24 +30,20 @@ import {
   ringkasDroping,
   susunBaris,
   type TabKerja,
-} from "../../../fitur/tagihan/inti/daftar";
-import { susunBahanGrid } from "../../../fitur/tagihan/inti/grid";
-import { kabarTercatat } from "../../../fitur/tagihan/inti/kabar-tercatat";
-import { kartuVM } from "../../../fitur/tagihan/inti/kartu";
-import { ringkasJatuhTempo } from "../../../fitur/tagihan/inti/khusus";
-import { JudulKelompok, KerangkaKartu, Kosong } from "../../../fitur/tagihan/ui/daftar-bagian";
-import {
-  type AksiKartu,
-  KartuNasabah,
-  type Stempel,
-} from "../../../fitur/tagihan/ui/kartu-nasabah";
-import { KartuDroping, KartuSudah } from "../../../fitur/tagihan/ui/kartu-sudah";
-import { buatSimpananRute, KepalaTagihan } from "../../../fitur/tagihan/ui/kepala-tagihan";
-import { KartuJatuhTempo, KartuRasio, LembarRute } from "../../../fitur/tagihan/ui/ringkasan";
-import { useRuangTab } from "../../../komponen/tab-mengambang";
-import { useGaya, useWarnaMode } from "../../../komponen/tampilan";
-import { RUANG, type Warna } from "../../../komponen/tema";
-import { PesanGalat, Tombol } from "../../../komponen/ui";
+} from "@/fitur/tagihan/inti/daftar";
+import { susunBahanGrid } from "@/fitur/tagihan/inti/grid";
+import { kabarTercatat } from "@/fitur/tagihan/inti/kabar-tercatat";
+import { kartuVM } from "@/fitur/tagihan/inti/kartu";
+import { ringkasJatuhTempo } from "@/fitur/tagihan/inti/khusus";
+import { JudulKelompok, KerangkaKartu, Kosong } from "@/fitur/tagihan/ui/daftar-bagian";
+import { type AksiKartu, KartuNasabah, type Stempel } from "@/fitur/tagihan/ui/kartu-nasabah";
+import { KartuDroping, KartuSudah } from "@/fitur/tagihan/ui/kartu-sudah";
+import { buatSimpananRute, KepalaTagihan } from "@/fitur/tagihan/ui/kepala-tagihan";
+import { KartuJatuhTempo, KartuRasio, LembarRute } from "@/fitur/tagihan/ui/ringkasan";
+import { useRuangTab } from "@/komponen/tab-mengambang";
+import { useGaya, useWarnaMode } from "@/komponen/tampilan";
+import { RUANG, type Warna } from "@/komponen/tema";
+import { PesanGalat, Tombol } from "@/komponen/ui";
 import {
   bacaGerbang,
   tulis,
@@ -56,7 +52,7 @@ import {
   usePeristiwaBulan,
   useRiwayatPinjaman,
   useTagihan,
-} from "../../../lib/lapangan";
+} from "@/lib/lapangan";
 
 const gagal = (judul: string) => (e: Error) => Alert.alert(judul, e.message);
 

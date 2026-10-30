@@ -1,6 +1,6 @@
 import { rupiah } from "@opennael/format";
 import { Text, View } from "react-native";
-import type { HariKolektor } from "../lib/setoran";
+import type { HariKolektor } from "@/lib/setoran";
 import { useWarna } from "./tampilan";
 import { Baris, Kartu, useG } from "./ui";
 

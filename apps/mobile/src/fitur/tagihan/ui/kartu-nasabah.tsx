@@ -4,9 +4,9 @@ import ReanimatedSwipeable, {
   type SwipeableMethods,
 } from "react-native-gesture-handler/ReanimatedSwipeable";
 import Animated, { ZoomIn } from "react-native-reanimated";
-import { useGaya, useWarna } from "../../../komponen/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "../../../komponen/tema";
-import { Ikon, type NamaIkon } from "../../../komponen/ui";
+import { useGaya, useWarna } from "@/komponen/tampilan";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/komponen/tema";
+import { Ikon, type NamaIkon } from "@/komponen/ui";
 import type { KartuVM, Nada } from "../inti/kartu";
 import { GridBulan } from "./grid-bulan";
 import { BlokMinggu, BlokTempo } from "./slot-khusus";

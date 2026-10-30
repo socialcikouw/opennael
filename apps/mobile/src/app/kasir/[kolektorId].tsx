@@ -2,8 +2,8 @@ import { LABEL_JENIS_TRANSAKSI, rupiah } from "@opennael/format";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { ActivityIndicator, Alert, Text, View } from "react-native";
-import { RincianKas } from "../../komponen/rincian-kas";
-import { useWarna } from "../../komponen/tampilan";
+import { RincianKas } from "@/komponen/rincian-kas";
+import { useWarna } from "@/komponen/tampilan";
 import {
   Baris,
   Gulir,
@@ -17,7 +17,7 @@ import {
   Tombol,
   TombolTeks,
   useG,
-} from "../../komponen/ui";
+} from "@/komponen/ui";
 import {
   type HariKolektor,
   tulisSetoran,
@@ -25,7 +25,7 @@ import {
   useHariKolektor,
   useSetoranKolektor,
   useTulisSetoran,
-} from "../../lib/setoran";
+} from "@/lib/setoran";
 
 /**
  * SATU KOLEKTOR (kasir) — urutan kerja sore: catat transfer & biaya tak

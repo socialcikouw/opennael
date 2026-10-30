@@ -2,12 +2,12 @@ import { router } from "expo-router";
 import { Tabs } from "expo-router/js-tabs";
 import { useState } from "react";
 import { Alert } from "react-native";
-import { HurufMode, LembarMode } from "../../../fitur/mode/lembar-mode";
-import { jenisDariMode, MODE, useMode } from "../../../fitur/mode/mode";
-import { TabMengambang } from "../../../komponen/tab-mengambang";
-import { useWarna, useWarnaMode } from "../../../komponen/tampilan";
-import { TEBAL } from "../../../komponen/tema";
-import { bacaGerbang, useHariIni } from "../../../lib/lapangan";
+import { HurufMode, LembarMode } from "@/fitur/mode/lembar-mode";
+import { jenisDariMode, MODE, useMode } from "@/fitur/mode/mode";
+import { TabMengambang } from "@/komponen/tab-mengambang";
+import { useWarna, useWarnaMode } from "@/komponen/tampilan";
+import { TEBAL } from "@/komponen/tema";
+import { bacaGerbang, useHariIni } from "@/lib/lapangan";
 
 /** Ikon Lucide tiap tab. */
 const IKON = {

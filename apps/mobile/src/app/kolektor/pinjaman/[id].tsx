@@ -4,7 +4,7 @@ import { LABEL_JENIS, namaTenor, rupiah, tanggalPendek } from "@opennael/format"
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Alert, Text, View } from "react-native";
-import { FotoSerahTerima } from "../../../komponen/foto-nasabah";
+import { FotoSerahTerima } from "@/komponen/foto-nasabah";
 import {
   Baris,
   Gulir,
@@ -19,9 +19,9 @@ import {
   Spanduk,
   Tombol,
   useG,
-} from "../../../komponen/ui";
-import { cobaAturan } from "../../../lib/aturan";
-import { bacaGerbang, tulis, useHariIni, useTagihan, useTulis } from "../../../lib/lapangan";
+} from "@/komponen/ui";
+import { cobaAturan } from "@/lib/aturan";
+import { bacaGerbang, tulis, useHariIni, useTagihan, useTulis } from "@/lib/lapangan";
 
 type Aksi = "setor" | "lunas" | "libur" | "gulung";
 

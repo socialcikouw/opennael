@@ -5,14 +5,14 @@ import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { kabarTercatat } from "../../../fitur/tagihan/inti/kabar-tercatat";
-import { nilaiDigit, PAPAN_BAYAR, tekanBayar } from "../../../fitur/tagihan/inti/papan";
-import { PapanTombol, tinggiTombolPapan } from "../../../fitur/tagihan/ui/papan-tombol";
-import { useGaya, useWarna, useWarnaMode } from "../../../komponen/tampilan";
-import { BAYANGAN, HURUF, RUANG, SUDUT, TEBAL, type Warna } from "../../../komponen/tema";
-import { Gulir, Ikon, Keterangan, Tombol } from "../../../komponen/ui";
-import { cobaAturan } from "../../../lib/aturan";
-import { tulis, useTagihan } from "../../../lib/lapangan";
+import { kabarTercatat } from "@/fitur/tagihan/inti/kabar-tercatat";
+import { nilaiDigit, PAPAN_BAYAR, tekanBayar } from "@/fitur/tagihan/inti/papan";
+import { PapanTombol, tinggiTombolPapan } from "@/fitur/tagihan/ui/papan-tombol";
+import { useGaya, useWarna, useWarnaMode } from "@/komponen/tampilan";
+import { BAYANGAN, HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/tema";
+import { Gulir, Ikon, Keterangan, Tombol } from "@/komponen/ui";
+import { cobaAturan } from "@/lib/aturan";
+import { tulis, useTagihan } from "@/lib/lapangan";
 
 /**
  * BAYAR ANGSURAN — layar sendiri, diisi kolektor berdiri di depan rumah

@@ -3,7 +3,7 @@ import { rupiah, tanggalPendek } from "@opennael/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { ActivityIndicator, Alert, Text, View } from "react-native";
-import { useWarna } from "../../komponen/tampilan";
+import { useWarna } from "@/komponen/tampilan";
 import {
   Baris,
   Gulir,
@@ -17,10 +17,10 @@ import {
   Spanduk,
   Tombol,
   useG,
-} from "../../komponen/ui";
-import { api, panggil } from "../../lib/api";
-import { hariIniKantor } from "../../lib/peran";
-import { useSesi } from "../../lib/sesi";
+} from "@/komponen/ui";
+import { api, panggil } from "@/lib/api";
+import { hariIniKantor } from "@/lib/peran";
+import { useSesi } from "@/lib/sesi";
 
 const KUNCI = ["pencocokan"] as const;
 const LABEL_AKUN = { tunai: "Tunai (brankas)", bank: "Bank (rekening)" } as const;

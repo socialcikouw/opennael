@@ -8,8 +8,8 @@ import {
   type FotoSerahTerima,
   fotoMasihBerlaku,
   IsianFotoSerahTerima,
-} from "../../komponen/kamera-serah-terima";
-import { useWarna } from "../../komponen/tampilan";
+} from "@/komponen/kamera-serah-terima";
+import { useWarna } from "@/komponen/tampilan";
 import {
   Baris,
   Gulir,
@@ -22,9 +22,9 @@ import {
   Tombol,
   TombolTeks,
   useG,
-} from "../../komponen/ui";
-import { cobaAturan } from "../../lib/aturan";
-import { tulis, useKampung, useNasabahLama, useTulis } from "../../lib/lapangan";
+} from "@/komponen/ui";
+import { cobaAturan } from "@/lib/aturan";
+import { tulis, useKampung, useNasabahLama, useTulis } from "@/lib/lapangan";
 
 const POKOK_CEPAT = [500_000, 1_000_000, 1_500_000, 2_000_000];
 

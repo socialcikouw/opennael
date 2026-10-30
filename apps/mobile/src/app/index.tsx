@@ -1,11 +1,11 @@
 import { Redirect } from "expo-router";
 import { ActivityIndicator, View } from "react-native";
-import { useWarna } from "../komponen/tampilan";
-import { RUANG } from "../komponen/tema";
-import { Judul, Keterangan, Layar, Merek, Spanduk, useG } from "../komponen/ui";
-import { ALAMAT_API } from "../lib/api";
-import { layarAwal } from "../lib/peran";
-import { useSesi } from "../lib/sesi";
+import { useWarna } from "@/komponen/tampilan";
+import { RUANG } from "@/komponen/tema";
+import { Judul, Keterangan, Layar, Merek, Spanduk, useG } from "@/komponen/ui";
+import { ALAMAT_API } from "@/lib/api";
+import { layarAwal } from "@/lib/peran";
+import { useSesi } from "@/lib/sesi";
 
 /**
  * Pintu masuk: HP yang belum tertaut langsung ke layar penautan QR — aplikasi

@@ -1,8 +1,8 @@
 import { memo } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { useGaya, useWarna } from "../../../komponen/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "../../../komponen/tema";
-import { Ikon } from "../../../komponen/ui";
+import { useGaya, useWarna } from "@/komponen/tampilan";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/komponen/tema";
+import { Ikon } from "@/komponen/ui";
 import type { KeadaanTempo, MingguanVM, StatusKotak, TempoVM } from "../inti/khusus";
 
 /** Slot grid kartu MINGGUAN: kabar (minggu terlewat / tagih berikutnya) + kotak per minggu. */

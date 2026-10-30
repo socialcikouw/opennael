@@ -2,9 +2,9 @@ import { LABEL_JENIS, namaTenor, rupiah } from "@opennael/format";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { ActivityIndicator, RefreshControl, ScrollView, Text, View } from "react-native";
-import { useWarna } from "../../komponen/tampilan";
-import { Keterangan, KotakAngka, Lencana, PesanGalat, Pilihan, useG } from "../../komponen/ui";
-import { api, panggil } from "../../lib/api";
+import { useWarna } from "@/komponen/tampilan";
+import { Keterangan, KotakAngka, Lencana, PesanGalat, Pilihan, useG } from "@/komponen/ui";
+import { api, panggil } from "@/lib/api";
 
 /**
  * PINJAMAN MENUNGGAK (pengawas) — kartu pinjaman aktif yang tertinggal

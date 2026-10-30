@@ -1,10 +1,10 @@
 import { useMemo } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { LembarBawah } from "../../komponen/lembar-bawah";
-import { useGaya, useWarna, useWarnaMode } from "../../komponen/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "../../komponen/tema";
-import { Ikon } from "../../komponen/ui";
-import { useHariIni, useTagihan } from "../../lib/lapangan";
+import { LembarBawah } from "@/komponen/lembar-bawah";
+import { useGaya, useWarna, useWarnaMode } from "@/komponen/tampilan";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/tema";
+import { Ikon } from "@/komponen/ui";
+import { useHariIni, useTagihan } from "@/lib/lapangan";
 import { MODE, type ModeApp, modeAktif, ringkasPerMode, URUTAN_MODE, useMode } from "./mode";
 
 /** Huruf mode di lingkaran berwarna mode — (H) (M) (T) (S). Isi tombol kiri batang tab. */

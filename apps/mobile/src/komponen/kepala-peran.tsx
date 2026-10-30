@@ -1,7 +1,7 @@
 import { tanggal as formatTanggal } from "@opennael/format";
 import { StyleSheet, Text, View } from "react-native";
-import { hariIniKantor } from "../lib/peran";
-import { useSesi } from "../lib/sesi";
+import { hariIniKantor } from "@/lib/peran";
+import { useSesi } from "@/lib/sesi";
 import { useGaya } from "./tampilan";
 import { HURUF, TEBAL, type Warna } from "./tema";
 import { useG } from "./ui";

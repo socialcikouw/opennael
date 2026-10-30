@@ -2,7 +2,7 @@ import { CameraView, useCameraPermissions } from "expo-camera";
 import { useRef, useState } from "react";
 import { Image, Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { unggahFotoSerahTerima } from "../lib/foto";
+import { unggahFotoSerahTerima } from "@/lib/foto";
 import { useGaya } from "./tampilan";
 import { HURUF, RUANG, SUDUT, type Warna } from "./tema";
 import { Keterangan, PesanGalat, Tombol, useG } from "./ui";

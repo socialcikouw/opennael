@@ -13,19 +13,11 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useRuangTab } from "../../komponen/tab-mengambang";
-import { useGaya, useGelap, useWarna, useWarnaMode } from "../../komponen/tampilan";
-import {
-  HURUF,
-  MODE_GELAP,
-  MODE_TERANG,
-  RUANG,
-  SUDUT,
-  TEBAL,
-  type Warna,
-} from "../../komponen/tema";
-import { Ikon, PesanGalat, Tombol } from "../../komponen/ui";
-import { useHariIni, useTagihan } from "../../lib/lapangan";
+import { useRuangTab } from "@/komponen/tab-mengambang";
+import { useGaya, useGelap, useWarna, useWarnaMode } from "@/komponen/tampilan";
+import { HURUF, MODE_GELAP, MODE_TERANG, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/tema";
+import { Ikon, PesanGalat, Tombol } from "@/komponen/ui";
+import { useHariIni, useTagihan } from "@/lib/lapangan";
 import { MODE } from "../mode/mode";
 import { susunBahanGrid } from "../tagihan/inti/grid";
 import { kartuVM, rupiahPendek } from "../tagihan/inti/kartu";
