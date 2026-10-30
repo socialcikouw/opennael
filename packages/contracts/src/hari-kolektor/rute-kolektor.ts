@@ -1,13 +1,12 @@
 import { z } from "zod";
-import { kampungSchema } from "./lapangan";
+import { orang } from "../bersama/dasar";
+import { kampungSchema } from "../kantor/wilayah";
 
 /**
  * RUTE KOLEKTOR — urutan kampung yang didatangi; kartu tagihan disusun
  * mengikutinya. Diatur kolektor sendiri & bos, dijaga `versi`.
  * Docs: schema-rute.md.
  */
-
-const orang = z.object({ id: z.uuid(), nama: z.string() });
 
 /** `GET /rute-kolektor` — kolektor: miliknya; bos & pengawas: sebut kolektornya. */
 export const saringRuteSchema = z.object({ kolektorId: z.uuid().optional() });

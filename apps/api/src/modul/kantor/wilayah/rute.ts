@@ -2,6 +2,7 @@ import { createRoute, z } from "@hono/zod-openapi";
 import {
   gantiNamaWilayahSchema,
   hasilGantiNamaWilayahSchema,
+  idParamSchema,
   kampungPilihanSchema,
   saringWilayahSchema,
   wilayahDihapusSchema,
@@ -49,7 +50,7 @@ const hapus = createRoute({
   tags: tag,
   summary: "Hapus kampung kosong (bos)",
   security: aman,
-  request: { params: z.object({ id: z.uuid() }) },
+  request: { params: idParamSchema },
   responses: { 200: { description: "Dihapus", ...json(wilayahDihapusSchema) }, ...galat },
 });
 

@@ -1,5 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import {
+  idParamSchema,
   kartuPinjamanSchema,
   kartuTagihSchema,
   rincianPinjamanSchema,
@@ -13,7 +14,6 @@ import { type PeriksaTokenAkses, wajibMasuk } from "../../../platform/http/wajib
 import type { LayananPinjaman } from "./layanan";
 
 const tag = ["pinjaman"];
-const idParam = z.object({ id: z.uuid() });
 const galat = jawabanGalat(
   [400, "Data tidak sah"],
   [401, "Belum masuk"],
@@ -38,7 +38,7 @@ const satu = createRoute({
   tags: tag,
   summary: "Rincian pinjaman + angka aturan macet hari ini",
   security: aman,
-  request: { params: idParam },
+  request: { params: idParamSchema },
   responses: { 200: { description: "Rincian", ...json(rincianPinjamanSchema) }, ...galat },
 });
 const ubah = createRoute({
@@ -47,7 +47,7 @@ const ubah = createRoute({
   tags: tag,
   summary: "Sunting nomor urut pinjaman (bos)",
   security: aman,
-  request: { params: idParam, body: { ...json(ubahPinjamanSchema), required: true } },
+  request: { params: idParamSchema, body: { ...json(ubahPinjamanSchema), required: true } },
   responses: { 200: { description: "Tersimpan", ...json(rincianPinjamanSchema) }, ...galat },
 });
 const riwayatStatus = createRoute({
@@ -56,7 +56,7 @@ const riwayatStatus = createRoute({
   tags: tag,
   summary: "Garis waktu status pinjaman (bos, pengawas)",
   security: aman,
-  request: { params: idParam },
+  request: { params: idParamSchema },
   responses: {
     200: { description: "Garis waktu", ...json(z.array(riwayatStatusSchema)) },
     ...galat,

@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { jenisPinjamanSchema, nasabahBaruSchema } from "./lapangan";
+import { nasabahBaruSchema } from "./pembiayaan/akad";
+import { jenisPinjamanSchema } from "./pembiayaan/pinjaman";
 
 /**
  * SALINAN MIGRASI (web bos, aturan-usaha A10) — pinjaman yang masih berjalan

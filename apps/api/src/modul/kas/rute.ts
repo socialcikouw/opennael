@@ -3,6 +3,7 @@ import {
   batalSchema,
   bukaKasSchema,
   bukuKasSchema,
+  idParamSchema,
   laporanKasSchema,
   mutasiInputSchema,
   mutasiSchema,
@@ -55,7 +56,7 @@ const batal = <P extends string, S extends ZodType>(path: P, summary: string, sc
     summary,
     security: aman,
     request: {
-      params: z.object({ id: z.uuid() }),
+      params: idParamSchema,
       body: { ...json(batalSchema), required: true },
     },
     responses: { 200: { description: "Dibatalkan", ...json(schema) }, ...galat },

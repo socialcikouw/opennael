@@ -1,7 +1,44 @@
 import { z } from "zod";
-import { jenisPinjamanSchema, transaksiSchema } from "./lapangan";
+import { orang, rupiah, tanggal } from "../bersama/dasar";
 import { nasabahSchema } from "./nasabah";
-import { kartuPinjamanSchema } from "./pinjaman";
+import { jenisPinjamanSchema, kartuPinjamanSchema } from "./pinjaman";
+
+/** `POST /lapangan/bayar` — setoran angsuran. */
+export const bayarSchema = z.object({
+  pinjamanId: z.uuid(),
+  setoranMurni: rupiah,
+  /** Uang lebih untuk melunasi sebagian (bawaan 0). */
+  setoranPelunasan: rupiah.default(0),
+});
+
+/** `POST /lapangan/lunas` — nominal dihitung server (tabungan menutup saldo lebih dulu). */
+export const lunasSchema = z.object({ pinjamanId: z.uuid() });
+
+/** `POST /lapangan/libur` — pinjaman tidak ditagih hari ini. */
+export const liburSchema = z.object({
+  pinjamanId: z.uuid(),
+  alasan: z.string().trim().min(1).max(100).optional(),
+});
+
+export const transaksiSchema = z.object({
+  id: z.uuid(),
+  pinjamanId: z.uuid(),
+  tanggal: z.string(),
+  jenis: z.enum(["angsuran", "pelunasan", "gulung"]),
+  setoranMurni: z.number(),
+  setoranPelunasan: z.number(),
+  tabunganKeluar: z.number(),
+  /** Uang setoran yang masuk; negatif bila tabungan melebihi saldo saat lunas. */
+  storting: z.number(),
+  saldoSesudah: z.number(),
+});
+
+export const liburTercatatSchema = z.object({
+  id: z.uuid(),
+  pinjamanId: z.uuid(),
+  tanggal: z.string(),
+  alasanLibur: z.string().nullable(),
+});
 
 /**
  * PERISTIWA PINJAMAN — transaksi berlaku + libur nasabah dalam satu bentuk,
@@ -9,8 +46,6 @@ import { kartuPinjamanSchema } from "./pinjaman";
  * pegangannya. Docs: schema-transaksi.md, schema-libur-nasabah.md.
  */
 
-const tanggal = z.iso.date();
-const orang = z.object({ id: z.uuid(), nama: z.string() });
 export const kategoriPeristiwaSchema = z.enum(["angsuran", "pelunasan", "gulung", "libur"]);
 
 /** `GET /transaksi/peristiwa` — tanpa `pinjamanId` wajib bertanggal (paling panjang 62 hari). */

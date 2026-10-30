@@ -45,7 +45,7 @@ tidak dipakai kasir, pengawas, atau kolektor.
 | `apps/api` | Server HTTP + database (satu-satunya yang menyentuh Postgres). |
 | `apps/mobile` | Aplikasi Android/iOS untuk **kasir, pengawas, kolektor** — masuk hanya lewat tautan QR. |
 | `apps/web` | Aplikasi web **bos** — masuk nomor HP + kata sandi, registrasi kantor, persetujuan tautan HP, dan seluruh pekerjaan bos. |
-| `packages/contracts` | Skema Zod bentuk permintaan & respons API — dipakai bersama server dan klien. |
+| `packages/contracts` | Skema Zod bentuk permintaan & respons API — dipakai bersama server dan klien. Folder mengikuti konteks API (`bersama`, `identitas`, `kantor`, `hari-kolektor`, `pembiayaan`, …); `src/index.ts` mengekspor semuanya, klien cukup mengimpor `@opennael/contracts`. |
 | `packages/domain` | Aturan usaha murni tanpa I/O: rumus akad, jadwal tagih, aturan macet, rumus kas. Dipakai server dan aplikasi (pratinjau di HP). |
 | `docs/skema` | Rancangan database final, satu dokumen per tabel. |
 | `scripts` | Skrip repo: rilis OTA (`kirim-ota.ts`). Skrip milik satu paket tinggal di paket itu (mis. `apps/api/scripts/migrasi.ts`). |

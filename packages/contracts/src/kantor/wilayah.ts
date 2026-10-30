@@ -1,5 +1,14 @@
 import { z } from "zod";
 
+/** Kampung nasabah baru: dipilih dari daftar, atau diketik (dibuat bila belum ada). */
+export const kampungSchema = z.union([
+  z.object({ wilayahId: z.uuid() }),
+  z.object({ nama: z.string().trim().min(1).max(50) }),
+]);
+
+/** `GET /lapangan/kampung` — pilihan kampung di formulir akad. */
+export const kampungPilihanSchema = z.object({ id: z.uuid(), nama: z.string() });
+
 /**
  * KAMPUNG — daftar dengan pemakaian (semua peran), ganti nama / gabung &
  * hapus kampung kosong (bos). Kampung baru lahir dari formulir nasabah.

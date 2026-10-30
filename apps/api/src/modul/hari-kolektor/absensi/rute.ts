@@ -1,5 +1,5 @@
-import { createRoute, z } from "@hono/zod-openapi";
-import { absenSchema, hariKolektorSchema } from "@opennael/contracts";
+import { createRoute } from "@hono/zod-openapi";
+import { absenSchema, hariKolektorSchema, keadaanHariIniSchema } from "@opennael/contracts";
 import { aman, galatLapangan, json, tulisLapangan } from "../../../platform/http/openapi";
 import { buatRouter } from "../../../platform/http/router";
 import { type PeriksaTokenAkses, wajibMasuk } from "../../../platform/http/wajib-masuk";
@@ -21,17 +21,7 @@ const hariIni = createRoute({
   responses: {
     200: {
       description: "Keadaan hari ini",
-      ...json(
-        z.object({
-          kalender: z.object({
-            tanggal: z.string(),
-            dalamJamKerja: z.boolean(),
-            hariKerja: z.boolean(),
-            liburKantor: z.string().nullable(),
-          }),
-          hari: hariKolektorSchema.nullable(),
-        }),
-      ),
+      ...json(keadaanHariIniSchema),
     },
     ...galatLapangan,
   },

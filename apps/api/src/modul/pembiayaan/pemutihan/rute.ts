@@ -1,8 +1,9 @@
-import { createRoute, z } from "@hono/zod-openapi";
+import { createRoute } from "@hono/zod-openapi";
 import {
   batalSchema,
   hasilBukaBlokirSchema,
   hasilPemutihanSchema,
+  idParamSchema,
   putihkanSchema,
 } from "@opennael/contracts";
 import type { ZodType } from "zod";
@@ -33,7 +34,7 @@ const tulis = <P extends string, B extends ZodType, S extends ZodType>(
     summary,
     security: [{ bearer: [] }],
     request: {
-      params: z.object({ id: z.uuid() }),
+      params: idParamSchema,
       body: { ...json(body), required: true },
     },
     responses: { 200: { description: "Berhasil", ...json(schema) }, ...galat },

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { orang, tanggal } from "../bersama/dasar";
 
 /**
  * SETORAN SORE — kasir menerima kas kolektor (hitung buta), mencatat transfer
@@ -6,9 +7,6 @@ import { z } from "zod";
  * docs/aturan-usaha.md bagian I; tabel: docs/skema/schema-serah-terima-kas.md,
  * schema-transfer-setoran.md, schema-biaya-tak-terduga.md.
  */
-
-const tanggal = z.iso.date();
-const orang = z.object({ id: z.uuid(), nama: z.string() });
 
 /** `POST .../batal` — semua pembatalan uang oleh bos, hari yang sama (L1). */
 export const batalSchema = z.object({ alasan: z.string().trim().min(1).max(100) });

@@ -1,13 +1,11 @@
 import { z } from "zod";
+import { orang, tanggal } from "../bersama/dasar";
 
 /**
  * RINGKASAN (web bos; pengawas & kolektor membaca miliknya) — angka satu
  * rentang tanggal, per kolektor, dan deret performa penagihan harian
  * (aturan-usaha N). Semua dari catatan berlaku; yang batal tidak dihitung.
  */
-
-const tanggal = z.iso.date();
-const orang = z.object({ id: z.uuid(), nama: z.string() });
 
 /** Rentang; tanpa isian = hari ini. Kolektor selalu dibatasi ke dirinya. */
 export const saringRingkasanSchema = z.object({

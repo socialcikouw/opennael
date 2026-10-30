@@ -1,13 +1,12 @@
 import { z } from "zod";
-import { peranSchema } from "./auth";
+import { orang } from "../bersama/dasar";
+import { peranSchema } from "../identitas/auth";
 
 /**
  * AKTIVITAS (web bos; pengawas membaca) — siapa melakukan apa pada satu
  * tanggal kantor: jejak `riwayat_perubahan` digabung dengan pencatatan dan
  * pembatalan di tabel uang. Lihat docs/skema/schema-riwayat-perubahan.md.
  */
-
-const orang = z.object({ id: z.uuid(), nama: z.string() });
 
 /** Tanpa `tanggal` = hari ini (kalender kantor). */
 export const saringAktivitasSchema = z.object({

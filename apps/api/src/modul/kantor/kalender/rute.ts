@@ -9,6 +9,7 @@ import {
   pekanKerjaSchema,
   saringKalenderBulanSchema,
   saringLiburKantorSchema,
+  tanggalParamSchema,
 } from "@opennael/contracts";
 import {
   aman,
@@ -67,7 +68,7 @@ const batalLibur = createRoute({
   summary: "Batal libur kantor yang belum tiba (bos)",
   security: aman,
   request: {
-    params: z.object({ tanggal: z.iso.date() }),
+    params: tanggalParamSchema,
     body: { ...json(batalSchema), required: true },
   },
   responses: berhasil(liburKantorSchema),

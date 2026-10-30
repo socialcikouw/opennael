@@ -1,13 +1,25 @@
 import { z } from "zod";
-import { nomorHpSchema } from "./auth";
-import { kampungSchema } from "./lapangan";
+import { orang } from "../bersama/dasar";
+import { nomorHpSchema } from "../identitas/auth";
+import { kampungSchema } from "../kantor/wilayah";
+import { jenisPinjamanSchema } from "./pinjaman";
+
+/** `GET /lapangan/nasabah-lama` — pegangan tanpa pinjaman aktif, siap pinjam lagi. */
+export const nasabahLamaSchema = z.object({
+  id: z.uuid(),
+  nama: z.string(),
+  kampung: z.string(),
+  tabungan: z.number(),
+  terakhir: z
+    .object({ pinjamanKe: z.number(), jenis: jenisPinjamanSchema, pokok: z.number() })
+    .nullable(),
+});
+export type NasabahLama = z.infer<typeof nasabahLamaSchema>;
 
 /**
  * KELOLA NASABAH — daftar & cari, sunting identitas (bos), pindah pemegang
  * (bos), titik rumah (bos / kolektor pemegang). Docs: schema-nasabah.md.
  */
-
-const orang = z.object({ id: z.uuid(), nama: z.string() });
 
 /** `GET /nasabah` — kolektor: pegangannya; kasir: nama & kampung saja. */
 export const saringNasabahSchema = z.object({

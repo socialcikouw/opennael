@@ -1,5 +1,7 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import {
+  kolektorIdParamSchema,
+  nasabahIdParamSchema,
   remAktifSchema,
   remBerlakuSchema,
   remInputSchema,
@@ -40,7 +42,7 @@ const remKolektor = createRoute({
   summary: "Rem lapis kolektor (bos)",
   security: aman,
   request: {
-    params: z.object({ kolektorId: z.uuid() }),
+    params: kolektorIdParamSchema,
     body: { ...json(remInputSchema), required: true },
   },
   responses: berhasil(remBerlakuSchema),
@@ -52,7 +54,7 @@ const remNasabah = createRoute({
   summary: "Rem lapis nasabah — tanpa saklar pinjaman baru (bos)",
   security: aman,
   request: {
-    params: z.object({ nasabahId: z.uuid() }),
+    params: nasabahIdParamSchema,
     body: { ...json(remNasabahInputSchema), required: true },
   },
   responses: berhasil(remBerlakuSchema),

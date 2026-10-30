@@ -2,6 +2,7 @@ import { createRoute, z } from "@hono/zod-openapi";
 import {
   batalSchema,
   bayarGajiSchema,
+  idParamSchema,
   pratinjauGajiSchema,
   saringPratinjauGajiSchema,
   saringSlipGajiSchema,
@@ -47,7 +48,7 @@ const batal = createRoute({
   summary: "Batal pembayaran gaji (bos, hari yang sama)",
   security: aman,
   request: {
-    params: z.object({ id: z.uuid() }),
+    params: idParamSchema,
     body: { ...json(batalSchema), required: true },
   },
   responses: { 200: { description: "Dibatalkan", ...json(slipGajiSchema) }, ...galat },

@@ -1,6 +1,7 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import {
   batalSchema,
+  idParamSchema,
   koreksiInputSchema,
   koreksiSchema,
   penarikanInputSchema,
@@ -21,7 +22,6 @@ const galat = jawabanGalat(
   [409, "Sudah dibatalkan"],
   [422, "Melanggar aturan usaha (tabungan berubah / tidak cukup / tidak wajar)"],
 );
-const idParam = z.object({ id: z.uuid() });
 
 const catatUntukNasabah = <P extends string, B extends ZodType, S extends ZodType>(
   path: P,
@@ -35,7 +35,7 @@ const catatUntukNasabah = <P extends string, B extends ZodType, S extends ZodTyp
     tags: tag,
     summary,
     security: aman,
-    request: { params: idParam, body: { ...json(body), required: true } },
+    request: { params: idParamSchema, body: { ...json(body), required: true } },
     responses: { 201: { description: "Tercatat", ...json(schema) }, ...galat },
   });
 
@@ -46,7 +46,7 @@ const riwayatNasabah = <P extends string, S extends ZodType>(path: P, summary: s
     tags: tag,
     summary,
     security: aman,
-    request: { params: idParam },
+    request: { params: idParamSchema },
     responses: { 200: { description: "Riwayat", ...json(z.array(schema)) }, ...galat },
   });
 
@@ -67,7 +67,7 @@ const batalPenarikan = createRoute({
   tags: tag,
   summary: "Batal penarikan (bos, hari yang sama) — tabungan kembali",
   security: aman,
-  request: { params: idParam, body: { ...json(batalSchema), required: true } },
+  request: { params: idParamSchema, body: { ...json(batalSchema), required: true } },
   responses: { 200: { description: "Dibatalkan", ...json(penarikanSchema) }, ...galat },
 });
 const koreksi = catatUntukNasabah(

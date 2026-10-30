@@ -1,13 +1,11 @@
 import { z } from "zod";
-import { akunKasSchema } from "./kas";
+import { orang, tanggal } from "../bersama/dasar";
+import { akunKasSchema } from "../kas";
 
 /**
  * GAJI KOLEKTOR (web bos) — pratinjau, bayar, batal, riwayat slip. Rumus:
  * docs/aturan-usaha.md bagian J; tabel: docs/skema/schema-pembayaran-gaji.md.
  */
-
-const tanggal = z.iso.date();
-const orang = z.object({ id: z.uuid(), nama: z.string() });
 
 /** `GET /kas/gaji/pratinjau` */
 export const saringPratinjauGajiSchema = z.object({

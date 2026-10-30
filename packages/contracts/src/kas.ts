@@ -1,14 +1,11 @@
 import { z } from "zod";
+import { orang, rupiah, tanggal } from "./bersama/dasar";
 
 /**
  * KAS KANTOR (web bos; pencocokan juga pengawas) — buku kas, mutasi tangan,
  * laporan, pencocokan kas hitung buta. Tabel: docs/skema/schema-buku-kas.md,
  * schema-mutasi-kas-kantor.md, schema-pencocokan-kas.md.
  */
-
-const rupiah = z.number().int().min(0);
-const tanggal = z.iso.date();
-const orang = z.object({ id: z.uuid(), nama: z.string() });
 
 export const akunKasSchema = z.enum(["tunai", "bank"]);
 export const jenisMutasiKasSchema = z.enum([

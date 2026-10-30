@@ -1,5 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import {
+  idParamSchema,
   nonaktifkanSchema,
   penggunaSchema,
   saringPenggunaSchema,
@@ -11,7 +12,6 @@ import { type PeriksaTokenAkses, wajibMasuk } from "../../../platform/http/wajib
 import type { LayananPengguna } from "./layanan";
 
 const tag = ["karyawan"];
-const idParam = z.object({ id: z.uuid() });
 const galat = jawabanGalat(
   [400, "Data tidak sah"],
   [401, "Belum masuk"],
@@ -37,7 +37,7 @@ const ubah = createRoute({
   tags: tag,
   summary: "Sunting nama, nomor HP, resort (bos)",
   security: aman,
-  request: { params: idParam, body: { ...json(ubahPenggunaSchema), required: true } },
+  request: { params: idParamSchema, body: { ...json(ubahPenggunaSchema), required: true } },
   responses: berhasil,
 });
 const nonaktifkan = createRoute({
@@ -46,7 +46,7 @@ const nonaktifkan = createRoute({
   tags: tag,
   summary: "Nonaktifkan akun — semua perangkat diputus (bos)",
   security: aman,
-  request: { params: idParam, body: { ...json(nonaktifkanSchema), required: true } },
+  request: { params: idParamSchema, body: { ...json(nonaktifkanSchema), required: true } },
   responses: berhasil,
 });
 const aktifkan = createRoute({
@@ -55,7 +55,7 @@ const aktifkan = createRoute({
   tags: tag,
   summary: "Aktifkan kembali — perangkat ditautkan ulang (bos)",
   security: aman,
-  request: { params: idParam },
+  request: { params: idParamSchema },
   responses: berhasil,
 });
 

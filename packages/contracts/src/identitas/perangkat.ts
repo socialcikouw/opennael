@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { orang } from "../bersama/dasar";
 import { peranSchema } from "./auth";
 
 /**
@@ -6,8 +7,6 @@ import { peranSchema } from "./auth";
  * riwayatnya); peran lain: miliknya. Memutus: bos perangkat mana pun di
  * kantornya, pengguna miliknya sendiri. Docs: schema-perangkat.md.
  */
-
-const orang = z.object({ id: z.uuid(), nama: z.string() });
 
 /** `GET /auth/perangkat` — `termasukDiputus=true` (bos): riwayat juga. */
 export const saringPerangkatSchema = z.object({
@@ -41,3 +40,9 @@ export const perangkatSchema = z.object({
     .nullable(),
 });
 export type PerangkatJawaban = z.infer<typeof perangkatSchema>;
+
+/** `DELETE /auth/perangkat/{id}` — perangkat yang diputus dan sebabnya. */
+export const perangkatDiputusSchema = z.object({
+  id: z.uuid(),
+  alasan: z.enum(["keluar", "diputus"]),
+});

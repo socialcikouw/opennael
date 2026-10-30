@@ -1,5 +1,10 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { perangkatSchema, saringPerangkatSchema } from "@opennael/contracts";
+import {
+  idParamSchema,
+  perangkatDiputusSchema,
+  perangkatSchema,
+  saringPerangkatSchema,
+} from "@opennael/contracts";
 import { aman, jawabanGalat, json } from "../../../platform/http/openapi";
 import { buatRouter } from "../../../platform/http/router";
 import { type PeriksaTokenAkses, wajibMasuk } from "../../../platform/http/wajib-masuk";
@@ -29,11 +34,11 @@ const putus = createRoute({
   tags: tag,
   summary: "Putus satu perangkat — milik sendiri, atau (bos) perangkat mana pun di kantornya",
   security: aman,
-  request: { params: z.object({ id: z.uuid() }) },
+  request: { params: idParamSchema },
   responses: {
     200: {
       description: "Diputus",
-      ...json(z.object({ id: z.uuid(), alasan: z.enum(["keluar", "diputus"]) })),
+      ...json(perangkatDiputusSchema),
     },
     ...galat,
   },

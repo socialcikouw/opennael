@@ -2,6 +2,7 @@ import { createRoute, z } from "@hono/zod-openapi";
 import {
   bayarSchema,
   bukuNasabahSchema,
+  idParamSchema,
   liburSchema,
   liburTercatatSchema,
   lunasSchema,
@@ -18,7 +19,6 @@ import { type PeriksaTokenAkses, wajibMasuk } from "../../../platform/http/wajib
 import type { LayananPeristiwa } from "./layanan";
 
 const tag = ["peristiwa"];
-const idParam = z.object({ id: z.uuid() });
 const galat = jawabanGalat(
   [400, "Data tidak sah"],
   [401, "Belum masuk"],
@@ -52,7 +52,7 @@ const satu = createRoute({
   tags: tag,
   summary: "Satu transaksi, termasuk yang dibatalkan",
   security: aman,
-  request: { params: idParam },
+  request: { params: idParamSchema },
   responses: { 200: { description: "Transaksi", ...json(transaksiLengkapSchema) }, ...galat },
 });
 const buku = createRoute({
@@ -61,7 +61,7 @@ const buku = createRoute({
   tags: tag,
   summary: "Buku nasabah — identitas, semua pinjaman, semua peristiwa",
   security: aman,
-  request: { params: idParam },
+  request: { params: idParamSchema },
   responses: { 200: { description: "Buku", ...json(bukuNasabahSchema) }, ...galat },
 });
 

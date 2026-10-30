@@ -1,5 +1,10 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { fotoTersimpanSchema, UKURAN_FOTO_MAKS, unggahFotoSchema } from "@opennael/contracts";
+import {
+  fotoTersimpanSchema,
+  idParamSchema,
+  UKURAN_FOTO_MAKS,
+  unggahFotoSchema,
+} from "@opennael/contracts";
 import { bodyLimit } from "hono/body-limit";
 import { GalatApp } from "../../../platform/http/galat";
 import { jawabanGalat } from "../../../platform/http/openapi";
@@ -43,7 +48,7 @@ const baca = createRoute({
   tags: ["foto"],
   summary: "Isi berkas foto — bos, pengawas, kolektor pengunggah atau pemegang nasabahnya",
   security: [{ bearer: [] }],
-  request: { params: z.object({ id: z.uuid() }) },
+  request: { params: idParamSchema },
   responses: {
     200: {
       description: "Berkas gambar",

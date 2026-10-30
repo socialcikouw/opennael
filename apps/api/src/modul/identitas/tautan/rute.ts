@@ -1,6 +1,7 @@
-import { createRoute, z } from "@hono/zod-openapi";
+import { createRoute } from "@hono/zod-openapi";
 import {
   hasilKlaimSchema,
+  idParamSchema,
   klaimTautanSchema,
   mintaTautanSchema,
   persetujuanTautanSchema,
@@ -49,7 +50,7 @@ const klaim = createRoute({
   tags: ["tautan"],
   summary: "HP peminta menukar kunci klaim dengan sesi (ditanya berulang sampai disetujui)",
   request: {
-    params: z.object({ id: z.uuid() }),
+    params: idParamSchema,
     body: { ...json(klaimTautanSchema), required: true },
   },
   responses: {

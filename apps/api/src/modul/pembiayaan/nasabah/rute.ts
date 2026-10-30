@@ -1,5 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import {
+  idParamSchema,
   lokasiRumahSchema,
   nasabahLamaSchema,
   nasabahSchema,
@@ -16,7 +17,6 @@ import { type PeriksaTokenAkses, wajibMasuk } from "../../../platform/http/wajib
 import type { LayananNasabah } from "./layanan";
 
 const tag = ["nasabah"];
-const idParam = z.object({ id: z.uuid() });
 const galat = jawabanGalat(
   [400, "Data tidak sah"],
   [401, "Belum masuk"],
@@ -51,7 +51,7 @@ const neraca = createRoute({
   tags: tag,
   summary: "Neraca nasabah — bahan menimbang pemutihan (bos, pengawas)",
   security: aman,
-  request: { params: idParam },
+  request: { params: idParamSchema },
   responses: { 200: { description: "Neraca", ...json(neracaNasabahSchema) }, ...galat },
 });
 const ubah = createRoute({
@@ -60,7 +60,7 @@ const ubah = createRoute({
   tags: tag,
   summary: "Sunting identitas nasabah (bos)",
   security: aman,
-  request: { params: idParam, body: { ...json(ubahNasabahSchema), required: true } },
+  request: { params: idParamSchema, body: { ...json(ubahNasabahSchema), required: true } },
   responses: berhasil,
 });
 const pindah = createRoute({
@@ -69,7 +69,7 @@ const pindah = createRoute({
   tags: tag,
   summary: "Pindah pemegang (bos)",
   security: aman,
-  request: { params: idParam, body: { ...json(pindahPemegangSchema), required: true } },
+  request: { params: idParamSchema, body: { ...json(pindahPemegangSchema), required: true } },
   responses: berhasil,
 });
 const lokasi = createRoute({
@@ -78,7 +78,7 @@ const lokasi = createRoute({
   tags: tag,
   summary: "Rekam titik rumah (bos / kolektor pemegang)",
   security: aman,
-  request: { params: idParam, body: { ...json(lokasiRumahSchema), required: true } },
+  request: { params: idParamSchema, body: { ...json(lokasiRumahSchema), required: true } },
   responses: berhasil,
 });
 

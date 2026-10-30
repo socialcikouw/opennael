@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { akunKasSchema } from "./kas";
+import { orang, rupiah } from "../bersama/dasar";
+import { akunKasSchema } from "../kas";
 
 /**
  * TABUNGAN NASABAH (web bos) — penarikan (uang sungguhan, kas keluar) dan
@@ -7,9 +8,6 @@ import { akunKasSchema } from "./kas";
  * dilihat bos di layar; berbeda dengan database → `TABUNGAN_BERUBAH`.
  * Tabel: docs/skema/schema-penarikan-tabungan.md, schema-koreksi-tabungan.md.
  */
-
-const rupiah = z.number().int().min(0);
-const orang = z.object({ id: z.uuid(), nama: z.string() });
 
 /** `POST /nasabah/:id/penarikan-tabungan` */
 export const penarikanInputSchema = z.object({

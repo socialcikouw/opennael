@@ -1,8 +1,9 @@
-import { createRoute, z } from "@hono/zod-openapi";
+import { createRoute } from "@hono/zod-openapi";
 import {
   batalSchema,
   hasilBatalAkadSchema,
   hasilBatalTransaksiSchema,
+  idParamSchema,
   liburTercatatSchema,
 } from "@opennael/contracts";
 import type { ZodType } from "zod";
@@ -29,7 +30,7 @@ const batal = <P extends string, S extends ZodType>(path: P, summary: string, sc
     summary,
     security: [{ bearer: [] }],
     request: {
-      params: z.object({ id: z.uuid() }),
+      params: idParamSchema,
       body: { ...json(batalSchema), required: true },
     },
     responses: { 200: { description: "Dibatalkan", ...json(schema) }, ...galat },

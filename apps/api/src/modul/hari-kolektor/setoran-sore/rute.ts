@@ -6,6 +6,8 @@ import {
   daftarBiayaSchema,
   daftarTransferSchema,
   hariKasSchema,
+  idParamSchema,
+  kolektorIdParamSchema,
   saringBiayaSchema,
   saringHariSchema,
   terimaKasSchema,
@@ -29,7 +31,6 @@ const galat = jawabanGalat(
   [409, "Kas sudah diterima / sudah ada / sudah dibatalkan"],
   [422, "Melanggar aturan usaha"],
 );
-const idParam = z.object({ id: z.uuid() });
 
 const baca = <P extends string, Q extends ZodObject, S extends ZodType>(
   path: P,
@@ -71,7 +72,7 @@ const batal = <P extends string, S extends ZodType>(path: P, summary: string, sc
     tags: tag,
     summary,
     security: aman,
-    request: { params: idParam, body: { ...json(batalSchema), required: true } },
+    request: { params: idParamSchema, body: { ...json(batalSchema), required: true } },
     responses: { 200: { description: "Dibatalkan", ...json(schema) }, ...galat },
   });
 
@@ -88,19 +89,18 @@ const terimaKas = createRoute({
   summary: "Terima kas kolektor (kasir/bos) — hitung buta",
   security: aman,
   request: {
-    params: z.object({ kolektorId: z.uuid() }),
+    params: kolektorIdParamSchema,
     body: { ...json(terimaKasSchema), required: true },
   },
   responses: { 201: { description: "Kas diterima", ...json(hariKasSchema) }, ...galat },
 });
-const kolektorParam = z.object({ kolektorId: z.uuid() });
 const ubahHariIni = createRoute({
   method: "patch",
   path: "/hari-kolektor/{kolektorId}/hari-ini",
   tags: tag,
   summary: "Betulkan kas lapangan / uang jalan hari ini (bos, sebelum kas diterima)",
   security: aman,
-  request: { params: kolektorParam, body: { ...json(ubahHariIniSchema), required: true } },
+  request: { params: kolektorIdParamSchema, body: { ...json(ubahHariIniSchema), required: true } },
   responses: { 200: { description: "Tersimpan", ...json(hariKasSchema) }, ...galat },
 });
 const batalLaporan = createRoute({
@@ -109,7 +109,7 @@ const batalLaporan = createRoute({
   tags: tag,
   summary: "Buka kembali hari kolektor yang sudah lapor (bos, sebelum kas diterima)",
   security: aman,
-  request: { params: kolektorParam, body: { ...json(batalSchema), required: true } },
+  request: { params: kolektorIdParamSchema, body: { ...json(batalSchema), required: true } },
   responses: { 200: { description: "Laporan dibatalkan", ...json(hariKasSchema) }, ...galat },
 });
 const batalSerahTerima = batal(

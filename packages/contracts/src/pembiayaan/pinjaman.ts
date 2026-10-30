@@ -1,5 +1,57 @@
 import { z } from "zod";
-import { pinjamanSchema } from "./lapangan";
+import { orang } from "../bersama/dasar";
+
+export const jenisPinjamanSchema = z.enum(["harian", "mingguan", "tempoan"]);
+
+/** Kartu pinjaman untuk layar kolektor. */
+export const pinjamanSchema = z.object({
+  id: z.uuid(),
+  nasabah: z.object({ id: z.uuid(), nama: z.string(), kampung: z.string() }),
+  pinjamanKe: z.number(),
+  jenis: jenisPinjamanSchema,
+  tenor: z.number(),
+  asal: z.enum(["baru", "gulung", "migrasi"]),
+  status: z.enum(["berjalan", "macet", "lunas", "digulung", "batal", "diputihkan"]),
+  tanggalAkad: z.string(),
+  jatuhTempo: z.string().nullable(),
+  pokok: z.number(),
+  potonganAdmin: z.number(),
+  tabunganMasuk: z.number(),
+  /** Tunai yang diterima nasabah saat akad (gulung: bersih sesudah saldo lama). */
+  pencairan: z.number(),
+  totalKembali: z.number(),
+  angsuran: z.number(),
+  saldo: z.number(),
+  /** Angsuran yang sudah lunas — nomor di kartu. */
+  angsuranKe: z.number(),
+  /** Foto serah terima (`GET /foto/:id`); kosong untuk salinan buku lama (migrasi). */
+  fotoSerahTerimaId: z.uuid().nullable(),
+  /** Uang baru yang keluar saat akad (E7); akad baru = pokok. */
+  dropBaru: z.number(),
+  /** Bagian pokok yang memutar pinjaman lama (gulung, E7); selain gulung 0. */
+  dropGulung: z.number(),
+  /** Gulung: naik · tetap · turun dibanding pokok asal; selain gulung null. */
+  jenisGulung: z.enum(["naik", "tetap", "turun"]).nullable(),
+});
+export type PinjamanKartu = z.infer<typeof pinjamanSchema>;
+
+/**
+ * `GET /lapangan/pinjaman` — kartu di daftar tagih kolektor: kartu pinjaman +
+ * tabungan nasabah (pratinjau lunas) + catatan hari ini (C3: satu peristiwa).
+ * Lunas & gulung hari ini tidak tampil — pinjamannya sudah keluar daftar.
+ */
+export const kartuTagihSchema = pinjamanSchema.extend({
+  tabungan: z.number(),
+  /** Nomor urut kampung nasabah di rute kolektor ini (Rute 1, 2, …); null = belum diatur. */
+  ruteKe: z.number().nullable(),
+  hariIni: z
+    .discriminatedUnion("jenis", [
+      z.object({ jenis: z.literal("angsuran"), storting: z.number() }),
+      z.object({ jenis: z.literal("libur"), alasan: z.string().nullable() }),
+    ])
+    .nullable(),
+});
+export type KartuTagih = z.infer<typeof kartuTagihSchema>;
 
 /**
  * PINJAMAN — kartu & rincian untuk bos, pengawas, dan kolektor (pegangannya),
@@ -7,7 +59,6 @@ import { pinjamanSchema } from "./lapangan";
  * schema-riwayat-status-pinjaman.md; posisi tagih: aturan-usaha B5.
  */
 
-const orang = z.object({ id: z.uuid(), nama: z.string() });
 export const statusPinjamanSchema = pinjamanSchema.shape.status;
 
 /** `GET /pinjaman` — bawaan pinjaman aktif (berjalan & macet). */
