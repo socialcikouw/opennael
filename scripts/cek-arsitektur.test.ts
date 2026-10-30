@@ -107,7 +107,8 @@ describe("data kepemilikan", () => {
 });
 
 describe("repo saat ini", () => {
+  // Memindai seluruh repo: di CI/klon baru (cache dingin) bisa >5 dtk, batas bawaan bun test.
   test("tidak ada pelanggaran arsitektur", () => {
     expect(periksaSemua()).toEqual([]);
-  });
+  }, 60_000);
 });
