@@ -1,0 +1,24 @@
+{
+  "name": "@opennael/api-client",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "bun run --cwd ../../apps/api tipe && tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@opennael/contracts": "workspace:*",
+    "hono": "^4.13.13"
+  },
+  "peerDependencies": {
+    "react": "19.3.0"
+  },
+  "devDependencies": {
+    "@opennael/api": "workspace:*",
+    "@types/react": "~19.3.0"
+  }
+}

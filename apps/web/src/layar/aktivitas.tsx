@@ -61,25 +61,35 @@ const ikonKejadian = (k: string) => (k.startsWith("batal_") ? Undo2 : (IKON[k] ?
  */
 const PEMBATAL: Record<string, (id: string, alasan: string) => Promise<unknown>> = {
   akad: (id, alasan) =>
-    ambil(() => api.pinjaman[":id"].batal.$post({ param: { id }, json: { alasan } })),
+    ambil(() => api.pembiayaan.pinjaman[":id"].batal.$post({ param: { id }, json: { alasan } })),
   salin_pinjaman: (id, alasan) =>
-    ambil(() => api.pinjaman[":id"].batal.$post({ param: { id }, json: { alasan } })),
+    ambil(() => api.pembiayaan.pinjaman[":id"].batal.$post({ param: { id }, json: { alasan } })),
   pemutihan: (id, alasan) =>
-    ambil(() => api.pinjaman[":id"].putihkan.batal.$post({ param: { id }, json: { alasan } })),
+    ambil(() =>
+      api.pembiayaan.pinjaman[":id"].putihkan.batal.$post({ param: { id }, json: { alasan } }),
+    ),
   transfer_setoran: (id, alasan) =>
-    ambil(() => api["transfer-setoran"][":id"].batal.$post({ param: { id }, json: { alasan } })),
+    ambil(() =>
+      api.hariKolektor["transfer-setoran"][":id"].batal.$post({ param: { id }, json: { alasan } }),
+    ),
   terima_kas: (id, alasan) =>
-    ambil(() => api["serah-terima-kas"][":id"].batal.$post({ param: { id }, json: { alasan } })),
+    ambil(() =>
+      api.hariKolektor["serah-terima-kas"][":id"].batal.$post({ param: { id }, json: { alasan } }),
+    ),
   biaya_tak_terduga: (id, alasan) =>
-    ambil(() => api["biaya-tak-terduga"][":id"].batal.$post({ param: { id }, json: { alasan } })),
+    ambil(() =>
+      api.hariKolektor["biaya-tak-terduga"][":id"].batal.$post({ param: { id }, json: { alasan } }),
+    ),
   mutasi_kas: (id, alasan) =>
-    ambil(() => api.kas.mutasi[":id"].batal.$post({ param: { id }, json: { alasan } })),
+    ambil(() => api.kas.kas.mutasi[":id"].batal.$post({ param: { id }, json: { alasan } })),
   bayar_gaji: (id, alasan) =>
-    ambil(() => api.kas.gaji[":id"].batal.$post({ param: { id }, json: { alasan } })),
+    ambil(() => api.penggajian.kas.gaji[":id"].batal.$post({ param: { id }, json: { alasan } })),
   tarik_tabungan: (id, alasan) =>
-    ambil(() => api["penarikan-tabungan"][":id"].batal.$post({ param: { id }, json: { alasan } })),
+    ambil(() =>
+      api.pembiayaan["penarikan-tabungan"][":id"].batal.$post({ param: { id }, json: { alasan } }),
+    ),
   cocokkan_kas: (id, alasan) =>
-    ambil(() => api.kas.pencocokan[":id"].batal.$post({ param: { id }, json: { alasan } })),
+    ambil(() => api.kas.kas.pencocokan[":id"].batal.$post({ param: { id }, json: { alasan } })),
 };
 
 /** Kejadian riwayat (bukan uang) bisa dibuka jejaknya lewat `GET /riwayat`. */
@@ -105,7 +115,7 @@ export function DialogRiwayat({
   const kantor = useKantor();
   const q = useQuery({
     queryKey: ["riwayat", tabel, barisId],
-    queryFn: () => ambil(() => api.riwayat.$get({ query: { tabel, barisId } })),
+    queryFn: () => ambil(() => api.pelaporan.riwayat.$get({ query: { tabel, barisId } })),
   });
   return (
     <Dialog open onOpenChange={(buka) => !buka && tutup()}>
@@ -177,7 +187,9 @@ export function DaftarAktivitas({
   const q = useQuery({
     queryKey: ["aktivitas", tanggal, pelakuId ?? null],
     queryFn: () =>
-      ambil(() => api.aktivitas.$get({ query: { tanggal, ...(pelakuId ? { pelakuId } : {}) } })),
+      ambil(() =>
+        api.pelaporan.aktivitas.$get({ query: { tanggal, ...(pelakuId ? { pelakuId } : {}) } }),
+      ),
   });
   if (q.isPending) return <Memuat />;
   if (q.isError) return <GalatMuat galat={q.error} ulangi={() => void q.refetch()} />;
@@ -290,7 +302,7 @@ export function LayarAktivitas() {
   const t = tanggal ?? hariIni;
   const orang = useQuery({
     queryKey: ["pengguna", "semua"],
-    queryFn: () => ambil(() => api.pengguna.$get({ query: { termasukNonaktif: "ya" } })),
+    queryFn: () => ambil(() => api.identitas.pengguna.$get({ query: { termasukNonaktif: "ya" } })),
   });
 
   return (

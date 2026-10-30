@@ -53,7 +53,7 @@ export function LayarTautkan() {
   const [akunLama, setAkunLama] = useState<string | null>(null);
   const karyawan = useQuery({
     queryKey: ["pengguna", "semua"],
-    queryFn: () => ambil(() => api.pengguna.$get({ query: { termasukNonaktif: "ya" } })),
+    queryFn: () => ambil(() => api.identitas.pengguna.$get({ query: { termasukNonaktif: "ya" } })),
   });
   const bisaDitautkan = (karyawan.data ?? []).filter((o) => o.aktif && o.peran !== "bos");
   const [akun, setAkun] = useState({
@@ -67,7 +67,7 @@ export function LayarTautkan() {
     mutationFn: async () => {
       if (!kode) throw new Error("Kode belum diisi");
       const res = await panggil(() =>
-        api.auth.tautan.setujui.$post({
+        api.identitas.auth.tautan.setujui.$post({
           json: {
             kode,
             akun:

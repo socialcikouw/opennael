@@ -45,7 +45,7 @@ function SaranSerupa({ orang, pakai }: { orang: Orang; pakai: (n: NasabahLama) =
     queryKey: ["nasabah", "serupa", nama, kampung, nik ?? null],
     queryFn: () =>
       ambil(() =>
-        api.nasabah.serupa.$get({
+        api.pembiayaan.nasabah.serupa.$get({
           query: { nama, ...(kampung ? { kampung } : {}), ...(nik ? { nik } : {}) },
         }),
       ),
@@ -92,7 +92,8 @@ function PilihNasabahLama({
   const tenang = useTenang(cari.trim());
   const q = useQuery({
     queryKey: ["nasabah", "bebas", tenang],
-    queryFn: () => ambil(() => api.nasabah.$get({ query: { cari: tenang, bebas: "ya" } })),
+    queryFn: () =>
+      ambil(() => api.pembiayaan.nasabah.$get({ query: { cari: tenang, bebas: "ya" } })),
     enabled: tenang.length >= 2,
   });
   if (dipilih) {
@@ -177,7 +178,7 @@ function DisalinHariIni() {
   const [batal, setBatal] = useState<Aktivitas | null>(null);
   const q = useQuery({
     queryKey: ["aktivitas", hariIni, null],
-    queryFn: () => ambil(() => api.aktivitas.$get({ query: { tanggal: hariIni } })),
+    queryFn: () => ambil(() => api.pelaporan.aktivitas.$get({ query: { tanggal: hariIni } })),
   });
   if (q.isPending) return <Memuat />;
   if (q.isError) return <GalatMuat galat={q.error} ulangi={() => void q.refetch()} />;
@@ -226,7 +227,7 @@ function DisalinHariIni() {
           tutup={() => setBatal(null)}
           kirim={(alasan) =>
             ambil(() =>
-              api.pinjaman[":id"].batal.$post({
+              api.pembiayaan.pinjaman[":id"].batal.$post({
                 param: { id: batal.rujukan.id },
                 json: { alasan },
               }),
@@ -245,11 +246,11 @@ export function LayarSalinBuku() {
 
   const kolektorQ = useQuery({
     queryKey: ["pengguna", "kolektor"],
-    queryFn: () => ambil(() => api.pengguna.$get({ query: { peran: "kolektor" } })),
+    queryFn: () => ambil(() => api.identitas.pengguna.$get({ query: { peran: "kolektor" } })),
   });
   const kampungQ = useQuery({
     queryKey: ["kampung"],
-    queryFn: () => ambil(() => api.lapangan.kampung.$get()),
+    queryFn: () => ambil(() => api.kantor.lapangan.kampung.$get()),
   });
 
   // Tetap untuk baris berikutnya.
@@ -274,7 +275,7 @@ export function LayarSalinBuku() {
   const m = useMutation({
     mutationFn: () =>
       ambil(() =>
-        api.pinjaman.migrasi.$post({
+        api.migrasi.pinjaman.migrasi.$post({
           json: {
             nasabah:
               modus === "lama" && lama

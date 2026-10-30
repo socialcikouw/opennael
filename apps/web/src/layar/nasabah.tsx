@@ -81,7 +81,7 @@ export function LayarNasabah() {
     queryKey: ["nasabah", "daftar", cari ?? null, kolektor ?? null],
     queryFn: () =>
       ambil(() =>
-        api.nasabah.$get({
+        api.pembiayaan.nasabah.$get({
           query: { ...(cari ? { cari } : {}), ...(kolektor ? { kolektorId: kolektor } : {}) },
         }),
       ),
@@ -89,7 +89,7 @@ export function LayarNasabah() {
   });
   const kolektorQ = useQuery({
     queryKey: ["pengguna", "kolektor"],
-    queryFn: () => ambil(() => api.pengguna.$get({ query: { peran: "kolektor" } })),
+    queryFn: () => ambil(() => api.identitas.pengguna.$get({ query: { peran: "kolektor" } })),
   });
   const semuaKolektor = useMemo(
     () => (kolektorQ.data ?? []).map((o) => ({ id: o.id, nama: o.nama })),
@@ -97,7 +97,7 @@ export function LayarNasabah() {
   );
   const kampungQ = useQuery({
     queryKey: ["wilayah"],
-    queryFn: () => ambil(() => api.wilayah.$get({ query: {} })),
+    queryFn: () => ambil(() => api.kantor.wilayah.$get({ query: {} })),
   });
   const kampung = useMemo(() => (kampungQ.data ?? []).map((w) => w.nama), [kampungQ.data]);
   const dipilih = daftar.data?.find((n) => n.id === pilih);

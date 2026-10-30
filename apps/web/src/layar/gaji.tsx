@@ -27,12 +27,12 @@ const HALANGAN = {
 } as const;
 
 const ambilPratinjau = (kolektorId: string, mulai: string, selesai: string) =>
-  ambil(() => api.kas.gaji.pratinjau.$get({ query: { kolektorId, mulai, selesai } }));
+  ambil(() => api.penggajian.kas.gaji.pratinjau.$get({ query: { kolektorId, mulai, selesai } }));
 type Pratinjau = Awaited<ReturnType<typeof ambilPratinjau>>;
 type HariGaji = Pratinjau["hari"][number];
 
 const ambilSlip = (kolektorId?: string) =>
-  ambil(() => api.kas.gaji.$get({ query: kolektorId ? { kolektorId } : {} }));
+  ambil(() => api.penggajian.kas.gaji.$get({ query: kolektorId ? { kolektorId } : {} }));
 type Slip = Awaited<ReturnType<typeof ambilSlip>>[number];
 
 const kh = pembantuKolom<HariGaji>();
@@ -75,7 +75,7 @@ function DialogBayar({ p, tutup }: { p: Pratinjau; tutup: () => void }) {
   const m = useMutation({
     mutationFn: () =>
       ambil(() =>
-        api.kas.gaji.$post({
+        api.penggajian.kas.gaji.$post({
           json: {
             kolektorId: p.kolektor.id,
             periodeMulai: p.periodeMulai,
@@ -249,7 +249,10 @@ function RiwayatSlip({ kolektorId, hariIni }: { kolektorId?: string; hariIni: st
           tutup={() => setBatal(null)}
           kirim={(alasan) =>
             ambil(() =>
-              api.kas.gaji[":id"].batal.$post({ param: { id: batal.id }, json: { alasan } }),
+              api.penggajian.kas.gaji[":id"].batal.$post({
+                param: { id: batal.id },
+                json: { alasan },
+              }),
             )
           }
         />
@@ -268,7 +271,7 @@ export function LayarGaji() {
   const mulai = m0 ?? geserTanggal(selesai, -6);
   const kolektorQ = useQuery({
     queryKey: ["pengguna", "kolektor"],
-    queryFn: () => ambil(() => api.pengguna.$get({ query: { peran: "kolektor" } })),
+    queryFn: () => ambil(() => api.identitas.pengguna.$get({ query: { peran: "kolektor" } })),
   });
   const pilihKolektor = kolektorId ?? kolektorQ.data?.[0]?.id;
 

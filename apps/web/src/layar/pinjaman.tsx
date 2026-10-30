@@ -86,7 +86,7 @@ export function LayarPinjaman() {
     queryKey: ["pinjaman", "daftar", saring, kolektor ?? null],
     queryFn: () =>
       ambil(() =>
-        api.pinjaman.$get({
+        api.pembiayaan.pinjaman.$get({
           query: { status: saring, ...(kolektor ? { kolektorId: kolektor } : {}) },
         }),
       ),
@@ -94,7 +94,7 @@ export function LayarPinjaman() {
   });
   const kolektorQ = useQuery({
     queryKey: ["pengguna", "kolektor"],
-    queryFn: () => ambil(() => api.pengguna.$get({ query: { peran: "kolektor" } })),
+    queryFn: () => ambil(() => api.identitas.pengguna.$get({ query: { peran: "kolektor" } })),
   });
   const data = useMemo(
     () => (q.data ?? []).filter((p) => tunggak !== "ya" || (p.tagih?.tertinggal ?? 0) > 0),

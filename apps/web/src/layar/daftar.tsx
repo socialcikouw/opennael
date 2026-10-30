@@ -24,7 +24,7 @@ export function LayarDaftar() {
   const daftar = useMutation({
     mutationFn: async () => {
       const res = await panggil(() =>
-        api.auth.register.$post({ json: { ...isi, perangkat: { platform: "web" } } }),
+        api.identitas.auth.register.$post({ json: { ...isi, perangkat: { platform: "web" } } }),
       );
       if (res.status !== 201) throw new Error("Jawaban tak terduga");
       return res.json();

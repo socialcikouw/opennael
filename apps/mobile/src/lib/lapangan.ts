@@ -11,14 +11,14 @@ const KUNCI = ["lapangan"] as const;
 export function useHariIni() {
   return useQuery({
     queryKey: [...KUNCI, "hari-ini"],
-    queryFn: async () => (await panggil(() => api.lapangan["hari-ini"].$get())).json(),
+    queryFn: async () => (await panggil(() => api.hariKolektor.lapangan["hari-ini"].$get())).json(),
   });
 }
 
 export function useTagihan() {
   return useQuery({
     queryKey: [...KUNCI, "pinjaman"],
-    queryFn: async () => (await panggil(() => api.lapangan.pinjaman.$get())).json(),
+    queryFn: async () => (await panggil(() => api.pembiayaan.lapangan.pinjaman.$get())).json(),
   });
 }
 
@@ -29,7 +29,9 @@ export function useKalenderBulan(bulan: string | undefined) {
     enabled: !!bulan,
     staleTime: 60 * 60 * 1000,
     queryFn: async () =>
-      (await panggil(() => api.lapangan.kalender.$get({ query: { bulan: bulan ?? "" } }))).json(),
+      (
+        await panggil(() => api.kantor.lapangan.kalender.$get({ query: { bulan: bulan ?? "" } }))
+      ).json(),
   });
 }
 
@@ -46,7 +48,7 @@ export function usePeristiwaBulan(hariIni: string | undefined) {
     queryFn: async () =>
       (
         await panggil(() =>
-          api.transaksi.peristiwa.$get({
+          api.pembiayaan.transaksi.peristiwa.$get({
             query: { tanggalMulai: awal, tanggalSelesai: hariIni ?? "" },
           }),
         )
@@ -64,7 +66,11 @@ export function useRiwayatPinjaman(ids: readonly string[]) {
     queries: ids.map((id) => ({
       queryKey: [...KUNCI, "peristiwa-pinjaman", id],
       queryFn: async () =>
-        (await panggil(() => api.transaksi.peristiwa.$get({ query: { pinjamanId: id } }))).json(),
+        (
+          await panggil(() =>
+            api.pembiayaan.transaksi.peristiwa.$get({ query: { pinjamanId: id } }),
+          )
+        ).json(),
     })),
     combine: gabungRiwayat,
   });
@@ -82,14 +88,15 @@ function gabungRiwayat(hasil: { data?: Peristiwa[] | undefined }[]) {
 export function useKampung() {
   return useQuery({
     queryKey: [...KUNCI, "kampung"],
-    queryFn: async () => (await panggil(() => api.lapangan.kampung.$get())).json(),
+    queryFn: async () => (await panggil(() => api.kantor.lapangan.kampung.$get())).json(),
   });
 }
 
 export function useNasabahLama() {
   return useQuery({
     queryKey: [...KUNCI, "nasabah-lama"],
-    queryFn: async () => (await panggil(() => api.lapangan["nasabah-lama"].$get())).json(),
+    queryFn: async () =>
+      (await panggil(() => api.pembiayaan.lapangan["nasabah-lama"].$get())).json(),
   });
 }
 
@@ -104,19 +111,19 @@ export function useTulis<I, O>(kirim: (input: I) => Promise<O>) {
 
 /** Penulis per operasi — bentuk isi mengikuti kontrak `@opennael/contracts`. */
 export const tulis = {
-  absen: async (json: Parameters<typeof api.lapangan.absen.$post>[0]["json"]) =>
-    (await panggil(() => api.lapangan.absen.$post({ json }))).json(),
-  laporan: async () => (await panggil(() => api.lapangan.laporan.$post())).json(),
-  akad: async (json: Parameters<typeof api.lapangan.akad.$post>[0]["json"]) =>
-    (await panggil(() => api.lapangan.akad.$post({ json }))).json(),
-  bayar: async (json: Parameters<typeof api.lapangan.bayar.$post>[0]["json"]) =>
-    (await panggil(() => api.lapangan.bayar.$post({ json }))).json(),
+  absen: async (json: Parameters<typeof api.hariKolektor.lapangan.absen.$post>[0]["json"]) =>
+    (await panggil(() => api.hariKolektor.lapangan.absen.$post({ json }))).json(),
+  laporan: async () => (await panggil(() => api.hariKolektor.lapangan.laporan.$post())).json(),
+  akad: async (json: Parameters<typeof api.pembiayaan.lapangan.akad.$post>[0]["json"]) =>
+    (await panggil(() => api.pembiayaan.lapangan.akad.$post({ json }))).json(),
+  bayar: async (json: Parameters<typeof api.pembiayaan.lapangan.bayar.$post>[0]["json"]) =>
+    (await panggil(() => api.pembiayaan.lapangan.bayar.$post({ json }))).json(),
   lunas: async (pinjamanId: string) =>
-    (await panggil(() => api.lapangan.lunas.$post({ json: { pinjamanId } }))).json(),
-  gulung: async (json: Parameters<typeof api.lapangan.gulung.$post>[0]["json"]) =>
-    (await panggil(() => api.lapangan.gulung.$post({ json }))).json(),
-  libur: async (json: Parameters<typeof api.lapangan.libur.$post>[0]["json"]) =>
-    (await panggil(() => api.lapangan.libur.$post({ json }))).json(),
+    (await panggil(() => api.pembiayaan.lapangan.lunas.$post({ json: { pinjamanId } }))).json(),
+  gulung: async (json: Parameters<typeof api.pembiayaan.lapangan.gulung.$post>[0]["json"]) =>
+    (await panggil(() => api.pembiayaan.lapangan.gulung.$post({ json }))).json(),
+  libur: async (json: Parameters<typeof api.pembiayaan.lapangan.libur.$post>[0]["json"]) =>
+    (await panggil(() => api.pembiayaan.lapangan.libur.$post({ json }))).json(),
 };
 
 type KeadaanHariIni = NonNullable<ReturnType<typeof useHariIni>["data"]>;

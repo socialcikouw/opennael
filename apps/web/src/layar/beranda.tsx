@@ -37,7 +37,7 @@ import { DaftarAktivitas } from "./aktivitas";
 const rute = getRouteApi("/bos/");
 
 const ambilPerKolektor = (t: string) =>
-  ambil(() => api.ringkasan["per-kolektor"].$get({ query: { mulai: t, selesai: t } }));
+  ambil(() => api.pelaporan.ringkasan["per-kolektor"].$get({ query: { mulai: t, selesai: t } }));
 type PerKolektor = Awaited<ReturnType<typeof ambilPerKolektor>>[number];
 
 const k = pembantuKolom<PerKolektor>();
@@ -87,7 +87,8 @@ function GrafikPerforma({ sampai }: { sampai: string }) {
   const mulai = geserTanggal(sampai, -29);
   const q = useQuery({
     queryKey: ["ringkasan", "performa", mulai, sampai],
-    queryFn: () => ambil(() => api.ringkasan.performa.$get({ query: { mulai, selesai: sampai } })),
+    queryFn: () =>
+      ambil(() => api.pelaporan.ringkasan.performa.$get({ query: { mulai, selesai: sampai } })),
   });
   if (q.isPending) return <Memuat />;
   if (q.isError) return <GalatMuat galat={q.error} ulangi={() => void q.refetch()} />;
@@ -162,7 +163,7 @@ export function LayarBeranda() {
 
   const ringkasan = useQuery({
     queryKey: ["ringkasan", t],
-    queryFn: () => ambil(() => api.ringkasan.$get({ query: { mulai: t, selesai: t } })),
+    queryFn: () => ambil(() => api.pelaporan.ringkasan.$get({ query: { mulai: t, selesai: t } })),
   });
   const perKolektor = useQuery({
     queryKey: ["ringkasan", "per-kolektor", t],

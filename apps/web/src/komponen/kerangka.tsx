@@ -67,7 +67,7 @@ export function Kerangka() {
 
   const keluar = async () => {
     setKeluarBerjalan(true);
-    await api.auth.keluar.$post().catch(() => null);
+    await api.identitas.auth.keluar.$post().catch(() => null);
     sesi.hapus();
     void navigasi({ to: "/masuk" });
   };

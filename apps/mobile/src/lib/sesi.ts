@@ -1,69 +1,35 @@
-import type { Profil } from "@opennael/contracts";
+import {
+  buatSesi,
+  type PenyimpanSesi,
+  type Sesi,
+  useSesi as useSesiDasar,
+} from "@opennael/api-client";
 import * as SecureStore from "expo-secure-store";
-import { useSyncExternalStore } from "react";
 
 /**
  * SESI di HP — token & profil disimpan di brankas aman HP (Keystore /
  * Keychain), bukan penyimpanan biasa. Satu sumber untuk klien API (membaca &
  * memperbarui token) dan layar (siapa yang sedang masuk).
  */
-export interface Sesi {
-  tokenAkses: string;
-  tokenSegar: string;
-  pengguna: Profil;
-}
+export type { Sesi };
 
 const KUNCI = "nael.sesi";
 
-/** `undefined` = belum selesai dibaca dari brankas; `null` = belum masuk. */
-let saatIni: Sesi | null | undefined;
-const pendengar = new Set<() => void>();
-
-function umumkan() {
-  for (const p of pendengar) p();
-}
-
-export const sesi = {
-  ambil: () => saatIni,
-
-  async muat(): Promise<void> {
-    if (saatIni !== undefined) return;
-    try {
-      const teks = await SecureStore.getItemAsync(KUNCI);
-      saatIni = teks ? (JSON.parse(teks) as Sesi) : null;
-    } catch {
-      saatIni = null;
-    }
-    umumkan();
+const penyimpan: PenyimpanSesi = {
+  async baca() {
+    const teks = await SecureStore.getItemAsync(KUNCI);
+    return teks ? (JSON.parse(teks) as Sesi) : null;
   },
-
-  async simpan(baru: Sesi): Promise<void> {
-    saatIni = baru;
-    umumkan();
-    await SecureStore.setItemAsync(KUNCI, JSON.stringify(baru));
-  },
-
-  /** Ganti token saja (sesudah refresh), profil tetap. */
-  async gantiToken(token: { tokenAkses: string; tokenSegar: string }): Promise<void> {
-    if (!saatIni) return;
-    await sesi.simpan({ ...saatIni, ...token });
-  },
-
-  async hapus(): Promise<void> {
-    saatIni = null;
-    umumkan();
-    await SecureStore.deleteItemAsync(KUNCI);
-  },
-
-  dengar(p: () => void) {
-    pendengar.add(p);
-    return () => {
-      pendengar.delete(p);
-    };
+  async tulis(sesi) {
+    if (sesi) await SecureStore.setItemAsync(KUNCI, JSON.stringify(sesi));
+    else await SecureStore.deleteItemAsync(KUNCI);
   },
 };
 
+/** `ambil()` = `undefined` selama belum selesai dibaca dari brankas; `null` = belum masuk. */
+export const sesi = buatSesi(penyimpan);
+
 /** Sesi untuk layar — berubah otomatis saat masuk, refresh, atau keluar. */
 export function useSesi(): Sesi | null | undefined {
-  return useSyncExternalStore(sesi.dengar, sesi.ambil, sesi.ambil);
+  return useSesiDasar(sesi);
 }

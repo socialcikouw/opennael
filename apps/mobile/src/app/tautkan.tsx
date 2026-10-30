@@ -66,7 +66,7 @@ export default function Tautkan() {
     setGalat(null);
     try {
       const res = await panggil(() =>
-        api.auth.tautan.$post({ json: { perangkat: infoPerangkat() } }),
+        api.identitas.auth.tautan.$post({ json: { perangkat: infoPerangkat() } }),
       );
       if (res.status !== 201) throw new Error("Jawaban tak terduga");
       setTautan(await res.json());
@@ -105,7 +105,7 @@ export default function Tautkan() {
     const tanya = async () => {
       try {
         const res = await panggil(() =>
-          api.auth.tautan[":id"].klaim.$post({
+          api.identitas.auth.tautan[":id"].klaim.$post({
             param: { id: tautan.id },
             json: { klaim: tautan.klaim },
           }),

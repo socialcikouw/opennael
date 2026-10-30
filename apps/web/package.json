@@ -9,6 +9,7 @@
     "typecheck": "bun run --cwd ../api tipe && tsc --noEmit"
   },
   "dependencies": {
+    "@opennael/api-client": "workspace:*",
     "@opennael/contracts": "workspace:*",
     "@opennael/domain": "workspace:*",
     "@opennael/format": "workspace:*",

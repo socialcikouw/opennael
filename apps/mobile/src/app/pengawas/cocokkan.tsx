@@ -46,7 +46,7 @@ export default function CocokkanKas() {
     queryFn: async () =>
       (
         await panggil(() =>
-          api.kas.pencocokan.$get({
+          api.kas.kas.pencocokan.$get({
             query: { mulai: geserTanggal(hari ?? "", -30), selesai: hari ?? "" },
           }),
         )
@@ -57,7 +57,7 @@ export default function CocokkanKas() {
     mutationFn: async () =>
       (
         await panggil(() =>
-          api.kas.pencocokan.$post({
+          api.kas.kas.pencocokan.$post({
             json: {
               akun,
               saldoNyata: nyata,

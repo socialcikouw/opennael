@@ -18,7 +18,7 @@ export default function Tunggakan() {
   const q = useQuery({
     queryKey: ["pinjaman", "aktif"],
     queryFn: async () =>
-      (await panggil(() => api.pinjaman.$get({ query: { status: "aktif" } }))).json(),
+      (await panggil(() => api.pembiayaan.pinjaman.$get({ query: { status: "aktif" } }))).json(),
   });
   const menunggak = (q.data ?? [])
     .filter((p) => (p.tagih?.tertinggal ?? 0) > 0)

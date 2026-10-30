@@ -14,7 +14,8 @@ const KUNCI = ["setoran"] as const;
 export function useHariKolektor() {
   return useQuery({
     queryKey: [...KUNCI, "hari"],
-    queryFn: async () => (await panggil(() => api["hari-kolektor"].$get({ query: {} }))).json(),
+    queryFn: async () =>
+      (await panggil(() => api.hariKolektor["hari-kolektor"].$get({ query: {} }))).json(),
     refetchInterval: 30_000,
   });
 }
@@ -26,7 +27,7 @@ export function useSetoranKolektor(kolektorId: string) {
   return useQuery({
     queryKey: [...KUNCI, "transaksi", kolektorId],
     queryFn: async () =>
-      (await panggil(() => api.transaksi.$get({ query: { kolektorId } }))).json(),
+      (await panggil(() => api.hariKolektor.transaksi.$get({ query: { kolektorId } }))).json(),
   });
 }
 
@@ -37,7 +38,7 @@ export function useBiayaKolektor(kolektorId: string, tanggal: string | undefined
     queryFn: async () =>
       (
         await panggil(() =>
-          api["biaya-tak-terduga"].$get({
+          api.hariKolektor["biaya-tak-terduga"].$get({
             query: { kolektorId, tanggalMulai: tanggal, tanggalSelesai: tanggal },
           }),
         )
@@ -59,16 +60,18 @@ export const tulisSetoran = {
   terimaKas: async (isi: { kolektorId: string; tunaiDiterima: number }) =>
     (
       await panggil(() =>
-        api["hari-kolektor"][":kolektorId"]["terima-kas"].$post({
+        api.hariKolektor["hari-kolektor"][":kolektorId"]["terima-kas"].$post({
           param: { kolektorId: isi.kolektorId },
           json: { tunaiDiterima: isi.tunaiDiterima },
         }),
       )
     ).json(),
-  transfer: async (json: Parameters<(typeof api)["transfer-setoran"]["$post"]>[0]["json"]) =>
-    (await panggil(() => api["transfer-setoran"].$post({ json }))).json(),
-  biaya: async (json: Parameters<(typeof api)["biaya-tak-terduga"]["$post"]>[0]["json"]) =>
-    (await panggil(() => api["biaya-tak-terduga"].$post({ json }))).json(),
+  transfer: async (
+    json: Parameters<(typeof api.hariKolektor)["transfer-setoran"]["$post"]>[0]["json"],
+  ) => (await panggil(() => api.hariKolektor["transfer-setoran"].$post({ json }))).json(),
+  biaya: async (
+    json: Parameters<(typeof api.hariKolektor)["biaya-tak-terduga"]["$post"]>[0]["json"],
+  ) => (await panggil(() => api.hariKolektor["biaya-tak-terduga"].$post({ json }))).json(),
 };
 
 /** Keadaan satu hari kolektor untuk lencana daftar. */

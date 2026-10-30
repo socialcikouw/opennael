@@ -18,7 +18,8 @@ import { useSesi } from "@/lib/sesi";
 
 const rute = getRouteApi("/bos/karyawan");
 
-const ambilPengguna = () => ambil(() => api.pengguna.$get({ query: { termasukNonaktif: "ya" } }));
+const ambilPengguna = () =>
+  ambil(() => api.identitas.pengguna.$get({ query: { termasukNonaktif: "ya" } }));
 type Karyawan = Awaited<ReturnType<typeof ambilPengguna>>[number];
 
 type Aksi = {
@@ -29,7 +30,9 @@ type Aksi = {
 // ---- perangkat ----------------------------------------------------------------------
 
 const ambilPerangkat = (riwayat: boolean) =>
-  ambil(() => api.auth.perangkat.$get({ query: riwayat ? { termasukDiputus: "true" } : {} }));
+  ambil(() =>
+    api.identitas.auth.perangkat.$get({ query: riwayat ? { termasukDiputus: "true" } : {} }),
+  );
 type Perangkat = Awaited<ReturnType<typeof ambilPerangkat>>[number];
 
 const LABEL_PLATFORM = { android: "Android", ios: "iPhone", web: "Browser" } as const;
@@ -51,7 +54,8 @@ function DialogPerangkat({ orang, tutup }: { orang: Karyawan; tutup: () => void 
   const [putus, setPutus] = useState<Perangkat | null>(null);
   const q = useQuery({ queryKey: ["perangkat", riwayat], queryFn: () => ambilPerangkat(riwayat) });
   const m = useMutation({
-    mutationFn: (id: string) => ambil(() => api.auth.perangkat[":id"].$delete({ param: { id } })),
+    mutationFn: (id: string) =>
+      ambil(() => api.identitas.auth.perangkat[":id"].$delete({ param: { id } })),
     onSuccess: () => {
       for (const k of [["perangkat"], ["pengguna"]]) void klien.invalidateQueries({ queryKey: k });
       setPutus(null);
@@ -163,7 +167,7 @@ function DialogSunting({ orang, tutup }: { orang: Karyawan; tutup: () => void })
   const ubah = perubahan(orang, isi);
   const simpan = useMutation({
     mutationFn: () =>
-      ambil(() => api.pengguna[":id"].$patch({ param: { id: orang.id }, json: ubah })),
+      ambil(() => api.identitas.pengguna[":id"].$patch({ param: { id: orang.id }, json: ubah })),
     onSuccess: () => {
       void klien.invalidateQueries({ queryKey: ["pengguna"] });
       tutup();
@@ -212,7 +216,7 @@ function DialogNonaktifkan({ orang, tutup }: { orang: Karyawan; tutup: () => voi
   const kirim = useMutation({
     mutationFn: () =>
       ambil(() =>
-        api.pengguna[":id"].nonaktifkan.$post({
+        api.identitas.pengguna[":id"].nonaktifkan.$post({
           param: { id: orang.id },
           json: { alasan: alasan.trim() },
         }),
@@ -254,7 +258,8 @@ function DialogNonaktifkan({ orang, tutup }: { orang: Karyawan; tutup: () => voi
 function DialogAktifkan({ orang, tutup }: { orang: Karyawan; tutup: () => void }) {
   const klien = useQueryClient();
   const kirim = useMutation({
-    mutationFn: () => ambil(() => api.pengguna[":id"].aktifkan.$post({ param: { id: orang.id } })),
+    mutationFn: () =>
+      ambil(() => api.identitas.pengguna[":id"].aktifkan.$post({ param: { id: orang.id } })),
     onSuccess: () => {
       void klien.invalidateQueries({ queryKey: ["pengguna"] });
       tutup();

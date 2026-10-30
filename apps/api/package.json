@@ -28,6 +28,9 @@
     "drizzle-kit": "^0.31.11"
   },
   "exports": {
+    "./tipe/*": {
+      "types": "./tipe/modul/*/index.d.ts"
+    },
     "./tipe": {
       "types": "./tipe/app.d.ts"
     }

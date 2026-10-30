@@ -14,7 +14,9 @@ export function LayarMasuk() {
   const masuk = useMutation({
     mutationFn: async () => {
       const res = await panggil(() =>
-        api.auth.login.$post({ json: { nomorHp, sandi, perangkat: { platform: "web" } } }),
+        api.identitas.auth.login.$post({
+          json: { nomorHp, sandi, perangkat: { platform: "web" } },
+        }),
       );
       if (res.status !== 200) throw new Error("Jawaban tak terduga");
       return res.json();

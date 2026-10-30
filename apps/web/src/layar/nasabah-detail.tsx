@@ -83,7 +83,8 @@ function DialogSunting({
   if ((isi.nomorHp.trim() || null) !== n.nomorHp) ubah.nomorHp = isi.nomorHp.trim() || null;
   if ((isi.nik.trim() || null) !== n.nik) ubah.nik = isi.nik.trim() || null;
   const simpan = useMutation({
-    mutationFn: () => ambil(() => api.nasabah[":id"].$patch({ param: { id: n.id }, json: ubah })),
+    mutationFn: () =>
+      ambil(() => api.pembiayaan.nasabah[":id"].$patch({ param: { id: n.id }, json: ubah })),
     onSuccess: () => {
       segarkan();
       tutup();
@@ -155,7 +156,10 @@ function DialogPindah({
   const kirim = useMutation({
     mutationFn: () =>
       ambil(() =>
-        api.nasabah[":id"].pindah.$post({ param: { id: n.id }, json: { kolektorId: ke } }),
+        api.pembiayaan.nasabah[":id"].pindah.$post({
+          param: { id: n.id },
+          json: { kolektorId: ke },
+        }),
       ),
     onSuccess: () => {
       segarkan();
@@ -197,7 +201,7 @@ function DialogTarikTabungan({ n, tutup }: { n: Nasabah; tutup: () => void }) {
   const kirim = useMutation({
     mutationFn: () =>
       ambil(() =>
-        api.nasabah[":id"]["penarikan-tabungan"].$post({
+        api.pembiayaan.nasabah[":id"]["penarikan-tabungan"].$post({
           param: { id: n.id },
           json: { nominal: nominal ?? 0, dariAkun, saldoSebelum: saldo, alasan: alasan.trim() },
         }),
@@ -249,7 +253,7 @@ function DialogKoreksiTabungan({ n, tutup }: { n: Nasabah; tutup: () => void }) 
   const kirim = useMutation({
     mutationFn: () =>
       ambil(() =>
-        api.nasabah[":id"]["koreksi-tabungan"].$post({
+        api.pembiayaan.nasabah[":id"]["koreksi-tabungan"].$post({
           param: { id: n.id },
           json: { saldoBaru: saldoBaru ?? 0, saldoSebelum: saldo, alasan: alasan.trim() },
         }),
@@ -293,7 +297,7 @@ function DialogPutihkan({ n, tutup }: { n: Nasabah; tutup: () => void }) {
   const kirim = useMutation({
     mutationFn: () =>
       ambil(() =>
-        api.pinjaman[":id"].putihkan.$post({
+        api.pembiayaan.pinjaman[":id"].putihkan.$post({
           param: { id: p?.id ?? "" },
           json: { alasan, keterangan: keterangan.trim() },
         }),
@@ -342,7 +346,7 @@ function DialogBukaBlokir({ n, tutup }: { n: Nasabah; tutup: () => void }) {
   const kirim = useMutation({
     mutationFn: () =>
       ambil(() =>
-        api.nasabah[":id"]["buka-blokir"].$post({
+        api.pembiayaan.nasabah[":id"]["buka-blokir"].$post({
           param: { id: n.id },
           json: { alasan: alasan.trim() },
         }),
@@ -375,7 +379,7 @@ function DialogRem({ n, tutup }: { n: Nasabah; tutup: () => void }) {
   const segarkan = useSegarkanNasabah();
   const aktif = useQuery({
     queryKey: ["kebijakan", "aktif"],
-    queryFn: () => ambil(() => api.kebijakan.aktif.$get()),
+    queryFn: () => ambil(() => api.kantor.kebijakan.aktif.$get()),
   });
   const lama = aktif.data?.find((r) => r.lapis === "nasabah" && r.sasaran?.id === n.id);
   const [isi, setIsi] = useState<{ naik: boolean; gulung: boolean; alasan: string } | null>(null);
@@ -387,7 +391,7 @@ function DialogRem({ n, tutup }: { n: Nasabah; tutup: () => void }) {
   const kirim = useMutation({
     mutationFn: () =>
       ambil(() =>
-        api.kebijakan.nasabah[":nasabahId"].$put({
+        api.kantor.kebijakan.nasabah[":nasabahId"].$put({
           param: { nasabahId: n.id },
           json: {
             naikPinjamanDikunci: nilai.naik,
@@ -443,7 +447,7 @@ function DialogRem({ n, tutup }: { n: Nasabah; tutup: () => void }) {
 function Neraca({ id }: { id: string }) {
   const q = useQuery({
     queryKey: ["nasabah", "neraca", id],
-    queryFn: () => ambil(() => api.nasabah[":id"].neraca.$get({ param: { id } })),
+    queryFn: () => ambil(() => api.pembiayaan.nasabah[":id"].neraca.$get({ param: { id } })),
   });
   if (q.isPending) return <Memuat />;
   if (q.isError) return <GalatMuat galat={q.error} ulangi={() => void q.refetch()} />;
@@ -480,16 +484,18 @@ function RiwayatTabungan({ id }: { id: string }) {
   const [alasan, setAlasan] = useState("");
   const tarik = useQuery({
     queryKey: ["nasabah", "penarikan", id],
-    queryFn: () => ambil(() => api.nasabah[":id"]["penarikan-tabungan"].$get({ param: { id } })),
+    queryFn: () =>
+      ambil(() => api.pembiayaan.nasabah[":id"]["penarikan-tabungan"].$get({ param: { id } })),
   });
   const koreksi = useQuery({
     queryKey: ["nasabah", "koreksi", id],
-    queryFn: () => ambil(() => api.nasabah[":id"]["koreksi-tabungan"].$get({ param: { id } })),
+    queryFn: () =>
+      ambil(() => api.pembiayaan.nasabah[":id"]["koreksi-tabungan"].$get({ param: { id } })),
   });
   const kirimBatal = useMutation({
     mutationFn: (penarikanId: string) =>
       ambil(() =>
-        api["penarikan-tabungan"][":id"].batal.$post({
+        api.pembiayaan["penarikan-tabungan"][":id"].batal.$post({
           param: { id: penarikanId },
           json: { alasan: alasan.trim() },
         }),

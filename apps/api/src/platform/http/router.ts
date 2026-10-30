@@ -1,4 +1,6 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
+import type { Hono } from "hono";
+import type { ExtractSchema, Schema } from "hono/types";
 import type { Aktor } from "./aktor";
 import { jawabanValidasi } from "./galat";
 
@@ -13,3 +15,11 @@ export function buatRouter() {
     },
   });
 }
+
+/**
+ * Tipe klien RPC (`hc`) untuk sekumpulan router — satu konteks, bukan seluruh
+ * API: skemanya digabung dari router-router itu saja.
+ */
+// biome-ignore lint/suspicious/noExplicitAny: parameter generik Hono sengaja dilonggarkan
+export type RuteKonteks<R extends Hono<any, any, any>> =
+  ExtractSchema<R> extends infer S extends Schema ? Hono<Lingkungan, S, "/"> : never;

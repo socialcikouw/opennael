@@ -10,7 +10,7 @@ export function TombolKeluar() {
   const [jalan, setJalan] = useState(false);
   const keluar = async () => {
     setJalan(true);
-    await api.auth.keluar.$post().catch(() => null);
+    await api.identitas.auth.keluar.$post().catch(() => null);
     await sesi.hapus();
     router.replace("/tautkan");
   };

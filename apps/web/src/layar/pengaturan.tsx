@@ -57,7 +57,7 @@ function Pesan({ ok, galat }: { ok?: string | null; galat?: string | null | unde
 
 // ---- kantor -------------------------------------------------------------------------
 
-const ambilKantor = () => ambil(() => api.kantor.$get());
+const ambilKantor = () => ambil(() => api.kantor.kantor.$get());
 
 function ProfilKantor() {
   const klien = useQueryClient();
@@ -87,7 +87,7 @@ function ProfilKantor() {
         ...(isi.jamBuka !== q.data.jamBuka.slice(0, 5) ? { jamBuka: isi.jamBuka } : {}),
         ...(isi.jamTutup !== q.data.jamTutup.slice(0, 5) ? { jamTutup: isi.jamTutup } : {}),
       };
-      const hasil = await ambil(() => api.kantor.$patch({ json: ubah }));
+      const hasil = await ambil(() => api.kantor.kantor.$patch({ json: ubah }));
       // Nama & zona kantor juga tersimpan di sesi (menu & jam tampilan).
       const s = sesi.ambil();
       if (s) {
@@ -165,7 +165,7 @@ function PekanKerja() {
   const kantor = useQuery({ queryKey: ["kantor"], queryFn: ambilKantor });
   const riwayat = useQuery({
     queryKey: ["kantor", "pekan-kerja"],
-    queryFn: () => ambil(() => api.kantor["pekan-kerja"].$get()),
+    queryFn: () => ambil(() => api.kantor.kantor["pekan-kerja"].$get()),
   });
   const [hari, setHari] = useState<number[] | null>(null);
   const [mulai, setMulai] = useState(hariIni);
@@ -173,7 +173,9 @@ function PekanKerja() {
   const m = useMutation({
     mutationFn: () =>
       ambil(() =>
-        api.kantor["pekan-kerja"].$put({ json: { hariKerja: pilihan, berlakuMulai: mulai } }),
+        api.kantor.kantor["pekan-kerja"].$put({
+          json: { hariKerja: pilihan, berlakuMulai: mulai },
+        }),
       ),
     onSuccess: () => {
       setHari(null);
@@ -302,7 +304,7 @@ function DialogRemKolektor({
   const m = useMutation({
     mutationFn: () =>
       ambil(() =>
-        api.kebijakan.kolektor[":kolektorId"].$put({
+        api.kantor.kebijakan.kolektor[":kolektorId"].$put({
           param: { kolektorId },
           json: keInput(nilai),
         }),
@@ -348,11 +350,11 @@ function Rem() {
   const [dialogKolektor, setDialogKolektor] = useState(false);
   const aktif = useQuery({
     queryKey: ["kebijakan", "aktif"],
-    queryFn: () => ambil(() => api.kebijakan.aktif.$get()),
+    queryFn: () => ambil(() => api.kantor.kebijakan.aktif.$get()),
   });
   const kolektorQ = useQuery({
     queryKey: ["pengguna", "kolektor"],
-    queryFn: () => ambil(() => api.pengguna.$get({ query: { peran: "kolektor" } })),
+    queryFn: () => ambil(() => api.identitas.pengguna.$get({ query: { peran: "kolektor" } })),
   });
   const remKantor = aktif.data?.find((r) => r.lapis === "kantor");
   const [isi, setIsi] = useState<IsiRem | null>(null);
@@ -363,7 +365,7 @@ function Rem() {
     alasan: remKantor?.alasanKunci ?? "",
   };
   const m = useMutation({
-    mutationFn: () => ambil(() => api.kebijakan.kantor.$put({ json: keInput(nilai) })),
+    mutationFn: () => ambil(() => api.kantor.kebijakan.kantor.$put({ json: keInput(nilai) })),
     onSuccess: () => {
       setIsi(null);
       void klien.invalidateQueries({ queryKey: ["kebijakan"] });
@@ -460,7 +462,9 @@ function LiburKantor() {
     queryKey: ["libur-kantor", hariIni],
     queryFn: () =>
       ambil(() =>
-        api["libur-kantor"].$get({ query: { tanggalMulai: hariIni, tanggalSelesai: sampai } }),
+        api.kantor["libur-kantor"].$get({
+          query: { tanggalMulai: hariIni, tanggalSelesai: sampai },
+        }),
       ),
   });
   const [isi, setIsi] = useState({ mulai: hariIni, selesai: "", alasan: "" });
@@ -468,7 +472,7 @@ function LiburKantor() {
   const m = useMutation({
     mutationFn: () =>
       ambil(() =>
-        api["libur-kantor"].$post({
+        api.kantor["libur-kantor"].$post({
           json: {
             tanggalMulai: isi.mulai,
             ...(isi.selesai ? { tanggalSelesai: isi.selesai } : {}),
@@ -567,7 +571,7 @@ function LiburKantor() {
           tutup={() => setBatal(null)}
           kirim={(alasan) =>
             ambil(() =>
-              api["libur-kantor"][":tanggal"].batal.$post({
+              api.kantor["libur-kantor"][":tanggal"].batal.$post({
                 param: { tanggal: batal },
                 json: { alasan },
               }),
@@ -586,11 +590,11 @@ function TarifGaji() {
   const klien = useQueryClient();
   const q = useQuery({
     queryKey: ["tarif-gaji"],
-    queryFn: () => ambil(() => api["tarif-gaji"].$get()),
+    queryFn: () => ambil(() => api.penggajian["tarif-gaji"].$get()),
   });
   const kolektorQ = useQuery({
     queryKey: ["pengguna", "kolektor"],
-    queryFn: () => ambil(() => api.pengguna.$get({ query: { peran: "kolektor" } })),
+    queryFn: () => ambil(() => api.identitas.pengguna.$get({ query: { peran: "kolektor" } })),
   });
   const [isi, setIsi] = useState({ kolektorId: "", persen: "", mulai: hariIni });
   const persenAngka = Number(isi.persen.replace(",", "."));
@@ -603,7 +607,7 @@ function TarifGaji() {
   const m = useMutation({
     mutationFn: () =>
       ambil(() =>
-        api["tarif-gaji"].$put({
+        api.penggajian["tarif-gaji"].$put({
           json: {
             ...(isi.kolektorId ? { kolektorId: isi.kolektorId } : {}),
             tarifBp: isi.persen.trim() === "" ? null : Math.round(persenAngka * 100),
@@ -698,13 +702,14 @@ function RuteKolektor() {
   const klien = useQueryClient();
   const kolektorQ = useQuery({
     queryKey: ["pengguna", "kolektor"],
-    queryFn: () => ambil(() => api.pengguna.$get({ query: { peran: "kolektor" } })),
+    queryFn: () => ambil(() => api.identitas.pengguna.$get({ query: { peran: "kolektor" } })),
   });
   const [kolektorId, setKolektorId] = useState("");
   const pilih = kolektorId || kolektorQ.data?.[0]?.id || "";
   const q = useQuery({
     queryKey: ["rute-kolektor", pilih],
-    queryFn: () => ambil(() => api["rute-kolektor"].$get({ query: { kolektorId: pilih } })),
+    queryFn: () =>
+      ambil(() => api.hariKolektor["rute-kolektor"].$get({ query: { kolektorId: pilih } })),
     enabled: pilih !== "",
   });
   const [urutan, setUrutan] = useState<string[] | null>(null);
@@ -713,7 +718,7 @@ function RuteKolektor() {
   const m = useMutation({
     mutationFn: () =>
       ambil(() =>
-        api["rute-kolektor"].$put({
+        api.hariKolektor["rute-kolektor"].$put({
           json: {
             kolektorId: pilih,
             urutan: daftar.map((nama) => ({ nama })),
@@ -849,7 +854,7 @@ function RuteKolektor() {
 // ---- kampung ------------------------------------------------------------------------
 
 const ambilKampung = (baru: boolean) =>
-  ambil(() => api.wilayah.$get({ query: baru ? { baru: "7" } : {} }));
+  ambil(() => api.kantor.wilayah.$get({ query: baru ? { baru: "7" } : {} }));
 type Kampung = Awaited<ReturnType<typeof ambilKampung>>[number];
 
 /** Segarkan semua yang memuat nama kampung. */
@@ -870,7 +875,7 @@ function DialogGantiNama({ w, semua, tutup }: { w: Kampung; semua: Kampung[]; tu
   const tujuan = semua.find((x) => x.id !== w.id && x.kunci === kunciWilayah(rapi));
   const m = useMutation({
     mutationFn: () =>
-      ambil(() => api.wilayah["ganti-nama"].$post({ json: { dari: w.id, ke: rapi } })),
+      ambil(() => api.kantor.wilayah["ganti-nama"].$post({ json: { dari: w.id, ke: rapi } })),
     onSuccess: () => {
       segarkan();
       tutup();
@@ -909,7 +914,7 @@ function DialogGantiNama({ w, semua, tutup }: { w: Kampung; semua: Kampung[]; tu
 function DialogHapusKampung({ w, tutup }: { w: Kampung; tutup: () => void }) {
   const segarkan = useSegarkanKampung();
   const m = useMutation({
-    mutationFn: () => ambil(() => api.wilayah[":id"].$delete({ param: { id: w.id } })),
+    mutationFn: () => ambil(() => api.kantor.wilayah[":id"].$delete({ param: { id: w.id } })),
     onSuccess: () => {
       segarkan();
       tutup();

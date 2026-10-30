@@ -60,7 +60,7 @@ function DialogTerimaKas({ hari, tutup }: { hari: HariKas; tutup: () => void }) 
   const m = useMutation({
     mutationFn: () =>
       ambil(() =>
-        api["hari-kolektor"][":kolektorId"]["terima-kas"].$post({
+        api.hariKolektor["hari-kolektor"][":kolektorId"]["terima-kas"].$post({
           param: { kolektorId: hari.kolektor.id },
           json: { tunaiDiterima: tunai ?? 0 },
         }),
@@ -115,7 +115,7 @@ function DialogUbahHariIni({ hari, tutup }: { hari: HariKas; tutup: () => void }
   const m = useMutation({
     mutationFn: () =>
       ambil(() =>
-        api["hari-kolektor"][":kolektorId"]["hari-ini"].$patch({
+        api.hariKolektor["hari-kolektor"][":kolektorId"]["hari-ini"].$patch({
           param: { kolektorId: hari.kolektor.id },
           json: ubah,
         }),
@@ -196,7 +196,7 @@ function SetoranSore({ tanggal, hariIni }: { tanggal: string; hariIni: string })
   const [bukaLagi, setBukaLagi] = useState<HariKas | null>(null);
   const q = useQuery({
     queryKey: ["harian", "hari-kolektor", tanggal],
-    queryFn: () => ambil(() => api["hari-kolektor"].$get({ query: { tanggal } })),
+    queryFn: () => ambil(() => api.hariKolektor["hari-kolektor"].$get({ query: { tanggal } })),
   });
   const hariIniSaja = tanggal === hariIni;
 
@@ -337,7 +337,7 @@ function SetoranSore({ tanggal, hariIni }: { tanggal: string; hariIni: string })
           tutup={() => setBukaLagi(null)}
           kirim={(alasan) =>
             ambil(() =>
-              api["hari-kolektor"][":kolektorId"].laporan.batal.$post({
+              api.hariKolektor["hari-kolektor"][":kolektorId"].laporan.batal.$post({
                 param: { kolektorId: bukaLagi.kolektor.id },
                 json: { alasan },
               }),
@@ -365,7 +365,7 @@ function SetoranSore({ tanggal, hariIni }: { tanggal: string; hariIni: string })
           tutup={() => setBatal(null)}
           kirim={(alasan) =>
             ambil(() =>
-              api["serah-terima-kas"][":id"].batal.$post({
+              api.hariKolektor["serah-terima-kas"][":id"].batal.$post({
                 param: { id: batal.serahTerima?.id ?? "" },
                 json: { alasan },
               }),
@@ -380,7 +380,9 @@ function SetoranSore({ tanggal, hariIni }: { tanggal: string; hariIni: string })
 // ---- setoran nasabah ----------------------------------------------------------------
 
 const ambilTransaksi = (tanggal: string, kolektorId?: string) =>
-  ambil(() => api.transaksi.$get({ query: { tanggal, ...(kolektorId ? { kolektorId } : {}) } }));
+  ambil(() =>
+    api.hariKolektor.transaksi.$get({ query: { tanggal, ...(kolektorId ? { kolektorId } : {}) } }),
+  );
 type Transaksi = Awaited<ReturnType<typeof ambilTransaksi>>[number];
 
 function DialogTransfer({ t, tutup }: { t: Transaksi; tutup: () => void }) {
@@ -389,7 +391,9 @@ function DialogTransfer({ t, tutup }: { t: Transaksi; tutup: () => void }) {
   const m = useMutation({
     mutationFn: () =>
       ambil(() =>
-        api["transfer-setoran"].$post({ json: { transaksiId: t.id, nominal: nominal ?? 0 } }),
+        api.hariKolektor["transfer-setoran"].$post({
+          json: { transaksiId: t.id, nominal: nominal ?? 0 },
+        }),
       ),
     onSuccess: () => {
       for (const k of [["harian"], ["ringkasan"], ["aktivitas"]]) {
@@ -516,7 +520,10 @@ function SetoranNasabah({
           tutup={() => setBatal(null)}
           kirim={(alasan) =>
             ambil(() =>
-              api.transaksi[":id"].batal.$post({ param: { id: batal.id }, json: { alasan } }),
+              api.pembiayaan.transaksi[":id"].batal.$post({
+                param: { id: batal.id },
+                json: { alasan },
+              }),
             )
           }
         />
@@ -528,7 +535,7 @@ function SetoranNasabah({
 // ---- transfer -----------------------------------------------------------------------
 
 const ambilTransfer = (tanggal: string) =>
-  ambil(() => api["transfer-setoran"].$get({ query: { tanggal } }));
+  ambil(() => api.hariKolektor["transfer-setoran"].$get({ query: { tanggal } }));
 type Transfer = Awaited<ReturnType<typeof ambilTransfer>>["transfer"][number];
 
 function DaftarTransfer({ tanggal, hariIni }: { tanggal: string; hariIni: string }) {
@@ -601,7 +608,7 @@ function DaftarTransfer({ tanggal, hariIni }: { tanggal: string; hariIni: string
           tutup={() => setBatal(null)}
           kirim={(alasan) =>
             ambil(() =>
-              api["transfer-setoran"][":id"].batal.$post({
+              api.hariKolektor["transfer-setoran"][":id"].batal.$post({
                 param: { id: batal.id },
                 json: { alasan },
               }),
@@ -616,7 +623,7 @@ function DaftarTransfer({ tanggal, hariIni }: { tanggal: string; hariIni: string
 // ---- libur nasabah ------------------------------------------------------------------
 
 const ambilLibur = async (tanggal: string) =>
-  (await ambil(() => api.transaksi.peristiwa.$get({ query: { tanggal } }))).filter(
+  (await ambil(() => api.pembiayaan.transaksi.peristiwa.$get({ query: { tanggal } }))).filter(
     (p) => p.kategori === "libur",
   );
 type Libur = Awaited<ReturnType<typeof ambilLibur>>[number];
@@ -677,7 +684,7 @@ function DaftarLibur({ tanggal, hariIni }: { tanggal: string; hariIni: string })
 
 const ambilBiaya = (tanggal: string) =>
   ambil(() =>
-    api["biaya-tak-terduga"].$get({
+    api.hariKolektor["biaya-tak-terduga"].$get({
       query: { tanggalMulai: tanggal, tanggalSelesai: tanggal, termasukBatal: "ya" },
     }),
   );
@@ -696,7 +703,7 @@ function DialogBiaya({
   const m = useMutation({
     mutationFn: () =>
       ambil(() =>
-        api["biaya-tak-terduga"].$post({
+        api.hariKolektor["biaya-tak-terduga"].$post({
           json: { ...isi, keterangan: isi.keterangan.trim(), nominal: nominal ?? 0 },
         }),
       ),
@@ -829,7 +836,7 @@ function DaftarBiaya({
           tutup={() => setBatal(null)}
           kirim={(alasan) =>
             ambil(() =>
-              api["biaya-tak-terduga"][":id"].batal.$post({
+              api.hariKolektor["biaya-tak-terduga"][":id"].batal.$post({
                 param: { id: batal.id },
                 json: { alasan },
               }),
@@ -853,7 +860,7 @@ export function LayarHarian() {
   const t = tanggal ?? hariIni;
   const kolektorQ = useQuery({
     queryKey: ["pengguna", "kolektor"],
-    queryFn: () => ambil(() => api.pengguna.$get({ query: { peran: "kolektor" } })),
+    queryFn: () => ambil(() => api.identitas.pengguna.$get({ query: { peran: "kolektor" } })),
   });
   const kolektor = useMemo(
     () => (kolektorQ.data ?? []).map((o) => ({ id: o.id, nama: o.nama })),

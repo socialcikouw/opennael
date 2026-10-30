@@ -93,7 +93,7 @@ function BukaBukuKas() {
   const [bank, setBank] = useState<number | null>(null);
   const m = useMutation({
     mutationFn: () =>
-      ambil(() => api.kas.buka.$post({ json: { tunai: tunai ?? 0, bank: bank ?? 0 } })),
+      ambil(() => api.kas.kas.buka.$post({ json: { tunai: tunai ?? 0, bank: bank ?? 0 } })),
     onSuccess: segarkan,
   });
   return (
@@ -138,7 +138,7 @@ function DialogKasAwal({
   const m = useMutation({
     mutationFn: () =>
       ambil(() =>
-        api.kas.buka.$patch({
+        api.kas.kas.buka.$patch({
           // Klien `hc` menggabungkan tipe POST & PATCH di jalur yang sama — kirim keduanya.
           json: { tunai: tunai ?? 0, bank: bank ?? 0 },
         }),
@@ -178,7 +178,7 @@ function DialogMutasi({ tutup }: { tutup: () => void }) {
   const m = useMutation({
     mutationFn: () =>
       ambil(() =>
-        api.kas.mutasi.$post({
+        api.kas.kas.mutasi.$post({
           json: {
             jenis,
             dariAkun: arah === "masuk" ? null : akun,
@@ -245,7 +245,7 @@ function DialogCocokkan({ tutup }: { tutup: () => void }) {
   const m = useMutation({
     mutationFn: () =>
       ambil(() =>
-        api.kas.pencocokan.$post({
+        api.kas.kas.pencocokan.$post({
           json: {
             akun,
             saldoNyata: nyata ?? 0,
@@ -310,7 +310,7 @@ function DialogCocokkan({ tutup }: { tutup: () => void }) {
 }
 
 const ambilPencocokan = (mulai: string, selesai: string) =>
-  ambil(() => api.kas.pencocokan.$get({ query: { mulai, selesai } }));
+  ambil(() => api.kas.kas.pencocokan.$get({ query: { mulai, selesai } }));
 type Pencocokan = Awaited<ReturnType<typeof ambilPencocokan>>[number];
 
 function DaftarPencocokan({
@@ -402,7 +402,10 @@ function DaftarPencocokan({
           tutup={() => setBatal(null)}
           kirim={(alasan) =>
             ambil(() =>
-              api.kas.pencocokan[":id"].batal.$post({ param: { id: batal.id }, json: { alasan } }),
+              api.kas.kas.pencocokan[":id"].batal.$post({
+                param: { id: batal.id },
+                json: { alasan },
+              }),
             )
           }
         />
@@ -414,14 +417,14 @@ function DaftarPencocokan({
 // ---- layar --------------------------------------------------------------------------
 
 const ambilLaporan = (mulai: string, selesai: string) =>
-  ambil(() => api.kas.laporan.$get({ query: { mulai, selesai } }));
+  ambil(() => api.kas.kas.laporan.$get({ query: { mulai, selesai } }));
 type Gerakan = Awaited<ReturnType<typeof ambilLaporan>>["gerakan"][number];
 
 /** Posisi modal pada akhir satu tanggal (aturan-usaha M). */
 function PosisiModal({ tanggal }: { tanggal: string }) {
   const q = useQuery({
     queryKey: ["kas", "posisi-modal", tanggal],
-    queryFn: () => ambil(() => api.kas["posisi-modal"].$get({ query: { tanggal } })),
+    queryFn: () => ambil(() => api.kas.kas["posisi-modal"].$get({ query: { tanggal } })),
   });
   return (
     <Card>
@@ -677,7 +680,7 @@ export function LayarKas() {
           tutup={() => setBatal(null)}
           kirim={(alasan) =>
             ambil(() =>
-              api.kas.mutasi[":id"].batal.$post({
+              api.kas.kas.mutasi[":id"].batal.$post({
                 param: { id: batal.sumberId },
                 json: { alasan },
               }),

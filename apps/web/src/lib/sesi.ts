@@ -1,16 +1,16 @@
-import type { Profil } from "@opennael/contracts";
-import { useSyncExternalStore } from "react";
+import {
+  buatSesi,
+  type PenyimpanSesi,
+  type Sesi,
+  useSesi as useSesiDasar,
+} from "@opennael/api-client";
 
 /**
  * SESI BOS di browser — `localStorage` supaya bos tetap masuk sesudah browser
  * ditutup. Token segar per perangkat bisa dicabut bos (keluar / putus
  * perangkat), dan token akses hanya berumur 15 menit.
  */
-export interface Sesi {
-  tokenAkses: string;
-  tokenSegar: string;
-  pengguna: Profil;
-}
+export type { Sesi };
 
 const KUNCI = "nael.sesi.bos";
 
@@ -23,46 +23,31 @@ function baca(): Sesi | null {
   }
 }
 
-let saatIni: Sesi | null = baca();
-const pendengar = new Set<() => void>();
-const umumkan = () => {
-  for (const p of pendengar) p();
+const penyimpan: PenyimpanSesi = {
+  bacaSinkron: baca,
+  tulis(sesi) {
+    if (sesi) localStorage.setItem(KUNCI, JSON.stringify(sesi));
+    else localStorage.removeItem(KUNCI);
+  },
+  // Keluar / masuk di tab lain ikut terbaca di tab ini.
+  pantau(sesudahBerubah) {
+    const dengar = (e: StorageEvent) => {
+      if (e.key === KUNCI) sesudahBerubah(baca());
+    };
+    window.addEventListener("storage", dengar);
+    return () => window.removeEventListener("storage", dengar);
+  },
 };
 
-// Keluar / masuk di tab lain ikut terbaca di tab ini.
-window.addEventListener("storage", (e) => {
-  if (e.key !== KUNCI) return;
-  saatIni = baca();
-  umumkan();
-});
+/** Toko sesi mentah (dipakai transport). */
+export const tokoSesi = buatSesi(penyimpan);
 
+/** Sesi untuk kode web: selalu terbaca sinkron (`null` = belum masuk). */
 export const sesi = {
-  ambil: () => saatIni,
-
-  simpan(baru: Sesi) {
-    saatIni = baru;
-    localStorage.setItem(KUNCI, JSON.stringify(baru));
-    umumkan();
-  },
-
-  gantiToken(token: { tokenAkses: string; tokenSegar: string }) {
-    if (saatIni) sesi.simpan({ ...saatIni, ...token });
-  },
-
-  hapus() {
-    saatIni = null;
-    localStorage.removeItem(KUNCI);
-    umumkan();
-  },
-
-  dengar(p: () => void) {
-    pendengar.add(p);
-    return () => {
-      pendengar.delete(p);
-    };
-  },
+  ...tokoSesi,
+  ambil: (): Sesi | null => tokoSesi.ambil() ?? null,
 };
 
 export function useSesi(): Sesi | null {
-  return useSyncExternalStore(sesi.dengar, sesi.ambil);
+  return useSesiDasar(tokoSesi) ?? null;
 }

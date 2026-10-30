@@ -40,7 +40,8 @@ const kunciBuku = (id: string) => ["nasabah", "buku", id];
 function useBuku(nasabahId: string) {
   return useQuery({
     queryKey: kunciBuku(nasabahId),
-    queryFn: () => ambil(() => api.nasabah[":id"].buku.$get({ param: { id: nasabahId } })),
+    queryFn: () =>
+      ambil(() => api.pembiayaan.nasabah[":id"].buku.$get({ param: { id: nasabahId } })),
   });
 }
 
@@ -213,7 +214,10 @@ export function DialogHapusLibur({ libur, tutup }: { libur: Peristiwa; tutup: ()
       tutup={tutup}
       kirim={(alasan) =>
         ambil(() =>
-          api.transaksi.libur[":id"].hapus.$post({ param: { id: libur.id }, json: { alasan } }),
+          api.pembiayaan.transaksi.libur[":id"].hapus.$post({
+            param: { id: libur.id },
+            json: { alasan },
+          }),
         )
       }
     />
@@ -258,7 +262,8 @@ function GarisStatus({ id }: { id: string }) {
   const kantor = useKantor();
   const q = useQuery({
     queryKey: ["pinjaman", "riwayat-status", id],
-    queryFn: () => ambil(() => api.pinjaman[":id"]["riwayat-status"].$get({ param: { id } })),
+    queryFn: () =>
+      ambil(() => api.pembiayaan.pinjaman[":id"]["riwayat-status"].$get({ param: { id } })),
   });
   if (q.isPending) return <Memuat />;
   if (q.isError) return <GalatMuat galat={q.error} />;
@@ -299,7 +304,9 @@ function DialogUbahNomor({
   const nomor = Number(ke);
   const m = useMutation({
     mutationFn: () =>
-      ambil(() => api.pinjaman[":id"].$patch({ param: { id: p.id }, json: { pinjamanKe: nomor } })),
+      ambil(() =>
+        api.pembiayaan.pinjaman[":id"].$patch({ param: { id: p.id }, json: { pinjamanKe: nomor } }),
+      ),
     onSuccess: () => {
       void klien.invalidateQueries({ queryKey: kunciBuku(nasabahId) });
       // Rincian ini dan daftar di layar Pinjaman.
@@ -345,7 +352,7 @@ export function DialogPinjaman({
   const [aksi, setAksi] = useState<"nomor" | "riwayat" | null>(null);
   const q = useQuery({
     queryKey: ["pinjaman", id],
-    queryFn: () => ambil(() => api.pinjaman[":id"].$get({ param: { id } })),
+    queryFn: () => ambil(() => api.pembiayaan.pinjaman[":id"].$get({ param: { id } })),
   });
   const p = q.data;
   return (

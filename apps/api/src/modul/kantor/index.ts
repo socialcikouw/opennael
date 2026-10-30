@@ -1,3 +1,9 @@
+import type { RuteKonteks } from "../../platform/http/router";
+import type { ruteKalender } from "./kalender/rute";
+import type { ruteKebijakan } from "./kebijakan/rute";
+import type { ruteProfil } from "./profil/rute";
+import type { ruteWilayah } from "./wilayah/rute";
+
 export {
   bacaKalender,
   hariTagihAntara,
@@ -18,3 +24,11 @@ export { ruteProfil } from "./profil/rute";
 export { pastikanWilayah } from "./wilayah/data";
 export { buatLayananWilayah } from "./wilayah/layanan";
 export { ruteWilayah } from "./wilayah/rute";
+
+/** Tipe klien RPC (`hc`) konteks ini — bukan seluruh API (`@opennael/api/tipe/kantor`). */
+export type RuteKantor = RuteKonteks<
+  | ReturnType<typeof ruteKalender>
+  | ReturnType<typeof ruteKebijakan>
+  | ReturnType<typeof ruteProfil>
+  | ReturnType<typeof ruteWilayah>
+>;

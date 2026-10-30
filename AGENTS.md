@@ -47,13 +47,15 @@ tidak dipakai kasir, pengawas, atau kolektor.
 | `apps/web` | Aplikasi web **bos** — masuk nomor HP + kata sandi, registrasi kantor, persetujuan tautan HP, dan seluruh pekerjaan bos. |
 | `packages/contracts` | Skema Zod bentuk permintaan & respons API — dipakai bersama server dan klien. Folder mengikuti konteks API (`bersama`, `identitas`, `kantor`, `hari-kolektor`, `pembiayaan`, …); `src/index.ts` mengekspor semuanya, klien cukup mengimpor `@opennael/contracts`. |
 | `packages/domain` | Aturan usaha murni tanpa I/O: rumus akad, jadwal tagih, aturan macet, rumus kas. Dipakai server dan aplikasi (pratinjau di HP). |
+| `packages/api-client` | Klien API bersama web & HP: transport bersesi (token akses, refresh sekali dibagi), sesi dengan penyimpan yang disuntik aplikasi, `panggil`/`ambil`, dan klien `hc` bertipe per konteks (`api.<konteks>.<jalur>`). |
 | `packages/format` | Format tampilan murni yang dipakai web & HP: uang (`rupiah`, `bacaUang`), tanggal kantor (`tanggal`, `jam`, `waktu`), label enum. Tanpa React/I/O/warna. |
 | `docs/skema` | Rancangan database final, satu dokumen per tabel. |
 | `scripts` | Skrip repo: rilis OTA (`kirim-ota.ts`). Skrip milik satu paket tinggal di paket itu (mis. `apps/api/scripts/migrasi.ts`). |
 
 Arah ketergantungan: `apps/*` → `packages/*`; `packages/domain` tidak
 bergantung pada apa pun; `packages/contracts` hanya pada `zod` (dan `domain`
-bila perlu tipe); `packages/format` hanya pada `domain` (tipe).
+bila perlu tipe); `packages/format` hanya pada `domain` (tipe);
+`packages/api-client` pada `contracts`, `hono`, dan tipe `@opennael/api/tipe/*`.
 
 ## Stack (diputuskan 23 Okt 2026)
 
@@ -151,11 +153,14 @@ memantau `.env`**: sesudah mengubahnya, matikan lalu nyalakan ulang
   `platform/http/openapi.ts`; pemeriksa token disuntik ke `wajibMasuk`.
 - **Bentuk data tetap di `packages/contracts`** (Zod); rute Hono memakainya,
   bukan mendefinisikan ulang.
-- **Tipe untuk klien `hc` = berkas deklarasi**: `apps/api` menghasilkan
-  `apps/api/tipe/*.d.ts` (`bun run tipe`, tidak ikut repo); klien mengimpor
-  `import type { App } from "@opennael/api/tipe"`. Impor langsung dari
-  `apps/api/src` ikut membawa tipe Bun/`node:crypto` ke pemeriksaan tipe HP.
-  Skrip `typecheck` mobile menghasilkan tipe itu lebih dulu.
+- **Tipe untuk klien `hc` = berkas deklarasi, per konteks**: `apps/api`
+  menghasilkan `apps/api/tipe/*.d.ts` (`bun run tipe`, tidak ikut repo); tiap
+  `modul/<konteks>/index.ts` mengekspor `Rute<Konteks>` dan klien memuatnya
+  lewat `@opennael/api/tipe/<konteks>`. **Hanya `packages/api-client`** yang
+  mengimpor tipe itu (`buatKlien` → `api.<konteks>.<jalur>`); web dan HP tidak.
+  Impor langsung dari `apps/api/src` ikut membawa tipe Bun/`node:crypto` ke
+  pemeriksaan tipe HP. Skrip `typecheck` api-client/web/mobile menghasilkan
+  tipe itu lebih dulu.
 - Middleware yang dirangkai sendiri: log (pino), rate limit, penerjemah galat
   domain → respons HTTP.
 
