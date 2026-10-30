@@ -463,8 +463,12 @@ docs/
    - impor antar-konteks API hanya ke `modul/<konteks>/index.ts`;
    - tidak ada siklus antar-konteks API maupun antar-fitur web/HP;
    - `.insert/.update/.delete(<tabel>)` hanya di konteks pemilik (peta
-     pemilik dibaca dari satu berkas data yang sama dengan dokumen struktur);
+     pemilik di `scripts/kepemilikan-tabel.ts`, searah dengan dokumen
+     struktur; tabel tanpa pemilik ditolak);
    - tidak ada `../` yang menyeberang batas paket.
+
+   Dijalankan dengan `bun run cek:arsitektur`; logikanya diuji di
+   `scripts/cek-arsitektur.test.ts` (`bun test scripts`).
 3. **CI** (`.github/workflows/`): `bun install --frozen-lockfile`, typecheck,
    test, lint, cek arsitektur. Tanpa merge, migrasi, atau rilis otomatis.
 

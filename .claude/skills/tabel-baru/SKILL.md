@@ -74,7 +74,9 @@ ada):
 - jalan pintas yang sah (`nael.migrasi_data`, `nael.hapus_data_uji`) bila ada.
 
 Lalu catat konteks pemilik tabel itu di tabel kepemilikan
-`docs/arsitektur/struktur.md` §4.2 (kelak juga peta `scripts/cek-arsitektur.ts`).
+`docs/arsitektur/struktur.md` §4.2 **dan** di peta `PEMILIK_TABEL` pada
+`scripts/kepemilikan-tabel.ts` — `bun run cek:arsitektur` menolak tabel tanpa
+pemilik dan penulisan (`insert`/`update`/`delete`) dari konteks lain.
 
 Sesudahnya pastikan database dev kembali bersih (hitung baris tabel itu = 0).
 

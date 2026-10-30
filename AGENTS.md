@@ -50,7 +50,7 @@ tidak dipakai kasir, pengawas, atau kolektor.
 | `packages/api-client` | Klien API bersama web & HP: transport bersesi (token akses, refresh sekali dibagi), sesi dengan penyimpan yang disuntik aplikasi, `panggil`/`ambil`, dan klien `hc` bertipe per konteks (`api.<konteks>.<jalur>`). |
 | `packages/format` | Format tampilan murni yang dipakai web & HP: uang (`rupiah`, `bacaUang`), tanggal kantor (`tanggal`, `jam`, `waktu`), label enum. Tanpa React/I/O/warna. |
 | `docs/skema` | Rancangan database final, satu dokumen per tabel. |
-| `scripts` | Skrip repo: rilis OTA (`kirim-ota.ts`). Skrip milik satu paket tinggal di paket itu (mis. `apps/api/scripts/migrasi.ts`). |
+| `scripts` | Skrip repo: rilis OTA (`kirim-ota.ts`), pemeriksa arsitektur (`cek-arsitektur.ts` + `kepemilikan-tabel.ts`, diuji `bun test scripts`). Skrip milik satu paket tinggal di paket itu (mis. `apps/api/scripts/migrasi.ts`). |
 
 Arah ketergantungan: `apps/*` → `packages/*`; `packages/domain` tidak
 bergantung pada apa pun; `packages/contracts` hanya pada `zod` (dan `domain`
@@ -273,6 +273,7 @@ Dari root repo:
 | `bun run typecheck` | `tsc --noEmit` di setiap paket. |
 | `bun run test` | `bun test` di setiap paket yang punya uji. Uji skema database berjalan ke Supabase dev (`apps/api/.env`) dalam satu transaksi yang dibatalkan; tanpa `DATABASE_URL` dilewati. |
 | `bun run lint` | Biome: lint + cek format (Markdown & `docs/` tidak ikut). |
+| `bun run cek:arsitektur` | `scripts/cek-arsitektur.ts`: batas impor API (`platform/` ↔ `modul/`, antar-konteks hanya lewat `index.ts`), siklus antar-konteks/antar-fitur, penulisan tabel hanya oleh pemiliknya, batas paket. Data kepemilikan tabel & panah konteks di `scripts/kepemilikan-tabel.ts` — **tabel baru wajib didaftarkan di sana**. Batas impor web/HP (`komponen/`, `fitur/`) dijaga Biome (`noRestrictedImports`). |
 | `bun run format` | Biome: rapikan kode & urutkan import. |
 | `bun run update:preview --message "<isi>"` | OTA jalur `preview` (APK lapangan Android). Hanya dari `main` yang bersih & sudah di-push. |
 | `bun run update:expogo --message "<isi>"` | OTA jalur `expogo` (Expo Go tanpa Metro, Android & iOS). Hanya dari `main` yang bersih & sudah di-push. |
@@ -302,4 +303,4 @@ Migrasi yang sudah diterapkan **tidak pernah disunting** — perubahan selalu
 lewat migrasi baru. Nama constraint ditulis eksplisit sesuai konvensi #8
 (`foreignKey({ name })`, bukan `.references()` yang memberi nama bawaan).
 
-Pemeriksaan sebelum commit: `bun run typecheck && bun run test && bun run lint`.
+Pemeriksaan sebelum commit: `bun run typecheck && bun run test && bun run lint && bun run cek:arsitektur`.

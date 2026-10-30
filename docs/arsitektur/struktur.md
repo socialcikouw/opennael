@@ -122,7 +122,8 @@ opennael/
 │   └── skema/
 ├── scripts/
 │   ├── kirim-ota.ts                 tetap
-│   └── cek-arsitektur.ts            baru (langkah 9)
+│   ├── cek-arsitektur.ts            baru (langkah 9) + .test.ts
+│   └── kepemilikan-tabel.ts         baru (langkah 9) — data pemilik tabel & panah konteks
 ├── .github/workflows/periksa.yml    baru (langkah 9)
 ├── .claude/skills/tabel-baru/       jalur di dalamnya diperbarui (§8)
 ├── AGENTS.md                        sumber tunggal instruksi agen (langkah 1)
@@ -348,7 +349,9 @@ Ekspor publik yang sudah pasti:
 | platform | `riwayat_perubahan`, `operasi_idempoten` | `riwayat.ts`, `idempotensi/` |
 | pelaporan, migrasi | — | pelaporan hanya membaca; migrasi lewat operasi pembiayaan |
 
-Peta ini juga menjadi data `scripts/cek-arsitektur.ts` (langkah 9).
+Peta ini juga menjadi data `scripts/cek-arsitektur.ts` (langkah 9): salinan
+dalam kode ada di `scripts/kepemilikan-tabel.ts` (`PEMILIK_TABEL`,
+`PENGECUALIAN_TULIS`, `IMPOR_KONTEKS_BOLEH`) — ubah keduanya bersamaan.
 
 ### 4.3 Penulisan lintas pemilik (dibereskan di langkah 3c)
 
@@ -775,5 +778,5 @@ Disempurnakan 30 Okt 2026: rincian, peta pemindahan, dan kepemilikan tabel di
 - `src/db/migrasi/` → `src/platform/db/migrasi/`
 - Uji skema: `apps/api/src/db/skema.test.ts` →
   `apps/api/src/platform/db/skema/<tabel>.test.ts` (satu berkas per tabel)
-- Langkah baru: tambahkan tabel ke kepemilikan §4.2 (dan peta
-  `scripts/cek-arsitektur.ts` setelah langkah 9).
+- Langkah baru: tambahkan tabel ke kepemilikan §4.2 dan ke
+  `scripts/kepemilikan-tabel.ts`.
