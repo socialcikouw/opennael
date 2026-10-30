@@ -1,0 +1,31 @@
+# Pemeriksaan otomatis (docs/arsitektur/pedoman-struktur.md §10).
+# Hanya memeriksa: tanpa merge, migrasi, atau rilis OTA. Tanpa DATABASE_URL —
+# uji yang menyentuh database dilewati (hanya jalan di laptop ke Supabase dev).
+name: Periksa
+
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: periksa-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  periksa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.13
+      - run: bun install --frozen-lockfile
+      - run: bun run typecheck
+      - run: bun run test
+      - run: bun run lint
+      - run: bun run cek:arsitektur
