@@ -15,10 +15,12 @@
     "hono": "^4.13.13"
   },
   "peerDependencies": {
+    "@tanstack/react-query": "^5.104.5",
     "react": "19.3.0"
   },
   "devDependencies": {
     "@opennael/api": "workspace:*",
+    "@tanstack/react-query": "^5.104.5",
     "@types/react": "~19.3.0"
   }
 }
