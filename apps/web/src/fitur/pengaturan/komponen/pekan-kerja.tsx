@@ -1,3 +1,4 @@
+import { kunci } from "@opennael/api-client";
 import { tanggal as formatTanggal } from "@opennael/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -5,9 +6,8 @@ import { Medan } from "@/komponen/formulir";
 import { Badge } from "@/komponen/ui/badge";
 import { Button } from "@/komponen/ui/button";
 import { Input } from "@/komponen/ui/input";
-import { ambil, api } from "@/lib/api";
+import { ambil, api, kueri } from "@/lib/api";
 import { useHariIni } from "@/lib/kantor";
-import { ambilKantor } from "../data";
 import { Bagian } from "./bagian";
 import { Pesan } from "./pesan";
 
@@ -24,11 +24,8 @@ const daftarHari = (h: number[]) =>
 export function PekanKerja() {
   const hariIni = useHariIni();
   const klien = useQueryClient();
-  const kantor = useQuery({ queryKey: ["kantor"], queryFn: ambilKantor });
-  const riwayat = useQuery({
-    queryKey: ["kantor", "pekan-kerja"],
-    queryFn: () => ambil(() => api.kantor.kantor["pekan-kerja"].$get()),
-  });
+  const kantor = useQuery(kueri.kantor.profil());
+  const riwayat = useQuery(kueri.kantor.pekanKerja());
   const [hari, setHari] = useState<number[] | null>(null);
   const [mulai, setMulai] = useState(hariIni);
   const pilihan = hari ?? kantor.data?.hariKerja ?? [];
@@ -41,7 +38,7 @@ export function PekanKerja() {
       ),
     onSuccess: () => {
       setHari(null);
-      void klien.invalidateQueries({ queryKey: ["kantor"] });
+      void klien.invalidateQueries({ queryKey: kunci.kantor });
     },
   });
   return (

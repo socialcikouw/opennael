@@ -1,3 +1,4 @@
+import { kunci } from "@opennael/api-client";
 import type { HariKas } from "@opennael/contracts";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -21,7 +22,7 @@ export function DialogTerimaKas({ hari, tutup }: { hari: HariKas; tutup: () => v
         }),
       ),
     onSuccess: () => {
-      for (const k of [["harian"], ["ringkasan"], ["aktivitas"]]) {
+      for (const k of [kunci.harian, kunci.ringkasan, kunci.aktivitas]) {
         void klien.invalidateQueries({ queryKey: k });
       }
     },

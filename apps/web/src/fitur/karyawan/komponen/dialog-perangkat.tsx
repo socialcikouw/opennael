@@ -1,3 +1,4 @@
+import { kunci } from "@opennael/api-client";
 import { waktu } from "@opennael/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Unplug } from "lucide-react";
@@ -6,9 +7,9 @@ import { DialogFormulir } from "@/komponen/dialog-formulir";
 import { GalatMuat, Kosong, Memuat } from "@/komponen/halaman";
 import { Badge } from "@/komponen/ui/badge";
 import { Button } from "@/komponen/ui/button";
-import { ambil, api } from "@/lib/api";
+import { ambil, api, kueri } from "@/lib/api";
 import { useKantor } from "@/lib/kantor";
-import { ambilPerangkat, type Karyawan, type Perangkat } from "../data";
+import type { Karyawan, Perangkat } from "../data";
 
 const LABEL_PLATFORM = { android: "Android", ios: "iPhone", web: "Browser" } as const;
 
@@ -28,12 +29,13 @@ export function DialogPerangkat({ orang, tutup }: { orang: Karyawan; tutup: () =
   const klien = useQueryClient();
   const [riwayat, setRiwayat] = useState(false);
   const [putus, setPutus] = useState<Perangkat | null>(null);
-  const q = useQuery({ queryKey: ["perangkat", riwayat], queryFn: () => ambilPerangkat(riwayat) });
+  const q = useQuery(kueri.perangkat.daftar(riwayat));
   const m = useMutation({
     mutationFn: (id: string) =>
       ambil(() => api.identitas.auth.perangkat[":id"].$delete({ param: { id } })),
     onSuccess: () => {
-      for (const k of [["perangkat"], ["pengguna"]]) void klien.invalidateQueries({ queryKey: k });
+      for (const k of [kunci.perangkat, kunci.pengguna])
+        void klien.invalidateQueries({ queryKey: k });
       setPutus(null);
     },
   });

@@ -4,7 +4,7 @@ import { getRouteApi } from "@tanstack/react-router";
 import { PilihanAsli } from "@/komponen/formulir";
 import { KepalaHalaman, Kosong, PilihTanggal } from "@/komponen/halaman";
 import { Card, CardContent } from "@/komponen/ui/card";
-import { ambil, api } from "@/lib/api";
+import { kueri } from "@/lib/api";
 import { useHariIni } from "@/lib/kantor";
 import { DaftarAktivitas } from "./komponen/daftar-aktivitas";
 
@@ -16,10 +16,7 @@ export function LayarAktivitas() {
   const { tanggal, pelaku } = rute.useSearch();
   const navigasi = rute.useNavigate();
   const t = tanggal ?? hariIni;
-  const orang = useQuery({
-    queryKey: ["pengguna", "semua"],
-    queryFn: () => ambil(() => api.identitas.pengguna.$get({ query: { termasukNonaktif: "ya" } })),
-  });
+  const orang = useQuery(kueri.pengguna.semua());
 
   return (
     <>

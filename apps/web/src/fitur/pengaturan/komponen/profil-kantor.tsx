@@ -1,17 +1,17 @@
+import { kunci } from "@opennael/api-client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Isian, Medan, PilihanAsli } from "@/komponen/formulir";
 import { GalatMuat, Memuat } from "@/komponen/halaman";
 import { Button } from "@/komponen/ui/button";
-import { ambil, api } from "@/lib/api";
+import { ambil, api, kueri } from "@/lib/api";
 import { sesi } from "@/lib/sesi";
-import { ambilKantor } from "../data";
 import { Bagian } from "./bagian";
 import { Pesan } from "./pesan";
 
 export function ProfilKantor() {
   const klien = useQueryClient();
-  const q = useQuery({ queryKey: ["kantor"], queryFn: ambilKantor });
+  const q = useQuery(kueri.kantor.profil());
   const [isi, setIsi] = useState<{
     nama: string;
     zonaWaktu: "WIB" | "WITA" | "WIT";
@@ -51,7 +51,7 @@ export function ProfilKantor() {
       }
       return hasil;
     },
-    onSuccess: () => void klien.invalidateQueries({ queryKey: ["kantor"] }),
+    onSuccess: () => void klien.invalidateQueries({ queryKey: kunci.kantor }),
   });
   if (q.isPending || !isi) return <Memuat />;
   if (q.isError) return <GalatMuat galat={q.error} ulangi={() => void q.refetch()} />;

@@ -1,9 +1,7 @@
-import { ambil, api } from "@/lib/api";
+import type { DataKueri } from "@opennael/api-client";
+import type { kueri } from "@/lib/api";
 
-export const ambilPengguna = () =>
-  ambil(() => api.identitas.pengguna.$get({ query: { termasukNonaktif: "ya" } }));
-
-export type Karyawan = Awaited<ReturnType<typeof ambilPengguna>>[number];
+export type Karyawan = DataKueri<ReturnType<typeof kueri.pengguna.semua>>[number];
 
 export type Aksi = {
   jenis: "sunting" | "nonaktifkan" | "aktifkan" | "perangkat";
@@ -12,9 +10,4 @@ export type Aksi = {
 
 // ---- perangkat ----------------------------------------------------------------------
 
-export const ambilPerangkat = (riwayat: boolean) =>
-  ambil(() =>
-    api.identitas.auth.perangkat.$get({ query: riwayat ? { termasukDiputus: "true" } : {} }),
-  );
-
-export type Perangkat = Awaited<ReturnType<typeof ambilPerangkat>>[number];
+export type Perangkat = DataKueri<ReturnType<typeof kueri.perangkat.daftar>>[number];

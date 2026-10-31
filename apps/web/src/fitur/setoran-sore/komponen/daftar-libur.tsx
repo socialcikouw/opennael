@@ -5,17 +5,15 @@ import { useMemo, useState } from "react";
 import { DialogHapusLibur } from "@/fitur/pinjaman";
 import { GalatMuat, Memuat } from "@/komponen/halaman";
 import { type Kolom, pembantuKolom, TabelData } from "@/komponen/tabel-data";
+import { kueri } from "@/lib/api";
 import { useKantor } from "@/lib/kantor";
-import { ambilLibur, type Libur } from "../data";
+import type { Libur } from "../data";
 import { TombolSel } from "./tombol-sel";
 
 export function DaftarLibur({ tanggal, hariIni }: { tanggal: string; hariIni: string }) {
   const kantor = useKantor();
   const [hapus, setHapus] = useState<Libur | null>(null);
-  const q = useQuery({
-    queryKey: ["harian", "libur", tanggal],
-    queryFn: () => ambilLibur(tanggal),
-  });
+  const q = useQuery(kueri.harian.libur(tanggal));
   const kolom = useMemo(() => {
     const k = pembantuKolom<Libur>();
     return [

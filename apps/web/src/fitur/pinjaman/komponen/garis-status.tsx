@@ -1,17 +1,13 @@
 import { tanggal as formatTanggal, waktu } from "@opennael/format";
 import { useQuery } from "@tanstack/react-query";
 import { GalatMuat, Memuat } from "@/komponen/halaman";
-import { ambil, api } from "@/lib/api";
+import { kueri } from "@/lib/api";
 import { useKantor } from "@/lib/kantor";
 import { LencanaStatus } from "./lencana-status";
 
 export function GarisStatus({ id }: { id: string }) {
   const kantor = useKantor();
-  const q = useQuery({
-    queryKey: ["pinjaman", "riwayat-status", id],
-    queryFn: () =>
-      ambil(() => api.pembiayaan.pinjaman[":id"]["riwayat-status"].$get({ param: { id } })),
-  });
+  const q = useQuery(kueri.pinjaman.riwayatStatus(id));
   if (q.isPending) return <Memuat />;
   if (q.isError) return <GalatMuat galat={q.error} />;
   return (

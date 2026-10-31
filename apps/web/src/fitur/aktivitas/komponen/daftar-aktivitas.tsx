@@ -1,3 +1,4 @@
+import { kunci } from "@opennael/api-client";
 import { type Aktivitas, tabelBerjejakSchema } from "@opennael/contracts";
 import { jam, LABEL_PERAN, rupiah } from "@opennael/format";
 import { useQuery } from "@tanstack/react-query";
@@ -22,7 +23,7 @@ import { DialogBatal } from "@/komponen/dialog-batal";
 import { GalatMuat, Memuat } from "@/komponen/halaman";
 import { Badge } from "@/komponen/ui/badge";
 import { Button } from "@/komponen/ui/button";
-import { ambil, api } from "@/lib/api";
+import { ambil, api, kueri } from "@/lib/api";
 import { useHariIni, useKantor } from "@/lib/kantor";
 import { cn } from "@/lib/utils";
 import { DialogRiwayat } from "./dialog-riwayat";
@@ -100,13 +101,7 @@ export function DaftarAktivitas({
   const hariIni = useHariIni();
   const [dibuka, setDibuka] = useState<Aktivitas | null>(null);
   const [dibatalkan, setDibatalkan] = useState<Aktivitas | null>(null);
-  const q = useQuery({
-    queryKey: ["aktivitas", tanggal, pelakuId ?? null],
-    queryFn: () =>
-      ambil(() =>
-        api.pelaporan.aktivitas.$get({ query: { tanggal, ...(pelakuId ? { pelakuId } : {}) } }),
-      ),
-  });
+  const q = useQuery(kueri.aktivitas.hari(tanggal, pelakuId));
   if (q.isPending) return <Memuat />;
   if (q.isError) return <GalatMuat galat={q.error} ulangi={() => void q.refetch()} />;
   const daftar = batas ? q.data.slice(0, batas) : q.data;
@@ -197,7 +192,7 @@ export function DaftarAktivitas({
       {dibatalkan ? (
         <DialogBatal
           judul={`Batalkan: ${dibatalkan.ringkasan}?`}
-          segarkan={[["harian"], ["kas"], ["gaji"], ["nasabah"]]}
+          segarkan={[kunci.harian, kunci.kas, kunci.gaji, kunci.nasabah]}
           tutup={() => setDibatalkan(null)}
           kirim={(alasan) => {
             const pembatal = PEMBATAL[dibatalkan.kejadian];

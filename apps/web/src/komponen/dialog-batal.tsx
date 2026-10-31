@@ -1,3 +1,4 @@
+import { kunci } from "@opennael/api-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { type ReactNode, useState } from "react";
 import { DialogFormulir } from "@/komponen/dialog-formulir";
@@ -20,15 +21,15 @@ export function DialogBatal({
   kirim: (alasan: string) => Promise<unknown>;
   tutup: () => void;
   /** Awalan kunci kueri yang terdampak. */
-  segarkan: string[][];
+  segarkan: readonly (readonly string[])[];
 }) {
   const klien = useQueryClient();
   const [alasan, setAlasan] = useState("");
   const m = useMutation({
     mutationFn: () => kirim(alasan.trim()),
     onSuccess: () => {
-      for (const kunci of [...segarkan, ["aktivitas"], ["ringkasan"]]) {
-        void klien.invalidateQueries({ queryKey: kunci });
+      for (const k of [...segarkan, kunci.aktivitas, kunci.ringkasan]) {
+        void klien.invalidateQueries({ queryKey: k });
       }
       tutup();
     },

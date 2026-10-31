@@ -12,16 +12,12 @@ import {
   YAxis,
 } from "recharts";
 import { GalatMuat, Memuat } from "@/komponen/halaman";
-import { ambil, api } from "@/lib/api";
+import { kueri } from "@/lib/api";
 
 /** Grafik 30 hari: setoran murni (batang) dan performa % (garis) — aturan-usaha N. */
 export function GrafikPerforma({ sampai }: { sampai: string }) {
   const mulai = geserTanggal(sampai, -29);
-  const q = useQuery({
-    queryKey: ["ringkasan", "performa", mulai, sampai],
-    queryFn: () =>
-      ambil(() => api.pelaporan.ringkasan.performa.$get({ query: { mulai, selesai: sampai } })),
-  });
+  const q = useQuery(kueri.ringkasan.performa(mulai, sampai));
   if (q.isPending) return <Memuat />;
   if (q.isError) return <GalatMuat galat={q.error} ulangi={() => void q.refetch()} />;
   return (

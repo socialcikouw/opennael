@@ -1,3 +1,4 @@
+import { kunci } from "@opennael/api-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { DialogFormulir } from "@/komponen/dialog-formulir";
@@ -23,7 +24,7 @@ export function DialogBiaya({
         }),
       ),
     onSuccess: () => {
-      for (const k of [["harian"], ["ringkasan"], ["aktivitas"]]) {
+      for (const k of [kunci.harian, kunci.ringkasan, kunci.aktivitas]) {
         void klien.invalidateQueries({ queryKey: k });
       }
       tutup();

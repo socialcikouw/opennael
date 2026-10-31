@@ -1,3 +1,4 @@
+import { kunci } from "@opennael/api-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { DialogFormulir } from "@/komponen/dialog-formulir";
@@ -29,7 +30,7 @@ export function DialogRemKolektor({
         }),
       ),
     onSuccess: () => {
-      void klien.invalidateQueries({ queryKey: ["kebijakan"] });
+      void klien.invalidateQueries({ queryKey: kunci.kebijakan });
       tutup();
     },
   });

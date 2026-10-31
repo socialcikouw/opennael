@@ -1,23 +1,19 @@
+import { type DataKueri, kunci } from "@opennael/api-client";
 import { useQueryClient } from "@tanstack/react-query";
-import { ambil, api } from "@/lib/api";
+import type { kueri } from "@/lib/api";
 
-export const KUNCI_KAS = [["kas"]];
+/** Awalan kunci yang disegarkan sesudah membatalkan catatan kas. */
+export const KUNCI_KAS = [kunci.kas];
 
 export function useSegarkanKas() {
   const klien = useQueryClient();
   return () => {
-    for (const k of [["kas"], ["aktivitas"]]) void klien.invalidateQueries({ queryKey: k });
+    for (const k of [kunci.kas, kunci.aktivitas]) void klien.invalidateQueries({ queryKey: k });
   };
 }
 
-export const ambilPencocokan = (mulai: string, selesai: string) =>
-  ambil(() => api.kas.kas.pencocokan.$get({ query: { mulai, selesai } }));
-
-export type Pencocokan = Awaited<ReturnType<typeof ambilPencocokan>>[number];
+export type Pencocokan = DataKueri<ReturnType<typeof kueri.kas.pencocokan>>[number];
 
 // ---- layar --------------------------------------------------------------------------
 
-export const ambilLaporan = (mulai: string, selesai: string) =>
-  ambil(() => api.kas.kas.laporan.$get({ query: { mulai, selesai } }));
-
-export type Gerakan = Awaited<ReturnType<typeof ambilLaporan>>["gerakan"][number];
+export type Gerakan = DataKueri<ReturnType<typeof kueri.kas.laporan>>["gerakan"][number];

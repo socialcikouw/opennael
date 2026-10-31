@@ -4,7 +4,7 @@ import { getRouteApi } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { KepalaHalaman, PilihTanggal } from "@/komponen/halaman";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/komponen/ui/tabs";
-import { ambil, api } from "@/lib/api";
+import { kueri } from "@/lib/api";
 import { useHariIni } from "@/lib/kantor";
 import { DaftarBiaya } from "./komponen/daftar-biaya";
 import { DaftarLibur } from "./komponen/daftar-libur";
@@ -24,10 +24,7 @@ export function LayarHarian() {
   const { tanggal, tab } = rute.useSearch();
   const navigasi = rute.useNavigate();
   const t = tanggal ?? hariIni;
-  const kolektorQ = useQuery({
-    queryKey: ["pengguna", "kolektor"],
-    queryFn: () => ambil(() => api.identitas.pengguna.$get({ query: { peran: "kolektor" } })),
-  });
+  const kolektorQ = useQuery(kueri.pengguna.kolektor());
   const kolektor = useMemo(
     () => (kolektorQ.data ?? []).map((o) => ({ id: o.id, nama: o.nama })),
     [kolektorQ.data],

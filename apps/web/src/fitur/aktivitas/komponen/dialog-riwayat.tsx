@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/komponen/ui/dialog";
-import { ambil, api } from "@/lib/api";
+import { kueri } from "@/lib/api";
 import { useKantor } from "@/lib/kantor";
 
 /** Nilai kolom riwayat untuk tampilan: teks apa adanya, selain itu JSON ringkas. */
@@ -29,10 +29,7 @@ export function DialogRiwayat({
   tutup: () => void;
 }) {
   const kantor = useKantor();
-  const q = useQuery({
-    queryKey: ["riwayat", tabel, barisId],
-    queryFn: () => ambil(() => api.pelaporan.riwayat.$get({ query: { tabel, barisId } })),
-  });
+  const q = useQuery(kueri.riwayat.perubahan(tabel, barisId));
   return (
     <Dialog open onOpenChange={(buka) => !buka && tutup()}>
       <DialogContent className="sm:max-w-2xl">

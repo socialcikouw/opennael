@@ -6,9 +6,9 @@ import { DialogBatal } from "@/komponen/dialog-batal";
 import { GalatMuat, Memuat } from "@/komponen/halaman";
 import { type Kolom, pembantuKolom, TabelData } from "@/komponen/tabel-data";
 import { Button } from "@/komponen/ui/button";
-import { ambil, api } from "@/lib/api";
+import { ambil, api, kueri } from "@/lib/api";
 import { cn } from "@/lib/utils";
-import { ambilBiaya, type Biaya, KUNCI_HARIAN } from "../data";
+import { type Biaya, KUNCI_HARIAN } from "../data";
 import { DialogBiaya } from "./dialog-biaya";
 import { TombolSel } from "./tombol-sel";
 
@@ -23,10 +23,7 @@ export function DaftarBiaya({
 }) {
   const [catat, setCatat] = useState(false);
   const [batal, setBatal] = useState<Biaya | null>(null);
-  const q = useQuery({
-    queryKey: ["harian", "biaya", tanggal],
-    queryFn: () => ambilBiaya(tanggal),
-  });
+  const q = useQuery(kueri.harian.biaya(tanggal));
   const kolom = useMemo(() => {
     const k = pembantuKolom<Biaya>();
     return [

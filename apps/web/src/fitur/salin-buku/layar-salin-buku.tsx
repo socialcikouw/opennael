@@ -1,3 +1,4 @@
+import { kunci } from "@opennael/api-client";
 import type { HasilMigrasi } from "@opennael/contracts";
 import { GalatAturan, type JenisPinjaman, syaratMigrasi, TENOR_PINJAMAN } from "@opennael/domain";
 import { LABEL_JENIS, rupiah } from "@opennael/format";
@@ -12,7 +13,7 @@ import { Button } from "@/komponen/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/komponen/ui/card";
 import { Input } from "@/komponen/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/komponen/ui/tabs";
-import { ambil, api } from "@/lib/api";
+import { ambil, api, kueri } from "@/lib/api";
 import { useHariIni } from "@/lib/kantor";
 import type { NasabahLama, Orang } from "./inti";
 import { DisalinHariIni } from "./komponen/disalin-hari-ini";
@@ -46,14 +47,8 @@ export function LayarSalinBuku() {
   const klien = useQueryClient();
   const namaRef = useRef<HTMLInputElement>(null);
 
-  const kolektorQ = useQuery({
-    queryKey: ["pengguna", "kolektor"],
-    queryFn: () => ambil(() => api.identitas.pengguna.$get({ query: { peran: "kolektor" } })),
-  });
-  const kampungQ = useQuery({
-    queryKey: ["kampung"],
-    queryFn: () => ambil(() => api.kantor.lapangan.kampung.$get()),
-  });
+  const kolektorQ = useQuery(kueri.pengguna.kolektor());
+  const kampungQ = useQuery(kueri.kampung());
 
   // Tetap untuk baris berikutnya.
   const [modus, setModus] = useState<"baru" | "lama">("baru");
@@ -109,7 +104,7 @@ export function LayarSalinBuku() {
       setTabungan(0);
       setPinjamanKe("");
       setMacet(false);
-      for (const k of [["aktivitas"], ["nasabah"], ["kampung"]]) {
+      for (const k of [kunci.aktivitas, kunci.nasabah, kunci.kampung]) {
         void klien.invalidateQueries({ queryKey: k });
       }
       namaRef.current?.focus();

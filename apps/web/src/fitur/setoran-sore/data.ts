@@ -1,39 +1,21 @@
-import { ambil, api } from "@/lib/api";
+import { type DataKueri, kunci } from "@opennael/api-client";
+import type { kueri } from "@/lib/api";
 
-export const KUNCI_HARIAN = [["harian"]];
+/** Awalan kunci yang disegarkan sesudah membatalkan catatan setoran sore. */
+export const KUNCI_HARIAN = [kunci.harian];
 
 // ---- setoran nasabah ----------------------------------------------------------------
 
-export const ambilTransaksi = (tanggal: string, kolektorId?: string) =>
-  ambil(() =>
-    api.hariKolektor.transaksi.$get({ query: { tanggal, ...(kolektorId ? { kolektorId } : {}) } }),
-  );
-
-export type Transaksi = Awaited<ReturnType<typeof ambilTransaksi>>[number];
+export type Transaksi = DataKueri<ReturnType<typeof kueri.harian.transaksi>>[number];
 
 // ---- transfer -----------------------------------------------------------------------
 
-export const ambilTransfer = (tanggal: string) =>
-  ambil(() => api.hariKolektor["transfer-setoran"].$get({ query: { tanggal } }));
-
-export type Transfer = Awaited<ReturnType<typeof ambilTransfer>>["transfer"][number];
+export type Transfer = DataKueri<ReturnType<typeof kueri.harian.transfer>>["transfer"][number];
 
 // ---- libur nasabah ------------------------------------------------------------------
 
-export const ambilLibur = async (tanggal: string) =>
-  (await ambil(() => api.pembiayaan.transaksi.peristiwa.$get({ query: { tanggal } }))).filter(
-    (p) => p.kategori === "libur",
-  );
-
-export type Libur = Awaited<ReturnType<typeof ambilLibur>>[number];
+export type Libur = DataKueri<ReturnType<typeof kueri.harian.libur>>[number];
 
 // ---- biaya tak terduga --------------------------------------------------------------
 
-export const ambilBiaya = (tanggal: string) =>
-  ambil(() =>
-    api.hariKolektor["biaya-tak-terduga"].$get({
-      query: { tanggalMulai: tanggal, tanggalSelesai: tanggal, termasukBatal: "ya" },
-    }),
-  );
-
-export type Biaya = Awaited<ReturnType<typeof ambilBiaya>>["biaya"][number];
+export type Biaya = DataKueri<ReturnType<typeof kueri.harian.biaya>>["biaya"][number];

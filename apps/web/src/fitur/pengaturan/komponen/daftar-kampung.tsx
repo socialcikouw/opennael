@@ -7,8 +7,9 @@ import { GalatMuat, Memuat } from "@/komponen/halaman";
 import { type Kolom, pembantuKolom, TabelData } from "@/komponen/tabel-data";
 import { Button } from "@/komponen/ui/button";
 import { Input } from "@/komponen/ui/input";
+import { kueri } from "@/lib/api";
 import { useKantor } from "@/lib/kantor";
-import { ambilKampung, type Kampung } from "../data";
+import type { Kampung } from "../data";
 import { Bagian } from "./bagian";
 import { DialogGantiNama } from "./dialog-ganti-nama";
 import { DialogHapusKampung } from "./dialog-hapus-kampung";
@@ -18,7 +19,7 @@ export function DaftarKampung() {
   const [baru, setBaru] = useState(false);
   const [cari, setCari] = useState("");
   const [aksi, setAksi] = useState<{ jenis: "ganti" | "hapus"; w: Kampung } | null>(null);
-  const q = useQuery({ queryKey: ["wilayah", baru], queryFn: () => ambilKampung(baru) });
+  const q = useQuery(kueri.wilayah.daftar(baru));
   const data = (q.data ?? []).filter((w) => w.kunci.includes(kunciWilayah(cari)));
 
   const kolom = useMemo(() => {

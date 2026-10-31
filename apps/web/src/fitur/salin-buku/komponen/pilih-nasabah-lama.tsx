@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Button } from "@/komponen/ui/button";
 import { Input } from "@/komponen/ui/input";
-import { ambil, api } from "@/lib/api";
+import { kueri } from "@/lib/api";
 import { useTenang } from "@/lib/tenang";
 import type { NasabahLama } from "../inti";
 
@@ -16,12 +16,7 @@ export function PilihNasabahLama({
 }) {
   const [cari, setCari] = useState("");
   const tenang = useTenang(cari.trim());
-  const q = useQuery({
-    queryKey: ["nasabah", "bebas", tenang],
-    queryFn: () =>
-      ambil(() => api.pembiayaan.nasabah.$get({ query: { cari: tenang, bebas: "ya" } })),
-    enabled: tenang.length >= 2,
-  });
+  const q = useQuery(kueri.nasabah.bebas(tenang));
   if (dipilih) {
     return (
       <div className="flex items-center justify-between gap-2 rounded-md border px-3 py-2 text-sm">

@@ -1,3 +1,4 @@
+import { kunci } from "@opennael/api-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { DialogFormulir } from "@/komponen/dialog-formulir";
@@ -18,7 +19,7 @@ export function DialogNonaktifkan({ orang, tutup }: { orang: Karyawan; tutup: ()
         }),
       ),
     onSuccess: () => {
-      void klien.invalidateQueries({ queryKey: ["pengguna"] });
+      void klien.invalidateQueries({ queryKey: kunci.pengguna });
       tutup();
     },
   });

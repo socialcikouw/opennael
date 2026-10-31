@@ -6,9 +6,9 @@ import { DialogBatal } from "@/komponen/dialog-batal";
 import { GalatMuat, Memuat } from "@/komponen/halaman";
 import { type Kolom, pembantuKolom, TabelData } from "@/komponen/tabel-data";
 import { Button } from "@/komponen/ui/button";
-import { ambil, api } from "@/lib/api";
+import { ambil, api, kueri } from "@/lib/api";
 import { cn } from "@/lib/utils";
-import { ambilPencocokan, KUNCI_KAS, type Pencocokan } from "../data";
+import { KUNCI_KAS, type Pencocokan } from "../data";
 
 export function DaftarPencocokan({
   mulai,
@@ -20,10 +20,7 @@ export function DaftarPencocokan({
   hariIni: string;
 }) {
   const [batal, setBatal] = useState<Pencocokan | null>(null);
-  const q = useQuery({
-    queryKey: ["kas", "pencocokan", mulai, selesai],
-    queryFn: () => ambilPencocokan(mulai, selesai),
-  });
+  const q = useQuery(kueri.kas.pencocokan(mulai, selesai));
   const kolom = useMemo(() => {
     const k = pembantuKolom<Pencocokan>();
     return [

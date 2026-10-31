@@ -5,19 +5,16 @@ import { useMemo, useState } from "react";
 import { DialogBatal } from "@/komponen/dialog-batal";
 import { GalatMuat, Memuat } from "@/komponen/halaman";
 import { type Kolom, pembantuKolom, TabelData } from "@/komponen/tabel-data";
-import { ambil, api } from "@/lib/api";
+import { ambil, api, kueri } from "@/lib/api";
 import { useKantor } from "@/lib/kantor";
 import { cn } from "@/lib/utils";
-import { ambilTransfer, KUNCI_HARIAN, type Transfer } from "../data";
+import { KUNCI_HARIAN, type Transfer } from "../data";
 import { TombolSel } from "./tombol-sel";
 
 export function DaftarTransfer({ tanggal, hariIni }: { tanggal: string; hariIni: string }) {
   const kantor = useKantor();
   const [batal, setBatal] = useState<Transfer | null>(null);
-  const q = useQuery({
-    queryKey: ["harian", "transfer", tanggal],
-    queryFn: () => ambilTransfer(tanggal),
-  });
+  const q = useQuery(kueri.harian.transfer(tanggal));
   const kolom = useMemo(() => {
     const k = pembantuKolom<Transfer>();
     return [

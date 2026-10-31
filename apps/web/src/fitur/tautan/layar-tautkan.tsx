@@ -5,7 +5,7 @@ import { Link } from "@tanstack/react-router";
 import { type FormEvent, useState } from "react";
 import { Isian, KartuFormulir, PesanGalat, Pilihan, Tombol } from "@/komponen/formulir";
 import { Tabs, TabsList, TabsTrigger } from "@/komponen/ui/tabs";
-import { ambil, api, panggil } from "@/lib/api";
+import { api, kueri, panggil } from "@/lib/api";
 import type { PeranTertaut } from "./inti";
 import { AkunBaru } from "./komponen/akun-baru";
 import { Pemindai } from "./komponen/pemindai";
@@ -20,10 +20,7 @@ export function LayarTautkan() {
   const [kamera, setKamera] = useState(false);
   const [galatKode, setGalatKode] = useState<string | null>(null);
   const [akunLama, setAkunLama] = useState<string | null>(null);
-  const karyawan = useQuery({
-    queryKey: ["pengguna", "semua"],
-    queryFn: () => ambil(() => api.identitas.pengguna.$get({ query: { termasukNonaktif: "ya" } })),
-  });
+  const karyawan = useQuery(kueri.pengguna.semua());
   const bisaDitautkan = (karyawan.data ?? []).filter((o) => o.aktif && o.peran !== "bos");
   const [akun, setAkun] = useState({
     peran: "kolektor" as PeranTertaut,

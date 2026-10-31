@@ -2,17 +2,14 @@ import { tanggal as formatTanggal, rupiah } from "@opennael/format";
 import { useQuery } from "@tanstack/react-query";
 import { GalatMuat, Memuat } from "@/komponen/halaman";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/komponen/ui/card";
-import { ambil, api } from "@/lib/api";
+import { kueri } from "@/lib/api";
 import { Baris } from "./baris";
 
 const rp = (n: number | null) => (n === null ? "—" : rupiah(n));
 
 /** Posisi modal pada akhir satu tanggal (aturan-usaha M). */
 export function PosisiModal({ tanggal }: { tanggal: string }) {
-  const q = useQuery({
-    queryKey: ["kas", "posisi-modal", tanggal],
-    queryFn: () => ambil(() => api.kas.kas["posisi-modal"].$get({ query: { tanggal } })),
-  });
+  const q = useQuery(kueri.kas.posisiModal(tanggal));
   return (
     <Card>
       <CardHeader>

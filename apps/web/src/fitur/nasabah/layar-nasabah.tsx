@@ -10,7 +10,7 @@ import { type Kolom, pembantuKolom, TabelData } from "@/komponen/tabel-data";
 import { Badge } from "@/komponen/ui/badge";
 import { Button } from "@/komponen/ui/button";
 import { Input } from "@/komponen/ui/input";
-import { ambil, api } from "@/lib/api";
+import { kueri } from "@/lib/api";
 import { useTenang } from "@/lib/tenang";
 import { DialogNasabah } from "./komponen/dialog-nasabah";
 
@@ -70,27 +70,15 @@ export function LayarNasabah() {
   }, [cariTenang, cari, navigasi]);
 
   const daftar = useQuery({
-    queryKey: ["nasabah", "daftar", cari ?? null, kolektor ?? null],
-    queryFn: () =>
-      ambil(() =>
-        api.pembiayaan.nasabah.$get({
-          query: { ...(cari ? { cari } : {}), ...(kolektor ? { kolektorId: kolektor } : {}) },
-        }),
-      ),
+    ...kueri.nasabah.daftar(cari, kolektor),
     placeholderData: (lama) => lama,
   });
-  const kolektorQ = useQuery({
-    queryKey: ["pengguna", "kolektor"],
-    queryFn: () => ambil(() => api.identitas.pengguna.$get({ query: { peran: "kolektor" } })),
-  });
+  const kolektorQ = useQuery(kueri.pengguna.kolektor());
   const semuaKolektor = useMemo(
     () => (kolektorQ.data ?? []).map((o) => ({ id: o.id, nama: o.nama })),
     [kolektorQ.data],
   );
-  const kampungQ = useQuery({
-    queryKey: ["wilayah"],
-    queryFn: () => ambil(() => api.kantor.wilayah.$get({ query: {} })),
-  });
+  const kampungQ = useQuery(kueri.wilayah.daftar());
   const kampung = useMemo(() => (kampungQ.data ?? []).map((w) => w.nama), [kampungQ.data]);
   const dipilih = daftar.data?.find((n) => n.id === pilih);
   const ubahPilih = (id: string | undefined) =>

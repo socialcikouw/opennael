@@ -1,13 +1,8 @@
-import { ambil, api } from "@/lib/api";
+import type { DataKueri } from "@opennael/api-client";
+import type { kueri } from "@/lib/api";
 
-export const ambilPratinjau = (kolektorId: string, mulai: string, selesai: string) =>
-  ambil(() => api.penggajian.kas.gaji.pratinjau.$get({ query: { kolektorId, mulai, selesai } }));
-
-export type Pratinjau = Awaited<ReturnType<typeof ambilPratinjau>>;
+export type Pratinjau = DataKueri<ReturnType<typeof kueri.gaji.pratinjau>>;
 
 export type HariGaji = Pratinjau["hari"][number];
 
-export const ambilSlip = (kolektorId?: string) =>
-  ambil(() => api.penggajian.kas.gaji.$get({ query: kolektorId ? { kolektorId } : {} }));
-
-export type Slip = Awaited<ReturnType<typeof ambilSlip>>[number];
+export type Slip = DataKueri<ReturnType<typeof kueri.gaji.slip>>[number];

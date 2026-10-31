@@ -1,3 +1,4 @@
+import { kunci } from "@opennael/api-client";
 import type { Aktivitas } from "@opennael/contracts";
 import { jam, rupiah } from "@opennael/format";
 import { useQuery } from "@tanstack/react-query";
@@ -7,7 +8,7 @@ import { DialogBatal } from "@/komponen/dialog-batal";
 import { GalatMuat, Kosong, Memuat } from "@/komponen/halaman";
 import { Badge } from "@/komponen/ui/badge";
 import { Button } from "@/komponen/ui/button";
-import { ambil, api } from "@/lib/api";
+import { ambil, api, kueri } from "@/lib/api";
 import { useHariIni, useKantor } from "@/lib/kantor";
 import { cn } from "@/lib/utils";
 
@@ -16,10 +17,7 @@ export function DisalinHariIni() {
   const kantor = useKantor();
   const hariIni = useHariIni();
   const [batal, setBatal] = useState<Aktivitas | null>(null);
-  const q = useQuery({
-    queryKey: ["aktivitas", hariIni, null],
-    queryFn: () => ambil(() => api.pelaporan.aktivitas.$get({ query: { tanggal: hariIni } })),
-  });
+  const q = useQuery(kueri.aktivitas.hari(hariIni));
   if (q.isPending) return <Memuat />;
   if (q.isError) return <GalatMuat galat={q.error} ulangi={() => void q.refetch()} />;
   const batalId = new Set(
@@ -63,7 +61,7 @@ export function DisalinHariIni() {
         <DialogBatal
           judul="Batalkan salinan?"
           keterangan={`${batal.ringkasan}. Tabungan pembukanya ikut ditarik. Hanya hari ini, sebelum ada setoran.`}
-          segarkan={[["nasabah"]]}
+          segarkan={[kunci.nasabah]}
           tutup={() => setBatal(null)}
           kirim={(alasan) =>
             ambil(() =>

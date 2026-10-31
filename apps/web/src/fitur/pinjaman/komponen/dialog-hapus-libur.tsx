@@ -1,3 +1,4 @@
+import { kunci } from "@opennael/api-client";
 import type { Peristiwa } from "@opennael/contracts";
 import { DialogBatal } from "@/komponen/dialog-batal";
 import { ambil, api } from "@/lib/api";
@@ -8,7 +9,7 @@ export function DialogHapusLibur({ libur, tutup }: { libur: Peristiwa; tutup: ()
     <DialogBatal
       judul={`Hapus tanda libur ${libur.nasabah.nama}?`}
       keterangan="Tanda libur hari ini dihapus dan tercatat di riwayat. Sesudahnya kolektor bisa mencatat setoran pinjaman ini lagi."
-      segarkan={[["nasabah"], ["harian"]]}
+      segarkan={[kunci.nasabah, kunci.harian]}
       tutup={tutup}
       kirim={(alasan) =>
         ambil(() =>

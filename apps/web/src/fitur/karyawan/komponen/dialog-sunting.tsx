@@ -1,3 +1,4 @@
+import { kunci } from "@opennael/api-client";
 import { LABEL_PERAN } from "@opennael/format";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -31,7 +32,7 @@ export function DialogSunting({ orang, tutup }: { orang: Karyawan; tutup: () => 
     mutationFn: () =>
       ambil(() => api.identitas.pengguna[":id"].$patch({ param: { id: orang.id }, json: ubah })),
     onSuccess: () => {
-      void klien.invalidateQueries({ queryKey: ["pengguna"] });
+      void klien.invalidateQueries({ queryKey: kunci.pengguna });
       tutup();
     },
   });

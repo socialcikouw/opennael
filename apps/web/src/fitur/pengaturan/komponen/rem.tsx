@@ -1,10 +1,11 @@
+import { kunci } from "@opennael/api-client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { GalatMuat, Kosong, Memuat } from "@/komponen/halaman";
 import { Badge } from "@/komponen/ui/badge";
 import { Button } from "@/komponen/ui/button";
-import { ambil, api } from "@/lib/api";
+import { ambil, api, kueri } from "@/lib/api";
 import { type IsiRem, keInput } from "../inti";
 import { Bagian } from "./bagian";
 import { DialogRemKolektor } from "./dialog-rem-kolektor";
@@ -14,14 +15,8 @@ import { SaklarRem } from "./saklar-rem";
 export function Rem() {
   const klien = useQueryClient();
   const [dialogKolektor, setDialogKolektor] = useState(false);
-  const aktif = useQuery({
-    queryKey: ["kebijakan", "aktif"],
-    queryFn: () => ambil(() => api.kantor.kebijakan.aktif.$get()),
-  });
-  const kolektorQ = useQuery({
-    queryKey: ["pengguna", "kolektor"],
-    queryFn: () => ambil(() => api.identitas.pengguna.$get({ query: { peran: "kolektor" } })),
-  });
+  const aktif = useQuery(kueri.kebijakan.aktif());
+  const kolektorQ = useQuery(kueri.pengguna.kolektor());
   const remKantor = aktif.data?.find((r) => r.lapis === "kantor");
   const [isi, setIsi] = useState<IsiRem | null>(null);
   const nilai: IsiRem = isi ?? {
@@ -34,7 +29,7 @@ export function Rem() {
     mutationFn: () => ambil(() => api.kantor.kebijakan.kantor.$put({ json: keInput(nilai) })),
     onSuccess: () => {
       setIsi(null);
-      void klien.invalidateQueries({ queryKey: ["kebijakan"] });
+      void klien.invalidateQueries({ queryKey: kunci.kebijakan });
     },
   });
   const remKolektor = (aktif.data ?? [])

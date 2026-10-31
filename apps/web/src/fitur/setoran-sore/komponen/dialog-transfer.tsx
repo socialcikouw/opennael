@@ -1,3 +1,4 @@
+import { kunci } from "@opennael/api-client";
 import { rupiah } from "@opennael/format";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -17,7 +18,7 @@ export function DialogTransfer({ t, tutup }: { t: Transaksi; tutup: () => void }
         }),
       ),
     onSuccess: () => {
-      for (const k of [["harian"], ["ringkasan"], ["aktivitas"]]) {
+      for (const k of [kunci.harian, kunci.ringkasan, kunci.aktivitas]) {
         void klien.invalidateQueries({ queryKey: k });
       }
       tutup();

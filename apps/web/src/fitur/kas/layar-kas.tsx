@@ -10,9 +10,9 @@ import { type Kolom, pembantuKolom, TabelData } from "@/komponen/tabel-data";
 import { Button } from "@/komponen/ui/button";
 import { Input } from "@/komponen/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/komponen/ui/tabs";
-import { ambil, api } from "@/lib/api";
+import { ambil, api, kueri } from "@/lib/api";
 import { useHariIni } from "@/lib/kantor";
-import { ambilLaporan, type Gerakan, KUNCI_KAS } from "./data";
+import { type Gerakan, KUNCI_KAS } from "./data";
 import { LABEL_MUTASI } from "./inti";
 import { BukaBukuKas } from "./komponen/buka-buku-kas";
 import { DaftarPencocokan } from "./komponen/daftar-pencocokan";
@@ -44,10 +44,7 @@ export function LayarKas() {
   const [dialog, setDialog] = useState<"mutasi" | "cocokkan" | "kas-awal" | null>(null);
   const [batal, setBatal] = useState<Gerakan | null>(null);
 
-  const q = useQuery({
-    queryKey: ["kas", "laporan", mulai, selesai],
-    queryFn: () => ambilLaporan(mulai, selesai),
-  });
+  const q = useQuery(kueri.kas.laporan(mulai, selesai));
 
   const pakaiRentang = (r: Rentang) => {
     const dari =

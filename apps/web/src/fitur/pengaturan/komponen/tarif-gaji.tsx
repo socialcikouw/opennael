@@ -1,3 +1,4 @@
+import { kunci } from "@opennael/api-client";
 import { tanggal as formatTanggal, persen } from "@opennael/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -5,7 +6,7 @@ import { Medan, PilihanAsli } from "@/komponen/formulir";
 import { GalatMuat, Memuat } from "@/komponen/halaman";
 import { Button } from "@/komponen/ui/button";
 import { Input } from "@/komponen/ui/input";
-import { ambil, api } from "@/lib/api";
+import { ambil, api, kueri } from "@/lib/api";
 import { useHariIni } from "@/lib/kantor";
 import { Bagian } from "./bagian";
 import { Pesan } from "./pesan";
@@ -15,14 +16,8 @@ import { Pesan } from "./pesan";
 export function TarifGaji() {
   const hariIni = useHariIni();
   const klien = useQueryClient();
-  const q = useQuery({
-    queryKey: ["tarif-gaji"],
-    queryFn: () => ambil(() => api.penggajian["tarif-gaji"].$get()),
-  });
-  const kolektorQ = useQuery({
-    queryKey: ["pengguna", "kolektor"],
-    queryFn: () => ambil(() => api.identitas.pengguna.$get({ query: { peran: "kolektor" } })),
-  });
+  const q = useQuery(kueri.tarifGaji.daftar());
+  const kolektorQ = useQuery(kueri.pengguna.kolektor());
   const [isi, setIsi] = useState({ kolektorId: "", persen: "", mulai: hariIni });
   const persenAngka = Number(isi.persen.replace(",", "."));
   const sah =
@@ -44,8 +39,8 @@ export function TarifGaji() {
       ),
     onSuccess: () => {
       setIsi({ kolektorId: "", persen: "", mulai: hariIni });
-      void klien.invalidateQueries({ queryKey: ["tarif-gaji"] });
-      void klien.invalidateQueries({ queryKey: ["gaji"] });
+      void klien.invalidateQueries({ queryKey: kunci.tarifGaji });
+      void klien.invalidateQueries({ queryKey: kunci.gaji });
     },
   });
   return (

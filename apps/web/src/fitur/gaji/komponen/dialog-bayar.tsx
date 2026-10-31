@@ -1,3 +1,4 @@
+import { kunci } from "@opennael/api-client";
 import { tanggal as formatTanggal, rupiah } from "@opennael/format";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -24,7 +25,7 @@ export function DialogBayar({ p, tutup }: { p: Pratinjau; tutup: () => void }) {
         }),
       ),
     onSuccess: () => {
-      for (const k of [["gaji"], ["kas"], ["aktivitas"]]) {
+      for (const k of [kunci.gaji, kunci.kas, kunci.aktivitas]) {
         void klien.invalidateQueries({ queryKey: k });
       }
       tutup();

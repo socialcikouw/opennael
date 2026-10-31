@@ -20,9 +20,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/komponen/ui/card";
-import { ambil, api } from "@/lib/api";
+import { kueri } from "@/lib/api";
 import { useHariIni } from "@/lib/kantor";
-import { ambilPerKolektor, type PerKolektor } from "./data";
+import type { PerKolektor } from "./data";
 import { GrafikPerforma } from "./komponen/grafik-performa";
 
 const rute = getRouteApi("/_bos/");
@@ -79,14 +79,8 @@ export function LayarBeranda() {
   const ubahTanggal = (baru: string) =>
     void navigasi({ search: { tanggal: baru === hariIni ? undefined : baru } });
 
-  const ringkasan = useQuery({
-    queryKey: ["ringkasan", t],
-    queryFn: () => ambil(() => api.pelaporan.ringkasan.$get({ query: { mulai: t, selesai: t } })),
-  });
-  const perKolektor = useQuery({
-    queryKey: ["ringkasan", "per-kolektor", t],
-    queryFn: () => ambilPerKolektor(t),
-  });
+  const ringkasan = useQuery(kueri.ringkasan.hari(t));
+  const perKolektor = useQuery(kueri.ringkasan.perKolektor(t));
 
   const r = ringkasan.data;
   const selisih = r ? r.kasLapangan.lebihSetor - r.kasLapangan.tekor : 0;

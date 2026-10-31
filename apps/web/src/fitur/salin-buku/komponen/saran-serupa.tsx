@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { UserCheck } from "lucide-react";
 import { Button } from "@/komponen/ui/button";
-import { ambil, api } from "@/lib/api";
+import { kueri } from "@/lib/api";
 import { useTenang } from "@/lib/tenang";
 import type { NasabahLama, Orang } from "../inti";
 
@@ -10,16 +10,7 @@ export function SaranSerupa({ orang, pakai }: { orang: Orang; pakai: (n: Nasabah
   const nama = useTenang(orang.nama.trim());
   const kampung = useTenang(orang.kampung.trim());
   const nik = orang.nik.length === 16 ? orang.nik : undefined;
-  const q = useQuery({
-    queryKey: ["nasabah", "serupa", nama, kampung, nik ?? null],
-    queryFn: () =>
-      ambil(() =>
-        api.pembiayaan.nasabah.serupa.$get({
-          query: { nama, ...(kampung ? { kampung } : {}), ...(nik ? { nik } : {}) },
-        }),
-      ),
-    enabled: nama.length >= 2,
-  });
+  const q = useQuery(kueri.nasabah.serupa(nama, kampung, nik));
   if (!q.data?.length) return null;
   return (
     <div className="space-y-1.5 rounded-md bg-amber-50 p-3 text-sm text-amber-900">

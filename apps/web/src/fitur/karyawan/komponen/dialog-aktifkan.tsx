@@ -1,3 +1,4 @@
+import { kunci } from "@opennael/api-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DialogFormulir } from "@/komponen/dialog-formulir";
 import { ambil, api } from "@/lib/api";
@@ -9,7 +10,7 @@ export function DialogAktifkan({ orang, tutup }: { orang: Karyawan; tutup: () =>
     mutationFn: () =>
       ambil(() => api.identitas.pengguna[":id"].aktifkan.$post({ param: { id: orang.id } })),
     onSuccess: () => {
-      void klien.invalidateQueries({ queryKey: ["pengguna"] });
+      void klien.invalidateQueries({ queryKey: kunci.pengguna });
       tutup();
     },
   });

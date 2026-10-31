@@ -9,8 +9,9 @@ import { type Kolom, pembantuKolom, TabelData } from "@/komponen/tabel-data";
 import { Badge } from "@/komponen/ui/badge";
 import { Button } from "@/komponen/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/komponen/ui/tabs";
+import { kueri } from "@/lib/api";
 import { useSesi } from "@/lib/sesi";
-import { type Aksi, ambilPengguna, type Karyawan } from "./data";
+import type { Aksi, Karyawan } from "./data";
 import { DialogAktifkan } from "./komponen/dialog-aktifkan";
 import { DialogNonaktifkan } from "./komponen/dialog-nonaktifkan";
 import { DialogPerangkat } from "./komponen/dialog-perangkat";
@@ -31,7 +32,7 @@ export function LayarKaryawan() {
   const { peran, nonaktif } = rute.useSearch();
   const navigasi = rute.useNavigate();
   const [aksi, setAksi] = useState<Aksi>(null);
-  const q = useQuery({ queryKey: ["pengguna", "semua"], queryFn: ambilPengguna });
+  const q = useQuery(kueri.pengguna.semua());
 
   const data = useMemo(
     () =>

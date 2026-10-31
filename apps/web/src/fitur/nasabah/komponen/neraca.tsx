@@ -1,15 +1,12 @@
 import { rupiah } from "@opennael/format";
 import { useQuery } from "@tanstack/react-query";
 import { BarisNilai, GalatMuat, Memuat } from "@/komponen/halaman";
-import { ambil, api } from "@/lib/api";
+import { kueri } from "@/lib/api";
 
 // ---- tab rincian ------------------------------------------------------------------
 
 export function Neraca({ id }: { id: string }) {
-  const q = useQuery({
-    queryKey: ["nasabah", "neraca", id],
-    queryFn: () => ambil(() => api.pembiayaan.nasabah[":id"].neraca.$get({ param: { id } })),
-  });
+  const q = useQuery(kueri.nasabah.neraca(id));
   if (q.isPending) return <Memuat />;
   if (q.isError) return <GalatMuat galat={q.error} ulangi={() => void q.refetch()} />;
   const r = q.data;

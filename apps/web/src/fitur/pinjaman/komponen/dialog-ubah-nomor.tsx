@@ -1,10 +1,10 @@
+import { kunci } from "@opennael/api-client";
 import type { RincianPinjaman } from "@opennael/contracts";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { DialogFormulir } from "@/komponen/dialog-formulir";
 import { Isian } from "@/komponen/formulir";
-import { ambil, api } from "@/lib/api";
-import { kunciBuku } from "../data";
+import { ambil, api, kueri } from "@/lib/api";
 
 export function DialogUbahNomor({
   p,
@@ -24,9 +24,9 @@ export function DialogUbahNomor({
         api.pembiayaan.pinjaman[":id"].$patch({ param: { id: p.id }, json: { pinjamanKe: nomor } }),
       ),
     onSuccess: () => {
-      void klien.invalidateQueries({ queryKey: kunciBuku(nasabahId) });
+      void klien.invalidateQueries({ queryKey: kueri.nasabah.buku(nasabahId).queryKey });
       // Rincian ini dan daftar di layar Pinjaman.
-      void klien.invalidateQueries({ queryKey: ["pinjaman"] });
+      void klien.invalidateQueries({ queryKey: kunci.pinjaman });
       tutup();
     },
   });

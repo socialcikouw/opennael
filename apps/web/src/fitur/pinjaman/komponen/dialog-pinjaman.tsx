@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/komponen/ui/dialog";
-import { ambil, api } from "@/lib/api";
+import { kueri } from "@/lib/api";
 import { useKantor } from "@/lib/kantor";
 import { judulPinjaman } from "../inti";
 import { AturanMacet } from "./aturan-macet";
@@ -34,10 +34,7 @@ export function DialogPinjaman({
 }) {
   const kantor = useKantor();
   const [aksi, setAksi] = useState<"nomor" | "riwayat" | null>(null);
-  const q = useQuery({
-    queryKey: ["pinjaman", id],
-    queryFn: () => ambil(() => api.pembiayaan.pinjaman[":id"].$get({ param: { id } })),
-  });
+  const q = useQuery(kueri.pinjaman.rincian(id));
   const p = q.data;
   return (
     <>

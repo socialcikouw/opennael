@@ -9,7 +9,7 @@ import { GalatMuat, Memuat } from "@/komponen/halaman";
 import { type Kolom, pembantuKolom, TabelData } from "@/komponen/tabel-data";
 import { Badge } from "@/komponen/ui/badge";
 import { Button } from "@/komponen/ui/button";
-import { ambil, api } from "@/lib/api";
+import { ambil, api, kueri } from "@/lib/api";
 import { useKantor } from "@/lib/kantor";
 import { KUNCI_HARIAN } from "../data";
 import { DialogTerimaKas } from "./dialog-terima-kas";
@@ -24,10 +24,7 @@ export function SetoranSore({ tanggal, hariIni }: { tanggal: string; hariIni: st
   const [rinci, setRinci] = useState<HariKas | null>(null);
   const [betulkan, setBetulkan] = useState<HariKas | null>(null);
   const [bukaLagi, setBukaLagi] = useState<HariKas | null>(null);
-  const q = useQuery({
-    queryKey: ["harian", "hari-kolektor", tanggal],
-    queryFn: () => ambil(() => api.hariKolektor["hari-kolektor"].$get({ query: { tanggal } })),
-  });
+  const q = useQuery(kueri.harian.hariKolektor(tanggal));
   const hariIniSaja = tanggal === hariIni;
 
   const kolom = useMemo(() => {

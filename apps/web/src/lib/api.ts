@@ -1,5 +1,6 @@
 import {
   buatKlien,
+  buatKueri,
   buatPanggil,
   buatPenyimpanKunci,
   buatTransport,
@@ -43,3 +44,6 @@ export const { panggil, ambil, PESAN_JARINGAN } = buatPanggil({
   pesanJaringan: "Server tidak terjangkau — periksa koneksi",
   rincian: true,
 });
+
+/** Katalog bacaan API (kunci + fungsi): `useQuery(kueri.pengguna.kolektor())`, tanpa array kunci di layar. */
+export const kueri = buatKueri({ api, ambil });

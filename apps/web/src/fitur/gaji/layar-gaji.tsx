@@ -5,7 +5,7 @@ import { Medan, PilihanAsli } from "@/komponen/formulir";
 import { KepalaHalaman, Kosong, Memuat } from "@/komponen/halaman";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/komponen/ui/card";
 import { Input } from "@/komponen/ui/input";
-import { ambil, api } from "@/lib/api";
+import { kueri } from "@/lib/api";
 import { useHariIni } from "@/lib/kantor";
 import { PratinjauGaji } from "./komponen/pratinjau-gaji";
 import { RiwayatSlip } from "./komponen/riwayat-slip";
@@ -20,10 +20,7 @@ export function LayarGaji() {
   const navigasi = rute.useNavigate();
   const selesai = s0 ?? kemarin;
   const mulai = m0 ?? geserTanggal(selesai, -6);
-  const kolektorQ = useQuery({
-    queryKey: ["pengguna", "kolektor"],
-    queryFn: () => ambil(() => api.identitas.pengguna.$get({ query: { peran: "kolektor" } })),
-  });
+  const kolektorQ = useQuery(kueri.pengguna.kolektor());
   const pilihKolektor = kolektorId ?? kolektorQ.data?.[0]?.id;
 
   return (

@@ -1,6 +1,4 @@
-import { ambil, api } from "@/lib/api";
+import type { DataKueri } from "@opennael/api-client";
+import type { kueri } from "@/lib/api";
 
-export const ambilPerKolektor = (t: string) =>
-  ambil(() => api.pelaporan.ringkasan["per-kolektor"].$get({ query: { mulai: t, selesai: t } }));
-
-export type PerKolektor = Awaited<ReturnType<typeof ambilPerKolektor>>[number];
+export type PerKolektor = DataKueri<ReturnType<typeof kueri.ringkasan.perKolektor>>[number];

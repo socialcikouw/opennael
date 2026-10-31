@@ -1,3 +1,4 @@
+import { kunci } from "@opennael/api-client";
 import { geserTanggal } from "@opennael/domain";
 import { tanggal as formatTanggal } from "@opennael/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -8,7 +9,7 @@ import { Medan } from "@/komponen/formulir";
 import { GalatMuat, Kosong, Memuat } from "@/komponen/halaman";
 import { Button } from "@/komponen/ui/button";
 import { Input } from "@/komponen/ui/input";
-import { ambil, api } from "@/lib/api";
+import { ambil, api, kueri } from "@/lib/api";
 import { useHariIni } from "@/lib/kantor";
 import { Bagian } from "./bagian";
 import { Pesan } from "./pesan";
@@ -19,15 +20,7 @@ export function LiburKantor() {
   const hariIni = useHariIni();
   const klien = useQueryClient();
   const sampai = geserTanggal(hariIni, 365);
-  const q = useQuery({
-    queryKey: ["libur-kantor", hariIni],
-    queryFn: () =>
-      ambil(() =>
-        api.kantor["libur-kantor"].$get({
-          query: { tanggalMulai: hariIni, tanggalSelesai: sampai },
-        }),
-      ),
-  });
+  const q = useQuery(kueri.liburKantor.daftar(hariIni, sampai));
   const [isi, setIsi] = useState({ mulai: hariIni, selesai: "", alasan: "" });
   const [batal, setBatal] = useState<string | null>(null);
   const m = useMutation({
@@ -43,7 +36,7 @@ export function LiburKantor() {
       ),
     onSuccess: () => {
       setIsi({ mulai: hariIni, selesai: "", alasan: "" });
-      void klien.invalidateQueries({ queryKey: ["libur-kantor"] });
+      void klien.invalidateQueries({ queryKey: kunci.liburKantor });
     },
   });
   const kirim = (e: FormEvent) => {
@@ -128,7 +121,7 @@ export function LiburKantor() {
         <DialogBatal
           judul={`Batalkan libur ${formatTanggal(batal)}?`}
           keterangan="Hari itu kembali menjadi hari tagih."
-          segarkan={[["libur-kantor"]]}
+          segarkan={[kunci.liburKantor]}
           tutup={() => setBatal(null)}
           kirim={(alasan) =>
             ambil(() =>

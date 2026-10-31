@@ -1,3 +1,4 @@
+import { kunci } from "@opennael/api-client";
 import { LABEL_JENIS_TRANSAKSI, rupiah } from "@opennael/format";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeftRight, Undo2 } from "lucide-react";
@@ -6,8 +7,8 @@ import { DialogBatal } from "@/komponen/dialog-batal";
 import { PilihanAsli } from "@/komponen/formulir";
 import { GalatMuat, Memuat } from "@/komponen/halaman";
 import { type Kolom, pembantuKolom, TabelData } from "@/komponen/tabel-data";
-import { ambil, api } from "@/lib/api";
-import { ambilTransaksi, KUNCI_HARIAN, type Transaksi } from "../data";
+import { ambil, api, kueri } from "@/lib/api";
+import { KUNCI_HARIAN, type Transaksi } from "../data";
 import { DialogTransfer } from "./dialog-transfer";
 import { TombolSel } from "./tombol-sel";
 
@@ -23,10 +24,7 @@ export function SetoranNasabah({
   const [kolektorId, setKolektorId] = useState("");
   const [transfer, setTransfer] = useState<Transaksi | null>(null);
   const [batal, setBatal] = useState<Transaksi | null>(null);
-  const q = useQuery({
-    queryKey: ["harian", "transaksi", tanggal, kolektorId],
-    queryFn: () => ambilTransaksi(tanggal, kolektorId || undefined),
-  });
+  const q = useQuery(kueri.harian.transaksi(tanggal, kolektorId));
   const hariIniSaja = tanggal === hariIni;
 
   const kolom = useMemo(() => {
@@ -108,7 +106,7 @@ export function SetoranNasabah({
         <DialogBatal
           judul={`Batalkan setoran ${batal.nasabah.nama}?`}
           keterangan={`${LABEL_JENIS_TRANSAKSI[batal.jenis]} ${rupiah(batal.storting)}. Pinjaman kembali seperti sebelum setoran; gulung ikut membatalkan pinjaman penerusnya; transfer yang menempel ikut batal. Hanya sebelum kas kolektornya diterima.`}
-          segarkan={KUNCI_HARIAN.concat([["nasabah"]])}
+          segarkan={[...KUNCI_HARIAN, kunci.nasabah]}
           tutup={() => setBatal(null)}
           kirim={(alasan) =>
             ambil(() =>

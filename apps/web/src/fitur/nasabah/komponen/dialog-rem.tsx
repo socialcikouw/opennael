@@ -2,16 +2,13 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { DialogFormulir } from "@/komponen/dialog-formulir";
 import { Isian } from "@/komponen/formulir";
-import { ambil, api } from "@/lib/api";
+import { ambil, api, kueri } from "@/lib/api";
 import { useSegarkanNasabah } from "../data";
 import type { Nasabah } from "../inti";
 
 export function DialogRem({ n, tutup }: { n: Nasabah; tutup: () => void }) {
   const segarkan = useSegarkanNasabah();
-  const aktif = useQuery({
-    queryKey: ["kebijakan", "aktif"],
-    queryFn: () => ambil(() => api.kantor.kebijakan.aktif.$get()),
-  });
+  const aktif = useQuery(kueri.kebijakan.aktif());
   const lama = aktif.data?.find((r) => r.lapis === "nasabah" && r.sasaran?.id === n.id);
   const [isi, setIsi] = useState<{ naik: boolean; gulung: boolean; alasan: string } | null>(null);
   const nilai = isi ?? {

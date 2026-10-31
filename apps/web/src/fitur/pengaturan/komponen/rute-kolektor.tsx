@@ -6,7 +6,7 @@ import { PilihanAsli } from "@/komponen/formulir";
 import { GalatMuat, Kosong, Memuat } from "@/komponen/halaman";
 import { Button } from "@/komponen/ui/button";
 import { Input } from "@/komponen/ui/input";
-import { ambil, api } from "@/lib/api";
+import { ambil, api, kueri } from "@/lib/api";
 import { useKantor } from "@/lib/kantor";
 import { Bagian } from "./bagian";
 import { Pesan } from "./pesan";
@@ -16,18 +16,10 @@ import { Pesan } from "./pesan";
 export function RuteKolektor() {
   const kantor = useKantor();
   const klien = useQueryClient();
-  const kolektorQ = useQuery({
-    queryKey: ["pengguna", "kolektor"],
-    queryFn: () => ambil(() => api.identitas.pengguna.$get({ query: { peran: "kolektor" } })),
-  });
+  const kolektorQ = useQuery(kueri.pengguna.kolektor());
   const [kolektorId, setKolektorId] = useState("");
   const pilih = kolektorId || kolektorQ.data?.[0]?.id || "";
-  const q = useQuery({
-    queryKey: ["rute-kolektor", pilih],
-    queryFn: () =>
-      ambil(() => api.hariKolektor["rute-kolektor"].$get({ query: { kolektorId: pilih } })),
-    enabled: pilih !== "",
-  });
+  const q = useQuery(kueri.ruteKolektor.urutan(pilih));
   const [urutan, setUrutan] = useState<string[] | null>(null);
   const [baru, setBaru] = useState("");
   const daftar = urutan ?? q.data?.urutan.map((u) => u.nama) ?? [];
@@ -44,7 +36,7 @@ export function RuteKolektor() {
       ),
     onSuccess: () => {
       setUrutan(null);
-      void klien.invalidateQueries({ queryKey: ["rute-kolektor", pilih] });
+      void klien.invalidateQueries({ queryKey: kueri.ruteKolektor.urutan(pilih).queryKey });
     },
   });
   const geser = (i: number, arah: -1 | 1) => {

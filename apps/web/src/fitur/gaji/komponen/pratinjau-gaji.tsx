@@ -5,7 +5,8 @@ import { useState } from "react";
 import { GalatMuat, KartuAngka, Memuat } from "@/komponen/halaman";
 import { type Kolom, pembantuKolom, TabelData } from "@/komponen/tabel-data";
 import { Button } from "@/komponen/ui/button";
-import { ambilPratinjau, type HariGaji } from "../data";
+import { kueri } from "@/lib/api";
+import type { HariGaji } from "../data";
 import { DialogBayar } from "./dialog-bayar";
 
 const HALANGAN = {
@@ -59,10 +60,7 @@ export function PratinjauGaji({
   selesai: string;
 }) {
   const [bayar, setBayar] = useState(false);
-  const q = useQuery({
-    queryKey: ["gaji", "pratinjau", kolektorId, mulai, selesai],
-    queryFn: () => ambilPratinjau(kolektorId, mulai, selesai),
-  });
+  const q = useQuery(kueri.gaji.pratinjau(kolektorId, mulai, selesai));
   if (q.isPending) return <Memuat teks="Menghitung gaji…" />;
   if (q.isError) return <GalatMuat galat={q.error} ulangi={() => void q.refetch()} />;
   const p = q.data;

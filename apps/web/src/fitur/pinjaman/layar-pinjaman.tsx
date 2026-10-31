@@ -7,7 +7,7 @@ import { PilihanAsli } from "@/komponen/formulir";
 import { GalatMuat, KartuAngka, KepalaHalaman, Memuat } from "@/komponen/halaman";
 import { type Kolom, pembantuKolom, TabelData } from "@/komponen/tabel-data";
 import { Badge } from "@/komponen/ui/badge";
-import { ambil, api } from "@/lib/api";
+import { kueri } from "@/lib/api";
 import { LABEL_STATUS } from "@/lib/status-pinjaman";
 import { DialogPinjaman } from "./komponen/dialog-pinjaman";
 
@@ -84,19 +84,10 @@ export function LayarPinjaman() {
   const navigasi = rute.useNavigate();
   const saring = status ?? "aktif";
   const q = useQuery({
-    queryKey: ["pinjaman", "daftar", saring, kolektor ?? null],
-    queryFn: () =>
-      ambil(() =>
-        api.pembiayaan.pinjaman.$get({
-          query: { status: saring, ...(kolektor ? { kolektorId: kolektor } : {}) },
-        }),
-      ),
+    ...kueri.pinjaman.daftar(saring, kolektor),
     placeholderData: (lama) => lama,
   });
-  const kolektorQ = useQuery({
-    queryKey: ["pengguna", "kolektor"],
-    queryFn: () => ambil(() => api.identitas.pengguna.$get({ query: { peran: "kolektor" } })),
-  });
+  const kolektorQ = useQuery(kueri.pengguna.kolektor());
   const data = useMemo(
     () => (q.data ?? []).filter((p) => tunggak !== "ya" || (p.tagih?.tertinggal ?? 0) > 0),
     [q.data, tunggak],
