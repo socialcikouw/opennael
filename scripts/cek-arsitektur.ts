@@ -142,11 +142,15 @@ interface Impor {
   spec: string;
   baris: number;
 }
-function bacaBerkas(jalur: string): {
+/** Isi satu berkas TS/TSX: impor, penulisan tabel, dan kunci kueri berupa array literal. */
+export function bacaTeks(
+  jalur: string,
+  teks: string,
+): {
   impor: Impor[];
   tulis: { tabelId: string; baris: number }[];
+  kunciLiteral: number[];
 } {
-  const teks = readFileSync(jalur, "utf8");
   const sf = ts.createSourceFile(
     jalur,
     teks,
@@ -156,6 +160,7 @@ function bacaBerkas(jalur: string): {
   );
   const impor: Impor[] = [];
   const tulis: { tabelId: string; baris: number }[] = [];
+  const kunciLiteral: number[] = [];
   const baris = (n: { getStart(): number }) =>
     sf.getLineAndCharacterOfPosition(n.getStart()).line + 1;
   // biome-ignore lint/suspicious/noExplicitAny: simpul AST tanpa tipe
@@ -183,10 +188,22 @@ function bacaBerkas(jalur: string): {
         if (a && ts.isIdentifier(a)) tulis.push({ tabelId: a.text, baris: baris(n) });
       }
     }
+    if (
+      ts.isPropertyAssignment(n) &&
+      (ts.isIdentifier(n.name) || ts.isStringLiteral(n.name)) &&
+      n.name.text === "queryKey" &&
+      ts.isArrayLiteralExpression(n.initializer)
+    ) {
+      kunciLiteral.push(baris(n));
+    }
     ts.forEachChild(n, kunjungi);
   };
   kunjungi(sf);
-  return { impor, tulis };
+  return { impor, tulis, kunciLiteral };
+}
+
+function bacaBerkas(jalur: string) {
+  return bacaTeks(jalur, readFileSync(jalur, "utf8"));
 }
 
 /** Peta pengenal skema Drizzle → nama tabel database. */
@@ -329,6 +346,20 @@ export function periksaSemua(): Pelanggaran[] {
             im.baris,
             `impor relatif "${im.spec}" menyeberang batas paket — pakai nama paket`,
           );
+      }
+    }
+  }
+
+  // 7. kunci kueri web / HP: dari api-client (`kueri.*`, `kunci.*`), bukan array literal di layar
+  for (const app of ["web", "mobile"]) {
+    for (const f of semuaBerkas(join(akar, `apps/${app}/src`))) {
+      for (const baris of bacaBerkas(f).kunciLiteral) {
+        catat(
+          "kunci-kueri",
+          f,
+          baris,
+          "queryKey berupa array literal — pakai kueri.* atau kunci.* dari @opennael/api-client",
+        );
       }
     }
   }

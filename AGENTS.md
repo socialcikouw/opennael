@@ -47,7 +47,7 @@ tidak dipakai kasir, pengawas, atau kolektor.
 | `apps/web` | Aplikasi web **bos** — masuk nomor HP + kata sandi, registrasi kantor, persetujuan tautan HP, dan seluruh pekerjaan bos. |
 | `packages/contracts` | Skema Zod bentuk permintaan & respons API — dipakai bersama server dan klien. Folder mengikuti konteks API (`bersama`, `identitas`, `kantor`, `hari-kolektor`, `pembiayaan`, …); `src/index.ts` mengekspor semuanya, klien cukup mengimpor `@opennael/contracts`. |
 | `packages/domain` | Aturan usaha murni tanpa I/O: rumus akad, jadwal tagih, aturan macet, rumus kas. Dipakai server dan aplikasi (pratinjau di HP). |
-| `packages/api-client` | Klien API bersama web & HP: transport bersesi (token akses, refresh sekali dibagi), sesi dengan penyimpan yang disuntik aplikasi, **kunci idempoten tertunda + ulang otomatis** operasi tulis idempoten (penyimpan disuntik: web `localStorage`, HP brankas), `panggil`/`ambil`, dan klien `hc` bertipe per konteks (`api.<konteks>.<jalur>`). |
+| `packages/api-client` | Klien API bersama web & HP: transport bersesi (token akses, refresh sekali dibagi), sesi dengan penyimpan yang disuntik aplikasi, **kunci idempoten tertunda + ulang otomatis** operasi tulis idempoten (penyimpan disuntik: web `localStorage`, HP brankas), `panggil`/`ambil`, klien `hc` bertipe per konteks (`api.<konteks>.<jalur>`), **katalog kueri** `kueri.*` (kunci + fungsi + opsi bawaan tiap bacaan) beserta awalan kunci `kunci.*`. |
 | `packages/format` | Format tampilan murni yang dipakai web & HP: uang (`rupiah`, `bacaUang`), tanggal kantor (`tanggal`, `jam`, `waktu`), label enum. Tanpa React/I/O/warna. |
 | `docs/skema` | Rancangan database final, satu dokumen per tabel. |
 | `scripts` | Skrip repo: rilis OTA (`kirim-ota.ts`), pemeriksa arsitektur (`cek-arsitektur.ts` + `kepemilikan-tabel.ts`, diuji `bun test scripts`). Skrip milik satu paket tinggal di paket itu (mis. `apps/api/scripts/migrasi.ts`). |
@@ -55,7 +55,7 @@ tidak dipakai kasir, pengawas, atau kolektor.
 Arah ketergantungan: `apps/*` → `packages/*`; `packages/domain` tidak
 bergantung pada apa pun; `packages/contracts` hanya pada `zod` (dan `domain`
 bila perlu tipe); `packages/format` hanya pada `domain` (tipe);
-`packages/api-client` pada `contracts`, `hono`, dan tipe `@opennael/api/tipe/*`.
+`packages/api-client` pada `contracts`, `hono`, `@tanstack/react-query` (peer), dan tipe `@opennael/api/tipe/*`.
 
 ## Stack (diputuskan 23 Okt 2026)
 
@@ -102,7 +102,7 @@ isi berkas, ukuran, SHA-256).
 | **EAS Build + EAS Update** | APK & pembaruan OTA. |
 | **`StyleSheet`** bawaan React Native + token `src/komponen/ui/tema.ts` | Gaya. **Tidak pernah NativeWind, Tailwind, atau pustaka gaya berbasis kelas lain di HP** (keputusan final pemilik, 25 Okt 2026) — jangan diusulkan lagi. Nilai warna disalin dari palet Tailwind web, jarak kelipatan 4 pt, huruf dalam pt. Layar merangkai komponen dasar `src/komponen/ui/` (satu komponen per berkas: `layar`, `teks`, `tombol`, `isian`, `kartu`, `lencana`, `spanduk`, `pilihan`, `ikon`; gaya bersama `useG` di `gaya-bersama.ts`) dan gaya bersama `g`; warna (`"#…"`), ukuran huruf, dan jarak selalu dari token. Ukuran khusus satu elemen (lebar avatar, tombol rana) boleh di `StyleSheet` lokal layar itu. **Mode terang & gelap** (27 Okt 2026): palet `TERANG`/`GELAP` di `tema.ts` (kunci sama); warna **tidak pernah** diimpor statis — di komponen `const WARNA = useWarna()`, gaya layar `const buatGaya = (WARNA: Warna) => StyleSheet.create({…})` + `const gaya = useGaya(buatGaya)`, gaya bersama `const g = useG()`, header Stack `useOpsiStack()` (`src/komponen/ui/tampilan.tsx`). Isi hijau berteks (tombol utama, +, chip aktif) = `utamaIsi` + `teksAtasUtama`, bukan `utama` + `putih`. Pilihan Ikuti HP/Terang/Gelap tersimpan di HP; APK `preview` masih `userInterfaceStyle: light` sampai build ulang (lihat `app.config.ts`). |
 | **Lucide** (`lucide-react-native`, di atas `react-native-svg`) | Ikon — sama dengan web (shadcn/ui), keputusan pemilik 27 Okt 2026. Hanya lewat `<Ikon nama="…">` (`src/komponen/ui/ikon.tsx`); ikon didaftar di `src/komponen/ui/daftar-ikon.ts` dengan **impor per ikon** (`lucide-react-native/icons/<nama>`) — impor dari akar paket membawa ±1.600 ikon (+2 MB bundel/OTA). Tanpa versi isi: keadaan aktif = warna + `tebal`. |
-| Klien RPC Hono (`hc`) per modul + **TanStack Query** | Data. Kiriman gagal diulang otomatis dengan **kunci idempoten** yang sama — tanpa mode offline penuh (sinyal buruk jarang). Dikerjakan transport `packages/api-client` (bukan layar): hanya operasi di `OPERASI_IDEMPOTEN` (`packages/contracts`), hanya bila hasilnya tak pasti (jaringan putus/batas waktu/502–504). **Operasi tulis baru yang dibungkus `denganIdempotensi` di API wajib ditambahkan ke `OPERASI_IDEMPOTEN`**; selain itu tidak pernah diulang otomatis. |
+| Klien RPC Hono (`hc`) per modul + **TanStack Query** | Data. Kiriman gagal diulang otomatis dengan **kunci idempoten** yang sama — tanpa mode offline penuh (sinyal buruk jarang). Dikerjakan transport `packages/api-client` (bukan layar): hanya operasi di `OPERASI_IDEMPOTEN` (`packages/contracts`), hanya bila hasilnya tak pasti (jaringan putus/batas waktu/502–504). **Operasi tulis baru yang dibungkus `denganIdempotensi` di API wajib ditambahkan ke `OPERASI_IDEMPOTEN`**; selain itu tidak pernah diulang otomatis. Bacaan lewat katalog `kueri.*` (`useQuery(kueri.setoran.hari())`), bukan array `queryKey` di layar. |
 | **react-hook-form** + Zod | Formulir dengan skema dari `contracts`. |
 | **expo-camera** | Foto serah terima (kamera saja, bukan galeri) & pemindai QR. |
 | **expo-image-manipulator** | Kompres & simpan ulang foto (±200 KB, EXIF terbuang). |
@@ -115,7 +115,7 @@ isi berkas, ukuran, SHA-256).
 |---|---|
 | **React + Vite** | Aplikasi bos (SPA statis). |
 | **TanStack Router** | Navigasi bertipe. |
-| **TanStack Query** + `hc` | Data. |
+| **TanStack Query** + `hc` | Data. Bacaan lewat katalog `kueri.*` dari `@/lib/api` (`useQuery(kueri.pengguna.kolektor())`), invalidasi lewat `kunci.*` — **tanpa array `queryKey` literal di layar** (dijaga `cek:arsitektur`). Bacaan baru ditambahkan ke katalog di `packages/api-client/src/kueri/<konteks>.ts` beserta uji kunci & rutenya. |
 | **TanStack Table** | Tabel besar (nasabah, transaksi, buku kas). |
 | **Tailwind CSS + shadcn/ui** | Tampilan. |
 | **Recharts** | Grafik harian. |
@@ -273,7 +273,7 @@ Dari root repo:
 | `bun run typecheck` | `tsc --noEmit` di setiap paket. |
 | `bun run test` | `bun test` di setiap paket yang punya uji. Uji skema database berjalan ke Supabase dev (`apps/api/.env`) dalam satu transaksi yang dibatalkan; tanpa `DATABASE_URL` dilewati. |
 | `bun run lint` | Biome: lint + cek format (Markdown & `docs/` tidak ikut). |
-| `bun run cek:arsitektur` | `scripts/cek-arsitektur.ts`: batas impor API (`platform/` ↔ `modul/`, antar-konteks hanya lewat `index.ts`), siklus antar-konteks/antar-fitur, penulisan tabel hanya oleh pemiliknya, batas paket. Data kepemilikan tabel & panah konteks di `scripts/kepemilikan-tabel.ts` — **tabel baru wajib didaftarkan di sana**. Batas impor web/HP (`komponen/`, `fitur/`) dijaga Biome (`noRestrictedImports`). |
+| `bun run cek:arsitektur` | `scripts/cek-arsitektur.ts`: batas impor API (`platform/` ↔ `modul/`, antar-konteks hanya lewat `index.ts`), siklus antar-konteks/antar-fitur, penulisan tabel hanya oleh pemiliknya, batas paket, dan larangan `queryKey` array literal di web/HP. Data kepemilikan tabel & panah konteks di `scripts/kepemilikan-tabel.ts` — **tabel baru wajib didaftarkan di sana**. Batas impor web/HP (`komponen/`, `fitur/`) dijaga Biome (`noRestrictedImports`). |
 | `bun run format` | Biome: rapikan kode & urutkan import. |
 | `bun run update:preview --message "<isi>"` | OTA jalur `preview` (APK lapangan Android). Hanya dari `main` yang bersih & sudah di-push. |
 | `bun run update:expogo --message "<isi>"` | OTA jalur `expogo` (Expo Go tanpa Metro, Android & iOS). Hanya dari `main` yang bersih & sudah di-push. |

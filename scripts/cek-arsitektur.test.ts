@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import {
+  bacaTeks,
   klasifikasiApi,
   periksaImporApi,
   periksaSemua,
@@ -111,4 +112,26 @@ describe("repo saat ini", () => {
   test("tidak ada pelanggaran arsitektur", () => {
     expect(periksaSemua()).toEqual([]);
   }, 60_000);
+});
+
+describe("bacaTeks: kunci kueri literal", () => {
+  const baris = (teks: string) => bacaTeks("x.tsx", teks).kunciLiteral;
+  test("queryKey berupa array literal dilaporkan beserta barisnya", () => {
+    expect(baris(["useQuery({", '  queryKey: ["a", 1],', "  queryFn,", "});"].join("\n"))).toEqual([
+      2,
+    ]);
+  });
+  test("invalidasi dengan array literal juga dilaporkan", () => {
+    expect(baris('klien.invalidateQueries({ queryKey: ["pengguna"] });')).toEqual([1]);
+  });
+  test("array yang diawali kunci.* tetap literal di layar", () => {
+    expect(baris('const o = { queryKey: [...kunci.pengguna, "x"] };')).toEqual([1]);
+  });
+  test("kueri.* dan kunci.* langsung tidak dilaporkan", () => {
+    const teks = [
+      "useQuery(kueri.pengguna.kolektor());",
+      "klien.invalidateQueries({ queryKey: kunci.pengguna });",
+    ].join("\n");
+    expect(baris(teks)).toEqual([]);
+  });
 });
