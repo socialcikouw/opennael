@@ -1,7 +1,8 @@
 import { describe, expect, test } from "bun:test";
+import type { Ambil } from "../bahan";
 import type { Klien } from "../klien";
 import { kunci } from "../kunci";
-import { type Ambil, buatKueri } from "./index";
+import { buatKueri } from "./index";
 
 /**
  * Klien palsu: setiap rantai `api.a.b.$get(x)` tidak ke jaringan, tetapi

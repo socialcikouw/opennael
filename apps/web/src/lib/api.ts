@@ -4,6 +4,7 @@ import {
   buatPanggil,
   buatPenyimpanKunci,
   buatTransport,
+  buatTulis,
   type MediumKunci,
 } from "@opennael/api-client";
 import { tokoSesi } from "./sesi";
@@ -47,3 +48,6 @@ export const { panggil, ambil, PESAN_JARINGAN } = buatPanggil({
 
 /** Katalog bacaan API (kunci + fungsi): `useQuery(kueri.pengguna.kolektor())`, tanpa array kunci di layar. */
 export const kueri = buatKueri({ api, ambil });
+
+/** Penulisan yang dipakai lebih dari satu layar (pembatalan uang): `tulis.batal.gaji(id, alasan)`. */
+export const tulis = buatTulis({ api, ambil });

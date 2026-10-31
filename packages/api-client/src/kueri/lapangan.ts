@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
+import type { Bahan } from "../bahan";
 import { kunci } from "../kunci";
-import type { Bahan } from "./dasar";
 
 /**
  * Kueri HP kolektor (layar kerja harian, kartu pinjaman, akad, gulung). Semua

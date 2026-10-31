@@ -10,7 +10,7 @@ import { type Kolom, pembantuKolom, TabelData } from "@/komponen/tabel-data";
 import { Button } from "@/komponen/ui/button";
 import { Input } from "@/komponen/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/komponen/ui/tabs";
-import { ambil, api, kueri } from "@/lib/api";
+import { kueri, tulis } from "@/lib/api";
 import { useHariIni } from "@/lib/kantor";
 import { type Gerakan, KUNCI_KAS } from "./data";
 import { LABEL_MUTASI } from "./inti";
@@ -251,14 +251,7 @@ export function LayarKas() {
           keterangan={`${batal.jenis ? LABEL_MUTASI[batal.jenis] : "Mutasi"} ${rupiah(Math.abs(batal.nominal))}${batal.keterangan ? ` — ${batal.keterangan}` : ""}`}
           segarkan={KUNCI_KAS}
           tutup={() => setBatal(null)}
-          kirim={(alasan) =>
-            ambil(() =>
-              api.kas.kas.mutasi[":id"].batal.$post({
-                param: { id: batal.sumberId },
-                json: { alasan },
-              }),
-            )
-          }
+          kirim={(alasan) => tulis.batal.mutasiKas(batal.sumberId, alasan)}
         />
       ) : null}
     </>

@@ -7,7 +7,7 @@ import { DialogBatal } from "@/komponen/dialog-batal";
 import { PilihanAsli } from "@/komponen/formulir";
 import { GalatMuat, Memuat } from "@/komponen/halaman";
 import { type Kolom, pembantuKolom, TabelData } from "@/komponen/tabel-data";
-import { ambil, api, kueri } from "@/lib/api";
+import { kueri, tulis } from "@/lib/api";
 import { KUNCI_HARIAN, type Transaksi } from "../data";
 import { DialogTransfer } from "./dialog-transfer";
 import { TombolSel } from "./tombol-sel";
@@ -108,14 +108,7 @@ export function SetoranNasabah({
           keterangan={`${LABEL_JENIS_TRANSAKSI[batal.jenis]} ${rupiah(batal.storting)}. Pinjaman kembali seperti sebelum setoran; gulung ikut membatalkan pinjaman penerusnya; transfer yang menempel ikut batal. Hanya sebelum kas kolektornya diterima.`}
           segarkan={[...KUNCI_HARIAN, kunci.nasabah]}
           tutup={() => setBatal(null)}
-          kirim={(alasan) =>
-            ambil(() =>
-              api.pembiayaan.transaksi[":id"].batal.$post({
-                param: { id: batal.id },
-                json: { alasan },
-              }),
-            )
-          }
+          kirim={(alasan) => tulis.batal.transaksi(batal.id, alasan)}
         />
       ) : null}
     </>

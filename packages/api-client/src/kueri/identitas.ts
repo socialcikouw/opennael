@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
+import type { Bahan } from "../bahan";
 import { kunci } from "../kunci";
-import type { Bahan } from "./dasar";
 
 /** Kueri konteks identitas: orang di kantor dan perangkat tertautnya. */
 export function kueriIdentitas({ api, ambil }: Bahan) {

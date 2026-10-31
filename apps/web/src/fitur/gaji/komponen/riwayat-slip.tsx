@@ -8,7 +8,7 @@ import { GalatMuat, Memuat } from "@/komponen/halaman";
 import { type Kolom, pembantuKolom, TabelData } from "@/komponen/tabel-data";
 import { Badge } from "@/komponen/ui/badge";
 import { Button } from "@/komponen/ui/button";
-import { ambil, api, kueri } from "@/lib/api";
+import { kueri, tulis } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import type { Slip } from "../data";
 
@@ -85,14 +85,7 @@ export function RiwayatSlip({ kolektorId, hariIni }: { kolektorId?: string; hari
           keterangan={`${rupiah(batal.gajiBersih)} kembali ke kas ${batal.dariAkun}. Hanya di hari yang sama.`}
           segarkan={[kunci.gaji, kunci.kas]}
           tutup={() => setBatal(null)}
-          kirim={(alasan) =>
-            ambil(() =>
-              api.penggajian.kas.gaji[":id"].batal.$post({
-                param: { id: batal.id },
-                json: { alasan },
-              }),
-            )
-          }
+          kirim={(alasan) => tulis.batal.gaji(batal.id, alasan)}
         />
       ) : null}
     </>

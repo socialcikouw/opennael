@@ -1,4 +1,4 @@
-import type { Bahan } from "./dasar";
+import type { Bahan } from "../bahan";
 import { kueriHariKolektor } from "./hari-kolektor";
 import { kueriIdentitas } from "./identitas";
 import { kueriKantor } from "./kantor";
@@ -9,7 +9,7 @@ import { kueriPembiayaan } from "./pembiayaan";
 import { kueriPenggajian } from "./penggajian";
 import { kueriSetoran } from "./setoran";
 
-export type { Ambil, Bahan, DataKueri } from "./dasar";
+export type { DataKueri } from "./dasar";
 
 /**
  * KATALOG KUERI — semua bacaan API sebagai `queryOptions` (kunci + fungsi +

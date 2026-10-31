@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
+import type { Bahan } from "../bahan";
 import { kunci } from "../kunci";
-import type { Bahan } from "./dasar";
 
 /** Kueri konteks kantor: profil, pekan kerja, libur, kampung, dan rem (kebijakan). */
 export function kueriKantor({ api, ambil }: Bahan) {

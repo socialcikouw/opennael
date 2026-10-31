@@ -7,7 +7,7 @@ import { Medan } from "@/komponen/formulir";
 import { GalatMuat, Kosong, Memuat } from "@/komponen/halaman";
 import { Button } from "@/komponen/ui/button";
 import { Textarea } from "@/komponen/ui/textarea";
-import { ambil, api, kueri } from "@/lib/api";
+import { kueri, tulis } from "@/lib/api";
 import { useHariIni } from "@/lib/kantor";
 import { cn } from "@/lib/utils";
 import { useSegarkanNasabah } from "../data";
@@ -20,13 +20,7 @@ export function RiwayatTabungan({ id }: { id: string }) {
   const tarik = useQuery(kueri.nasabah.penarikanTabungan(id));
   const koreksi = useQuery(kueri.nasabah.koreksiTabungan(id));
   const kirimBatal = useMutation({
-    mutationFn: (penarikanId: string) =>
-      ambil(() =>
-        api.pembiayaan["penarikan-tabungan"][":id"].batal.$post({
-          param: { id: penarikanId },
-          json: { alasan: alasan.trim() },
-        }),
-      ),
+    mutationFn: (penarikanId: string) => tulis.batal.penarikanTabungan(penarikanId, alasan.trim()),
     onSuccess: () => {
       segarkan();
       setBatal(null);

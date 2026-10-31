@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import { DialogBatal } from "@/komponen/dialog-batal";
 import { GalatMuat, Memuat } from "@/komponen/halaman";
 import { type Kolom, pembantuKolom, TabelData } from "@/komponen/tabel-data";
-import { ambil, api, kueri } from "@/lib/api";
+import { kueri, tulis } from "@/lib/api";
 import { useKantor } from "@/lib/kantor";
 import { cn } from "@/lib/utils";
 import { KUNCI_HARIAN, type Transfer } from "../data";
@@ -76,14 +76,7 @@ export function DaftarTransfer({ tanggal, hariIni }: { tanggal: string; hariIni:
           judul={`Batalkan transfer ${batal.nasabah.nama}?`}
           segarkan={KUNCI_HARIAN}
           tutup={() => setBatal(null)}
-          kirim={(alasan) =>
-            ambil(() =>
-              api.hariKolektor["transfer-setoran"][":id"].batal.$post({
-                param: { id: batal.id },
-                json: { alasan },
-              }),
-            )
-          }
+          kirim={(alasan) => tulis.batal.transferSetoran(batal.id, alasan)}
         />
       ) : null}
     </>

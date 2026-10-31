@@ -6,7 +6,7 @@ import { DialogBatal } from "@/komponen/dialog-batal";
 import { GalatMuat, Memuat } from "@/komponen/halaman";
 import { type Kolom, pembantuKolom, TabelData } from "@/komponen/tabel-data";
 import { Button } from "@/komponen/ui/button";
-import { ambil, api, kueri } from "@/lib/api";
+import { kueri, tulis } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { KUNCI_KAS, type Pencocokan } from "../data";
 
@@ -94,14 +94,7 @@ export function DaftarPencocokan({
           keterangan="Untuk salah hitung — lalu cocokkan ulang."
           segarkan={KUNCI_KAS}
           tutup={() => setBatal(null)}
-          kirim={(alasan) =>
-            ambil(() =>
-              api.kas.kas.pencocokan[":id"].batal.$post({
-                param: { id: batal.id },
-                json: { alasan },
-              }),
-            )
-          }
+          kirim={(alasan) => tulis.batal.pencocokanKas(batal.id, alasan)}
         />
       ) : null}
     </>

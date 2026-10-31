@@ -9,7 +9,7 @@ import { GalatMuat, Memuat } from "@/komponen/halaman";
 import { type Kolom, pembantuKolom, TabelData } from "@/komponen/tabel-data";
 import { Badge } from "@/komponen/ui/badge";
 import { Button } from "@/komponen/ui/button";
-import { ambil, api, kueri } from "@/lib/api";
+import { kueri, tulis } from "@/lib/api";
 import { useKantor } from "@/lib/kantor";
 import { KUNCI_HARIAN } from "../data";
 import { DialogTerimaKas } from "./dialog-terima-kas";
@@ -162,14 +162,7 @@ export function SetoranSore({ tanggal, hariIni }: { tanggal: string; hariIni: st
           keterangan="Hari kolektor dibuka lagi — ia bisa mencatat setoran, akad, dan libur hari ini (mis. nasabah libur datang membayar sore), lalu membuka laporan ulang."
           segarkan={KUNCI_HARIAN}
           tutup={() => setBukaLagi(null)}
-          kirim={(alasan) =>
-            ambil(() =>
-              api.hariKolektor["hari-kolektor"][":kolektorId"].laporan.batal.$post({
-                param: { kolektorId: bukaLagi.kolektor.id },
-                json: { alasan },
-              }),
-            )
-          }
+          kirim={(alasan) => tulis.batal.laporanKolektor(bukaLagi.kolektor.id, alasan)}
         />
       ) : null}
       {rinci ? (
@@ -190,14 +183,7 @@ export function SetoranSore({ tanggal, hariIni }: { tanggal: string; hariIni: st
           keterangan="Kas dianggap belum diterima; kasir menghitung ulang."
           segarkan={KUNCI_HARIAN}
           tutup={() => setBatal(null)}
-          kirim={(alasan) =>
-            ambil(() =>
-              api.hariKolektor["serah-terima-kas"][":id"].batal.$post({
-                param: { id: batal.serahTerima?.id ?? "" },
-                json: { alasan },
-              }),
-            )
-          }
+          kirim={(alasan) => tulis.batal.serahTerimaKas(batal.serahTerima?.id ?? "", alasan)}
         />
       ) : null}
     </>

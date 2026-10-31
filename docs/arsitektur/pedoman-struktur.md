@@ -315,9 +315,12 @@ Arah impor: `rute → fitur → komponen → lib → packages`.
 3. Fitur lain hanya lewat `@/fitur/<nama>` (`index.ts` berisi ekspor bernama,
    sedikit — bukan "barrel" seluruh isi); di dalam fitur sendiri pakai impor
    relatif. Tanpa siklus antar-fitur.
-4. Kueri dan mutasi memakai kunci & fungsi dari `api-client`
-   (`useQuery(kueri.pengguna.daftar({ peran: "kolektor" }))`), bukan array
-   kunci literal di setiap layar.
+4. Bacaan memakai katalog `kueri.*` dari `api-client`
+   (`useQuery(kueri.pengguna.kolektor())`) dan invalidasi memakai `kunci.*`
+   (`invalidateQueries({ queryKey: kunci.pengguna })`), bukan array kunci
+   literal di setiap layar (dijaga `cek:arsitektur`). Penulisan yang dipakai
+   lebih dari satu layar (pembatalan uang) ada di `tulis.batal.*`; penulisan
+   dengan satu pemakai tetap di dialognya.
 5. `komponen/ui/` = salinan shadcn/ui, diperlakukan sebagai kode sendiri.
 6. Alias `@/` = `src/`.
 

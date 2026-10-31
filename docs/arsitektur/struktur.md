@@ -155,7 +155,11 @@ packages/
 │       ├── transport.ts   fetch bersesi: token akses, refresh sekali dibagi, Idempotency-Key + ulang dengan kunci sama
 │       ├── panggil.ts     panggil · ambil · galat → Error berpesan · PESAN_JARINGAN
 │       ├── sesi.ts        buatSesi(penyimpan) — penyimpan disuntik aplikasi
-│       ├── <konteks>.ts   klien hc per konteks + kueri.<x>() (queryOptions) + tulis.<x>()
+│       ├── klien.ts       buatKlien: klien hc per konteks
+│       ├── kunci.ts       awalan kunci kueri (kunci.pengguna, kunci.kas, …) — satu-satunya tempat nama kelompok kueri
+│       ├── kueri/         buatKueri: katalog queryOptions per konteks (identitas.ts, kantor.ts, …); uji dengan klien palsu
+│       ├── tulis/         buatTulis: penulisan yang dipakai >1 layar (tulis.batal.* — semua pembatalan uang)
+│       ├── bahan.ts       Bahan = { api, ambil } untuk katalog
 │       └── *.test.ts
 └── format/                baru
     └── src/
@@ -496,7 +500,7 @@ pemiliknya:
 |---|---|
 | web & HP `lib/api.ts`: refresh sekali, `ambilDenganSesi`, `panggil`, `ambil`, `bacaGalat`, `PESAN_JARINGAN` | `transport.ts`, `panggil.ts` |
 | web & HP `lib/sesi.ts`: toko sesi | `sesi.ts`; penyimpan: web `lib/sesi.ts` (localStorage), HP `platform/brankas.ts` (SecureStore) |
-| kunci & fungsi kueri: literal di layar web, `lib/lapangan.ts` & `lib/setoran.ts` HP | `<konteks>.ts` (`kueri.*`, `tulis.*`) |
+| kunci & fungsi kueri: literal di layar web, `lib/lapangan.ts` & `lib/setoran.ts` HP | `kueri/<konteks>.ts` (`kueri.*`) + `kunci.ts` (`kunci.*`); pembatalan yang tersalin di dua layar → `tulis/` (`tulis.batal.*`). Penulisan lain tetap di dialognya (satu pemakai). `cek:arsitektur` menolak `queryKey` array literal di web/HP |
 | `import type { App } from "@opennael/api/tipe"` di web & HP | hanya di `api-client`; API mengekspor tipe rute per konteks (`exports` `./tipe/*` di `apps/api/package.json`) |
 | sisa tahap 2 README: kunci idempoten di klien + ulang dengan kunci sama | `transport.ts`; penyimpan kunci tertunda disuntik aplikasi |
 

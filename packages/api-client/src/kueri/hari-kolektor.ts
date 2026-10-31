@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
+import type { Bahan } from "../bahan";
 import { kunci } from "../kunci";
-import type { Bahan } from "./dasar";
 
 /** Kueri konteks hari kolektor: layar harian bos (setoran sore) dan rute kolektor. */
 export function kueriHariKolektor({ api, ambil }: Bahan) {

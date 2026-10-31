@@ -8,7 +8,7 @@ import { DialogBatal } from "@/komponen/dialog-batal";
 import { GalatMuat, Kosong, Memuat } from "@/komponen/halaman";
 import { Badge } from "@/komponen/ui/badge";
 import { Button } from "@/komponen/ui/button";
-import { ambil, api, kueri } from "@/lib/api";
+import { kueri, tulis } from "@/lib/api";
 import { useHariIni, useKantor } from "@/lib/kantor";
 import { cn } from "@/lib/utils";
 
@@ -63,14 +63,7 @@ export function DisalinHariIni() {
           keterangan={`${batal.ringkasan}. Tabungan pembukanya ikut ditarik. Hanya hari ini, sebelum ada setoran.`}
           segarkan={[kunci.nasabah]}
           tutup={() => setBatal(null)}
-          kirim={(alasan) =>
-            ambil(() =>
-              api.pembiayaan.pinjaman[":id"].batal.$post({
-                param: { id: batal.rujukan.id },
-                json: { alasan },
-              }),
-            )
-          }
+          kirim={(alasan) => tulis.batal.pinjaman(batal.rujukan.id, alasan)}
         />
       ) : null}
     </>

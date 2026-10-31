@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
+import type { Bahan } from "../bahan";
 import { kunci } from "../kunci";
-import type { Bahan } from "./dasar";
 
 /** Kueri konteks pembiayaan: nasabah dan pinjaman (layar bos, pengawas). */
 export function kueriPembiayaan({ api, ambil }: Bahan) {

@@ -23,7 +23,7 @@ import { DialogBatal } from "@/komponen/dialog-batal";
 import { GalatMuat, Memuat } from "@/komponen/halaman";
 import { Badge } from "@/komponen/ui/badge";
 import { Button } from "@/komponen/ui/button";
-import { ambil, api, kueri } from "@/lib/api";
+import { kueri, tulis } from "@/lib/api";
 import { useHariIni, useKantor } from "@/lib/kantor";
 import { cn } from "@/lib/utils";
 import { DialogRiwayat } from "./dialog-riwayat";
@@ -49,36 +49,16 @@ const ikonKejadian = (k: string) => (k.startsWith("batal_") ? Undo2 : (IKON[k] ?
  * dibatalkan dari layar Harian.
  */
 const PEMBATAL: Record<string, (id: string, alasan: string) => Promise<unknown>> = {
-  akad: (id, alasan) =>
-    ambil(() => api.pembiayaan.pinjaman[":id"].batal.$post({ param: { id }, json: { alasan } })),
-  salin_pinjaman: (id, alasan) =>
-    ambil(() => api.pembiayaan.pinjaman[":id"].batal.$post({ param: { id }, json: { alasan } })),
-  pemutihan: (id, alasan) =>
-    ambil(() =>
-      api.pembiayaan.pinjaman[":id"].putihkan.batal.$post({ param: { id }, json: { alasan } }),
-    ),
-  transfer_setoran: (id, alasan) =>
-    ambil(() =>
-      api.hariKolektor["transfer-setoran"][":id"].batal.$post({ param: { id }, json: { alasan } }),
-    ),
-  terima_kas: (id, alasan) =>
-    ambil(() =>
-      api.hariKolektor["serah-terima-kas"][":id"].batal.$post({ param: { id }, json: { alasan } }),
-    ),
-  biaya_tak_terduga: (id, alasan) =>
-    ambil(() =>
-      api.hariKolektor["biaya-tak-terduga"][":id"].batal.$post({ param: { id }, json: { alasan } }),
-    ),
-  mutasi_kas: (id, alasan) =>
-    ambil(() => api.kas.kas.mutasi[":id"].batal.$post({ param: { id }, json: { alasan } })),
-  bayar_gaji: (id, alasan) =>
-    ambil(() => api.penggajian.kas.gaji[":id"].batal.$post({ param: { id }, json: { alasan } })),
-  tarik_tabungan: (id, alasan) =>
-    ambil(() =>
-      api.pembiayaan["penarikan-tabungan"][":id"].batal.$post({ param: { id }, json: { alasan } }),
-    ),
-  cocokkan_kas: (id, alasan) =>
-    ambil(() => api.kas.kas.pencocokan[":id"].batal.$post({ param: { id }, json: { alasan } })),
+  akad: tulis.batal.pinjaman,
+  salin_pinjaman: tulis.batal.pinjaman,
+  pemutihan: tulis.batal.pemutihan,
+  transfer_setoran: tulis.batal.transferSetoran,
+  terima_kas: tulis.batal.serahTerimaKas,
+  biaya_tak_terduga: tulis.batal.biayaTakTerduga,
+  mutasi_kas: tulis.batal.mutasiKas,
+  bayar_gaji: tulis.batal.gaji,
+  tarik_tabungan: tulis.batal.penarikanTabungan,
+  cocokkan_kas: tulis.batal.pencocokanKas,
 };
 
 /** Kejadian riwayat (bukan uang) bisa dibuka jejaknya lewat `GET /riwayat`. */

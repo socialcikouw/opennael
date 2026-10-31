@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
+import type { Bahan } from "../bahan";
 import { kunci } from "../kunci";
-import type { Bahan } from "./dasar";
 
 /** Kueri konteks penggajian: pratinjau dan slip gaji kolektor, tarif gaji. */
 export function kueriPenggajian({ api, ambil }: Bahan) {

@@ -6,7 +6,7 @@ import { DialogBatal } from "@/komponen/dialog-batal";
 import { GalatMuat, Memuat } from "@/komponen/halaman";
 import { type Kolom, pembantuKolom, TabelData } from "@/komponen/tabel-data";
 import { Button } from "@/komponen/ui/button";
-import { ambil, api, kueri } from "@/lib/api";
+import { kueri, tulis } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { type Biaya, KUNCI_HARIAN } from "../data";
 import { DialogBiaya } from "./dialog-biaya";
@@ -94,14 +94,7 @@ export function DaftarBiaya({
           judul={`Batalkan biaya ${batal.kolektor.nama}?`}
           segarkan={KUNCI_HARIAN}
           tutup={() => setBatal(null)}
-          kirim={(alasan) =>
-            ambil(() =>
-              api.hariKolektor["biaya-tak-terduga"][":id"].batal.$post({
-                param: { id: batal.id },
-                json: { alasan },
-              }),
-            )
-          }
+          kirim={(alasan) => tulis.batal.biayaTakTerduga(batal.id, alasan)}
         />
       ) : null}
     </>

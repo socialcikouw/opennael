@@ -115,7 +115,7 @@ isi berkas, ukuran, SHA-256).
 |---|---|
 | **React + Vite** | Aplikasi bos (SPA statis). |
 | **TanStack Router** | Navigasi bertipe. |
-| **TanStack Query** + `hc` | Data. Bacaan lewat katalog `kueri.*` dari `@/lib/api` (`useQuery(kueri.pengguna.kolektor())`), invalidasi lewat `kunci.*` — **tanpa array `queryKey` literal di layar** (dijaga `cek:arsitektur`). Bacaan baru ditambahkan ke katalog di `packages/api-client/src/kueri/<konteks>.ts` beserta uji kunci & rutenya. |
+| **TanStack Query** + `hc` | Data. Bacaan lewat katalog `kueri.*` dari `@/lib/api` (`useQuery(kueri.pengguna.kolektor())`), invalidasi lewat `kunci.*` — **tanpa array `queryKey` literal di layar** (dijaga `cek:arsitektur`). Pembatalan uang lewat `tulis.batal.*` (satu definisi untuk layar asal dan daftar aktivitas). Bacaan baru ditambahkan ke katalog di `packages/api-client/src/kueri/<konteks>.ts` beserta uji kunci & rutenya. |
 | **TanStack Table** | Tabel besar (nasabah, transaksi, buku kas). |
 | **Tailwind CSS + shadcn/ui** | Tampilan. |
 | **Recharts** | Grafik harian. |

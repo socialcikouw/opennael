@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
+import type { Bahan } from "../bahan";
 import { kunci } from "../kunci";
-import type { Bahan } from "./dasar";
 
 /** Kueri konteks kas: buku kas, pencocokan, dan posisi modal. */
 export function kueriKas({ api, ambil }: Bahan) {

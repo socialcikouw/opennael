@@ -1,7 +1,7 @@
 import type { TabelBerjejak } from "@opennael/contracts";
 import { queryOptions } from "@tanstack/react-query";
+import type { Bahan } from "../bahan";
 import { kunci } from "../kunci";
-import type { Bahan } from "./dasar";
 
 /** Kueri konteks pelaporan: ringkasan beranda, aktivitas, dan jejak perubahan. */
 export function kueriPelaporan({ api, ambil }: Bahan) {
