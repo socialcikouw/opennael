@@ -11,9 +11,9 @@ import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/kompon
 import type { KartuVM } from "../inti/kartu";
 import { AngkaKartu } from "./angka-kartu";
 import { GridBulan } from "./grid-bulan";
-import { InfoKartu } from "./info-kartu";
+import { CABANG_INFO, InfoKartu } from "./info-kartu";
 import { KakiKartu } from "./kaki-kartu";
-import { KepalaKartu, LEBAR_REL, SikuRel } from "./kepala-kartu";
+import { BarisRel, JARAK_KARTU, JARAK_KOTAK, LEBAR_REL } from "./rel-kartu";
 import { BlokMinggu, BlokTempo } from "./slot-khusus";
 
 /** Aksi kartu — SATU objek stabil dari layar, diteruskan ke kartu-kartu ber-memo. */
@@ -24,16 +24,19 @@ export interface AksiKartu {
   lunas: (vm: KartuVM) => void;
 }
 
-const LEBAR_LUNASI = 92;
+const LEBAR_PANEL = 92;
+const ISIAN_KOTAK = RUANG[3];
+/** Garis tengah baris pertama kotak kedua: judul hari grid (nampan 6 + setengah baris 24) atau teks pertama. */
+const CABANG_GRID = 1 + ISIAN_KOTAK + RUANG[1.5] + 12;
+const CABANG_BIASA = 1 + ISIAN_KOTAK + 8;
 
 /**
- * KARTU NASABAH — kepala di luar kotak (lingkaran angsuran ke-, nama, lencana)
- * dengan rel yang membelok masuk ke kotak. Kotak: info (kampung · tanggal &
- * jam akad, pinjaman ke- · Tabungan rahasia, sinyal gulung), grid sebulan,
- * Pokok · Sisa Saldo, lalu tombol. Bayar — tindakan di hampir tiap rumah —
- * satu-satunya bidang berwarna pekat, selebar kotak, mencetak nominalnya.
- * Gulung & Libur tonal di atasnya; mati beserta alasannya bila belum boleh.
- * Lunasi di BALIK kartu: geser kartu ke kiri.
+ * KARTU NASABAH — anak dari rel pohon kelompoknya (judul kampung di atas):
+ * kotak info (lingkaran angsuran ke-, nama, pinjaman ke-, Tabungan rahasia,
+ * sinyal gulung, jam akad), kotak grid sebulan + Pokok · Sisa Saldo, lalu pil
+ * GULUNG dan BAYAR. Geser kartu ke kiri = Lunasi, ke kanan = Libur (rel ikut
+ * bergeser karena dipotong kontainer geser). Kartu tanpa aksi (droping,
+ * baru tercatat) tak bisa digeser.
  */
 export const KartuNasabah = memo(function KartuNasabah(props: {
   vm: KartuVM;
@@ -42,7 +45,10 @@ export const KartuNasabah = memo(function KartuNasabah(props: {
   kolomHariIni: number;
   /** Transaksi yang baru tercatat: kartu menampilkan stempelnya sebentar sebelum turun ke "Sudah ditagih". */
   stempel: Stempel | null;
+  /** Kartu terakhir kelompoknya: rel berhenti di baris terakhirnya. */
+  terakhir: boolean;
 }) {
+  const WARNA = useWarna();
   const gaya = useGaya(buatGaya);
   const { vm } = props;
   const geser = useRef<SwipeableMethods>(null);
@@ -50,26 +56,33 @@ export const KartuNasabah = memo(function KartuNasabah(props: {
 
   const kartu = (
     <View>
-      <KepalaKartu vm={vm} aksen={props.aksen} />
-      <View style={gaya.isi}>
-        <SikuRel />
+      <BarisRel cabang={CABANG_INFO} akhir={false} jarak={JARAK_KOTAK}>
         <View style={gaya.kotak}>
-          <InfoKartu vm={vm} />
-          <View style={gaya.pemisah} />
-          <View style={gaya.badan}>
-            {vm.grid ? (
-              <GridBulan pekan={vm.grid} kolomHariIni={props.kolomHariIni} aksen={props.aksen} />
-            ) : vm.mingguan ? (
-              <BlokMinggu m={vm.mingguan} hariTagih={vm.hariTagih} aksen={props.aksen} />
-            ) : vm.tempo ? (
-              <BlokTempo t={vm.tempo} aksen={props.aksen} />
-            ) : null}
-            <AngkaKartu vm={vm} tanpaAngsuran={bisaAksi} />
-            {bisaAksi ? <KakiKartu vm={vm} aksi={props.aksi} aksen={props.aksen} /> : null}
-          </View>
-          {props.stempel ? <StempelKartu jenis={props.stempel} aksen={props.aksen} /> : null}
+          <InfoKartu vm={vm} aksen={props.aksen} />
         </View>
-      </View>
+      </BarisRel>
+      <BarisRel
+        cabang={vm.grid ? CABANG_GRID : CABANG_BIASA}
+        akhir={props.terakhir && !bisaAksi}
+        jarak={bisaAksi ? JARAK_KOTAK : JARAK_KARTU}
+      >
+        <View style={[gaya.kotak, gaya.badan]}>
+          {vm.grid ? (
+            <GridBulan pekan={vm.grid} kolomHariIni={props.kolomHariIni} aksen={props.aksen} />
+          ) : vm.mingguan ? (
+            <BlokMinggu m={vm.mingguan} hariTagih={vm.hariTagih} aksen={props.aksen} />
+          ) : vm.tempo ? (
+            <BlokTempo t={vm.tempo} aksen={props.aksen} />
+          ) : null}
+          <AngkaKartu vm={vm} tanpaAngsuran={bisaAksi} />
+        </View>
+      </BarisRel>
+      {bisaAksi ? (
+        <BarisRel cabang={null} akhir={props.terakhir} jarak={JARAK_KARTU}>
+          <KakiKartu vm={vm} aksi={props.aksi} aksen={props.aksen} />
+        </BarisRel>
+      ) : null}
+      {props.stempel ? <StempelKartu jenis={props.stempel} aksen={props.aksen} /> : null}
     </View>
   );
 
@@ -79,8 +92,10 @@ export const KartuNasabah = memo(function KartuNasabah(props: {
       <ReanimatedSwipeable
         ref={geser}
         friction={1.6}
-        rightThreshold={LEBAR_LUNASI / 2}
+        rightThreshold={LEBAR_PANEL / 2}
+        leftThreshold={LEBAR_PANEL / 2}
         overshootRight={false}
+        overshootLeft={false}
         renderRightActions={() => (
           <Pressable
             accessibilityRole="button"
@@ -95,6 +110,39 @@ export const KartuNasabah = memo(function KartuNasabah(props: {
             <Text style={gaya.lunasiTeks}>Lunasi</Text>
           </Pressable>
         )}
+        renderLeftActions={
+          vm.tampilkanLibur
+            ? () => (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityState={{ disabled: vm.alasanLibur !== null }}
+                  accessibilityLabel={
+                    vm.alasanLibur
+                      ? `Libur ${vm.nama}, tidak tersedia. ${vm.alasanLibur}`
+                      : `Libur ${vm.nama}`
+                  }
+                  onPress={() => {
+                    geser.current?.close();
+                    props.aksi.libur(vm);
+                  }}
+                  style={({ pressed }) => [
+                    gaya.libur,
+                    vm.alasanLibur ? gaya.liburMati : null,
+                    pressed ? gaya.ditekan : null,
+                  ]}
+                >
+                  <Ikon
+                    nama="circle-pause"
+                    ukuran={22}
+                    warna={vm.alasanLibur ? WARNA.samar : gaya.liburTeks.color}
+                  />
+                  <Text style={[gaya.liburTeks, vm.alasanLibur ? { color: WARNA.samar } : null]}>
+                    Libur
+                  </Text>
+                </Pressable>
+              )
+            : undefined
+        }
       >
         {kartu}
       </ReanimatedSwipeable>
@@ -122,35 +170,50 @@ function StempelKartu({ jenis, aksen }: { jenis: Stempel; aksen: WarnaMode }) {
 
 const buatGaya = (WARNA: Warna) =>
   StyleSheet.create({
-    wadah: { marginHorizontal: RUANG[4], marginBottom: RUANG[3] },
+    wadah: { marginHorizontal: RUANG[4] },
     ditekan: { opacity: 0.8 },
-    // Kotak mulai sesudah lajur lingkaran; rel (SikuRel) menjemput tepi kirinya.
-    isi: { paddingLeft: LEBAR_REL },
     kotak: {
-      borderRadius: SUDUT.lebar,
+      borderRadius: SUDUT.besar,
       borderWidth: 1,
       borderColor: WARNA.garis,
       backgroundColor: WARNA.permukaan,
     },
-    pemisah: { height: 1, backgroundColor: WARNA.garis },
-    badan: { gap: RUANG[3], padding: RUANG[3] },
+    badan: { gap: RUANG[3], padding: ISIAN_KOTAK },
     lunasi: {
-      width: LEBAR_LUNASI,
+      width: LEBAR_PANEL,
       marginLeft: RUANG[2],
+      marginBottom: JARAK_KARTU,
       alignItems: "center",
       justifyContent: "center",
       gap: RUANG[1],
-      borderRadius: SUDUT.lebar,
+      borderRadius: SUDUT.besar,
       backgroundColor: WARNA.bahayaLembut,
       borderWidth: 1,
       borderColor: WARNA.bahayaGaris,
     },
     lunasiTeks: { ...HURUF.sm, fontWeight: TEBAL.tebal, color: WARNA.bahayaTeks },
-    selubung: {
-      ...StyleSheet.absoluteFill,
+    libur: {
+      width: LEBAR_PANEL,
+      marginRight: RUANG[2],
+      marginBottom: JARAK_KARTU,
       alignItems: "center",
       justifyContent: "center",
-      borderRadius: SUDUT.lebar,
+      gap: RUANG[1],
+      borderRadius: SUDUT.besar,
+      backgroundColor: WARNA.waspadaLembut,
+      borderWidth: 1,
+      borderColor: WARNA.waspadaGaris,
+    },
+    liburMati: { backgroundColor: WARNA.abu, borderColor: WARNA.garis },
+    liburTeks: { ...HURUF.sm, fontWeight: TEBAL.tebal, color: WARNA.waspada },
+    // Hanya menutup kolom kotak (rel di kiri tetap terlihat) dan berhenti sebelum jarak antarkartu.
+    selubung: {
+      ...StyleSheet.absoluteFill,
+      left: LEBAR_REL,
+      bottom: JARAK_KARTU,
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: SUDUT.besar,
       backgroundColor: WARNA.tiraiTerang,
     },
     stempel: {

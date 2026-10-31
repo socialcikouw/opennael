@@ -1,33 +1,66 @@
+import { rupiah } from "@opennael/format";
 import { memo } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Ikon } from "@/komponen/ui/ikon";
 import { useGaya, useWarna } from "@/komponen/ui/tampilan";
 import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/komponen/ui/tema";
 import type { Baris, TabKerja } from "../inti/daftar";
-import { LEBAR_REL } from "./kepala-kartu";
+import { LEBAR_REL, TEBAL_REL, TENGAH_REL } from "./rel-kartu";
 
-/** Judul kelompok: "RUTE 1 - PULE BARAT" · "10 = 500K", atau "SUDAH DITAGIH" · "4 nasabah". */
+/** Tinggi lencana jumlah; rel turun dari bawahnya. */
+const TINGGI_JUMLAH = 24;
+const ATAS_JUDUL = RUANG[3];
+
+/**
+ * Judul kelompok (kampung), akar rel pohon kartu di bawahnya:
+ *   [10] PERMATA CITRA GARDEN        Rp 150.000  ▼
+ * Jumlah nasabah, nama kampung, total angsuran kelompok (target tagih), dan
+ * panah: ketuk judul untuk melipat / membuka kartunya. "Sudah ditagih" tanpa
+ * uang ("hanya jumlah nasabah").
+ */
 export const JudulKelompok = memo(function JudulKelompok({
   baris,
   aksen,
+  onLipat,
 }: {
   baris: Extract<Baris, { jenis: "judul" }>;
   aksen: WarnaMode;
+  onLipat: (id: string) => void;
 }) {
   const WARNA = useWarna();
   const gaya = useGaya(buatGaya);
+  const uang = baris.total !== null ? rupiah(baris.total) : null;
   return (
-    <View style={gaya.judul}>
-      <Ikon
-        nama={baris.sudah ? "circle-check" : "map-pin"}
-        ukuran={13}
-        warna={baris.sudah ? aksen.teks : WARNA.redup}
-      />
-      <Text style={gaya.judulTeks} numberOfLines={1}>
-        {baris.label}
+    <Pressable
+      onPress={() => onLipat(baris.id)}
+      accessibilityRole="button"
+      accessibilityState={{ expanded: !baris.terlipat }}
+      accessibilityLabel={`${baris.nama}, ${baris.jumlah} nasabah${uang ? `, ${uang}` : ""}. ${
+        baris.terlipat ? "Ketuk untuk membuka" : "Ketuk untuk melipat"
+      }`}
+      style={gaya.judul}
+    >
+      <View style={[gaya.jumlah, { backgroundColor: aksen.lembut }]}>
+        <Text
+          style={[gaya.jumlahTeks, { color: aksen.teks }]}
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          minimumFontScale={0.7}
+        >
+          {baris.jumlah}
+        </Text>
+      </View>
+      <Text style={gaya.nama} numberOfLines={1}>
+        {baris.nama}
       </Text>
-      <Text style={gaya.ringkas}>{baris.ringkas}</Text>
-    </View>
+      {uang ? <Text style={gaya.total}>{uang}</Text> : null}
+      <Ikon
+        nama={baris.terlipat ? "chevron-right" : "chevron-down"}
+        ukuran={16}
+        warna={WARNA.redup}
+      />
+      {!baris.terlipat && !baris.sudah ? <View pointerEvents="none" style={gaya.rel} /> : null}
+    </Pressable>
   );
 });
 
@@ -36,17 +69,13 @@ export function KerangkaKartu() {
   const gaya = useGaya(buatGaya);
   return (
     <View style={gaya.kerangka}>
-      <View style={gaya.kerangkaKepala}>
-        <View style={gaya.kerangkaBulat} />
-        <View style={[gaya.kerangkaBaris, { width: "45%" }]} />
+      <View style={gaya.kerangkaKotak}>
+        <View style={[gaya.kerangkaBaris, { width: "55%" }]} />
+        <View style={[gaya.kerangkaBaris, { width: "35%" }]} />
       </View>
       <View style={gaya.kerangkaKotak}>
-        <View style={gaya.kerangkaInfo}>
-          <View style={[gaya.kerangkaBaris, { width: "55%" }]} />
-          <View style={[gaya.kerangkaBaris, { width: "35%" }]} />
-        </View>
         <View style={gaya.kerangkaGrid} />
-        <View style={gaya.kerangkaTombol} />
+        <View style={[gaya.kerangkaBaris, { width: "45%" }]} />
       </View>
     </View>
   );
@@ -93,12 +122,21 @@ const buatGaya = (WARNA: Warna) =>
     judul: {
       flexDirection: "row",
       alignItems: "center",
-      gap: RUANG[1.5],
-      paddingHorizontal: RUANG[5],
-      paddingTop: RUANG[3],
+      gap: RUANG[2],
+      marginHorizontal: RUANG[4],
+      paddingTop: ATAS_JUDUL,
       paddingBottom: RUANG[2],
     },
-    judulTeks: {
+    // Lebar 30 (garis tengah di 15) = garis tengah rel kartu di bawahnya.
+    jumlah: {
+      width: LEBAR_REL - RUANG[2],
+      height: TINGGI_JUMLAH,
+      borderRadius: SUDUT.kecil,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    jumlahTeks: { ...HURUF.xs, fontWeight: TEBAL.ekstra, fontVariant: ["tabular-nums"] },
+    nama: {
       ...HURUF.xs,
       flex: 1,
       fontWeight: TEBAL.tebal,
@@ -106,28 +144,33 @@ const buatGaya = (WARNA: Warna) =>
       letterSpacing: 0.5,
       color: WARNA.teksKedua,
     },
-    ringkas: {
+    total: {
       ...HURUF.xs,
       fontWeight: TEBAL.semi,
       fontVariant: ["tabular-nums"],
       color: WARNA.redup,
     },
-    kerangka: { marginHorizontal: RUANG[4], marginBottom: RUANG[3] },
-    kerangkaKepala: { flexDirection: "row", alignItems: "center", gap: RUANG[2] },
-    kerangkaBulat: { width: 30, height: 30, borderRadius: SUDUT.bulat, backgroundColor: WARNA.abu },
+    // Rel turun dari bawah lencana jumlah sampai dasar judul, bertemu rel kartu pertama.
+    rel: {
+      position: "absolute",
+      top: ATAS_JUDUL + TINGGI_JUMLAH,
+      bottom: 0,
+      left: TENGAH_REL - TEBAL_REL / 2,
+      width: TEBAL_REL,
+      backgroundColor: WARNA.garisTegas,
+    },
+    kerangka: { marginHorizontal: RUANG[4], marginBottom: RUANG[3], paddingLeft: LEBAR_REL },
     kerangkaKotak: {
       gap: RUANG[3],
       padding: RUANG[3],
-      marginLeft: LEBAR_REL,
-      borderRadius: SUDUT.lebar,
+      marginBottom: RUANG[2],
+      borderRadius: SUDUT.besar,
       borderWidth: 1,
       borderColor: WARNA.garis,
       backgroundColor: WARNA.permukaan,
     },
-    kerangkaInfo: { gap: RUANG[2] },
     kerangkaBaris: { height: 10, borderRadius: SUDUT.bulat, backgroundColor: WARNA.abu },
     kerangkaGrid: { height: 96, borderRadius: SUDUT.besar, backgroundColor: WARNA.abu },
-    kerangkaTombol: { height: 48, borderRadius: SUDUT.sedang, backgroundColor: WARNA.abu },
     kosong: {
       alignItems: "center",
       gap: RUANG[2],

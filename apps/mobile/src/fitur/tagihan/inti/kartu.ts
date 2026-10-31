@@ -44,11 +44,9 @@ export interface KartuVM {
   namaJudul: string;
   /** "pule barat · mingguan 8×" (kartu ringkas). */
   subjudul: string;
-  /** "Permata Bintang" atau "Permata Bintang · mingguan 8×" — baris kiri atas kartu. */
-  kampungJudul: string;
   /** "12" — angsuran yang sudah lunas, isi lingkaran di depan nama. */
   angsuranKeTeks: string;
-  /** "Pinjaman Ke-3". */
+  /** "Pinjaman Ke-3" atau "Pinjaman Ke-1 · mingguan 8×". */
   pinjamanKeTeks: string;
   lencana: { teks: string; nada: Nada; ikon: NamaIkon } | null;
   /** "1 Sep 26 • 15.00"; hanya tanggal bila jam akad tak diketahui (salinan migrasi). */
@@ -57,13 +55,10 @@ export interface KartuVM {
   hariTagih: string | null;
   progres: {
     status: StatusGulung;
-    /** 0–1. */
-    isi: number;
-    /** Garis angsuran pertama yang boleh digulung (0–1); null = tanpa ambang. */
-    ambang: number | null;
-    kotak: string;
+    /** Alasan terperinci — dibaca saat tombol Gulung yang mati diketuk. */
     petunjuk: string;
-    ikon: NamaIkon;
+    /** Sinyal satu baris di kartu: "✓ Bisa Digulung" / "✕ Tidak Bisa Digulung". */
+    sinyal: { teks: string; ikon: NamaIkon };
   } | null;
   /** Grid setoran sebulan — hanya harian di ember belum. */
   grid: BarisPekan[] | null;
@@ -142,33 +137,27 @@ function lencana(p: KartuTagih, e: Ember): KartuVM["lencana"] {
   return { teks: "Gulung tetap", nada: "abu", ikon: "repeat" };
 }
 
-const PETUNJUK: Record<StatusGulung, { ikon: NamaIkon; teks: (ambang: number) => string }> = {
-  boleh: { ikon: "circle-check", teks: () => "Boleh digulung" },
-  belum: { ikon: "clock", teks: (ambang) => `Gulung mulai angsuran ke-${ambang}` },
-  terkunci: { ikon: "lock", teks: () => "Macet · tak bisa digulung" },
+const PETUNJUK: Record<StatusGulung, (ambang: number) => string> = {
+  boleh: () => "Boleh digulung",
+  belum: (ambang) => `Gulung mulai angsuran ke-${ambang}`,
+  terkunci: () => "Macet · tak bisa digulung",
 };
 
+const SINYAL = {
+  bisa: { teks: "Bisa Digulung", ikon: "circle-check" },
+  tidak: { teks: "Tidak Bisa Digulung", ikon: "circle-x" },
+} as const satisfies Record<string, { teks: string; ikon: NamaIkon }>;
+
 function progres(p: KartuTagih, status: StatusGulung): NonNullable<KartuVM["progres"]> {
+  const sinyal = status === "boleh" ? SINYAL.bisa : SINYAL.tidak;
   if (p.jenis === "harian") {
-    const ambang = nomorGulungMinimal(p.pinjamanKe);
-    const tenor = Math.max(p.tenor, 1);
-    return {
-      status,
-      isi: Math.min(p.angsuranKe / tenor, 1),
-      ambang: Math.min(ambang / tenor, 1),
-      kotak: String(p.angsuranKe),
-      petunjuk: PETUNJUK[status].teks(ambang),
-      ikon: PETUNJUK[status].ikon,
-    };
+    return { status, petunjuk: PETUNJUK[status](nomorGulungMinimal(p.pinjamanKe)), sinyal };
   }
   // Mingguan: tanpa ambang — boleh digulung kapan saja selama masih ditagih (E5).
   return {
     status,
-    isi: Math.min(p.angsuranKe / Math.max(p.tenor, 1), 1),
-    ambang: null,
-    kotak: String(p.angsuranKe),
     petunjuk: status === "boleh" ? "Mingguan · boleh digulung kapan saja" : "Tak bisa digulung",
-    ikon: status === "boleh" ? "circle-check" : "lock",
+    sinyal,
   };
 }
 
@@ -198,9 +187,8 @@ function susun(p: KartuTagih, hariIni: string, bahan: BahanGrid, zona: ZonaWaktu
     nama: p.nasabah.nama,
     namaJudul: judulKata(p.nasabah.nama),
     subjudul: `${p.nasabah.kampung.toLowerCase()}${ekor}`,
-    kampungJudul: `${judulKata(p.nasabah.kampung)}${ekor}`,
     angsuranKeTeks: String(p.angsuranKe),
-    pinjamanKeTeks: `Pinjaman Ke-${p.pinjamanKe}`,
+    pinjamanKeTeks: `Pinjaman Ke-${p.pinjamanKe}${ekor}`,
     lencana: lencana(p, e),
     akadTeks: p.waktuAkad
       ? `${tanggalBertahun(p.tanggalAkad)} • ${jamDinding(p.waktuAkad, zona)}`

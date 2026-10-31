@@ -25,6 +25,7 @@ import { KartuDroping, KartuSudah } from "./komponen/kartu-sudah";
 import { buatSimpananRute, KepalaTagihan } from "./komponen/kepala-tagihan";
 import { KartuJatuhTempo, KartuRasio, LembarRute } from "./komponen/ringkasan";
 import { LayarSemua } from "./layar-semua";
+import { useLipatKelompok } from "./lipat-kelompok";
 import { jenisDariMode, MODE, useMode } from "./mode";
 
 /**
@@ -79,6 +80,9 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
     riwayat,
   });
 
+  // Kelompok kampung bisa dilipat; baris yang tampil (bukan `baris`) jadi data daftar.
+  const { tampil, ubah: ubahLipat } = useLipatKelompok(baris, tab, kunciCari !== "");
+
   // ---- transaksi ----------------------------------------------------------
   const { stempel, aksi, gerbang } = useAksiKartu(hariIni);
 
@@ -116,7 +120,7 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
   ).current;
   const [lembarRute, setLembarRute] = useState(false);
   const sasaranRute = useRef<number | null>(null);
-  const lompat = useMemo(() => (lembarRute ? daftarLompat(baris) : []), [lembarRute, baris]);
+  const lompat = useMemo(() => (lembarRute ? daftarLompat(tampil) : []), [lembarRute, tampil]);
   const offsetRute = tinggiKepala - lipatPt;
   const gulirKeRute = () => {
     const indeks = sasaranRute.current;
@@ -128,7 +132,9 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
   // ---- tampilan -----------------------------------------------------------
   const renderItem = useCallback(
     ({ item }: { item: Baris }) => {
-      if (item.jenis === "judul") return <JudulKelompok baris={item} aksen={aksen} />;
+      if (item.jenis === "judul") {
+        return <JudulKelompok baris={item} aksen={aksen} onLipat={ubahLipat} />;
+      }
       if (item.jenis === "sudah") return <KartuSudah vm={item.vm} aksen={aksen} />;
       return (
         <KartuNasabah
@@ -137,10 +143,11 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
           aksen={aksen}
           kolomHariIni={bahan?.kerangka.kolomHariIni ?? -1}
           stempel={stempel.get(item.vm.id) ?? null}
+          terakhir={item.terakhir}
         />
       );
     },
-    [aksi, aksen, bahan, stempel],
+    [aksi, aksen, bahan, stempel, ubahLipat],
   );
 
   if (hariIni.isError || tagihan.isError) {
@@ -171,7 +178,7 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
     <View style={gaya.layar}>
       <Animated.FlatList
         ref={daftar}
-        data={memuat ? [] : baris}
+        data={memuat ? [] : tampil}
         keyExtractor={(b) => b.id}
         renderItem={renderItem}
         extraData={stempel}

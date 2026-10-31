@@ -42,8 +42,32 @@ export function jumlahSegmen(p: Partisi): Record<TabKerja, number> {
 }
 
 export type Baris =
-  | { jenis: "judul"; id: string; label: string; ringkas: string; rute: string; sudah: boolean }
-  | { jenis: "kartu"; id: string; vm: KartuVM; rute: string }
+  | {
+      jenis: "judul";
+      id: string;
+      /** "Rute 1 - PULE BARAT" — chip rute & lembar lompat. */
+      label: string;
+      /** "10 = 500K". */
+      ringkas: string;
+      rute: string;
+      sudah: boolean;
+      /** Nama kelompok di judul kartu: "PULE BARAT". */
+      nama: string;
+      /** Jumlah nasabah di kelompok. */
+      jumlah: number;
+      /** Total angsuran kelompok (target tagih); null = tanpa uang ("Sudah ditagih"). */
+      total: number | null;
+      /** Kartu kelompok ini sedang dilipat (lihat `lipatKelompok`). */
+      terlipat: boolean;
+    }
+  | {
+      jenis: "kartu";
+      id: string;
+      vm: KartuVM;
+      rute: string;
+      /** Kartu terakhir kelompoknya: rel pohon berhenti di sini. */
+      terakhir: boolean;
+    }
   | { jenis: "sudah"; id: string; vm: KartuVM; rute: string };
 
 /** 500000 → "500K" — total angsuran kelompok (target tagih kampung itu). */
@@ -70,10 +94,21 @@ export function susunBaris(kartu: readonly KartuVM[], sudah: readonly KartuVM[])
     const label = `${ruteKe !== null ? `Rute ${ruteKe}` : "Belum diatur"} - ${kampung.toUpperCase()}`;
     const ringkas = `${akhir - awal} = ${ribuanK(total)}`;
     const rute = `${label} : ${ringkas}`;
-    hasil.push({ jenis: "judul", id: `judul:${kampung}`, label, ringkas, rute, sudah: false });
+    hasil.push({
+      jenis: "judul",
+      id: `judul:${kampung}`,
+      label,
+      ringkas,
+      rute,
+      sudah: false,
+      nama: kampung.toUpperCase(),
+      jumlah: akhir - awal,
+      total,
+      terlipat: false,
+    });
     for (let i = awal; i < akhir; i++) {
       const vm = kartu[i];
-      if (vm) hasil.push({ jenis: "kartu", id: vm.id, vm, rute });
+      if (vm) hasil.push({ jenis: "kartu", id: vm.id, vm, rute, terakhir: i === akhir - 1 });
     }
     awal = akhir;
   }
@@ -81,8 +116,37 @@ export function susunBaris(kartu: readonly KartuVM[], sudah: readonly KartuVM[])
     const label = "Sudah ditagih";
     const ringkas = `${sudah.length} nasabah`;
     const rute = `${label} : ${ringkas}`;
-    hasil.push({ jenis: "judul", id: "judul:sudah", label, ringkas, rute, sudah: true });
+    hasil.push({
+      jenis: "judul",
+      id: "judul:sudah",
+      label,
+      ringkas,
+      rute,
+      sudah: true,
+      nama: label.toUpperCase(),
+      jumlah: sudah.length,
+      total: null,
+      terlipat: false,
+    });
     for (const vm of sudah) hasil.push({ jenis: "sudah", id: `sudah:${vm.id}`, vm, rute });
+  }
+  return hasil;
+}
+
+/**
+ * Lipat kelompok: judul yang id-nya ada di `terlipat` tetap tampil (bertanda
+ * `terlipat`), kartu di bawahnya disembunyikan sampai judul berikutnya.
+ */
+export function lipatKelompok(baris: readonly Baris[], terlipat: ReadonlySet<string>): Baris[] {
+  const hasil: Baris[] = [];
+  let sembunyi = false;
+  for (const b of baris) {
+    if (b.jenis === "judul") {
+      sembunyi = terlipat.has(b.id);
+      hasil.push(sembunyi ? { ...b, terlipat: true } : b);
+    } else if (!sembunyi) {
+      hasil.push(b);
+    }
   }
   return hasil;
 }
@@ -121,6 +185,7 @@ export function ringkasDroping(droping: readonly KartuVM[]): { baru: number; gul
 export interface LompatRute {
   id: string;
   label: string;
+  /** Jumlah nasabah kelompok (bukan jumlah baris yang tampil — kelompok bisa terlipat). */
   jumlah: number;
   /** Indeks baris judul — sasaran gulungan. */
   indeks: number;
@@ -133,10 +198,14 @@ export function daftarLompat(baris: readonly Baris[]): LompatRute[] {
   const hasil: LompatRute[] = [];
   baris.forEach((b, indeks) => {
     if (b.jenis === "judul") {
-      hasil.push({ id: b.id, label: b.label, jumlah: 0, indeks, rute: b.rute, sudah: b.sudah });
-    } else {
-      const terakhir = hasil[hasil.length - 1];
-      if (terakhir) terakhir.jumlah++;
+      hasil.push({
+        id: b.id,
+        label: b.label,
+        jumlah: b.jumlah,
+        indeks,
+        rute: b.rute,
+        sudah: b.sudah,
+      });
     }
   });
   return hasil;

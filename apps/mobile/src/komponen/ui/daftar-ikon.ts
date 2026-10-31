@@ -17,6 +17,7 @@ import Circle from "lucide-react-native/icons/circle";
 import CircleAlert from "lucide-react-native/icons/circle-alert";
 import CircleCheck from "lucide-react-native/icons/circle-check";
 import CirclePause from "lucide-react-native/icons/circle-pause";
+import CircleX from "lucide-react-native/icons/circle-x";
 import Clock from "lucide-react-native/icons/clock";
 import CloudOff from "lucide-react-native/icons/cloud-off";
 import Delete from "lucide-react-native/icons/delete";
@@ -55,6 +56,7 @@ export const IKON = {
   calendar: Calendar,
   camera: Camera,
   "circle-pause": CirclePause,
+  "circle-x": CircleX,
   "user-plus": UserPlus,
   "trending-up": TrendingUp,
   "trending-down": TrendingDown,
