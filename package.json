@@ -7,8 +7,8 @@
     "packages/*"
   ],
   "scripts": {
-    "typecheck": "bun run --filter '*' typecheck && tsc --noEmit -p apps/mobile/tsconfig.uji.json && tsc --noEmit -p scripts",
-    "test": "bun run --filter '*' test && bun test apps/mobile/src && bun test scripts",
+    "typecheck": "bun run --filter '*' typecheck && tsc --noEmit -p apps/mobile/tsconfig.uji.json && tsc --noEmit -p apps/web/tsconfig.uji.json && tsc --noEmit -p scripts",
+    "test": "bun run --filter '*' test && bun test apps/mobile/src && bun test apps/web/src && bun test scripts",
     "lint": "biome check .",
     "cek:arsitektur": "bun scripts/cek-arsitektur.ts",
     "format": "biome check --write .",
