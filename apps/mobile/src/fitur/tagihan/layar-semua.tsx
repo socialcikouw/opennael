@@ -28,6 +28,7 @@ import {
   type Warna,
 } from "@/komponen/ui/tema";
 import { Tombol } from "@/komponen/ui/tombol";
+import { useZonaKantor } from "@/lib/kantor";
 import { susunBahanGrid } from "./inti/grid";
 import { kartuVM, rupiahPendek } from "./inti/kartu";
 import {
@@ -61,6 +62,7 @@ export function LayarSemua() {
   const hariIni = useHariIni();
   const tanggal = hariIni.data?.kalender.tanggal;
   const tagihan = useTagihan();
+  const zona = useZonaKantor();
 
   const [saringan, setSaringan] = useState<SaringanSemua>("semua");
   const [urutan, setUrutan] = useState<UrutanSemua>("rute");
@@ -71,8 +73,8 @@ export function LayarSemua() {
   const baris = useMemo(() => {
     if (!tagihan.data || !tanggal) return [];
     const bahan = susunBahanGrid(tanggal, undefined, undefined);
-    return tagihan.data.map((p) => susunBarisSemua(kartuVM(p, tanggal, bahan)));
-  }, [tagihan.data, tanggal]);
+    return tagihan.data.map((p) => susunBarisSemua(kartuVM(p, tanggal, bahan, zona)));
+  }, [tagihan.data, tanggal, zona]);
   const jumlah = useMemo(() => jumlahSaringan(baris), [baris]);
   const data = useMemo(
     () => saringSemua(baris, saringan, kunci, urutan),

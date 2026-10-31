@@ -18,6 +18,7 @@ function kartu(isi: Partial<KartuTagih> = {}): KartuTagih {
     asal: "baru",
     status: "berjalan",
     tanggalAkad: "2026-10-01",
+    waktuAkad: "2026-10-01T08:00:00.000Z",
     jatuhTempo: null,
     pokok: 1_000_000,
     potonganAdmin: 50_000,
@@ -38,7 +39,8 @@ function kartu(isi: Partial<KartuTagih> = {}): KartuTagih {
   };
 }
 
-const baris = (isi: Partial<KartuTagih>) => susunBarisSemua(kartuVM(kartu(isi), KAMIS, bahan));
+const baris = (isi: Partial<KartuTagih>) =>
+  susunBarisSemua(kartuVM(kartu(isi), KAMIS, bahan, "WIB"));
 
 describe("direktori mode Semua", () => {
   test("kemajuan & keadaan hari ini per jenis", () => {

@@ -2,10 +2,11 @@ import { describe, expect, test } from "bun:test";
 import type { KartuTagih, Peristiwa } from "@opennael/contracts";
 import { jumlahSegmen, kemajuan, pilah, ringkasDroping, susunBaris } from "./daftar";
 import { nominalK, susunBahanGrid, susunGrid, susunKerangka } from "./grid";
-import { kartuVM } from "./kartu";
+import { judulKata, kartuVM } from "./kartu";
 
 // Kamis 29 Okt 2026.
 const KAMIS = "2026-10-29";
+const ZONA = "WIB";
 
 function kartu(isi: Partial<KartuTagih> = {}): KartuTagih {
   return {
@@ -17,6 +18,7 @@ function kartu(isi: Partial<KartuTagih> = {}): KartuTagih {
     asal: "baru",
     status: "berjalan",
     tanggalAkad: "2026-10-01",
+    waktuAkad: "2026-10-01T08:00:00.000Z",
     jatuhTempo: null,
     pokok: 1_000_000,
     potonganAdmin: 50_000,
@@ -106,10 +108,21 @@ describe("kartu nasabah", () => {
   const bahan = susunBahanGrid(KAMIS, [], { hariTagih: [], liburKantor: [] });
 
   test("harian: ambang gulung E4, Bayar bernominal, wajib hari ini", () => {
-    const vm = kartuVM(kartu({ pinjamanKe: 2, angsuranKe: 11 }), KAMIS, bahan);
+    const vm = kartuVM(kartu({ pinjamanKe: 2, angsuranKe: 11 }), KAMIS, bahan, ZONA);
     expect(vm.ember).toBe("belum");
     expect(vm.wajib).toBe(true);
-    expect(vm.lingkaran).toBe("2x");
+    // Kepala kartu: lingkaran = angsuran ke-; info: kampung, tanggal & jam akad (WIB), pinjaman ke-.
+    expect(vm.angsuranKeTeks).toBe("11");
+    expect(vm.pinjamanKeTeks).toBe("Pinjaman Ke-2");
+    expect(vm.namaJudul).toBe("Sari");
+    expect(vm.kampungJudul).toBe("Pule Barat");
+    expect(vm.akadTeks).toBe("1 Okt 26 • 15.00");
+    expect([vm.pokokRp, vm.saldoRp, vm.angsuranRp, vm.tabunganRp]).toEqual([
+      "Rp 1.000.000",
+      "Rp 600.000",
+      "Rp 50.000",
+      "Rp 60.000",
+    ]);
     expect(vm.progres).toMatchObject({ status: "belum", kotak: "11", ambang: 0.5 });
     expect(vm.progres?.petunjuk).toBe("Gulung mulai angsuran ke-12");
     expect(vm.bayarTeks).toBe("Rp 50.000");
@@ -117,11 +130,12 @@ describe("kartu nasabah", () => {
   });
 
   test("macet, droping (lencana asal), sudah ditagih (kartu ringkas)", () => {
-    expect(kartuVM(kartu({ status: "macet" }), KAMIS, bahan).lencana?.teks).toBe("Macet");
+    expect(kartuVM(kartu({ status: "macet" }), KAMIS, bahan, ZONA).lencana?.teks).toBe("Macet");
     const drop = kartuVM(
       kartu({ tanggalAkad: KAMIS, asal: "gulung", jenisGulung: "naik" }),
       KAMIS,
       bahan,
+      ZONA,
     );
     expect(drop.ember).toBe("droping");
     expect(drop.lencana?.teks).toBe("Gulung naik");
@@ -130,13 +144,14 @@ describe("kartu nasabah", () => {
       kartu({ hariIni: { jenis: "angsuran", storting: 50_000 } }),
       KAMIS,
       bahan,
+      ZONA,
     );
     expect(sudah.ember).toBe("sudah");
     expect(sudah.judulSudah).toBe("SUDAH BAYAR • 50K");
   });
 
   test("tempoan: tombol utama Lunasi seharga saldo, tanpa libur; mingguan berhari tagih", () => {
-    const t = kartuVM(kartu({ jenis: "tempoan", tenor: 14, saldo: 1_250_000 }), KAMIS, bahan);
+    const t = kartuVM(kartu({ jenis: "tempoan", tenor: 14, saldo: 1_250_000 }), KAMIS, bahan, ZONA);
     expect(t.sekaliBayar).toBe(true);
     expect(t.bayarTeks).toBe("Rp 1.250.000");
     expect(t.tampilkanLibur).toBe(false);
@@ -144,20 +159,37 @@ describe("kartu nasabah", () => {
       kartu({ jenis: "mingguan", tenor: 8, tanggalAkad: "2026-10-22" }),
       KAMIS,
       bahan,
+      ZONA,
     );
     expect(m.hariTagih).toBe("Kamis");
     expect(m.subjudul).toBe("pule barat · mingguan 8×");
+    expect(m.kampungJudul).toBe("Pule Barat · mingguan 8×");
   });
 
-  test("VM dipakai ulang selama data & bahan sama", () => {
+  test("VM dipakai ulang selama data, bahan, dan zona sama", () => {
     const p = kartu();
-    expect(kartuVM(p, KAMIS, bahan)).toBe(kartuVM(p, KAMIS, bahan));
+    expect(kartuVM(p, KAMIS, bahan, ZONA)).toBe(kartuVM(p, KAMIS, bahan, ZONA));
+    expect(kartuVM(p, KAMIS, bahan, "WIT")).not.toBe(kartuVM(p, KAMIS, bahan, ZONA));
+  });
+
+  test("jam akad mengikuti zona kantor; salinan migrasi tanpa jam", () => {
+    const p = kartu({ waktuAkad: "2026-10-01T08:00:00.000Z" });
+    expect(kartuVM(p, KAMIS, bahan, "WIB").akadTeks).toBe("1 Okt 26 • 15.00");
+    expect(kartuVM(p, KAMIS, bahan, "WITA").akadTeks).toBe("1 Okt 26 • 16.00");
+    expect(kartuVM(p, KAMIS, bahan, "WIT").akadTeks).toBe("1 Okt 26 • 17.00");
+    // Lewat tengah malam kantor: jam tetap dua angka.
+    expect(
+      kartuVM(kartu({ waktuAkad: "2026-10-01T17:05:00.000Z" }), KAMIS, bahan, "WIB").akadTeks,
+    ).toBe("1 Okt 26 • 00.05");
+    expect(kartuVM(kartu({ asal: "migrasi", waktuAkad: null }), KAMIS, bahan, ZONA).akadTeks).toBe(
+      "1 Okt 26",
+    );
   });
 });
 
 describe("daftar tagihan", () => {
   const bahan = susunBahanGrid(KAMIS, [], { hariTagih: [], liburKantor: [] });
-  const vm = (isi: Partial<KartuTagih>) => kartuVM(kartu(isi), KAMIS, bahan);
+  const vm = (isi: Partial<KartuTagih>) => kartuVM(kartu(isi), KAMIS, bahan, ZONA);
 
   test("pilah segmen, judul rute bertotal, sudah ditagih di dasar", () => {
     const semua = [
@@ -178,5 +210,21 @@ describe("daftar tagihan", () => {
     expect(kemajuan(semua)).toEqual({ bayar: 0, libur: 1, sisa: 4 });
     expect(ringkasDroping(p.droping)).toEqual({ baru: 1_000_000, gulung: 0 });
     expect(pilah(semua, "sawah").aktif).toHaveLength(1);
+  });
+});
+
+describe("judulKata", () => {
+  test("huruf judul dari kapital semua, kecil semua, dan spasi berlebih", () => {
+    expect(judulKata("BUDI SANTOSO")).toBe("Budi Santoso");
+    expect(judulKata("permata bintang")).toBe("Permata Bintang");
+    expect(judulKata("  budi   santoso ")).toBe("Budi Santoso");
+    expect(judulKata("sri-rahayu")).toBe("Sri-Rahayu");
+  });
+
+  test("angka apa adanya; angka Romawi dan RT/RW tetap kapital", () => {
+    expect(judulKata("pule barat 2")).toBe("Pule Barat 2");
+    expect(judulKata("dusun ii")).toBe("Dusun II");
+    expect(judulKata("rt 03 rw 01")).toBe("RT 03 RW 01");
+    expect(judulKata("")).toBe("");
   });
 });

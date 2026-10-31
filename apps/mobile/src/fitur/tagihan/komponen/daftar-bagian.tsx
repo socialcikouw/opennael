@@ -4,6 +4,7 @@ import { Ikon } from "@/komponen/ui/ikon";
 import { useGaya, useWarna } from "@/komponen/ui/tampilan";
 import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/komponen/ui/tema";
 import type { Baris, TabKerja } from "../inti/daftar";
+import { LEBAR_REL } from "./kepala-kartu";
 
 /** Judul kelompok: "RUTE 1 - PULE BARAT" · "10 = 500K", atau "SUDAH DITAGIH" · "4 nasabah". */
 export const JudulKelompok = memo(function JudulKelompok({
@@ -37,14 +38,16 @@ export function KerangkaKartu() {
     <View style={gaya.kerangka}>
       <View style={gaya.kerangkaKepala}>
         <View style={gaya.kerangkaBulat} />
-        <View style={gaya.kerangkaTeks}>
+        <View style={[gaya.kerangkaBaris, { width: "45%" }]} />
+      </View>
+      <View style={gaya.kerangkaKotak}>
+        <View style={gaya.kerangkaInfo}>
           <View style={[gaya.kerangkaBaris, { width: "55%" }]} />
           <View style={[gaya.kerangkaBaris, { width: "35%" }]} />
         </View>
+        <View style={gaya.kerangkaGrid} />
+        <View style={gaya.kerangkaTombol} />
       </View>
-      <View style={gaya.kerangkaRel} />
-      <View style={gaya.kerangkaGrid} />
-      <View style={gaya.kerangkaTombol} />
     </View>
   );
 }
@@ -109,21 +112,20 @@ const buatGaya = (WARNA: Warna) =>
       fontVariant: ["tabular-nums"],
       color: WARNA.redup,
     },
-    kerangka: {
+    kerangka: { marginHorizontal: RUANG[4], marginBottom: RUANG[3] },
+    kerangkaKepala: { flexDirection: "row", alignItems: "center", gap: RUANG[2] },
+    kerangkaBulat: { width: 30, height: 30, borderRadius: SUDUT.bulat, backgroundColor: WARNA.abu },
+    kerangkaKotak: {
       gap: RUANG[3],
-      marginHorizontal: RUANG[4],
-      marginBottom: RUANG[3],
-      padding: RUANG[4],
+      padding: RUANG[3],
+      marginLeft: LEBAR_REL,
       borderRadius: SUDUT.lebar,
       borderWidth: 1,
       borderColor: WARNA.garis,
       backgroundColor: WARNA.permukaan,
     },
-    kerangkaKepala: { flexDirection: "row", alignItems: "center", gap: RUANG[3] },
-    kerangkaBulat: { width: 44, height: 44, borderRadius: SUDUT.bulat, backgroundColor: WARNA.abu },
-    kerangkaTeks: { flex: 1, gap: RUANG[2] },
+    kerangkaInfo: { gap: RUANG[2] },
     kerangkaBaris: { height: 10, borderRadius: SUDUT.bulat, backgroundColor: WARNA.abu },
-    kerangkaRel: { height: 6, borderRadius: SUDUT.bulat, backgroundColor: WARNA.abu },
     kerangkaGrid: { height: 96, borderRadius: SUDUT.besar, backgroundColor: WARNA.abu },
     kerangkaTombol: { height: 48, borderRadius: SUDUT.sedang, backgroundColor: WARNA.abu },
     kosong: {

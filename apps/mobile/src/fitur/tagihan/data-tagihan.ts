@@ -6,6 +6,7 @@ import {
   useRiwayatPinjaman,
   useTagihan,
 } from "@/fitur/lapangan";
+import { useZonaKantor } from "@/lib/kantor";
 import { kemajuan, pilah, ringkasDroping, susunBaris, type TabKerja } from "./inti/daftar";
 import { susunBahanGrid } from "./inti/grid";
 import { kartuVM } from "./inti/kartu";
@@ -56,6 +57,7 @@ export function useDaftarTagihan({
   riwayat: ReturnType<typeof useRiwayatPinjaman>;
 }) {
   // ---- data → kartu → segmen → baris -------------------------------------
+  const zona = useZonaKantor();
   const bahan = useMemo(
     () => (tanggal ? susunBahanGrid(tanggal, peristiwa.data, kalender.data, riwayat) : null),
     [tanggal, peristiwa.data, kalender.data, riwayat],
@@ -64,8 +66,8 @@ export function useDaftarTagihan({
     if (!tagihan.data || !tanggal || !bahan) return [];
     return tagihan.data
       .filter((p) => jenis === null || p.jenis === jenis)
-      .map((p) => kartuVM(p, tanggal, bahan));
-  }, [tagihan.data, tanggal, bahan, jenis]);
+      .map((p) => kartuVM(p, tanggal, bahan, zona));
+  }, [tagihan.data, tanggal, bahan, jenis, zona]);
   const partisi = useMemo(() => pilah(semua, kunciCari), [semua, kunciCari]);
   const baris = useMemo(
     () => susunBaris(partisi[tab], tab === "droping" ? [] : partisi.sudah[tab]),

@@ -7,6 +7,8 @@ import {
   statusGulung,
   tolakLibur,
   wajibDitagihHariIni,
+  waktuKantor,
+  type ZonaWaktu,
 } from "@opennael/domain";
 import { tanggalBertahun } from "@opennael/format";
 import type { NamaIkon } from "../../../komponen/ui/daftar-ikon";
@@ -17,12 +19,12 @@ import { type MingguanVM, susunMingguan, susunTempo, type TempoVM } from "./khus
  * VIEW MODEL KARTU NASABAH (layar Tagihan) — semua keputusan tampilan dihitung
  * sekali per data di sini; komponen kartu hanya mencetak teks & memilih nada
  * warna. Dibaca dari atas ke bawah sesuai pertanyaan kolektor di depan rumah:
- *   1. SIAPA — lingkaran pinjaman ke-, nama, kampung, lencana, tanggal akad;
- *   2. SEJAUH MANA — kotak angsuran ke-, bilah kemajuan, garis ambang gulung,
- *      dan kalimat sinyal gulungnya;
+ *   1. SIAPA — lingkaran angsuran ke-, nama, lencana; di kartu: kampung,
+ *      tanggal & jam akad, pinjaman ke-, Tabungan (rahasia);
+ *   2. SEJAUH MANA — kalimat sinyal gulung ("Bisa Digulung");
  *   3. BAGAIMANA — grid setoran sebulan (harian);
- *   4. BERAPA & MAU DIAPAKAN — Pokok · Saldo · Tabungan (rahasia), lalu
- *      Gulung · Libur dan Bayar bernominal (Lunasi di balik kartu).
+ *   4. BERAPA & MAU DIAPAKAN — Pokok · Sisa Saldo, lalu Gulung · Libur dan
+ *      Bayar bernominal (Lunasi di balik kartu).
  */
 
 /** Ember kartu hari ini: belum ditagih · droping (akad hari ini) · sudah ditagih (bayar/libur). */
@@ -38,13 +40,19 @@ export interface KartuVM {
   /** Belum ditagih DAN wajib hari ini (B6) — sisa yang menahan laporan. */
   wajib: boolean;
   nama: string;
-  /** "pule barat · mingguan 8×" */
+  /** "Budi Santoso" — nama berhuruf judul untuk kepala kartu. */
+  namaJudul: string;
+  /** "pule barat · mingguan 8×" (kartu ringkas). */
   subjudul: string;
-  /** "3x" — pinjaman ke-. */
-  lingkaran: string;
+  /** "Permata Bintang" atau "Permata Bintang · mingguan 8×" — baris kiri atas kartu. */
+  kampungJudul: string;
+  /** "12" — angsuran yang sudah lunas, isi lingkaran di depan nama. */
+  angsuranKeTeks: string;
+  /** "Pinjaman Ke-3". */
+  pinjamanKeTeks: string;
   lencana: { teks: string; nada: Nada; ikon: NamaIkon } | null;
-  /** Tanggal akad, "5 Jun 26". */
-  tanggalTeks: string;
+  /** "1 Sep 26 • 15.00"; hanya tanggal bila jam akad tak diketahui (salinan migrasi). */
+  akadTeks: string;
   /** Mingguan: hari tagihnya ("Rabu"); selain itu null. */
   hariTagih: string | null;
   progres: {
@@ -63,10 +71,14 @@ export interface KartuVM {
   mingguan: MingguanVM | null;
   /** Slot grid tempoan: garis waktu menuju jatuh tempo. */
   tempo: TempoVM | null;
-  pokokTeks: string;
+  /** Tanpa "Rp" — kartu ringkas. */
   angsuranTeks: string;
-  tabunganTeks: string;
   saldoTeks: string;
+  /** Dengan "Rp ": "Rp 300.000". */
+  pokokRp: string;
+  angsuranRp: string;
+  saldoRp: string;
+  tabunganRp: string;
   /** Tombol transaksi tampil (ember belum). */
   aksi: boolean;
   /** "Rp 50.000" — nominal di tombol Bayar (tempoan: saldo, tombolnya Lunasi). */
@@ -85,6 +97,35 @@ const NAMA_HARI = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu
 
 const ribuan = (n: number) => n.toLocaleString("id-ID");
 export const rupiahPendek = (n: number) => `Rp ${ribuan(n)}`;
+
+const SINGKATAN = new Set(["RT", "RW"]);
+const ROMAWI = /^(?:I{1,3}|IV|V|VI{1,3}|IX|X)$/i;
+
+/**
+ * "BUDI SANTOSO" / "pule barat" → "Budi Santoso" / "Pule Barat". Kata ber-angka
+ * apa adanya ("03"), angka Romawi dan RT/RW tetap kapital ("Dusun II", "RT 03"),
+ * huruf setelah tanda hubung ikut kapital ("Sri-Rahayu").
+ */
+export function judulKata(teks: string): string {
+  const huruf = (k: string) =>
+    k === "" ? k : k.charAt(0).toUpperCase() + k.slice(1).toLowerCase();
+  return teks
+    .trim()
+    .split(/\s+/)
+    .map((kata) => {
+      if (/\d/.test(kata)) return kata;
+      if (SINGKATAN.has(kata.toUpperCase()) || ROMAWI.test(kata)) return kata.toUpperCase();
+      return kata.split("-").map(huruf).join("-");
+    })
+    .join(" ");
+}
+
+/** "15.00" — jam dinding kantor dari waktu ISO (zona Indonesia berselisih jam tetap). */
+function jamDinding(iso: string, zona: ZonaWaktu): string {
+  const { menit } = waktuKantor(new Date(iso), zona);
+  const dua = (n: number) => String(n).padStart(2, "0");
+  return `${dua(Math.floor(menit / 60))}.${dua(menit % 60)}`;
+}
 
 function ember(p: KartuTagih, hariIni: string): Ember {
   if (p.tanggalAkad === hariIni && p.asal !== "migrasi") return "droping";
@@ -138,7 +179,7 @@ function judulSudah(p: KartuTagih): string | null {
   return null;
 }
 
-function susun(p: KartuTagih, hariIni: string, bahan: BahanGrid): KartuVM {
+function susun(p: KartuTagih, hariIni: string, bahan: BahanGrid, zona: ZonaWaktu): KartuVM {
   const e = ember(p, hariIni);
   const status = statusGulung(p);
   const tempoan = p.jenis === "tempoan";
@@ -155,10 +196,15 @@ function susun(p: KartuTagih, hariIni: string, bahan: BahanGrid): KartuVM {
     ember: e,
     wajib: e === "belum" && wajibDitagihHariIni(p, hariIni),
     nama: p.nasabah.nama,
+    namaJudul: judulKata(p.nasabah.nama),
     subjudul: `${p.nasabah.kampung.toLowerCase()}${ekor}`,
-    lingkaran: `${p.pinjamanKe}x`,
+    kampungJudul: `${judulKata(p.nasabah.kampung)}${ekor}`,
+    angsuranKeTeks: String(p.angsuranKe),
+    pinjamanKeTeks: `Pinjaman Ke-${p.pinjamanKe}`,
     lencana: lencana(p, e),
-    tanggalTeks: tanggalBertahun(p.tanggalAkad),
+    akadTeks: p.waktuAkad
+      ? `${tanggalBertahun(p.tanggalAkad)} • ${jamDinding(p.waktuAkad, zona)}`
+      : tanggalBertahun(p.tanggalAkad),
     hariTagih: p.jenis === "mingguan" ? (NAMA_HARI[hariPekanDari(p.tanggalAkad)] ?? null) : null,
     progres: e === "belum" && !tempoan ? progres(p, status) : null,
     grid: e === "belum" && p.jenis === "harian" ? susunGrid(bahan, p) : null,
@@ -167,10 +213,12 @@ function susun(p: KartuTagih, hariIni: string, bahan: BahanGrid): KartuVM {
         ? susunMingguan(p, bahan.riwayat.get(p.id), hariIni)
         : null,
     tempo: e === "belum" && tempoan ? susunTempo(p, hariIni) : null,
-    pokokTeks: ribuan(p.pokok),
     angsuranTeks: ribuan(p.angsuran),
-    tabunganTeks: ribuan(p.tabungan),
     saldoTeks: ribuan(p.saldo),
+    pokokRp: rupiahPendek(p.pokok),
+    angsuranRp: rupiahPendek(p.angsuran),
+    saldoRp: rupiahPendek(p.saldo),
+    tabunganRp: rupiahPendek(p.tabungan),
     aksi: e === "belum",
     bayarTeks: rupiahPendek(tempoan ? p.saldo : p.angsuran),
     sekaliBayar: tempoan,
@@ -186,12 +234,21 @@ function susun(p: KartuTagih, hariIni: string, bahan: BahanGrid): KartuVM {
  * berubah dipakai ulang, jadi kartu `memo` melewati render saat mengetik di
  * kolom cari, ganti tab, atau transaksi di kartu lain.
  */
-const simpanan = new WeakMap<KartuTagih, { hariIni: string; bahan: BahanGrid; vm: KartuVM }>();
+const simpanan = new WeakMap<
+  KartuTagih,
+  { hariIni: string; bahan: BahanGrid; zona: ZonaWaktu; vm: KartuVM }
+>();
 
-export function kartuVM(p: KartuTagih, hariIni: string, bahan: BahanGrid): KartuVM {
+export function kartuVM(
+  p: KartuTagih,
+  hariIni: string,
+  bahan: BahanGrid,
+  zona: ZonaWaktu,
+): KartuVM {
   const lalu = simpanan.get(p);
-  if (lalu && lalu.hariIni === hariIni && lalu.bahan === bahan) return lalu.vm;
-  const vm = susun(p, hariIni, bahan);
-  simpanan.set(p, { hariIni, bahan, vm });
+  if (lalu && lalu.hariIni === hariIni && lalu.bahan === bahan && lalu.zona === zona)
+    return lalu.vm;
+  const vm = susun(p, hariIni, bahan, zona);
+  simpanan.set(p, { hariIni, bahan, zona, vm });
   return vm;
 }
