@@ -33,6 +33,10 @@ describe.skipIf(!URL_DB)("salinan migrasi (A10)", () => {
         token: b,
       });
       expect(sari.status).toBe(201);
+      // Salinan buku lama: jam akad aslinya tak diketahui (dibuat_at = jam penyalinan).
+      const kartuSari = await kirim(`/pinjaman/${sari.isi.id}`, { token: b });
+      expect(kartuSari.status).toBe(200);
+      expect(kartuSari.isi.waktuAkad).toBeNull();
       expect(sari.isi).toMatchObject({
         nasabah: { nama: "Sari", baru: true },
         kolektor: { id: andiId, nama: "Andi" },

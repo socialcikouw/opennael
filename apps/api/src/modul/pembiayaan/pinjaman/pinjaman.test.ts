@@ -220,6 +220,10 @@ describe.skipIf(!URL_DB)("pinjaman", () => {
         null,
       ]);
       expect(daftar.isi[0].tabungan).toBe(50_000);
+      // Jam akad (ISO) untuk kartu HP: akad baru membawa waktunya.
+      const waktuAkad = new Date(daftar.isi[0].waktuAkad).getTime();
+      expect(Number.isNaN(waktuAkad)).toBe(false);
+      expect(Math.abs(Date.now() - waktuAkad)).toBeLessThan(10 * 60_000);
     });
   }, 120_000);
 });

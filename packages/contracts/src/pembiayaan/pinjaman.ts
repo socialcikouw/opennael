@@ -13,6 +13,8 @@ export const pinjamanSchema = z.object({
   asal: z.enum(["baru", "gulung", "migrasi"]),
   status: z.enum(["berjalan", "macet", "lunas", "digulung", "batal", "diputihkan"]),
   tanggalAkad: z.string(),
+  /** Waktu akad (ISO) untuk jam di kartu HP; null untuk salinan migrasi (jam akad aslinya tak diketahui). */
+  waktuAkad: z.string().nullable(),
   jatuhTempo: z.string().nullable(),
   pokok: z.number(),
   potonganAdmin: z.number(),

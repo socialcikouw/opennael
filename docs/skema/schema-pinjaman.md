@@ -186,6 +186,8 @@ pengaman; service memeriksanya lebih dulu. *(Ditambahkan saat pembangunan,
 
 ## API nantinya
 
+> Kartu pinjaman di semua jalur membawa `waktuAkad` (1 Nov 2026): `dibuat_at` sebagai waktu ISO untuk akad baru dan gulung — HP menampilkan jamnya menurut `kantor.zona_waktu` ("1 Sep 26 • 15.00"); `null` untuk salinan migrasi, karena `dibuat_at`-nya jam penyalinan, bukan jam akad aslinya. Tanggal akad tetap `tanggalAkad`.
+
 | Metode & jalur | Peran | Isi |
 |---|---|---|
 | `POST /lapangan/akad` | kolektor | Akad: nasabah lama (`nasabahId`) atau orang baru (`nasabah`), `jenis`, `pokok`, `tenor`, **`fotoSerahTerimaId`** (wajib; diunggah lebih dulu lewat `POST /foto`), `fotoKtpId` (opsional). Angka akad dihitung server. Wajib kunci idempoten. |

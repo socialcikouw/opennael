@@ -16,6 +16,7 @@ export const kolomKartu = {
   asal: pinjaman.asal,
   status: pinjaman.status,
   tanggalAkad: pinjaman.tanggalAkad,
+  dibuatAt: pinjaman.dibuatAt,
   jatuhTempo: pinjaman.jatuhTempo,
   pokok: pinjaman.pokok,
   potonganAdmin: pinjaman.potonganAdmin,
@@ -31,13 +32,21 @@ export const kolomKartu = {
   jenisGulung: pinjaman.jenisGulung,
 };
 
-export function keKartu<T extends { nasabahId: string; nasabahNama: string; kampung: string }>(
-  b: T,
-): PinjamanKartu {
-  const { nasabahId, nasabahNama, kampung, ...p } = b;
+export function keKartu<
+  T extends {
+    nasabahId: string;
+    nasabahNama: string;
+    kampung: string;
+    asal: string;
+    dibuatAt: Date;
+  },
+>(b: T): PinjamanKartu {
+  const { nasabahId, nasabahNama, kampung, dibuatAt, ...p } = b;
   return {
-    ...(p as unknown as Omit<PinjamanKartu, "nasabah">),
+    ...(p as unknown as Omit<PinjamanKartu, "nasabah" | "waktuAkad">),
     nasabah: { id: nasabahId, nama: nasabahNama, kampung },
+    // Salinan migrasi: dibuat_at = jam penyalinan, bukan jam akad aslinya.
+    waktuAkad: p.asal === "migrasi" ? null : dibuatAt.toISOString(),
   };
 }
 
