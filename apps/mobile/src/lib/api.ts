@@ -1,4 +1,10 @@
-import { buatKlien, buatPanggil, buatPenyimpanKunci, buatTransport } from "@opennael/api-client";
+import {
+  buatKlien,
+  buatKueri,
+  buatPanggil,
+  buatPenyimpanKunci,
+  buatTransport,
+} from "@opennael/api-client";
 import { mediumKunciTertunda } from "@/platform/brankas";
 import { sesi } from "./sesi";
 
@@ -20,6 +26,9 @@ export const ambilDenganSesi = buatTransport({
 /** Klien RPC bertipe per konteks — bentuk permintaan & jawaban mengikuti rute di `apps/api`. */
 export const api = buatKlien(ALAMAT_API, ambilDenganSesi);
 
-export const { panggil, bacaGalat, PESAN_JARINGAN } = buatPanggil({
+export const { panggil, ambil, bacaGalat, PESAN_JARINGAN } = buatPanggil({
   pesanJaringan: "Server tidak terjangkau — periksa sinyal atau alamat API",
 });
+
+/** Katalog bacaan API (kunci + fungsi): `useQuery(kueri.lapangan.hariIni())`, tanpa array kunci di layar. */
+export const kueri = buatKueri({ api, ambil });

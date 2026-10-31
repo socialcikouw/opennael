@@ -1,3 +1,4 @@
+import { kunci } from "@opennael/api-client";
 import { geserTanggal } from "@opennael/domain";
 import { rupiah, tanggalPendek } from "@opennael/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -13,11 +14,10 @@ import { Spanduk } from "@/komponen/ui/spanduk";
 import { useWarna } from "@/komponen/ui/tampilan";
 import { Keterangan } from "@/komponen/ui/teks";
 import { Tombol } from "@/komponen/ui/tombol";
-import { api, panggil } from "@/lib/api";
+import { api, kueri, panggil } from "@/lib/api";
 import { hariIniKantor } from "@/lib/kantor";
 import { useSesi } from "@/lib/sesi";
 
-const KUNCI = ["pencocokan"] as const;
 const LABEL_AKUN = { tunai: "Tunai (brankas)", bank: "Bank (rekening)" } as const;
 type Akun = keyof typeof LABEL_AKUN;
 
@@ -37,15 +37,7 @@ export function LayarCocokkan() {
   const hari = s ? hariIniKantor(s.pengguna.kantor.zonaWaktu) : null;
 
   const riwayat = useQuery({
-    queryKey: [...KUNCI, hari],
-    queryFn: async () =>
-      (
-        await panggil(() =>
-          api.kas.kas.pencocokan.$get({
-            query: { mulai: geserTanggal(hari ?? "", -30), selesai: hari ?? "" },
-          }),
-        )
-      ).json(),
+    ...kueri.kas.pencocokan(hari ? geserTanggal(hari, -30) : "", hari ?? ""),
     enabled: hari !== null,
   });
   const cocok = useMutation({
@@ -64,7 +56,7 @@ export function LayarCocokkan() {
     onSuccess: () => {
       setNyata(0);
       setKeterangan("");
-      void klien.invalidateQueries({ queryKey: KUNCI });
+      void klien.invalidateQueries({ queryKey: kunci.kas });
     },
   });
   const hasil = cocok.data;

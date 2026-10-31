@@ -9,7 +9,7 @@ import { Lencana } from "@/komponen/ui/lencana";
 import { Pilihan } from "@/komponen/ui/pilihan";
 import { useWarna } from "@/komponen/ui/tampilan";
 import { Keterangan } from "@/komponen/ui/teks";
-import { api, panggil } from "@/lib/api";
+import { kueri } from "@/lib/api";
 
 /**
  * PINJAMAN MENUNGGAK (pengawas) — kartu pinjaman aktif yang tertinggal
@@ -20,11 +20,7 @@ export function LayarTunggakan() {
   const WARNA = useWarna();
   const g = useG();
   const [kolektorId, setKolektorId] = useState<string>("semua");
-  const q = useQuery({
-    queryKey: ["pinjaman", "aktif"],
-    queryFn: async () =>
-      (await panggil(() => api.pembiayaan.pinjaman.$get({ query: { status: "aktif" } }))).json(),
-  });
+  const q = useQuery(kueri.pinjaman.aktif());
   const menunggak = (q.data ?? [])
     .filter((p) => (p.tagih?.tertinggal ?? 0) > 0)
     .sort((a, b) => (b.tagih?.tunggakan ?? 0) - (a.tagih?.tunggakan ?? 0));

@@ -1,38 +1,25 @@
+import { kunci } from "@opennael/api-client";
 import type { Peristiwa } from "@opennael/contracts";
 import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
-import { api, panggil } from "@/lib/api";
+import { api, kueri, panggil } from "@/lib/api";
 
 /**
  * DATA LAPANGAN KOLEKTOR — kueri bersama layar kerja harian, kartu pinjaman,
- * akad, dan gulung. Setiap tulisan menyegarkan semua kueri `lapangan`.
+ * akad, dan gulung (katalog `kueri.lapangan`, kunci berawalan `kunci.lapangan`).
+ * Setiap tulisan menyegarkan semua kueri `lapangan`.
  */
-const KUNCI = ["lapangan"] as const;
 
 export function useHariIni() {
-  return useQuery({
-    queryKey: [...KUNCI, "hari-ini"],
-    queryFn: async () => (await panggil(() => api.hariKolektor.lapangan["hari-ini"].$get())).json(),
-  });
+  return useQuery(kueri.lapangan.hariIni());
 }
 
 export function useTagihan() {
-  return useQuery({
-    queryKey: [...KUNCI, "pinjaman"],
-    queryFn: async () => (await panggil(() => api.pembiayaan.lapangan.pinjaman.$get())).json(),
-  });
+  return useQuery(kueri.lapangan.tagihan());
 }
 
 /** Kalender kantor sebulan (`YYYY-MM`): hari tagih & libur kantor — bahan grid kartu. */
 export function useKalenderBulan(bulan: string | undefined) {
-  return useQuery({
-    queryKey: [...KUNCI, "kalender", bulan],
-    enabled: !!bulan,
-    staleTime: 60 * 60 * 1000,
-    queryFn: async () =>
-      (
-        await panggil(() => api.kantor.lapangan.kalender.$get({ query: { bulan: bulan ?? "" } }))
-      ).json(),
-  });
+  return useQuery(kueri.lapangan.kalender(bulan));
 }
 
 /**
@@ -41,19 +28,7 @@ export function useKalenderBulan(bulan: string | undefined) {
  * kolektor ke pegangannya sendiri.
  */
 export function usePeristiwaBulan(hariIni: string | undefined) {
-  const awal = hariIni ? `${hariIni.slice(0, 7)}-01` : "";
-  return useQuery({
-    queryKey: [...KUNCI, "peristiwa-bulan", hariIni],
-    enabled: !!hariIni,
-    queryFn: async () =>
-      (
-        await panggil(() =>
-          api.pembiayaan.transaksi.peristiwa.$get({
-            query: { tanggalMulai: awal, tanggalSelesai: hariIni ?? "" },
-          }),
-        )
-      ).json(),
-  });
+  return useQuery(kueri.lapangan.peristiwaBulan(hariIni));
 }
 
 /**
@@ -63,15 +38,7 @@ export function usePeristiwaBulan(hariIni: string | undefined) {
  */
 export function useRiwayatPinjaman(ids: readonly string[]) {
   return useQueries({
-    queries: ids.map((id) => ({
-      queryKey: [...KUNCI, "peristiwa-pinjaman", id],
-      queryFn: async () =>
-        (
-          await panggil(() =>
-            api.pembiayaan.transaksi.peristiwa.$get({ query: { pinjamanId: id } }),
-          )
-        ).json(),
-    })),
+    queries: ids.map((id) => kueri.lapangan.riwayatPinjaman(id)),
     combine: gabungRiwayat,
   });
 }
@@ -86,18 +53,11 @@ function gabungRiwayat(hasil: { data?: Peristiwa[] | undefined }[]) {
 }
 
 export function useKampung() {
-  return useQuery({
-    queryKey: [...KUNCI, "kampung"],
-    queryFn: async () => (await panggil(() => api.kantor.lapangan.kampung.$get())).json(),
-  });
+  return useQuery(kueri.lapangan.kampung());
 }
 
 export function useNasabahLama() {
-  return useQuery({
-    queryKey: [...KUNCI, "nasabah-lama"],
-    queryFn: async () =>
-      (await panggil(() => api.pembiayaan.lapangan["nasabah-lama"].$get())).json(),
-  });
+  return useQuery(kueri.lapangan.nasabahLama());
 }
 
 /** Tulisan lapangan; galat server (gerbang, aturan) menjadi `error.message`. */
@@ -105,7 +65,7 @@ export function useTulis<I, O>(kirim: (input: I) => Promise<O>) {
   const klien = useQueryClient();
   return useMutation({
     mutationFn: kirim,
-    onSettled: () => klien.invalidateQueries({ queryKey: KUNCI }),
+    onSettled: () => klien.invalidateQueries({ queryKey: kunci.lapangan }),
   });
 }
 

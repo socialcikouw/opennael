@@ -1,3 +1,4 @@
+import { kunci } from "@opennael/api-client";
 import { hitungLunas, kunciWilayah } from "@opennael/domain";
 import { rupiah } from "@opennael/format";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -109,7 +110,7 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
 
   const [cari, setCari] = useState("");
   const [cariTerbuka, setCariTerbuka] = useState(false);
-  const kunci = kunciWilayah(useDeferredValue(cari));
+  const kunciCari = kunciWilayah(useDeferredValue(cari));
   const [tab, setTab] = useState<TabKerja>(segmenAwal === "droping" ? "droping" : "aktif");
   useEffect(() => {
     if (segmenAwal === "droping") setTab("droping");
@@ -126,7 +127,7 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
       .filter((p) => jenis === null || p.jenis === jenis)
       .map((p) => kartuVM(p, tanggal, bahan));
   }, [tagihan.data, tanggal, bahan, jenis]);
-  const partisi = useMemo(() => pilah(semua, kunci), [semua, kunci]);
+  const partisi = useMemo(() => pilah(semua, kunciCari), [semua, kunciCari]);
   const baris = useMemo(
     () => susunBaris(partisi[tab], tab === "droping" ? [] : partisi.sudah[tab]),
     [partisi, tab],
@@ -155,7 +156,7 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
       setStempel((m) => new Map(m).set(id, jenisStempel));
       setTimeout(() => {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        void klien.invalidateQueries({ queryKey: ["lapangan"] }).finally(() =>
+        void klien.invalidateQueries({ queryKey: kunci.lapangan }).finally(() =>
           setStempel((m) => {
             const baru = new Map(m);
             baru.delete(id);
@@ -413,7 +414,7 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
               <KerangkaKartu />
             </>
           ) : (
-            <Kosong tab={tab} mencari={kunci !== ""} aksen={aksen} />
+            <Kosong tab={tab} mencari={kunciCari !== ""} aksen={aksen} />
           )
         }
       />
