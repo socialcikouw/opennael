@@ -48,3 +48,9 @@ batas umur ini milik klien: kunci tua dari kejadian yang sudah lewat tidak
 boleh menimpa permintaan serupa yang sah di kemudian hari (mis. dua mutasi kas
 berjumlah sama). Operasi tulis baru yang dibungkus `denganIdempotensi` wajib
 ditambahkan ke daftar itu.
+
+Unggah foto (`POST /foto`) sengaja di luar daftar ini: bodinya multipart dan
+tidak memakai `Idempotency-Key`. Idempotensinya alami lewat sidik jari berkas
+— unggahan ulang oleh pengunggah yang sama atas foto yang belum dipakai dan
+berumur < 1 jam mengembalikan foto yang sama (lihat
+[schema-foto.md](schema-foto.md), "Unggahan ulang").

@@ -28,14 +28,15 @@ const unggah = createRoute({
   },
   responses: {
     201: {
-      description: "Foto tersimpan",
+      description:
+        "Foto tersimpan — atau, bila foto yang sama diunggah ulang oleh pengunggahnya sebelum dipakai dan dalam 1 jam, foto yang sudah ada",
       content: { "application/json": { schema: fotoTersimpanSchema } },
     },
     ...jawabanGalat(
       [400, "Data tidak sah"],
       [401, "Belum masuk"],
       [403, "Peran tidak boleh"],
-      [409, "Foto yang sama sudah pernah diunggah"],
+      [409, "Foto yang sama sudah dipakai, diunggah orang lain, atau lebih dari 1 jam"],
       [413, "Berkas terlalu besar"],
       [422, "Bukan foto JPEG/WebP, ukuran, atau lokasi tidak lengkap"],
     ),

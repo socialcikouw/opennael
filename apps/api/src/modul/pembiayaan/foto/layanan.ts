@@ -4,9 +4,10 @@ import { and, eq, or } from "drizzle-orm";
 import type { Db } from "../../../platform/db/klien";
 import { foto, nasabah, pinjaman } from "../../../platform/db/skema";
 import type { Aktor } from "../../../platform/http/aktor";
-import { dilarang, GalatApp, tidakDitemukan } from "../../../platform/http/galat";
+import { dilarang, GalatApp, galatPostgres, tidakDitemukan } from "../../../platform/http/galat";
 import { wajibPeran } from "../../../platform/http/peran";
 import { jenisGambar, type Penyimpanan } from "../../../platform/penyimpanan";
+import { UMUR_FOTO_MS } from "./data";
 
 export interface FotoDeps {
   db: Db;
@@ -29,7 +30,8 @@ const tidakSahBerkas = (kode: string, pesan: string) => new GalatApp(422, kode, 
  * FOTO BUKTI (docs/skema/schema-foto.md): tipe diperiksa dari isi berkas,
  * sidik jari SHA-256 dihitung server (foto kembar per kantor ditolak), jam
  * server yang dipercaya. Berkas disimpan dulu, baru barisnya — berkas yatim
- * bila penyisipan gagal dibersihkan seketika.
+ * bila penyisipan gagal dibersihkan seketika. Unggahan ulang foto yang sama
+ * (jawaban hilang di jalan) mengembalikan fotonya — lihat `unggahanSama`.
  */
 export function buatLayananFoto(deps: FotoDeps) {
   const sekarang = deps.sekarang ?? (() => new Date());
@@ -66,10 +68,13 @@ export function buatLayananFoto(deps: FotoDeps) {
       }
 
       const kini = sekarang();
+      const sha256 = createHash("sha256").update(isi).digest("hex");
+      const ulang = await unggahanSama(deps.db, aktor, input.jenis, sha256, kini);
+      if (ulang) return ulang;
+
       const id = crypto.randomUUID();
       const bulan = kini.toISOString().slice(0, 7).replace("-", "/");
       const kunciBerkas = `kantor/${aktor.kantorId}/foto/${bulan}/${id}.${tipeMime === "image/jpeg" ? "jpg" : "webp"}`;
-      const sha256 = createHash("sha256").update(isi).digest("hex");
 
       await deps.penyimpanan.simpan(kunciBerkas, isi);
       try {
@@ -107,6 +112,12 @@ export function buatLayananFoto(deps: FotoDeps) {
         return { ...f, tipeMime, dibuatAt: f.dibuatAt.toISOString() };
       } catch (e) {
         await deps.penyimpanan.hapus(kunciBerkas);
+        // Kalah balapan dengan unggahan identik yang bersamaan: pemenangnya dibaca ulang
+        // dengan aturan yang sama (bukan foto kembar milik orang lain / yang sudah dipakai).
+        if (galatPostgres(e)?.constraint_name === "uniq_foto_kantor_sha256") {
+          const pemenang = await unggahanSama(deps.db, aktor, input.jenis, sha256, kini);
+          if (pemenang) return pemenang;
+        }
         throw e;
       }
     },
@@ -132,6 +143,55 @@ export function buatLayananFoto(deps: FotoDeps) {
       if (!isi) throw tidakDitemukan("BERKAS_HILANG", "Berkas foto tidak ditemukan di penyimpanan");
       return { isi, tipeMime: f.tipeMime };
     },
+  };
+}
+
+/**
+ * Unggahan ulang yang sah (docs/skema/schema-foto.md, "Unggahan ulang"): foto
+ * dengan sidik jari sama di kantor ini yang diunggah orang yang sama, berjenis
+ * sama, belum ditunjuk pinjaman/nasabah mana pun, dan berumur < 1 jam. Selain
+ * itu null — penyisipan lalu ditolak database sebagai foto kembar (409).
+ */
+async function unggahanSama(
+  db: Db,
+  aktor: Aktor,
+  jenis: UnggahFoto["jenis"],
+  sha256: string,
+  kini: Date,
+): Promise<FotoTersimpan | null> {
+  const [f] = await db
+    .select({
+      id: foto.id,
+      jenis: foto.jenis,
+      ukuranByte: foto.ukuranByte,
+      tipeMime: foto.tipeMime,
+      dibuatAt: foto.dibuatAt,
+      oleh: foto.diunggahOleh,
+    })
+    .from(foto)
+    .where(and(eq(foto.kantorId, aktor.kantorId), eq(foto.sha256, sha256)))
+    .limit(1);
+  if (!f || f.oleh !== aktor.penggunaId || f.jenis !== jenis) return null;
+  if (kini.getTime() - f.dibuatAt.getTime() > UMUR_FOTO_MS) return null;
+  if (f.tipeMime !== "image/jpeg" && f.tipeMime !== "image/webp") return null;
+  const [dipakaiPinjaman] = await db
+    .select({ id: pinjaman.id })
+    .from(pinjaman)
+    .where(and(eq(pinjaman.kantorId, aktor.kantorId), eq(pinjaman.fotoSerahTerimaId, f.id)))
+    .limit(1);
+  if (dipakaiPinjaman) return null;
+  const [dipakaiNasabah] = await db
+    .select({ id: nasabah.id })
+    .from(nasabah)
+    .where(and(eq(nasabah.kantorId, aktor.kantorId), eq(nasabah.fotoKtpId, f.id)))
+    .limit(1);
+  if (dipakaiNasabah) return null;
+  return {
+    id: f.id,
+    jenis: f.jenis,
+    ukuranByte: f.ukuranByte,
+    tipeMime: f.tipeMime,
+    dibuatAt: f.dibuatAt.toISOString(),
   };
 }
 

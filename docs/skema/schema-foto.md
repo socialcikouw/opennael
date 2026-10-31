@@ -1,6 +1,6 @@
 # `foto` — data foto bukti (berkasnya di luar database)
 
-**Status:** final (22 Okt 2026).
+**Status:** final (22 Okt 2026); diubah 1 Nov 2026 — unggahan ulang foto yang sama (lihat "Unggahan ulang").
 
 ## Ringkasan
 
@@ -47,7 +47,7 @@ satu nilai `jenis_foto`.
 | `foto_kantor_fk` | FK | `kantor_id` → `kantor(id)` |
 | `foto_diunggah_oleh_fk` | FK | `(diunggah_oleh, kantor_id)` → `pengguna(id, kantor_id)` |
 | `uniq_foto_id_kantor` | UNIQUE | `(id, kantor_id)` — sasaran FK gabungan dari `pinjaman` & `nasabah`. |
-| `uniq_foto_kantor_sha256` | UNIQUE | `(kantor_id, sha256)` — **foto yang sama tak bisa dipakai dua kali**. |
+| `uniq_foto_kantor_sha256` | UNIQUE | `(kantor_id, sha256)` — **foto yang sama tak bisa dipakai dua kali**; satu baris per foto, jadi unggahan ulang yang sah (lihat "Unggahan ulang") mengembalikan baris itu, bukan baris baru. |
 | `idx_foto_dibuat` | INDEX | `(dibuat_at)` — pembersihan foto sementara. |
 | `foto_ukuran_check` | CHECK | `ukuran_byte > 0 AND ukuran_byte <= 2000000` |
 | `foto_sha256_check` | CHECK | `sha256 ~ '^[0-9a-f]{64}$'` |
@@ -62,7 +62,7 @@ satu nilai `jenis_foto`.
   ada **dan** menerima uang — lebih kuat dari foto wajah saja.
 - **Penangkal kecurangan**:
   - aplikasi hanya membuka **kamera**, bukan galeri;
-  - **sidik jari unik per kantor** — foto kembar ditolak database;
+  - **sidik jari unik per kantor** — foto kembar ditolak database (kecuali unggahan ulang yang sah);
   - **GPS saat memotret** disimpan, bisa dibandingkan dengan titik rumah;
   - **jam server** yang dipercaya; jam HP hanya pembanding.
 - **Perkiraan ruang**: foto dikompres di HP ±150–250 KB; ±50 akad/hari ≈
@@ -72,7 +72,7 @@ satu nilai `jenis_foto`.
 
 | Metode & jalur | Peran | Isi |
 |---|---|---|
-| `POST /foto` | kolektor (serah terima, KTP), bos (KTP) | Multipart: berkas + `{ jenis, diambilAt?, lokasi? }` → `{ id }`. Batas 2 MB; tipe diperiksa dari isi berkas; foto kembar → `FOTO_SUDAH_DIPAKAI` (409). |
+| `POST /foto` | kolektor (serah terima, KTP), bos (KTP) | Multipart: berkas + `{ jenis, diambilAt?, lokasi? }` → `{ id }`. Batas 2 MB; tipe diperiksa dari isi berkas; foto kembar → `FOTO_SUDAH_DIPAKAI` (409), kecuali unggahan ulang yang sah → `201` dengan `{ id }` yang sama. |
 | `GET /foto/:id` | bos, pengawas, kolektor pemegang nasabahnya | Tautan sementara (beberapa menit) ke berkasnya. **Kasir tidak.** |
 
 Akad & gulung mengirim id foto yang sudah diunggah: `fotoSerahTerimaId`
@@ -83,6 +83,7 @@ Akad & gulung mengirim id foto yang sudah diunggah: `fotoSerahTerimaId`
 - **Unggah**: periksa ukuran & tipe dari isi berkas; hitung SHA-256 di server;
   simpan berkas (metadata EXIF dibuang); tulis baris `foto`. Foto yang belum
   ditunjuk pemilik mana pun berstatus **sementara**.
+- **Unggahan ulang** (idempoten tanpa `Idempotency-Key`; berkas multipart tidak ikut diulang otomatis oleh klien): bila jawaban `POST /foto` hilang di jalan, kolektor mengirim foto yang sama lagi. Jika foto dengan sidik jari sama di kantor ini **(a) diunggah oleh orang yang sama, (b) berjenis sama, (c) belum ditunjuk `pinjaman.foto_serah_terima_id` maupun `nasabah.foto_ktp_id`, dan (d) berumur < 1 jam** (jam server), server mengembalikan baris yang sudah ada — `201` dengan `id` yang sama, tanpa menyimpan berkas baru. Selain itu tetap `FOTO_SUDAH_DIPAKAI` (409): foto yang sudah dipakai akad/KTP, milik orang lain, berjenis lain, atau lebih dari 1 jam. Dua unggahan identik yang bersamaan: yang kalah balapan (pelanggaran `uniq_foto_kantor_sha256`) membaca ulang pemenangnya dengan aturan yang sama. Ini tidak melonggarkan penangkal kecurangan: foto tetap hanya bisa ditunjuk satu pemilik, dan batas 1 jam sama dengan batas pemakaiannya di akad.
 - **Mengaitkan ke akad/gulung** (transaksi yang sama dengan akadnya): foto
   harus jenis `serah_terima`, milik kantor ini, diunggah oleh kolektor itu
   sendiri, berumur < 1 jam, dan belum dipakai pinjaman lain.
