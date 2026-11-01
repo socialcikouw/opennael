@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { teksKecil } from "../bersama/dasar";
 import { nomorHpSchema } from "../identitas/auth";
 import { kampungSchema } from "../kantor/wilayah";
 import { transaksiSchema } from "./peristiwa";
@@ -12,7 +13,7 @@ import { jenisPinjamanSchema, pinjamanSchema } from "./pinjaman";
 /** `POST /lapangan/akad` — orang baru atau nasabah lama yang meminjam lagi. */
 /** Orang yang belum terdaftar — didaftarkan bersama akad / salinan pertamanya. */
 export const nasabahBaruSchema = z.object({
-  nama: z.string().trim().min(1).max(50),
+  nama: teksKecil(50),
   kampung: kampungSchema,
   nik: z
     .string()

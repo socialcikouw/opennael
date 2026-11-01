@@ -19,7 +19,7 @@ describe.skipIf(!URL_DB)("setoran sore", () => {
       // HP kasir ditautkan bos.
       const t = await kirim("/auth/tautan", { isi: {} });
       await kirim("/auth/tautan/setujui", {
-        isi: { kode: t.isi.kode, akun: { peran: "kasir", nama: "Sari" } },
+        isi: { kode: t.isi.kode, akun: { peran: "kasir", nama: "sari" } },
         token: b,
       });
       const kasir = (await kirim(`/auth/tautan/${t.isi.id}/klaim`, { isi: { klaim: t.isi.klaim } }))
@@ -28,7 +28,7 @@ describe.skipIf(!URL_DB)("setoran sore", () => {
 
       // Pegangan Andi: dua pinjaman salinan migrasi (saldo 2 jt).
       const [w] = (await tx.execute(sql`
-        insert into wilayah (kantor_id, nama, dibuat_oleh) values (${kantorId}, 'Pule', ${andiId})
+        insert into wilayah (kantor_id, nama, dibuat_oleh) values (${kantorId}, 'pule', ${andiId})
         returning id`)) as unknown as { id: string }[];
       const pinjamanLama = async (nama: string) => {
         const [n] = (await tx.execute(sql`
@@ -45,8 +45,8 @@ describe.skipIf(!URL_DB)("setoran sore", () => {
           returning id`)) as unknown as { id: string }[];
         return p?.id as string;
       };
-      const pBudi = await pinjamanLama("Budi");
-      const pTono = await pinjamanLama("Tono");
+      const pBudi = await pinjamanLama("budi");
+      const pTono = await pinjamanLama("tono");
       const [foto] = (await tx.execute(sql`
         insert into foto (kantor_id, jenis, kunci_berkas, sha256, ukuran_byte, tipe_mime, diunggah_oleh)
         values (${kantorId}, 'serah_terima', 'f', ${"a".repeat(64)}, 1000, 'image/webp', ${andiId})
@@ -59,7 +59,7 @@ describe.skipIf(!URL_DB)("setoran sore", () => {
       });
       const akad = await kirim("/lapangan/akad", {
         isi: {
-          nasabah: { nama: "Sari", kampung: { nama: "Pule" } },
+          nasabah: { nama: "sari", kampung: { nama: "pule" } },
           jenis: "harian",
           pokok: 1_000_000,
           tenor: 24,
@@ -84,7 +84,7 @@ describe.skipIf(!URL_DB)("setoran sore", () => {
         token: ks,
       });
       expect(tf.status).toBe(201);
-      expect(tf.isi).toMatchObject({ nominal: 70_000, nasabah: { nama: "Budi" } });
+      expect(tf.isi).toMatchObject({ nominal: 70_000, nasabah: { nama: "budi" } });
       expect(
         (
           await kirim("/transfer-setoran", {
@@ -114,12 +114,12 @@ describe.skipIf(!URL_DB)("setoran sore", () => {
         token: ks,
       });
       expect(biaya.status).toBe(201);
-      expect(biaya.isi).toMatchObject({ nominal: 30_000, kolektor: { nama: "Andi" } });
+      expect(biaya.isi).toMatchObject({ nominal: 30_000, kolektor: { nama: "andi" } });
 
       const setoran = await kirim(`/transaksi?kolektorId=${andiId}`, { token: ks });
       expect(setoran.isi).toHaveLength(2);
       expect(setoran.isi.find((s: { id: string }) => s.id === setorBudi.isi.id)).toMatchObject({
-        kampung: "Pule",
+        kampung: "pule",
         jenisPinjaman: "harian",
         batasTransfer: 1_200_000,
         transfer: { id: tf.isi.id, nominal: 70_000 },
@@ -163,7 +163,7 @@ describe.skipIf(!URL_DB)("setoran sore", () => {
         selisihSetor: -50_000,
         tekor: 50_000,
         lebihSetor: 0,
-        diterimaOleh: { nama: "Sari" },
+        diterimaOleh: { nama: "sari" },
       });
       expect((await terima(1_200_000)).isi.kode).toBe("KAS_SUDAH_DITERIMA");
       // Kolektor langsung melihat hasilnya.

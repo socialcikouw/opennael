@@ -70,8 +70,8 @@ export async function siapkanKantor(tx: Db, deps: Partial<AppDeps> = {}) {
     await kirim("/auth/register", {
       isi: {
         kodeRegistrasi: KODE_REG,
-        namaKantor: "Kantor Uji",
-        nama: "Bos",
+        namaKantor: "kantor uji",
+        nama: "bos",
         nomorHp: "081299990099",
         sandi: "sandi-rahasia-uji",
       },
@@ -83,7 +83,7 @@ export async function siapkanKantor(tx: Db, deps: Partial<AppDeps> = {}) {
 
   const t = await kirim("/auth/tautan", { isi: {} });
   await kirim("/auth/tautan/setujui", {
-    isi: { kode: t.isi.kode, akun: { peran: "kolektor", nama: "Andi" } },
+    isi: { kode: t.isi.kode, akun: { peran: "kolektor", nama: "andi" } },
     token: bos.tokenAkses,
   });
   const kolektor = (await kirim(`/auth/tautan/${t.isi.id}/klaim`, { isi: { klaim: t.isi.klaim } }))

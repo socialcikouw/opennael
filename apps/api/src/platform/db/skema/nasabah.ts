@@ -12,7 +12,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { foto } from "./foto";
 import { kantor } from "./kantor";
-import { cekLokasi, jejakWaktu, lokasi, waktu } from "./kolom";
+import { cekHurufKecil, cekLokasi, jejakWaktu, lokasi, waktu } from "./kolom";
 import { pengguna } from "./pengguna";
 import { wilayah } from "./wilayah";
 
@@ -51,6 +51,7 @@ export const nasabah = pgTable(
     ...jejakWaktu(),
   },
   (t) => [
+    check("nasabah_huruf_kecil_check", cekHurufKecil(t.nama, t.alasanBlokir)),
     foreignKey({ name: "nasabah_kantor_fk", columns: [t.kantorId], foreignColumns: [kantor.id] }),
     foreignKey({
       name: "nasabah_kolektor_fk",

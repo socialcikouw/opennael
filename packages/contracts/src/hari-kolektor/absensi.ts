@@ -1,5 +1,6 @@
 import { ATURAN_KAS_PAGI } from "@opennael/domain";
 import { z } from "zod";
+import { teksKecil } from "../bersama/dasar";
 
 /**
  * ABSENSI KOLEKTOR (aplikasi HP) — absen pagi, keadaan hari ini.
@@ -23,7 +24,7 @@ export const absenSchema = z.discriminatedUnion("absensi", [
   }),
   z.object({
     absensi: z.literal("tidak_kerja"),
-    alasan: z.string().trim().min(1).max(100),
+    alasan: teksKecil(100),
   }),
 ]);
 export type AbsenInput = z.infer<typeof absenSchema>;

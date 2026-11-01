@@ -21,9 +21,9 @@ describe.skipIf(!URL_DB)("tutup hari", () => {
         values (${kantorId}, '2026-01-01', 126, ${bos.pengguna.id})`);
       await tx.execute(sql`select set_config('nael.migrasi_data', '', true)`);
       const [dedi] = await baris<{ id: string }>(sql`
-        insert into pengguna (kantor_id, peran, nama) values (${kantorId}, 'kolektor', 'Dedi') returning id`);
+        insert into pengguna (kantor_id, peran, nama) values (${kantorId}, 'kolektor', 'dedi') returning id`);
       const [w] = await baris<{ id: string }>(sql`
-        insert into wilayah (kantor_id, nama, dibuat_oleh) values (${kantorId}, 'Pule', ${andiId}) returning id`);
+        insert into wilayah (kantor_id, nama, dibuat_oleh) values (${kantorId}, 'pule', ${andiId}) returning id`);
 
       const pinjamanLama = async (isi: {
         nama: string;
@@ -60,21 +60,21 @@ describe.skipIf(!URL_DB)("tutup hari", () => {
           values (${kantorId}, ${pencatat}, ${pinjamanId}, ${tanggal}, 'angsuran', ${murni}, 900000)`);
 
       // A: harian, 200.000 dalam jendela (500.000 tgl 15 Sep di luar jendela) → macet.
-      const pA = await pinjamanLama({ nama: "A" });
+      const pA = await pinjamanLama({ nama: "a" });
       await setor(pA, "2026-09-15", 500_000);
       for (const t of ["2026-10-01", "2026-10-02", "2026-10-03", "2026-10-05"]) {
         await setor(pA, t, 50_000);
       }
       // B: harian macet sejak 10 Okt, 300.000 dalam jendela → pulih.
-      const pB = await pinjamanLama({ nama: "B", status: "macet", tanggalMacet: "2026-10-10" });
+      const pB = await pinjamanLama({ nama: "b", status: "macet", tanggalMacet: "2026-10-10" });
       for (const t of ["2026-10-12", "2026-10-13", "2026-10-14", "2026-10-15", "2026-10-16"]) {
         await setor(pB, t, 60_000);
       }
       // C: harian baru disalin 10 Okt — 9 hari tagih (< 15) → belum dinilai.
-      const pC = await pinjamanLama({ nama: "C", tanggalDisalin: "2026-10-10" });
+      const pC = await pinjamanLama({ nama: "c", tanggalDisalin: "2026-10-10" });
       // D: tempoan akad 20 Sep tenor 14 → jatuh tempo 4 Okt, lewat 7 hari → macet.
       const pD = await pinjamanLama({
-        nama: "D",
+        nama: "d",
         jenis: "tempoan",
         tenor: 14,
         angsuran: 1_250_000,
@@ -83,7 +83,7 @@ describe.skipIf(!URL_DB)("tutup hari", () => {
       });
       // E: mingguan dipegang Dedi, satu angsuran (120.000) dalam jendela → tetap berjalan.
       const pE = await pinjamanLama({
-        nama: "E",
+        nama: "e",
         pemegang: dedi?.id,
         jenis: "mingguan",
         tenor: 10,

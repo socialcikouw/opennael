@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { orang, tanggal } from "../bersama/dasar";
+import { orang, tanggal, teksKecil } from "../bersama/dasar";
 import { akunKasSchema } from "../kas";
 
 /**
@@ -48,7 +48,7 @@ export const bayarGajiSchema = z.object({
   periodeMulai: tanggal,
   periodeSelesai: tanggal,
   dariAkun: akunKasSchema,
-  keterangan: z.string().trim().min(1).max(200).optional(),
+  keterangan: teksKecil(200).optional(),
 });
 export type BayarGajiInput = z.infer<typeof bayarGajiSchema>;
 

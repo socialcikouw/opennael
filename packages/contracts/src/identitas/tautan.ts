@@ -1,5 +1,6 @@
 import { bakukanKode } from "@opennael/domain";
 import { z } from "zod";
+import { teksKecil } from "../bersama/dasar";
 import { infoPerangkatSchema, nomorHpSchema, peranSchema, sesiSchema } from "./auth";
 
 /** Ketikan bos ("k7qm-28xd") atau isi QR utuh → kode baku. */
@@ -43,9 +44,9 @@ export const setujuiTautanSchema = z.object({
     z
       .object({
         peran: peranTertautSchema,
-        nama: z.string().trim().min(1).max(50),
+        nama: teksKecil(50),
         nomorHp: nomorHpSchema.optional(),
-        resort: z.string().trim().min(1).max(50).optional(),
+        resort: teksKecil(50).optional(),
       })
       .refine((a) => a.resort === undefined || a.peran === "kolektor", {
         message: "Resort hanya untuk kolektor",

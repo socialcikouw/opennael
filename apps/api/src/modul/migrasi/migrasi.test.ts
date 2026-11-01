@@ -26,7 +26,7 @@ describe.skipIf(!URL_DB)("salinan migrasi (A10)", () => {
       const sari = await kirim("/pinjaman/migrasi", {
         isi: {
           ...dasar,
-          nasabah: { nama: "Sari", kampung: { nama: "Pule" } },
+          nasabah: { nama: "sari", kampung: { nama: "pule" } },
           kolektorId: andiId,
           pinjamanKe: 3,
         },
@@ -38,8 +38,8 @@ describe.skipIf(!URL_DB)("salinan migrasi (A10)", () => {
       expect(kartuSari.status).toBe(200);
       expect(kartuSari.isi.waktuAkad).toBeNull();
       expect(sari.isi).toMatchObject({
-        nasabah: { nama: "Sari", baru: true },
-        kolektor: { id: andiId, nama: "Andi" },
+        nasabah: { nama: "sari", baru: true },
+        kolektor: { id: andiId, nama: "andi" },
         pinjamanKe: 3,
         totalKembali: 1_200_000,
         angsuran: 50_000,
@@ -80,7 +80,7 @@ describe.skipIf(!URL_DB)("salinan migrasi (A10)", () => {
           saldo: 450_000,
           tabungan: 0,
           macet: true,
-          nasabah: { nama: "Budi", kampung: { nama: "Pule" } },
+          nasabah: { nama: "budi", kampung: { nama: "pule" } },
           kolektorId: andiId,
         },
         token: b,
@@ -105,13 +105,13 @@ describe.skipIf(!URL_DB)("salinan migrasi (A10)", () => {
       expect(
         (
           await kirim("/pinjaman/migrasi", {
-            isi: { ...dasar, nasabah: { nama: "Tono", kampung: { nama: "Pule" } } },
+            isi: { ...dasar, nasabah: { nama: "tono", kampung: { nama: "pule" } } },
             token: b,
           })
         ).status,
       ).toBe(400);
       const orangBaru = {
-        nasabah: { nama: "Tono", kampung: { nama: "Pule" } },
+        nasabah: { nama: "tono", kampung: { nama: "pule" } },
         kolektorId: andiId,
       };
       expect(
@@ -170,7 +170,7 @@ describe.skipIf(!URL_DB)("salinan migrasi (A10)", () => {
       expect(kejadian.filter((k) => k === "batal_salin_pinjaman")).toHaveLength(2);
       const kampung = await kirim("/lapangan/kampung", { token: b });
       expect(kampung.status).toBe(200);
-      expect(kampung.isi.map((k: { nama: string }) => k.nama)).toContain("Pule");
+      expect(kampung.isi.map((k: { nama: string }) => k.nama)).toContain("pule");
     });
   }, 60_000);
 });

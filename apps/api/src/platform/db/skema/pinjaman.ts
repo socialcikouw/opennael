@@ -14,7 +14,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { foto } from "./foto";
 import { kantor } from "./kantor";
-import { jejakWaktu, rupiah, waktu } from "./kolom";
+import { cekHurufKecil, jejakWaktu, rupiah, waktu } from "./kolom";
 import { nasabah } from "./nasabah";
 import { pengguna } from "./pengguna";
 
@@ -101,6 +101,7 @@ export const pinjaman = pgTable(
     ...jejakWaktu(),
   },
   (t) => [
+    check("pinjaman_huruf_kecil_check", cekHurufKecil(t.alasanBatal, t.keteranganPemutihan)),
     foreignKey({ name: "pinjaman_kantor_fk", columns: [t.kantorId], foreignColumns: [kantor.id] }),
     foreignKey({
       name: "pinjaman_pencair_fk",

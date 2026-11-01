@@ -19,7 +19,7 @@ describe.skipIf(!URL_DB)("pembatalan bos", () => {
 
       const t = await kirim("/auth/tautan", { isi: {} });
       await kirim("/auth/tautan/setujui", {
-        isi: { kode: t.isi.kode, akun: { peran: "kasir", nama: "Sari" } },
+        isi: { kode: t.isi.kode, akun: { peran: "kasir", nama: "sari" } },
         token: b,
       });
       const ks = (
@@ -28,7 +28,7 @@ describe.skipIf(!URL_DB)("pembatalan bos", () => {
 
       // Pegangan Andi (salinan migrasi).
       const [w] = await baris<{ id: string }>(sql`
-        insert into wilayah (kantor_id, nama, dibuat_oleh) values (${kantorId}, 'Pule', ${andiId})
+        insert into wilayah (kantor_id, nama, dibuat_oleh) values (${kantorId}, 'pule', ${andiId})
         returning id`);
       const pinjamanLama = async (isi: {
         nama: string;
@@ -54,22 +54,22 @@ describe.skipIf(!URL_DB)("pembatalan bos", () => {
           returning id`);
         return { pinjamanId: p?.id as string, nasabahId: n?.id as string };
       };
-      const a = await pinjamanLama({ nama: "A", saldo: 1_200_000 });
+      const a = await pinjamanLama({ nama: "a", saldo: 1_200_000 });
       const bLunas = await pinjamanLama({
-        nama: "B",
+        nama: "b",
         saldo: 600_000,
         tabungan: 300_000,
         status: "macet",
         tanggalMacet: "2026-10-01",
       });
       const c = await pinjamanLama({
-        nama: "C",
+        nama: "c",
         jenis: "mingguan",
         tenor: 10,
         angsuran: 120_000,
         saldo: 600_000,
       });
-      const f = await pinjamanLama({ nama: "F", saldo: 1_200_000 });
+      const f = await pinjamanLama({ nama: "f", saldo: 1_200_000 });
 
       let nomorFoto = 0;
       const fotoBaru = async () =>
@@ -82,7 +82,7 @@ describe.skipIf(!URL_DB)("pembatalan bos", () => {
       const akadBaru = async (nama: string) =>
         kirim("/lapangan/akad", {
           isi: {
-            nasabah: { nama, kampung: { nama: "Pule" } },
+            nasabah: { nama, kampung: { nama: "pule" } },
             jenis: "harian",
             pokok: 1_000_000,
             tenor: 24,

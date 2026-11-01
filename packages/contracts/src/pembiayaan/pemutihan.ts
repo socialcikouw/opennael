@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { teksKecil } from "../bersama/dasar";
 
 /**
  * PEMUTIHAN (bos, aturan-usaha K) — piutang dihapus tanpa transaksi; saldo &
@@ -12,7 +13,7 @@ export const alasanPemutihanSchema = z.enum(["macet_lama", "meninggal", "lainnya
 /** `POST /pinjaman/:id/putihkan` */
 export const putihkanSchema = z.object({
   alasan: alasanPemutihanSchema,
-  keterangan: z.string().trim().min(1).max(200),
+  keterangan: teksKecil(200),
 });
 export type PutihkanInput = z.infer<typeof putihkanSchema>;
 

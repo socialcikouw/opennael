@@ -11,14 +11,14 @@ describe.skipIf(!url)("skema database", () => {
     try {
       await sql
         .begin(async (tx) => {
-          const [k] = await tx`insert into kantor (nama) values ('Uji A') returning id`;
+          const [k] = await tx`insert into kantor (nama) values ('uji a') returning id`;
           const [bos] = await tx`
             insert into pengguna (kantor_id, peran, nama, nomor_hp, hash_sandi)
-            values (${k?.id}, 'bos', 'Bos A', '+6281234567890', 'hash') returning id`;
+            values (${k?.id}, 'bos', 'bos a', '+6281234567890', 'hash') returning id`;
           const [kol] = await tx`
-            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kolektor', 'Andi') returning id`;
+            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kolektor', 'andi') returning id`;
           const [w] = await tx`
-            insert into wilayah (kantor_id, nama, dibuat_oleh) values (${k?.id}, 'Pule', ${kol?.id}) returning id`;
+            insert into wilayah (kantor_id, nama, dibuat_oleh) values (${k?.id}, 'pule', ${kol?.id}) returning id`;
           const nasabahBaru = async (nama: string) =>
             (
               await tx`insert into nasabah (kantor_id, kolektor_id, nama, wilayah_id)
@@ -31,8 +31,8 @@ describe.skipIf(!url)("skema database", () => {
                        values (${k?.id}, 'serah_terima', 'f', ${String(++nomorFoto).padStart(64, "0")},
                                1000, 'image/webp', ${kol?.id}) returning id`
             )[0]?.id as string;
-          const n1 = await nasabahBaru("Sari");
-          const n2 = await nasabahBaru("Budi");
+          const n1 = await nasabahBaru("sari");
+          const n2 = await nasabahBaru("budi");
 
           // Akad harian pokok 1 jt (aturan-usaha A5).
           const akad = (isi: Record<string, unknown>) => ({
@@ -125,7 +125,7 @@ describe.skipIf(!url)("skema database", () => {
           expect(m?.angsuran_ke).toBe(12);
 
           // Tempoan: jatuh tempo = akad + tenor.
-          const n3 = await nasabahBaru("Tono");
+          const n3 = await nasabahBaru("tono");
           const fotoTempo = await fotoBaru();
           const [tp] = (await masuk(tx, {
             nasabah_id: n3,

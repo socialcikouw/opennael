@@ -11,8 +11,8 @@ describe.skipIf(!URL_DB)("akad", () => {
       await absen();
 
       // ---- akad (A) ------------------------------------------------------------
-      const sari = await akadBaru("Sari", {
-        nasabah: { nama: "Sari", kampung: { nama: " Pule  Barat " }, nik: "3201010101010001" },
+      const sari = await akadBaru("sari", {
+        nasabah: { nama: "sari", kampung: { nama: " Pule  Barat " }, nik: "3201010101010001" },
       });
       expect(sari.status).toBe(201);
       expect(sari.isi).toMatchObject({
@@ -24,14 +24,14 @@ describe.skipIf(!URL_DB)("akad", () => {
         saldo: 1_200_000,
         angsuran: 50_000,
         angsuranKe: 0,
-        nasabah: { nama: "Sari", kampung: "Pule Barat" },
+        nasabah: { nama: "sari", kampung: "pule barat" },
       });
       expect(
         kode(
-          await akadBaru("Sari Lain", {
+          await akadBaru("sari lain", {
             nasabah: {
-              nama: "Sari Lain",
-              kampung: { nama: "Pule Barat" },
+              nama: "sari lain",
+              kampung: { nama: "pule barat" },
               nik: "3201010101010001",
             },
           }),
@@ -78,7 +78,7 @@ describe.skipIf(!URL_DB)("akad", () => {
     await dalamTransaksi(async (tx) => {
       const { kirim, bos, k, kantorId, absen, fotoBaru, akadBaru } = await siapkanLapangan(tx);
       await absen();
-      const tono = await akadBaru("Tono");
+      const tono = await akadBaru("tono");
       // Seolah 12 angsuran sudah terbayar: saldo 600.000.
       await tx.execute(sql`update pinjaman set saldo = 600000 where id = ${tono.isi.id}`);
       const gulung = (pokok: number, foto?: string) =>
@@ -89,10 +89,10 @@ describe.skipIf(!URL_DB)("akad", () => {
             k,
           ))();
       await tx.execute(sql`insert into kebijakan (kantor_id, gulung_pinjaman_dikunci, alasan_kunci, diubah_oleh)
-                           values (${kantorId}, true, 'Akhir bulan', ${bos.pengguna.id})`);
+                           values (${kantorId}, true, 'akhir bulan', ${bos.pengguna.id})`);
       const dikunci = await gulung(1_000_000, await fotoBaru());
       expect(kode(dikunci)).toBe("GULUNG_PINJAMAN_DIKUNCI");
-      expect(dikunci.isi.pesan).toContain("Akhir bulan");
+      expect(dikunci.isi.pesan).toContain("akhir bulan");
       await tx.execute(sql`delete from kebijakan where kantor_id = ${kantorId}`);
       expect(kode(await gulung(1_500_000, await fotoBaru()))).toBe(
         "GULUNG_PERTAMA_TIDAK_BOLEH_NAIK",
@@ -120,7 +120,7 @@ describe.skipIf(!URL_DB)("akad", () => {
       await absen();
       await tx.execute(sql`insert into kebijakan (kantor_id, kolektor_id, pinjaman_baru_dikunci, diubah_oleh)
                            values (${kantorId}, ${andi.pengguna.id}, true, ${bos.pengguna.id})`);
-      expect(kode(await akadBaru("Dewi"))).toBe("PINJAMAN_BARU_DIKUNCI");
+      expect(kode(await akadBaru("dewi"))).toBe("PINJAMAN_BARU_DIKUNCI");
     });
   }, 120_000);
 });

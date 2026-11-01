@@ -64,10 +64,10 @@ describe.skipIf(!URL_DB)("idempotensi", () => {
     });
     let efek = 0;
     try {
-      await a.db.insert(kantor).values({ id: kantorId, nama: "Uji idempotensi" });
+      await a.db.insert(kantor).values({ id: kantorId, nama: "uji idempotensi" });
       await a.db
         .insert(pengguna)
-        .values({ id: penggunaId, kantorId, peran: "kolektor", nama: "Uji" });
+        .values({ id: penggunaId, kantorId, peran: "kolektor", nama: "uji" });
       const pertama = jalankanIdempoten(
         a.db,
         aktor,
@@ -76,7 +76,7 @@ describe.skipIf(!URL_DB)("idempotensi", () => {
         { uang: 50000 },
         async (tx) => {
           efek++;
-          await tx.update(kantor).set({ nama: "Satu efek" }).where(eq(kantor.id, kantorId));
+          await tx.update(kantor).set({ nama: "satu efek" }).where(eq(kantor.id, kantorId));
           mulai();
           await bolehLanjut;
           return { id: crypto.randomUUID(), uang: 50000 };
@@ -109,19 +109,19 @@ describe.skipIf(!URL_DB)("idempotensi", () => {
       expect(bentrok).toMatchObject({ kode: "KUNCI_IDEMPOTEN_BERBEDA" });
       const gagal = crypto.randomUUID();
       const galat = await jalankanIdempoten(a.db, aktor, gagal, "uji/gagal", {}, async (tx) => {
-        await tx.update(kantor).set({ nama: "Harus rollback" }).where(eq(kantor.id, kantorId));
+        await tx.update(kantor).set({ nama: "harus rollback" }).where(eq(kantor.id, kantorId));
         throw new Error("uji rollback");
       }).catch((e: unknown) => e);
       expect(galat).toMatchObject({ message: "uji rollback" });
       expect((await b.db.select().from(kantor).where(eq(kantor.id, kantorId)))[0]?.nama).toBe(
-        "Satu efek",
+        "satu efek",
       );
       expect(
         await b.db.select().from(operasiIdempoten).where(eq(operasiIdempoten.kunci, gagal)),
       ).toHaveLength(0);
       // Pelaku lain dengan kunci sama harus menjalankan operasinya sendiri.
       const lain = crypto.randomUUID();
-      await a.db.insert(pengguna).values({ id: lain, kantorId, peran: "kolektor", nama: "Lain" });
+      await a.db.insert(pengguna).values({ id: lain, kantorId, peran: "kolektor", nama: "lain" });
       expect(
         await jalankanIdempoten(
           b.db,

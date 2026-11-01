@@ -15,14 +15,14 @@ describe.skipIf(!URL_DB)("rute kolektor", () => {
 
       // Pegangan Andi di tiga kampung.
       const kampung: Record<string, string> = {};
-      for (const nama of ["Pule", "Sawah", "Kebun"]) {
+      for (const nama of ["pule", "sawah", "kebun"]) {
         const [w] = await baris<{ id: string }>(sql`
           insert into wilayah (kantor_id, nama, dibuat_oleh) values (${kantorId}, ${nama}, ${andiId})
           returning id`);
         kampung[nama] = w?.id as string;
         const [n] = await baris<{ id: string }>(sql`
           insert into nasabah (kantor_id, kolektor_id, nama, wilayah_id)
-          values (${kantorId}, ${andiId}, ${`Warga ${nama}`}, ${w?.id}) returning id`);
+          values (${kantorId}, ${andiId}, ${`warga ${nama}`}, ${w?.id}) returning id`);
         await tx.execute(sql`
           insert into pinjaman (kantor_id, pencair_id, dibuat_oleh, nasabah_id, pinjaman_ke, jenis, tenor,
             asal, tanggal_akad, tanggal_disalin, pokok, potongan_admin, tabungan_masuk, pencairan,
@@ -38,7 +38,7 @@ describe.skipIf(!URL_DB)("rute kolektor", () => {
         kirim("/rute-kolektor", { metode: "PUT", isi, token });
 
       // Tanpa rute: abjad kampung.
-      expect(await urutanKartu()).toEqual(["Kebun", "Pule", "Sawah"]);
+      expect(await urutanKartu()).toEqual(["kebun", "pule", "sawah"]);
       expect((await kirim("/rute-kolektor", { token: k })).isi).toMatchObject({
         kolektorId: andiId,
         urutan: [],
@@ -47,15 +47,15 @@ describe.skipIf(!URL_DB)("rute kolektor", () => {
 
       // Kolektor menyusun rutenya — kampung dipilih atau diketik.
       const r1 = await simpan({
-        urutan: [{ wilayahId: kampung.Sawah }, { nama: " pule " }],
+        urutan: [{ wilayahId: kampung.sawah }, { nama: " pule " }],
         versi: 0,
       });
       expect(r1.isi).toMatchObject({
         versi: 1,
-        urutan: [{ nama: "Sawah" }, { nama: "Pule" }],
-        diubahOleh: { nama: "Andi" },
+        urutan: [{ nama: "sawah" }, { nama: "pule" }],
+        diubahOleh: { nama: "andi" },
       });
-      expect(await urutanKartu()).toEqual(["Sawah", "Pule", "Kebun"]);
+      expect(await urutanKartu()).toEqual(["sawah", "pule", "kebun"]);
       expect(kode(await simpan({ urutan: [], versi: 0 }))).toBe("RUTE_VERSI_BASI");
 
       // Bos menyusun ulang; kampung kembar dipadatkan, kampung baru dibuat.
@@ -63,24 +63,24 @@ describe.skipIf(!URL_DB)("rute kolektor", () => {
         {
           kolektorId: andiId,
           urutan: [
-            { nama: "Kebun" },
-            { wilayahId: kampung.Sawah },
+            { nama: "kebun" },
+            { wilayahId: kampung.sawah },
             { nama: "KEBUN" },
-            { nama: "Ladang Baru" },
+            { nama: "ladang baru" },
           ],
           versi: 1,
         },
         b,
       );
       expect(r2.isi.urutan.map((u: { nama: string }) => u.nama)).toEqual([
-        "Kebun",
-        "Sawah",
-        "Ladang Baru",
+        "kebun",
+        "sawah",
+        "ladang baru",
       ]);
-      expect(r2.isi).toMatchObject({ versi: 2, diubahOleh: { nama: "Bos" } });
-      expect(await urutanKartu()).toEqual(["Kebun", "Sawah", "Pule"]);
+      expect(r2.isi).toMatchObject({ versi: 2, diubahOleh: { nama: "bos" } });
+      expect(await urutanKartu()).toEqual(["kebun", "sawah", "pule"]);
       // Layar kolektor yang masih memuat versi 1 tak menimpa susunan bos.
-      expect(kode(await simpan({ urutan: [{ nama: "Pule" }], versi: 1 }))).toBe("RUTE_VERSI_BASI");
+      expect(kode(await simpan({ urutan: [{ nama: "pule" }], versi: 1 }))).toBe("RUTE_VERSI_BASI");
 
       expect(kode(await kirim("/rute-kolektor", { token: b }))).toBe("KOLEKTOR_WAJIB");
       expect(kode(await kirim(`/rute-kolektor?kolektorId=${bos.pengguna.id}`, { token: k }))).toBe(
@@ -90,7 +90,7 @@ describe.skipIf(!URL_DB)("rute kolektor", () => {
 
       // Rute dikosongkan → kembali abjad.
       expect((await simpan({ urutan: [], versi: 2 })).isi).toMatchObject({ urutan: [], versi: 3 });
-      expect(await urutanKartu()).toEqual(["Kebun", "Pule", "Sawah"]);
+      expect(await urutanKartu()).toEqual(["kebun", "pule", "sawah"]);
       const jejak = await baris<{ n: number }>(sql`
         select count(*)::int as n from riwayat_perubahan where baris_id = ${andiId} and aksi = 'simpan_rute'`);
       expect(jejak[0]?.n).toBe(3);

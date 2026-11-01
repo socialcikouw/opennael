@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { teksKecil } from "../bersama/dasar";
 
 /**
  * PROFIL KANTOR (web bos; dibaca semua peran) — nama, zona waktu, jam kerja.
@@ -20,7 +21,7 @@ export const kantorSchema = z.object({
 /** `PATCH /kantor` — buka < tutup; "24:00" boleh untuk tutup. */
 export const ubahKantorSchema = z
   .object({
-    nama: z.string().trim().min(1).max(100).optional(),
+    nama: teksKecil(100).optional(),
     zonaWaktu: z.enum(["WIB", "WITA", "WIT"]).optional(),
     jamBuka: jam.optional(),
     jamTutup: jam.optional(),

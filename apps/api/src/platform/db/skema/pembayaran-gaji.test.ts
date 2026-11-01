@@ -11,20 +11,20 @@ describe.skipIf(!url)("skema database", () => {
     try {
       await sql
         .begin(async (tx) => {
-          const [k] = await tx`insert into kantor (nama) values ('Uji A') returning id`;
-          const [k2] = await tx`insert into kantor (nama) values ('Uji B') returning id`;
+          const [k] = await tx`insert into kantor (nama) values ('uji a') returning id`;
+          const [k2] = await tx`insert into kantor (nama) values ('uji b') returning id`;
           const [bos] = await tx`
             insert into pengguna (kantor_id, peran, nama, nomor_hp, hash_sandi)
-            values (${k?.id}, 'bos', 'Bos A', '+6281234567890', 'hash') returning id`;
+            values (${k?.id}, 'bos', 'bos a', '+6281234567890', 'hash') returning id`;
           const [bos2] = await tx`
             insert into pengguna (kantor_id, peran, nama, nomor_hp, hash_sandi)
-            values (${k2?.id}, 'bos', 'Bos B', '+6281111111111', 'hash') returning id`;
+            values (${k2?.id}, 'bos', 'bos b', '+6281111111111', 'hash') returning id`;
           const [kol] = await tx`
-            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kolektor', 'Andi') returning id`;
+            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kolektor', 'andi') returning id`;
           const [kol2] = await tx`
-            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kolektor', 'Dedi') returning id`;
+            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kolektor', 'dedi') returning id`;
           const [kasir] = await tx`
-            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kasir', 'Sari') returning id`;
+            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kasir', 'sari') returning id`;
           const gaji = (sp: Tx, x: Record<string, unknown>) =>
             sp`insert into pembayaran_gaji ${sp({
               kantor_id: k?.id,

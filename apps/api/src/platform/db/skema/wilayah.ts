@@ -1,7 +1,7 @@
 import { sql } from "drizzle-orm";
 import { check, foreignKey, pgTable, text, unique, uuid, varchar } from "drizzle-orm/pg-core";
 import { kantor } from "./kantor";
-import { jejakWaktu } from "./kolom";
+import { cekHurufKecil, jejakWaktu } from "./kolom";
 import { pengguna } from "./pengguna";
 
 /**
@@ -26,6 +26,7 @@ export const wilayah = pgTable(
     ...jejakWaktu(),
   },
   (t) => [
+    check("wilayah_huruf_kecil_check", cekHurufKecil(t.nama)),
     foreignKey({ name: "wilayah_kantor_fk", columns: [t.kantorId], foreignColumns: [kantor.id] }),
     foreignKey({
       name: "wilayah_dibuat_oleh_fk",

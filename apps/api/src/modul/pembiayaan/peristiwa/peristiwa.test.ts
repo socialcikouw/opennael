@@ -24,10 +24,10 @@ describe.skipIf(!URL_DB)("peristiwa & buku nasabah", () => {
       const t = (n: number) => geserTanggal(T, n);
 
       const [dedi] = await baris<{ id: string }>(sql`
-        insert into pengguna (kantor_id, peran, nama) values (${kantorId}, 'kolektor', 'Dedi') returning id`);
+        insert into pengguna (kantor_id, peran, nama) values (${kantorId}, 'kolektor', 'dedi') returning id`);
       const dediId = dedi?.id as string;
       const [w] = await baris<{ id: string }>(sql`
-        insert into wilayah (kantor_id, nama, dibuat_oleh) values (${kantorId}, 'Pule', ${andiId}) returning id`);
+        insert into wilayah (kantor_id, nama, dibuat_oleh) values (${kantorId}, 'pule', ${andiId}) returning id`);
       const orang = async (nama: string, pemegang: string) => {
         const [n] = await baris<{ id: string }>(sql`
           insert into nasabah (kantor_id, kolektor_id, nama, wilayah_id)
@@ -61,13 +61,13 @@ describe.skipIf(!URL_DB)("peristiwa & buku nasabah", () => {
             saldo_sesudah, dibatalkan_at, dibatalkan_oleh, alasan_batal)
           values (${kantorId}, ${pencatat}, ${pinjamanId}, ${tanggal}, ${isi.jenis ?? "angsuran"}, 100000,
             ${isi.saldoSesudah ?? 1_100_000}, ${isi.batal ? sql`now()` : null},
-            ${isi.batal ? bos.pengguna.id : null}, ${isi.batal ? "Salah ketik" : null})
+            ${isi.batal ? bos.pengguna.id : null}, ${isi.batal ? "salah ketik" : null})
           returning id`);
         return r?.id as string;
       };
 
       // A (pegangan Andi): pinjaman ke-1 lunas, ke-2 berjalan.
-      const a = await orang("Ani", andiId);
+      const a = await orang("ani", andiId);
       const a1 = await pinjamanLama(a, andiId, 1, true);
       const a2 = await pinjamanLama(a, andiId, 2);
       await setor(a1, andiId, t(-35));
@@ -75,10 +75,10 @@ describe.skipIf(!URL_DB)("peristiwa & buku nasabah", () => {
       const dibatalkan = await setor(a2, andiId, t(-3), { batal: true });
       await tx.execute(sql`
         insert into libur_nasabah (kantor_id, pencatat_id, pinjaman_id, tanggal, alasan_libur)
-        values (${kantorId}, ${andiId}, ${a2}, ${t(-2)}, 'Sakit')`);
+        values (${kantorId}, ${andiId}, ${a2}, ${t(-2)}, 'sakit')`);
       const a2Setor = await setor(a2, andiId, t(-1));
       // C (pegangan Dedi).
-      const c = await orang("Citra", dediId);
+      const c = await orang("citra", dediId);
       const c1 = await pinjamanLama(c, dediId, 1);
       const cSetor = await setor(c1, dediId, t(-1));
 
@@ -91,9 +91,9 @@ describe.skipIf(!URL_DB)("peristiwa & buku nasabah", () => {
           kategori: "libur",
           storting: 0,
           saldoSesudah: null,
-          alasanLibur: "Sakit",
-          nasabah: { id: a, nama: "Ani" },
-          pencatat: { id: andiId, nama: "Andi" },
+          alasanLibur: "sakit",
+          nasabah: { id: a, nama: "ani" },
+          pencatat: { id: andiId, nama: "andi" },
         },
         {
           id: a2Setor,
@@ -152,8 +152,8 @@ describe.skipIf(!URL_DB)("peristiwa & buku nasabah", () => {
       const batal = await kirim(`/transaksi/${dibatalkan}`, { token: b });
       expect(batal.isi).toMatchObject({
         id: dibatalkan,
-        pencatat: { id: andiId, nama: "Andi" },
-        dibatalkan: { oleh: { id: bos.pengguna.id, nama: "Bos" }, alasan: "Salah ketik" },
+        pencatat: { id: andiId, nama: "andi" },
+        dibatalkan: { oleh: { id: bos.pengguna.id, nama: "bos" }, alasan: "salah ketik" },
       });
       expect((await kirim(`/transaksi/${a2Setor}`, { token: k })).isi.dibatalkan).toBeNull();
       expect((await kirim(`/transaksi/${cSetor}`, { token: k })).isi.kode).toBe(
@@ -166,7 +166,7 @@ describe.skipIf(!URL_DB)("peristiwa & buku nasabah", () => {
       // Buku nasabah: identitas, pinjaman urut ke-, semua peristiwa berlaku urut tanggal.
       const buku = await kirim(`/nasabah/${a}/buku`, { token: k });
       expect(buku.status).toBe(200);
-      expect(buku.isi.nasabah).toMatchObject({ id: a, nama: "Ani" });
+      expect(buku.isi.nasabah).toMatchObject({ id: a, nama: "ani" });
       expect(buku.isi.pinjaman.map((p: { id: string }) => p.id)).toEqual([a1, a2]);
       expect(
         buku.isi.peristiwa.map((p: { tanggal: string; kategori: string }) => [
@@ -190,7 +190,7 @@ describe.skipIf(!URL_DB)("peristiwa & buku nasabah", () => {
     await dalamTransaksi(async (tx) => {
       const { kirim, k, absen, akadBaru } = await siapkanLapangan(tx);
       await absen();
-      const sari = await akadBaru("Sari");
+      const sari = await akadBaru("sari");
 
       // ---- bayar (C) -----------------------------------------------------------
       const pSari = sari.isi.id as string;
@@ -212,7 +212,7 @@ describe.skipIf(!URL_DB)("peristiwa & buku nasabah", () => {
       );
 
       // ---- lunas (D) -----------------------------------------------------------
-      const budi = await akadBaru("Budi", { pokok: 500_000 });
+      const budi = await akadBaru("budi", { pokok: 500_000 });
       const lunas = await kirim("/lapangan/lunas", { pinjamanId: budi.isi.id }, k);
       expect(lunas.status).toBe(201);
       // Saldo 600.000, tabungan 25.000 → nasabah membayar 575.000.
@@ -226,7 +226,7 @@ describe.skipIf(!URL_DB)("peristiwa & buku nasabah", () => {
       });
 
       // ---- libur (G) -----------------------------------------------------------
-      const penerus = (await akadBaru("Tono")).isi.id as string;
+      const penerus = (await akadBaru("tono")).isi.id as string;
       expect(kode(await kirim("/lapangan/libur", { pinjamanId: penerus }, k))).toBe(
         "LIBUR_BELUM_BOLEH",
       );
@@ -237,7 +237,7 @@ describe.skipIf(!URL_DB)("peristiwa & buku nasabah", () => {
         kode(await kirim("/lapangan/bayar", { pinjamanId: penerus, setoranMurni: 50_000 }, k)),
       ).toBe("PERISTIWA_SUDAH_ADA");
       // G1: tempoan sebelum jatuh tempo tak boleh libur.
-      const wati = await akadBaru("Wati", { jenis: "tempoan", tenor: 14 });
+      const wati = await akadBaru("wati", { jenis: "tempoan", tenor: 14 });
       const pWati = wati.isi.id as string;
       expect(kode(await kirim("/lapangan/libur", { pinjamanId: pWati, alasan: "x" }, k))).toBe(
         "LIBUR_TIDAK_BERLAKU",
@@ -249,7 +249,7 @@ describe.skipIf(!URL_DB)("peristiwa & buku nasabah", () => {
       // B6: tempoan yang jatuh tempo wajib → laporan ditahan, menyebut Wati.
       const tahan = await kirim("/lapangan/laporan", {}, k);
       expect(kode(tahan)).toBe("MASIH_ADA_TAGIHAN");
-      expect(tahan.isi.pesan).toContain("Wati");
+      expect(tahan.isi.pesan).toContain("wati");
       // G1: sejak jatuh tempo boleh libur, tapi wajib beralasan.
       expect(kode(await kirim("/lapangan/libur", { pinjamanId: pWati }, k))).toBe(
         "ALASAN_LIBUR_WAJIB",

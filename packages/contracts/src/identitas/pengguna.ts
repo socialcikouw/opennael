@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { teksKecil } from "../bersama/dasar";
 import { nomorHpSchema, peranSchema } from "./auth";
 
 /**
@@ -28,13 +29,13 @@ export const penggunaSchema = z.object({
 /** `PATCH /pengguna/:id` — `null` menghapus (nomor HP bos wajib; resort hanya kolektor). */
 export const ubahPenggunaSchema = z
   .object({
-    nama: z.string().trim().min(1).max(50).optional(),
+    nama: teksKecil(50).optional(),
     nomorHp: nomorHpSchema.nullable().optional(),
-    resort: z.string().trim().min(1).max(50).nullable().optional(),
+    resort: teksKecil(50).nullable().optional(),
   })
   .refine((v) => Object.values(v).some((x) => x !== undefined), "Isi paling sedikit satu kolom");
 export type UbahPenggunaInput = z.infer<typeof ubahPenggunaSchema>;
 
 /** `POST /pengguna/:id/nonaktifkan` — semua perangkatnya ikut diputus. */
-export const nonaktifkanSchema = z.object({ alasan: z.string().trim().min(1).max(200) });
+export const nonaktifkanSchema = z.object({ alasan: teksKecil(200) });
 export type NonaktifkanInput = z.infer<typeof nonaktifkanSchema>;

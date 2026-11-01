@@ -1,5 +1,6 @@
 import { bakukanNomorHp } from "@opennael/domain";
 import { z } from "zod";
+import { teksKecil } from "../bersama/dasar";
 
 /** Nomor HP yang diketik → E.164 (`0812…` menjadi `+62812…`). */
 export const nomorHpSchema = z
@@ -21,7 +22,7 @@ export type Peran = z.infer<typeof peranSchema>;
 
 /** Keterangan HP yang login — tampilan di daftar perangkat. */
 export const infoPerangkatSchema = z.object({
-  nama: z.string().trim().min(1).max(100).optional(),
+  nama: teksKecil(100).optional(),
   platform: z.enum(["android", "ios", "web"]).optional(),
 });
 
@@ -29,9 +30,9 @@ export const infoPerangkatSchema = z.object({
 export const registrasiSchema = z.object({
   /** Spasi yang ikut tersalin di awal/akhir diabaikan. */
   kodeRegistrasi: z.string().trim().min(1),
-  namaKantor: z.string().trim().min(1).max(100),
+  namaKantor: teksKecil(100),
   zonaWaktu: z.enum(["WIB", "WITA", "WIT"]).default("WIB"),
-  nama: z.string().trim().min(1).max(50),
+  nama: teksKecil(50),
   nomorHp: nomorHpSchema,
   sandi: sandiSchema,
   perangkat: infoPerangkatSchema.optional(),

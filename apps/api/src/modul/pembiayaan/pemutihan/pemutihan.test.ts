@@ -14,7 +14,7 @@ describe.skipIf(!URL_DB)("pemutihan", () => {
       const baris = async <T>(q: ReturnType<typeof sql>) => (await tx.execute(q)) as unknown as T[];
 
       const [w] = await baris<{ id: string }>(sql`
-        insert into wilayah (kantor_id, nama, dibuat_oleh) values (${kantorId}, 'Pule', ${andiId})
+        insert into wilayah (kantor_id, nama, dibuat_oleh) values (${kantorId}, 'pule', ${andiId})
         returning id`);
       const nasabahBaru = async (nama: string) =>
         (
@@ -60,7 +60,7 @@ describe.skipIf(!URL_DB)("pemutihan", () => {
         kirim(`/pinjaman/${id}/putihkan/batal`, { isi: { alasan: "salah pinjaman" }, token: b });
 
       // ---- satu pemutihan: diblokir, lalu batal → kembali macet & blokir dibuka ---------
-      const nSari = await nasabahBaru("Sari");
+      const nSari = await nasabahBaru("sari");
       const pSari = await pinjamanLama(nSari, 1, "2026-10-01");
       expect(kode(await putihkan(pSari, k))).toBe("PERAN_DILARANG");
       const diputihkan = await putihkan(pSari);
@@ -68,7 +68,7 @@ describe.skipIf(!URL_DB)("pemutihan", () => {
         status: "diputihkan",
         saldo: 800_000,
         alasanPemutihan: "macet_lama",
-        nasabah: { diblokir: true, alasanBlokir: "Pinjaman ke-1 diputihkan (macet lama)" },
+        nasabah: { diblokir: true, alasanBlokir: "pinjaman ke-1 diputihkan (macet lama)" },
       });
       expect(kode(await putihkan(pSari))).toBe("SUDAH_DIPUTIHKAN");
       // Saldo & tabungan tak disentuh; tanggal macet tetap tersimpan.
@@ -112,7 +112,7 @@ describe.skipIf(!URL_DB)("pemutihan", () => {
       ]);
 
       // ---- dua pemutihan: blokir bertahan selama masih ada yang diputihkan ---------------
-      const nBudi = await nasabahBaru("Budi");
+      const nBudi = await nasabahBaru("budi");
       const p1 = await pinjamanLama(nBudi, 1, null);
       await putihkan(p1);
       const buka = await kirim(`/nasabah/${nBudi}/buka-blokir`, {
@@ -125,7 +125,7 @@ describe.skipIf(!URL_DB)("pemutihan", () => {
       ).toBe("TIDAK_DIBLOKIR");
       const p2 = await pinjamanLama(nBudi, 2, null);
       expect((await putihkan(p2)).isi.nasabah.alasanBlokir).toBe(
-        "Pinjaman ke-2 diputihkan (macet lama)",
+        "pinjaman ke-2 diputihkan (macet lama)",
       );
       const batalP2 = await batal(p2);
       expect(batalP2.isi).toMatchObject({ status: "berjalan", nasabah: { diblokir: true } });

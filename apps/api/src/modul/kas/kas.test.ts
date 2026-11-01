@@ -26,8 +26,8 @@ describe.skipIf(!URL_DB)("kas kantor & tabungan", () => {
             .isi as Sesi
         ).tokenAkses;
       };
-      const ks = await tautkan("kasir", "Sari");
-      const pw = await tautkan("pengawas", "Pak Wawan");
+      const ks = await tautkan("kasir", "sari");
+      const pw = await tautkan("pengawas", "pak wawan");
       const kode = (r: { isi: Record<string, unknown> }) => r.isi.kode;
       const laporan = async () => (await kirim("/kas/laporan", { token: b })).isi;
 
@@ -81,7 +81,7 @@ describe.skipIf(!URL_DB)("kas kantor & tabungan", () => {
         dariAkun: "tunai",
         keAkun: "bank",
         nominal: 500_000,
-        keterangan: "setor ke BRI",
+        keterangan: "setor ke bri",
       });
       await mutasi({
         jenis: "biaya_kantor",
@@ -103,11 +103,11 @@ describe.skipIf(!URL_DB)("kas kantor & tabungan", () => {
 
       // ---- hari kolektor: kas 1 jt + uang jalan 50 rb, setoran 200 rb (50 rb transfer) ---
       const [w] = (await tx.execute(sql`
-        insert into wilayah (kantor_id, nama, dibuat_oleh) values (${kantorId}, 'Pule', ${andiId})
+        insert into wilayah (kantor_id, nama, dibuat_oleh) values (${kantorId}, 'pule', ${andiId})
         returning id`)) as unknown as { id: string }[];
       const [n] = (await tx.execute(sql`
         insert into nasabah (kantor_id, kolektor_id, nama, wilayah_id, saldo_tabungan)
-        values (${kantorId}, ${andiId}, 'Lasminati', ${w?.id}, 600000) returning id`)) as unknown as {
+        values (${kantorId}, ${andiId}, 'lasminati', ${w?.id}, 600000) returning id`)) as unknown as {
         id: string;
       }[];
       const [p] = (await tx.execute(sql`
@@ -176,7 +176,7 @@ describe.skipIf(!URL_DB)("kas kantor & tabungan", () => {
         saldoBuku: 4_950_000,
         saldoNyata: 4_900_000,
         selisih: -50_000,
-        dicocokkanOleh: { nama: "Pak Wawan" },
+        dicocokkanOleh: { nama: "pak wawan" },
       });
       // Bank cocok persis → keterangan tak perlu.
       const hasilBos = await cocok({ akun: "bank", saldoNyata: 2_450_000 }, b);

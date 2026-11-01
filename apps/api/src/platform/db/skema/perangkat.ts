@@ -10,7 +10,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { kantor } from "./kantor";
-import { waktu } from "./kolom";
+import { cekHurufKecil, waktu } from "./kolom";
 import { pengguna } from "./pengguna";
 
 export const platformPerangkatEnum = pgEnum("platform_perangkat", ["android", "ios", "web"]);
@@ -50,6 +50,7 @@ export const perangkat = pgTable(
     dibuatAt: waktu().notNull().defaultNow(),
   },
   (t) => [
+    check("perangkat_huruf_kecil_check", cekHurufKecil(t.nama)),
     foreignKey({ name: "perangkat_kantor_fk", columns: [t.kantorId], foreignColumns: [kantor.id] }),
     foreignKey({
       name: "perangkat_pengguna_fk",

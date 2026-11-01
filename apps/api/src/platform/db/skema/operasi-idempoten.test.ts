@@ -10,10 +10,10 @@ describe.skipIf(!url)("skema operasi idempoten", () => {
     const db = postgres(url as string, { prepare: false, max: 1 });
     try {
       await db.begin(async (tx) => {
-        const [k] = await tx`insert into kantor (nama) values ('Uji idempoten A') returning id`;
-        const [lain] = await tx`insert into kantor (nama) values ('Uji idempoten B') returning id`;
+        const [k] = await tx`insert into kantor (nama) values ('uji idempoten a') returning id`;
+        const [lain] = await tx`insert into kantor (nama) values ('uji idempoten b') returning id`;
         const [p] =
-          await tx`insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kolektor', 'Uji') returning id`;
+          await tx`insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kolektor', 'uji') returning id`;
         const kunci = crypto.randomUUID();
         const sidik = "a".repeat(64);
         const isi = {

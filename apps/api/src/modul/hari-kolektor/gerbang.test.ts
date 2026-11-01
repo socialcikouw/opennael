@@ -20,8 +20,8 @@ describe.skipIf(!URL_DB)("gerbang lapangan", () => {
       const bos = (
         await ketat("/auth/register", {
           kodeRegistrasi: KODE_REG,
-          namaKantor: "Kantor Saklar",
-          nama: "Bos",
+          namaKantor: "kantor saklar",
+          nama: "bos",
           nomorHp: "081299990011",
           sandi: "sandi-rahasia-uji",
         })
@@ -30,7 +30,7 @@ describe.skipIf(!URL_DB)("gerbang lapangan", () => {
       const t = await ketat("/auth/tautan", {});
       await ketat(
         "/auth/tautan/setujui",
-        { kode: t.isi.kode, akun: { peran: "kolektor", nama: "Budi" } },
+        { kode: t.isi.kode, akun: { peran: "kolektor", nama: "budi" } },
         bos.tokenAkses,
       );
       const k = (
@@ -68,7 +68,7 @@ describe.skipIf(!URL_DB)("gerbang lapangan", () => {
       await tx.execute(sql`update pekan_kerja set hari_kerja = 127 where kantor_id = ${kantorId}`);
       await tx.execute(sql`
         insert into libur_kantor (kantor_id, tanggal, alasan_libur, dibuat_oleh)
-        values (${kantorId}, ${tanggal}, 'Uji libur', ${bos.pengguna.id})`);
+        values (${kantorId}, ${tanggal}, 'uji libur', ${bos.pengguna.id})`);
       expect((await absen(tanpaJam)).isi.kode).toBe("LIBUR_KANTOR");
 
       // Semua dimatikan (laptop): absen diterima, HP melihat lapangan buka.

@@ -11,7 +11,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { kantor } from "./kantor";
-import { rupiah, waktu } from "./kolom";
+import { cekHurufKecil, rupiah, waktu } from "./kolom";
 import { pengguna } from "./pengguna";
 import { pinjaman } from "./pinjaman";
 
@@ -54,6 +54,7 @@ export const transaksi = pgTable(
     dibuatAt: waktu().notNull().defaultNow(),
   },
   (t) => [
+    check("transaksi_huruf_kecil_check", cekHurufKecil(t.alasanBatal)),
     foreignKey({ name: "transaksi_kantor_fk", columns: [t.kantorId], foreignColumns: [kantor.id] }),
     foreignKey({
       name: "transaksi_pencatat_fk",

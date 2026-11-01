@@ -87,7 +87,7 @@ describe.skipIf(!URL_DB)("foto bukti", () => {
       });
       const akad = await kirim("/lapangan/akad", {
         isi: {
-          nasabah: { nama: "Sari", kampung: { nama: "Pule" } },
+          nasabah: { nama: "sari", kampung: { nama: "pule" } },
           jenis: "harian",
           pokok: 1_000_000,
           tenor: 24,
@@ -113,7 +113,7 @@ describe.skipIf(!URL_DB)("foto bukti", () => {
       // Kolektor lain tak boleh membuka — sampai nasabahnya dioper kepadanya.
       const t = await kirim("/auth/tautan", { isi: {} });
       await kirim("/auth/tautan/setujui", {
-        isi: { kode: t.isi.kode, akun: { peran: "kolektor", nama: "Budi" } },
+        isi: { kode: t.isi.kode, akun: { peran: "kolektor", nama: "budi" } },
         token: bos.tokenAkses,
       });
       const budi = (await kirim(`/auth/tautan/${t.isi.id}/klaim`, { isi: { klaim: t.isi.klaim } }))
@@ -203,7 +203,7 @@ describe.skipIf(!URL_DB)("foto bukti", () => {
       });
       const akad = await kirim("/lapangan/akad", {
         isi: {
-          nasabah: { nama: "Sari", kampung: { nama: "Pule" } },
+          nasabah: { nama: "sari", kampung: { nama: "pule" } },
           jenis: "harian",
           pokok: 1_000_000,
           tenor: 24,

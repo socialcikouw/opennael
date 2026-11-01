@@ -7,15 +7,15 @@ describe.skipIf(!URL_DB)("nasabah", () => {
     await dalamTransaksi(async (tx) => {
       const { kirim, k, absen, akadBaru } = await siapkanLapangan(tx);
       await absen();
-      await akadBaru("Sari"); // masih berpinjaman: tidak ikut
-      const budi = await akadBaru("Budi", { pokok: 500_000 });
+      await akadBaru("sari"); // masih berpinjaman: tidak ikut
+      const budi = await akadBaru("budi", { pokok: 500_000 });
       await kirim("/lapangan/lunas", { pinjamanId: budi.isi.id }, k);
       const lama = await kirim("/lapangan/nasabah-lama", undefined, k);
       expect(lama.isi).toEqual([
         {
           id: budi.isi.nasabah.id,
-          nama: "Budi",
-          kampung: "Pule Barat",
+          nama: "budi",
+          kampung: "pule barat",
           tabungan: 0,
           terakhir: { pinjamanKe: 1, jenis: "harian", pokok: 500_000 },
         },

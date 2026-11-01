@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { orang } from "../bersama/dasar";
+import { orang, teksKecil } from "../bersama/dasar";
 import { nomorHpSchema } from "../identitas/auth";
 import { kampungSchema } from "../kantor/wilayah";
 import { jenisPinjamanSchema } from "./pinjaman";
@@ -59,7 +59,7 @@ export type NasabahJawaban = z.infer<typeof nasabahSchema>;
 /** `PATCH /nasabah/:id` — identitas; `null` menghapus nomor HP / NIK. */
 export const ubahNasabahSchema = z
   .object({
-    nama: z.string().trim().min(1).max(50).optional(),
+    nama: teksKecil(50).optional(),
     kampung: kampungSchema.optional(),
     nomorHp: nomorHpSchema.nullable().optional(),
     nik: z
@@ -76,8 +76,8 @@ export const pindahPemegangSchema = z.object({ kolektorId: z.uuid() });
 
 /** `GET /nasabah/serupa` — "mungkin nasabah lama?" sebelum akad (bos, kolektor). */
 export const saringNasabahSerupaSchema = z.object({
-  nama: z.string().trim().min(2).max(50),
-  kampung: z.string().trim().min(1).max(50).optional(),
+  nama: teksKecil(50, 2),
+  kampung: teksKecil(50).optional(),
   nik: z
     .string()
     .regex(/^[0-9]{16}$/)

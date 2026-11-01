@@ -9,7 +9,7 @@ import {
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
-import { waktu } from "./kolom";
+import { cekHurufKecil, waktu } from "./kolom";
 import { pengguna } from "./pengguna";
 
 /**
@@ -35,6 +35,7 @@ export const biayaTakTerduga = pgTable(
     alasanBatal: varchar({ length: 100 }),
   },
   (t) => [
+    check("biaya_tak_terduga_huruf_kecil_check", cekHurufKecil(t.keterangan, t.alasanBatal)),
     foreignKey({
       name: "biaya_tak_terduga_kolektor_fk",
       columns: [t.kolektorId, t.kantorId],

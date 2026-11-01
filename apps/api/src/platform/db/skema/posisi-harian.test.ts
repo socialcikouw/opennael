@@ -11,12 +11,12 @@ describe.skipIf(!url)("skema database", () => {
     try {
       await sql
         .begin(async (tx) => {
-          const [k] = await tx`insert into kantor (nama) values ('Uji A') returning id`;
-          const [k2] = await tx`insert into kantor (nama) values ('Uji B') returning id`;
+          const [k] = await tx`insert into kantor (nama) values ('uji a') returning id`;
+          const [k2] = await tx`insert into kantor (nama) values ('uji b') returning id`;
           const [kol] = await tx`
-            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kolektor', 'Andi') returning id`;
+            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kolektor', 'andi') returning id`;
           const [kasir] = await tx`
-            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kasir', 'Sari') returning id`;
+            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kasir', 'sari') returning id`;
           const potret = (sp: Tx, isi: Record<string, unknown>) =>
             sp`insert into posisi_harian ${sp({
               kantor_id: k?.id,

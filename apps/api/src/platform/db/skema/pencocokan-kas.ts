@@ -1,7 +1,7 @@
 import { sql } from "drizzle-orm";
 import { check, date, foreignKey, index, pgTable, uuid, varchar } from "drizzle-orm/pg-core";
 import { bukuKas } from "./buku-kas";
-import { cekBatal, rupiah, waktu } from "./kolom";
+import { cekBatal, cekHurufKecil, rupiah, waktu } from "./kolom";
 import { akunKasEnum } from "./mutasi-kas-kantor";
 import { pengguna } from "./pengguna";
 
@@ -31,6 +31,7 @@ export const pencocokanKas = pgTable(
     alasanBatal: varchar({ length: 100 }),
   },
   (t) => [
+    check("pencocokan_kas_huruf_kecil_check", cekHurufKecil(t.keterangan, t.alasanBatal)),
     foreignKey({
       name: "pencocokan_kas_kantor_fk",
       columns: [t.kantorId],

@@ -1,9 +1,10 @@
 import { z } from "zod";
+import { teksKecil } from "../bersama/dasar";
 
 /** Kampung nasabah baru: dipilih dari daftar, atau diketik (dibuat bila belum ada). */
 export const kampungSchema = z.union([
   z.object({ wilayahId: z.uuid() }),
-  z.object({ nama: z.string().trim().min(1).max(50) }),
+  z.object({ nama: teksKecil(50) }),
 ]);
 
 /** `GET /lapangan/kampung` — pilihan kampung di formulir akad. */
@@ -37,7 +38,7 @@ export type WilayahJawaban = z.infer<typeof wilayahSchema>;
 /** `POST /wilayah/ganti-nama` — gabung bila nama baru sudah dipakai kampung lain. */
 export const gantiNamaWilayahSchema = z.object({
   dari: z.uuid(),
-  ke: z.string().trim().min(1).max(50),
+  ke: teksKecil(50),
 });
 
 export const hasilGantiNamaWilayahSchema = wilayahSchema.extend({

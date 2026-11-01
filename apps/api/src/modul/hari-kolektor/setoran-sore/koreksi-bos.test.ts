@@ -24,7 +24,7 @@ describe.skipIf(!URL_DB)("koreksi bos: hari kolektor & libur nasabah", () => {
 
       const t = await kirim("/auth/tautan", { isi: {} });
       await kirim("/auth/tautan/setujui", {
-        isi: { kode: t.isi.kode, akun: { peran: "kasir", nama: "Sari" } },
+        isi: { kode: t.isi.kode, akun: { peran: "kasir", nama: "sari" } },
         token: b,
       });
       const ks = (
@@ -33,7 +33,7 @@ describe.skipIf(!URL_DB)("koreksi bos: hari kolektor & libur nasabah", () => {
 
       // Pegangan Andi: salinan migrasi, 4 angsuran sudah lunas (boleh libur, G3).
       const [w] = await baris<{ id: string }>(sql`
-        insert into wilayah (kantor_id, nama, dibuat_oleh) values (${kantorId}, 'Pule', ${andiId}) returning id`);
+        insert into wilayah (kantor_id, nama, dibuat_oleh) values (${kantorId}, 'pule', ${andiId}) returning id`);
       const pinjamanLama = async (nama: string) => {
         const [n] = await baris<{ id: string }>(sql`
           insert into nasabah (kantor_id, kolektor_id, nama, wilayah_id)
@@ -48,12 +48,12 @@ describe.skipIf(!URL_DB)("koreksi bos: hari kolektor & libur nasabah", () => {
           returning id`);
         return p?.id as string;
       };
-      const pTono = await pinjamanLama("Tono");
-      const pBudi = await pinjamanLama("Budi");
+      const pTono = await pinjamanLama("tono");
+      const pBudi = await pinjamanLama("budi");
 
       const ubah = (isi: Record<string, number>, token = b) =>
         kirim(`/hari-kolektor/${andiId}/hari-ini`, { metode: "PATCH", isi, token });
-      const batalLaporan = (alasan = "Nasabah datang bayar sore") =>
+      const batalLaporan = (alasan = "nasabah datang bayar sore") =>
         kirim(`/hari-kolektor/${andiId}/laporan/batal`, { isi: { alasan }, token: b });
       const jejak = (aksi: string) =>
         baris<{ sebelum: unknown; sesudah: unknown; alasan: string | null }>(sql`
@@ -96,7 +96,7 @@ describe.skipIf(!URL_DB)("koreksi bos: hari kolektor & libur nasabah", () => {
       expect((await setorTono()).isi.kode).toBe("LAPORAN_SUDAH_DIBUKA");
 
       const hapus = (id: string, token = b) =>
-        kirim(`/transaksi/libur/${id}/hapus`, { isi: { alasan: "Nasabah datang bayar" }, token });
+        kirim(`/transaksi/libur/${id}/hapus`, { isi: { alasan: "nasabah datang bayar" }, token });
       expect((await hapus(libur.isi.id, k)).status).toBe(403);
       const dihapus = await hapus(libur.isi.id);
       expect(dihapus.status).toBe(200);
@@ -104,7 +104,7 @@ describe.skipIf(!URL_DB)("koreksi bos: hari kolektor & libur nasabah", () => {
       expect(await jejak("hapus_libur")).toMatchObject([
         {
           sebelum: { id: libur.isi.id, pinjamanId: pTono, pencatatId: andiId },
-          alasan: "Nasabah datang bayar",
+          alasan: "nasabah datang bayar",
         },
       ]);
       expect((await hapus(libur.isi.id)).status).toBe(404);
@@ -112,7 +112,7 @@ describe.skipIf(!URL_DB)("koreksi bos: hari kolektor & libur nasabah", () => {
       const dibuka = await batalLaporan();
       expect(dibuka.status).toBe(200);
       expect(dibuka.isi.laporanDibukaAt).toBeNull();
-      expect((await jejak("batal_laporan"))[0]?.alasan).toBe("Nasabah datang bayar sore");
+      expect((await jejak("batal_laporan"))[0]?.alasan).toBe("nasabah datang bayar sore");
       expect((await setorTono()).status).toBe(201);
 
       // Libur hari lain tidak bisa dihapus.
@@ -133,10 +133,10 @@ describe.skipIf(!URL_DB)("koreksi bos: hari kolektor & libur nasabah", () => {
 
       // Kolektor tidak kerja hari ini: angka pagi tak bisa dibetulkan.
       const [dedi] = await baris<{ id: string }>(sql`
-        insert into pengguna (kantor_id, peran, nama) values (${kantorId}, 'kolektor', 'Dedi') returning id`);
+        insert into pengguna (kantor_id, peran, nama) values (${kantorId}, 'kolektor', 'dedi') returning id`);
       await tx.execute(sql`
         insert into hari_kolektor (kantor_id, kolektor_id, tanggal, absensi, alasan_tidak_kerja)
-        values (${kantorId}, ${dedi?.id}, ${T}, 'tidak_kerja', 'Sakit')`);
+        values (${kantorId}, ${dedi?.id}, ${T}, 'tidak_kerja', 'sakit')`);
       const dediUbah = await kirim(`/hari-kolektor/${dedi?.id}/hari-ini`, {
         metode: "PATCH",
         isi: { kasLapangan: 100_000 },

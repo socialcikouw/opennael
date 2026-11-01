@@ -13,7 +13,7 @@ describe.skipIf(!URL_DB)("absensi kolektor", () => {
       expect(kode(await kirim("/lapangan/hari-ini", undefined, bos.tokenAkses))).toBe(
         "PERAN_DILARANG",
       );
-      expect(kode(await akadBaru("Sari"))).toBe("BELUM_ABSEN");
+      expect(kode(await akadBaru("sari"))).toBe("BELUM_ABSEN");
       expect((await kirim("/lapangan/hari-ini", undefined, k)).isi.hari).toBeNull();
       // I0: kas lapangan & uang jalan wajib, minimal 5.000, kelipatan 5.000.
       for (const [kasLapangan, uangJalan] of [
@@ -58,14 +58,14 @@ describe.skipIf(!URL_DB)("absensi kolektor", () => {
     await dalamTransaksi(async (tx) => {
       const { kirim, bos, k, kantorId, absen, akadBaru } = await siapkanLapangan(tx);
       await absen();
-      const sari = await akadBaru("Sari");
+      const sari = await akadBaru("sari");
       const pSari = sari.isi.id as string;
       await kirim("/lapangan/bayar", { pinjamanId: pSari, setoranMurni: 50_000 }, k);
-      const wati = await akadBaru("Wati", { jenis: "tempoan", tenor: 14 });
+      const wati = await akadBaru("wati", { jenis: "tempoan", tenor: 14 });
 
       const hariIni = await kirim("/lapangan/hari-ini", undefined, k);
       await tx.execute(sql`insert into libur_kantor (kantor_id, tanggal, alasan_libur, dibuat_oleh)
-                           values (${kantorId}, ${hariIni.isi.kalender.tanggal}, 'Acara', ${bos.pengguna.id})`);
+                           values (${kantorId}, ${hariIni.isi.kalender.tanggal}, 'acara', ${bos.pengguna.id})`);
       expect(
         kode(await kirim("/lapangan/bayar", { pinjamanId: wati.isi.id, setoranMurni: 50_000 }, k)),
       ).toBe("LIBUR_KANTOR");
@@ -82,7 +82,7 @@ describe.skipIf(!URL_DB)("absensi kolektor", () => {
 
   test("dua koneksi: buka laporan menunggu kunci baris hari kolektor", async () => {
     const hari = "2026-10-29";
-    const f = await siapkanDuaKoneksi("Uji kunci absensi", [hari]);
+    const f = await siapkanDuaKoneksi("uji kunci absensi", [hari]);
     try {
       const layanan = buatLayananAbsensi({
         db: f.db,

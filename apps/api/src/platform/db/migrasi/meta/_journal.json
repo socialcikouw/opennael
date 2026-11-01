@@ -176,6 +176,13 @@
       "when": 1793553694044,
       "tag": "0024_kas_pagi_kelipatan",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1793555820178,
+      "tag": "0025_huruf_kecil",
+      "breakpoints": true
     }
   ]
 }

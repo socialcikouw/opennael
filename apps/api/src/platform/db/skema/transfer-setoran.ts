@@ -8,7 +8,7 @@ import {
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
-import { waktu } from "./kolom";
+import { cekHurufKecil, waktu } from "./kolom";
 import { pengguna } from "./pengguna";
 import { transaksi } from "./transaksi";
 
@@ -34,6 +34,7 @@ export const transferSetoran = pgTable(
     alasanBatal: varchar({ length: 100 }),
   },
   (t) => [
+    check("transfer_setoran_huruf_kecil_check", cekHurufKecil(t.alasanBatal)),
     foreignKey({
       name: "transfer_setoran_transaksi_fk",
       columns: [t.transaksiId, t.kantorId],

@@ -1,6 +1,6 @@
 import { sql } from "drizzle-orm";
 import { check, date, pgEnum, pgTable, time, uuid, varchar } from "drizzle-orm/pg-core";
-import { jejakWaktu } from "./kolom";
+import { cekHurufKecil, jejakWaktu } from "./kolom";
 
 /** Zona Indonesia — offset tetap tanpa jam musim panas. */
 export const zonaWaktuEnum = pgEnum("zona_waktu", ["WIB", "WITA", "WIT"]);
@@ -24,5 +24,8 @@ export const kantor = pgTable(
     tanggalTutupTerakhir: date({ mode: "string" }),
     ...jejakWaktu(),
   },
-  (t) => [check("kantor_jam_check", sql`${t.jamBuka} < ${t.jamTutup}`)],
+  (t) => [
+    check("kantor_huruf_kecil_check", cekHurufKecil(t.nama)),
+    check("kantor_jam_check", sql`${t.jamBuka} < ${t.jamTutup}`),
+  ],
 );

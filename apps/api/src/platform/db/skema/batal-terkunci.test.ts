@@ -11,14 +11,14 @@ describe.skipIf(!url)("skema database", () => {
     try {
       await sql
         .begin(async (tx) => {
-          const [k] = await tx`insert into kantor (nama) values ('Uji A') returning id`;
+          const [k] = await tx`insert into kantor (nama) values ('uji a') returning id`;
           const [bos] = await tx`
             insert into pengguna (kantor_id, peran, nama, nomor_hp, hash_sandi)
-            values (${k?.id}, 'bos', 'Bos A', '+6281234567890', 'hash') returning id`;
+            values (${k?.id}, 'bos', 'bos a', '+6281234567890', 'hash') returning id`;
           const [kol] = await tx`
-            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kolektor', 'Andi') returning id`;
+            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kolektor', 'andi') returning id`;
           const [w] = await tx`
-            insert into wilayah (kantor_id, nama, dibuat_oleh) values (${k?.id}, 'Pule', ${kol?.id}) returning id`;
+            insert into wilayah (kantor_id, nama, dibuat_oleh) values (${k?.id}, 'pule', ${kol?.id}) returning id`;
           const pinjamanBaru = async (nama: string) => {
             const [n] = await tx`
               insert into nasabah (kantor_id, kolektor_id, nama, wilayah_id)
@@ -31,8 +31,8 @@ describe.skipIf(!url)("skema database", () => {
                 '2026-10-02', 1000000, 0, 0, 0, 1200000, 50000, 1200000, 0, 1200000) returning id`;
             return p?.id as string;
           };
-          const pAkad = await pinjamanBaru("Budi");
-          const pSetor = await pinjamanBaru("Sari");
+          const pAkad = await pinjamanBaru("budi");
+          const pSetor = await pinjamanBaru("sari");
           const [t] = await tx`
             insert into transaksi (kantor_id, pencatat_id, pinjaman_id, tanggal, jenis, setoran_murni, saldo_sesudah)
             values (${k?.id}, ${kol?.id}, ${pSetor}, '2026-10-02', 'angsuran', 50000, 1150000) returning id`;

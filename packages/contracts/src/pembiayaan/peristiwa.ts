@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { orang, rupiah, tanggal } from "../bersama/dasar";
+import { orang, rupiah, tanggal, teksKecil } from "../bersama/dasar";
 import { nasabahSchema } from "./nasabah";
 import { jenisPinjamanSchema, kartuPinjamanSchema } from "./pinjaman";
 
@@ -17,7 +17,7 @@ export const lunasSchema = z.object({ pinjamanId: z.uuid() });
 /** `POST /lapangan/libur` — pinjaman tidak ditagih hari ini. */
 export const liburSchema = z.object({
   pinjamanId: z.uuid(),
-  alasan: z.string().trim().min(1).max(100).optional(),
+  alasan: teksKecil(100).optional(),
 });
 
 export const transaksiSchema = z.object({

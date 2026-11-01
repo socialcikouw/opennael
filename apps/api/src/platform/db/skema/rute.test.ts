@@ -11,23 +11,23 @@ describe.skipIf(!url)("skema database", () => {
     try {
       await sql
         .begin(async (tx) => {
-          const [k] = await tx`insert into kantor (nama) values ('Uji A') returning id`;
-          const [k2] = await tx`insert into kantor (nama) values ('Uji B') returning id`;
+          const [k] = await tx`insert into kantor (nama) values ('uji a') returning id`;
+          const [k2] = await tx`insert into kantor (nama) values ('uji b') returning id`;
           const [bos2] = await tx`
             insert into pengguna (kantor_id, peran, nama, nomor_hp, hash_sandi)
-            values (${k2?.id}, 'bos', 'Bos B', '+6281111111111', 'hash') returning id`;
+            values (${k2?.id}, 'bos', 'bos b', '+6281111111111', 'hash') returning id`;
           const [kol] = await tx`
-            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kolektor', 'Andi') returning id`;
+            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kolektor', 'andi') returning id`;
           const [kasir] = await tx`
-            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kasir', 'Sari') returning id`;
+            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kasir', 'sari') returning id`;
           const kampung = async (kantorId: string, nama: string, oleh: string) =>
             (
               await tx`insert into wilayah (kantor_id, nama, dibuat_oleh)
                        values (${kantorId}, ${nama}, ${oleh}) returning id`
             )[0]?.id as string;
-          const w1 = await kampung(k?.id, "Pule", kol?.id);
-          const w2 = await kampung(k?.id, "Sawah", kol?.id);
-          const wLain = await kampung(k2?.id, "Kota", bos2?.id);
+          const w1 = await kampung(k?.id, "pule", kol?.id);
+          const w2 = await kampung(k?.id, "sawah", kol?.id);
+          const wLain = await kampung(k2?.id, "kota", bos2?.id);
 
           await tolak(
             tx,

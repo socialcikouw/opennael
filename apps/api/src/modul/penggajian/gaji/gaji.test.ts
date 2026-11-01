@@ -28,7 +28,7 @@ describe.skipIf(!URL_DB)("gaji kolektor", () => {
           (${kantorId}, null, 500, '2026-01-01', ${bosId}),
           (${kantorId}, ${andiId}, 600, '2026-10-10', ${bosId})`);
       const [w] = (await tx.execute(sql`
-        insert into wilayah (kantor_id, nama, dibuat_oleh) values (${kantorId}, 'Pule', ${andiId})
+        insert into wilayah (kantor_id, nama, dibuat_oleh) values (${kantorId}, 'pule', ${andiId})
         returning id`)) as unknown as { id: string }[];
       const pinjamanLama = async (nama: string) => {
         const [n] = (await tx.execute(sql`
@@ -45,8 +45,8 @@ describe.skipIf(!URL_DB)("gaji kolektor", () => {
           returning id`)) as unknown as { id: string }[];
         return p?.id as string;
       };
-      const p1 = await pinjamanLama("Budi");
-      const p2 = await pinjamanLama("Sari");
+      const p1 = await pinjamanLama("budi");
+      const p2 = await pinjamanLama("sari");
       await tx.execute(sql`
         insert into transaksi (kantor_id, pencatat_id, pinjaman_id, tanggal, jenis,
           setoran_murni, setoran_pelunasan, tabungan_keluar, saldo_sesudah) values
@@ -76,7 +76,7 @@ describe.skipIf(!URL_DB)("gaji kolektor", () => {
         });
       const pra = await pratinjau("2026-10-01", "2026-10-15");
       expect(pra.isi).toMatchObject({
-        kolektor: { id: andiId, nama: "Andi" },
+        kolektor: { id: andiId, nama: "andi" },
         gajiKotor: 488_000,
         potonganTekor: 58_000,
         gajiBersih: 430_000,
@@ -123,7 +123,7 @@ describe.skipIf(!URL_DB)("gaji kolektor", () => {
           sumber: "pembayaran_gaji",
           akun: "tunai",
           nominal: -430_000,
-          keterangan: "Andi",
+          keterangan: "andi",
         }),
       );
 

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { orang, tanggal } from "../bersama/dasar";
+import { orang, tanggal, teksKecil } from "../bersama/dasar";
 import { jenisPinjamanSchema } from "../pembiayaan/pinjaman";
 import { nominalKasPagi } from "./absensi";
 
@@ -11,7 +11,7 @@ import { nominalKasPagi } from "./absensi";
  */
 
 /** `POST .../batal` — semua pembatalan uang oleh bos, hari yang sama (L1). */
-export const batalSchema = z.object({ alasan: z.string().trim().min(1).max(100) });
+export const batalSchema = z.object({ alasan: teksKecil(100) });
 export type BatalInput = z.infer<typeof batalSchema>;
 
 /** Penyaring daftar per kolektor per hari; tanpa tanggal = hari ini (kalender kantor). */
@@ -135,7 +135,7 @@ export const daftarTransferSchema = z.object({
 export const biayaInputSchema = z.object({
   kolektorId: z.uuid(),
   nominal: z.number().int().positive(),
-  keterangan: z.string().trim().min(1).max(100),
+  keterangan: teksKecil(100),
 });
 export type BiayaInput = z.infer<typeof biayaInputSchema>;
 

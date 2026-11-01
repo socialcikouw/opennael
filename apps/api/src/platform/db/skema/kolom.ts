@@ -48,3 +48,17 @@ export const cekBatal = (t: {
 }) =>
   sql`(${t.dibatalkanAt} IS NULL AND ${t.dibatalkanOleh} IS NULL AND ${t.alasanBatal} IS NULL)
     OR (${t.dibatalkanAt} IS NOT NULL AND ${t.dibatalkanOleh} IS NOT NULL AND ${t.alasanBatal} IS NOT NULL)`;
+
+/**
+ * Konvensi #10: teks isian (nama, kampung, alasan, keterangan) disimpan huruf
+ * kecil — `kolom = lower(kolom)`; kolom boleh kosong ditulis `IS NULL OR` terang.
+ * Dipasang sebagai CHECK `<tabel>_huruf_kecil_check` (docs/tampilan.md).
+ */
+export function cekHurufKecil(...kolom: PgColumn[]): SQL {
+  return sql.join(
+    kolom.map((k) =>
+      k.notNull ? sql`${k} = lower(${k})` : sql`(${k} IS NULL OR ${k} = lower(${k}))`,
+    ),
+    sql` AND `,
+  );
+}

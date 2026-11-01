@@ -1,6 +1,6 @@
 import { sql } from "drizzle-orm";
 import { check, date, foreignKey, index, pgTable, uuid, varchar } from "drizzle-orm/pg-core";
-import { rupiah, waktu } from "./kolom";
+import { cekHurufKecil, rupiah, waktu } from "./kolom";
 import { nasabah } from "./nasabah";
 import { pengguna } from "./pengguna";
 
@@ -26,6 +26,7 @@ export const koreksiTabungan = pgTable(
     dibuatAt: waktu().notNull().defaultNow(),
   },
   (t) => [
+    check("koreksi_tabungan_huruf_kecil_check", cekHurufKecil(t.alasanKoreksi)),
     foreignKey({
       name: "koreksi_tabungan_nasabah_fk",
       columns: [t.nasabahId, t.kantorId],

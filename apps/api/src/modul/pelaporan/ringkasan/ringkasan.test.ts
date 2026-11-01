@@ -13,7 +13,7 @@ function pembuat(tx: Db, kantorId: string, bosId: string) {
   return {
     baris,
     async nasabah(kolektorId: string, nama: string, isi: { nik?: string; kampung?: string } = {}) {
-      const kampung = isi.kampung ?? "Pule";
+      const kampung = isi.kampung ?? "pule";
       const [w] = await baris<{ id: string }>(sql`
         insert into wilayah (kantor_id, nama, dibuat_oleh) values (${kantorId}, ${kampung}, ${kolektorId})
         on conflict (kantor_id, kunci) do update set nama = excluded.nama returning id`);
@@ -91,8 +91,8 @@ describe.skipIf(!URL_DB)("ringkasan & layar baca bos", () => {
         return (await kirim(`/auth/tautan/${t.isi.id}/klaim`, { isi: { klaim: t.isi.klaim } }))
           .isi as Sesi;
       };
-      const dedi = await tautkan("kolektor", "Dedi");
-      const pengawas = await tautkan("pengawas", "Wawan");
+      const dedi = await tautkan("kolektor", "dedi");
+      const pengawas = await tautkan("pengawas", "wawan");
       const d = pembuat(tx, kantorId, bos.pengguna.id);
       const [h] = await d.baris<{ t: string }>(sql`select kantor_hari_ini(${kantorId})::text as t`);
       const hari = h?.t as string;
@@ -104,25 +104,25 @@ describe.skipIf(!URL_DB)("ringkasan & layar baca bos", () => {
         insert into posisi_harian (kantor_id, kolektor_id, tanggal, jenis, jumlah_berjalan, saldo_berjalan, angsuran_berjalan)
         values (${kantorId}, ${andiId}, ${kemarin}, 'harian', 40, 10000000, 2000000)`);
       // Hari ini dua pinjaman harian berangsuran 50.000 lunas → mati 100.000.
-      for (const nama of ["Lunas 1", "Lunas 2"]) {
+      for (const nama of ["lunas 1", "lunas 2"]) {
         await d.pinjaman(andiId, await d.nasabah(andiId, nama), {
           status: "lunas",
           tanggalSelesai: hari,
         });
       }
       // Setoran murni harian hari ini 1.710.000 (pinjaman pokok 10 jt, saldo 12 jt).
-      const pBesar = await d.pinjaman(andiId, await d.nasabah(andiId, "Budi"), {
+      const pBesar = await d.pinjaman(andiId, await d.nasabah(andiId, "budi"), {
         pokok: 10_000_000,
       });
       await d.setor(andiId, pBesar, hari, { murni: 1_710_000 });
       // Dedi: setoran 100.000 pada pinjaman yang macet.
-      const pDedi = await d.pinjaman(dedi.pengguna.id, await d.nasabah(dedi.pengguna.id, "Tono"), {
+      const pDedi = await d.pinjaman(dedi.pengguna.id, await d.nasabah(dedi.pengguna.id, "tono"), {
         status: "macet",
         tanggalMacet: "2026-10-01",
       });
       await d.setor(dedi.pengguna.id, pDedi, hari, { murni: 100_000 });
       // Akad baru Andi hari ini: pokok 1 jt → admin & tabungan 50 rb, cair 900 rb.
-      await d.pinjaman(andiId, await d.nasabah(andiId, "Rina"), { baru: hari });
+      await d.pinjaman(andiId, await d.nasabah(andiId, "rina"), { baru: hari });
       // Hari Andi: kas 1 jt + uang jalan 50 rb; diterima 1.980.000 dari 2.000.000 → tekor 20 rb.
       await tx.execute(sql`select set_config('nael.migrasi_data', 'ya', true)`);
       const [hk] = await d.baris<{ id: string }>(sql`
@@ -166,8 +166,8 @@ describe.skipIf(!URL_DB)("ringkasan & layar baca bos", () => {
           r.penagihan.storting,
         ]),
       ).toEqual([
-        ["Andi", 1_710_000],
-        ["Dedi", 100_000],
+        ["andi", 1_710_000],
+        ["dedi", 100_000],
       ]);
       expect(kode(await kirim("/ringkasan/per-kolektor", { token: andi.tokenAkses }))).toBe(
         "PERAN_DILARANG",
@@ -235,7 +235,7 @@ describe.skipIf(!URL_DB)("ringkasan & layar baca bos", () => {
       const kode = (r: { isi: Record<string, unknown> }) => r.isi.kode;
       const t = await kirim("/auth/tautan", { isi: {} });
       await kirim("/auth/tautan/setujui", {
-        isi: { kode: t.isi.kode, akun: { peran: "kolektor", nama: "Dedi" } },
+        isi: { kode: t.isi.kode, akun: { peran: "kolektor", nama: "dedi" } },
         token: b,
       });
       const dedi = (await kirim(`/auth/tautan/${t.isi.id}/klaim`, { isi: { klaim: t.isi.klaim } }))
@@ -276,16 +276,16 @@ describe.skipIf(!URL_DB)("ringkasan & layar baca bos", () => {
 
       // ---- mingguan: contoh N3 — empat pinjaman jatuh tagih hari ini (akad 14 hari lalu) ----
       const akad = geserTanggal(hari, -14);
-      const pA = await jenisLain(andiId, "A", { jenis: "mingguan", akad, angsuran: 150_000 });
-      const pB = await jenisLain(andiId, "B", { jenis: "mingguan", akad, angsuran: 125_000 });
-      await jenisLain(andiId, "C", {
+      const pA = await jenisLain(andiId, "a", { jenis: "mingguan", akad, angsuran: 150_000 });
+      const pB = await jenisLain(andiId, "b", { jenis: "mingguan", akad, angsuran: 125_000 });
+      await jenisLain(andiId, "c", {
         jenis: "mingguan",
         akad,
         angsuran: 100_000,
         status: "macet",
         tanggalMacet: geserTanggal(hari, -7),
       });
-      await jenisLain(andiId, "D", {
+      await jenisLain(andiId, "d", {
         jenis: "mingguan",
         akad,
         angsuran: 200_000,
@@ -293,25 +293,25 @@ describe.skipIf(!URL_DB)("ringkasan & layar baca bos", () => {
         tanggalSelesai: hari,
       });
       // Bukan hari tagihnya (akad 13 hari lalu), dan milik kolektor lain.
-      await jenisLain(andiId, "E", {
+      await jenisLain(andiId, "e", {
         jenis: "mingguan",
         akad: geserTanggal(hari, -13),
         angsuran: 500_000,
       });
-      await jenisLain(dedi.pengguna.id, "F", { jenis: "mingguan", akad, angsuran: 50_000 });
+      await jenisLain(dedi.pengguna.id, "f", { jenis: "mingguan", akad, angsuran: 50_000 });
       await d.setor(andiId, pA, hari, { murni: 150_000 });
       await d.setor(andiId, pB, hari, { murni: 70_000 });
 
       // ---- tempoan: jatuh tempo hari ini; satu lunas hari ini (membayar), satu macet kemarin ----
       const akadTempo = geserTanggal(hari, -14);
-      const pT = await jenisLain(andiId, "T1", {
+      const pT = await jenisLain(andiId, "t1", {
         jenis: "tempoan",
         akad: akadTempo,
         angsuran: 1_250_000,
         status: "lunas",
         tanggalSelesai: hari,
       });
-      await jenisLain(andiId, "T2", {
+      await jenisLain(andiId, "t2", {
         jenis: "tempoan",
         akad: akadTempo,
         angsuran: 900_000,
@@ -324,7 +324,7 @@ describe.skipIf(!URL_DB)("ringkasan & layar baca bos", () => {
       await tx.execute(sql`
         insert into posisi_harian (kantor_id, kolektor_id, tanggal, jenis, jumlah_berjalan, saldo_berjalan, angsuran_berjalan)
         values (${kantorId}, ${andiId}, ${kemarin}, 'harian', 40, 10000000, 2000000)`);
-      const pH = await d.pinjaman(andiId, await d.nasabah(andiId, "H"), { pokok: 10_000_000 });
+      const pH = await d.pinjaman(andiId, await d.nasabah(andiId, "h"), { pokok: 10_000_000 });
       await d.setor(andiId, pH, hari, { murni: 1_000_000 });
 
       const baca = async (jenis: string, token = b, kolektorId = andiId) =>
@@ -419,16 +419,16 @@ describe.skipIf(!URL_DB)("ringkasan & layar baca bos", () => {
       const d = pembuat(tx, kantorId, bos.pengguna.id);
 
       // ---- serupa --------------------------------------------------------------------
-      const nSari = await d.nasabah(andiId, "Sari Wulandari", {
+      const nSari = await d.nasabah(andiId, "sari wulandari", {
         nik: "3201234567890001",
-        kampung: "Pule",
+        kampung: "pule",
       });
-      await d.nasabah(andiId, "Sari Dewi", { kampung: "Sawah" });
+      await d.nasabah(andiId, "sari dewi", { kampung: "sawah" });
       const lewatNama = (
         await kirim("/nasabah/serupa?nama=sari&kampung=PULE", { token: andi.tokenAkses })
       ).isi;
       expect(lewatNama).toEqual([
-        expect.objectContaining({ id: nSari, cocok: "nama", kampung: "Pule", diblokir: false }),
+        expect.objectContaining({ id: nSari, cocok: "nama", kampung: "pule", diblokir: false }),
       ]);
       expect((await kirim("/nasabah/serupa?nama=sari", { token: b })).isi).toHaveLength(2);
       const lewatNik = (await kirim("/nasabah/serupa?nama=zzz&nik=3201234567890001", { token: b }))
@@ -453,7 +453,7 @@ describe.skipIf(!URL_DB)("ringkasan & layar baca bos", () => {
         "PERAN_DILARANG",
       );
       expect((await kirim(`/nasabah/${nSari}/neraca`, { token: b })).isi).toEqual({
-        nasabah: { id: nSari, nama: "Sari Wulandari" },
+        nasabah: { id: nSari, nama: "sari wulandari" },
         jumlahPinjaman: 1,
         totalPencairan: 900_000,
         tabunganDikembalikan: 200_000,

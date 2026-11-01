@@ -35,14 +35,14 @@ describe.skipIf(!URL_DB)("kebijakan (rem bos)", () => {
       await rem(`kolektor/${andiId}`, {
         ...mati,
         gulungPinjamanDikunci: true,
-        alasanKunci: "Andi dievaluasi",
+        alasanKunci: "andi dievaluasi",
       });
       // Kolektor melihat gabungan kantor + dirinya; alasan dari lapis paling spesifik.
       expect((await kirim("/kebijakan", { token: k })).isi).toEqual({
         pinjamanBaruDikunci: true,
         naikPinjamanDikunci: false,
         gulungPinjamanDikunci: true,
-        alasanKunci: "Andi dievaluasi",
+        alasanKunci: "andi dievaluasi",
       });
       // Bos melihat lapis kantor saja.
       expect((await kirim("/kebijakan", { token: b })).isi).toMatchObject({
@@ -61,7 +61,7 @@ describe.skipIf(!URL_DB)("kebijakan (rem bos)", () => {
         returning id`);
       const akad = await kirim("/lapangan/akad", {
         isi: {
-          nasabah: { nama: "Rina", kampung: { nama: "Pule" } },
+          nasabah: { nama: "rina", kampung: { nama: "pule" } },
           jenis: "harian",
           pokok: 1_000_000,
           tenor: 24,
@@ -72,7 +72,7 @@ describe.skipIf(!URL_DB)("kebijakan (rem bos)", () => {
       expect(kode(akad)).toBe("PINJAMAN_BARU_DIKUNCI");
 
       const [w] = await baris<{ id: string }>(sql`
-        insert into wilayah (kantor_id, nama, dibuat_oleh) values (${kantorId}, 'Pule', ${andiId})
+        insert into wilayah (kantor_id, nama, dibuat_oleh) values (${kantorId}, 'pule', ${andiId})
         on conflict do nothing returning id`);
       const wilayahId =
         w?.id ??
@@ -82,7 +82,7 @@ describe.skipIf(!URL_DB)("kebijakan (rem bos)", () => {
           )
         )[0]?.id;
       const [n] = await baris<{ id: string }>(sql`
-        insert into nasabah (kantor_id, kolektor_id, nama, wilayah_id) values (${kantorId}, ${andiId}, 'Sari', ${wilayahId})
+        insert into nasabah (kantor_id, kolektor_id, nama, wilayah_id) values (${kantorId}, ${andiId}, 'sari', ${wilayahId})
         returning id`);
       await rem(`nasabah/${n?.id}`, { naikPinjamanDikunci: true, gulungPinjamanDikunci: false });
       const aktif = (await kirim("/kebijakan/aktif", { token: b })).isi;
@@ -92,7 +92,7 @@ describe.skipIf(!URL_DB)("kebijakan (rem bos)", () => {
         "nasabah",
       ]);
       expect(aktif.find((r: { lapis: string }) => r.lapis === "nasabah")).toMatchObject({
-        sasaran: { nama: "Sari" },
+        sasaran: { nama: "sari" },
         pinjamanBaruDikunci: false,
         naikPinjamanDikunci: true,
       });

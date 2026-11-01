@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { orang, tanggal } from "../bersama/dasar";
+import { orang, tanggal, teksKecil } from "../bersama/dasar";
 
 /**
  * KALENDER KANTOR — pekan kerja bertanggal, libur kantor, kalender sebulan.
@@ -42,7 +42,7 @@ export const saringLiburKantorSchema = z.object({
 export const liburKantorInputSchema = z.object({
   tanggalMulai: tanggal,
   tanggalSelesai: tanggal.optional(),
-  alasan: z.string().trim().min(1).max(100),
+  alasan: teksKecil(100),
 });
 export type LiburKantorInput = z.infer<typeof liburKantorInputSchema>;
 

@@ -11,21 +11,21 @@ describe.skipIf(!url)("skema database", () => {
     try {
       await sql
         .begin(async (tx) => {
-          const [k] = await tx`insert into kantor (nama) values ('Uji A') returning id`;
-          const [k2] = await tx`insert into kantor (nama) values ('Uji B') returning id`;
+          const [k] = await tx`insert into kantor (nama) values ('uji a') returning id`;
+          const [k2] = await tx`insert into kantor (nama) values ('uji b') returning id`;
           const [bos] = await tx`
             insert into pengguna (kantor_id, peran, nama, nomor_hp, hash_sandi)
-            values (${k?.id}, 'bos', 'Bos A', '+6281234567890', 'hash') returning id`;
+            values (${k?.id}, 'bos', 'bos a', '+6281234567890', 'hash') returning id`;
           const [bos2] = await tx`
             insert into pengguna (kantor_id, peran, nama, nomor_hp, hash_sandi)
-            values (${k2?.id}, 'bos', 'Bos B', '+6281111111111', 'hash') returning id`;
+            values (${k2?.id}, 'bos', 'bos b', '+6281111111111', 'hash') returning id`;
           const [kol] = await tx`
-            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kolektor', 'Andi') returning id`;
+            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kolektor', 'andi') returning id`;
           const [w] = await tx`
-            insert into wilayah (kantor_id, nama, dibuat_oleh) values (${k?.id}, 'Pule', ${kol?.id}) returning id`;
+            insert into wilayah (kantor_id, nama, dibuat_oleh) values (${k?.id}, 'pule', ${kol?.id}) returning id`;
           const [n] = await tx`
             insert into nasabah (kantor_id, kolektor_id, nama, wilayah_id, saldo_tabungan)
-            values (${k?.id}, ${kol?.id}, 'Lasminati', ${w?.id}, 600000) returning id`;
+            values (${k?.id}, ${kol?.id}, 'lasminati', ${w?.id}, 600000) returning id`;
           const isi = (x: Record<string, unknown>) =>
             x as Record<string, postgres.ParameterOrJSON<never>>;
 
@@ -59,7 +59,7 @@ describe.skipIf(!url)("skema database", () => {
             jenis: "pindah_akun",
             dari_akun: "tunai",
             ke_akun: "bank",
-            keterangan: "setor ke BRI",
+            keterangan: "setor ke bri",
           });
           await mutasi(tx, {
             jenis: "biaya_kantor",

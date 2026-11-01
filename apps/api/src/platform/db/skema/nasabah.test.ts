@@ -12,29 +12,29 @@ describe.skipIf(!url)("skema database", () => {
     try {
       await sql
         .begin(async (tx) => {
-          const [k] = await tx`insert into kantor (nama) values ('Uji A') returning id`;
-          const [k2] = await tx`insert into kantor (nama) values ('Uji B') returning id`;
+          const [k] = await tx`insert into kantor (nama) values ('uji a') returning id`;
+          const [k2] = await tx`insert into kantor (nama) values ('uji b') returning id`;
           const [bos] = await tx`
             insert into pengguna (kantor_id, peran, nama, nomor_hp, hash_sandi)
-            values (${k?.id}, 'bos', 'Bos A', '+6281234567890', 'hash') returning id`;
+            values (${k?.id}, 'bos', 'bos a', '+6281234567890', 'hash') returning id`;
           const [bos2] = await tx`
             insert into pengguna (kantor_id, peran, nama, nomor_hp, hash_sandi)
-            values (${k2?.id}, 'bos', 'Bos B', '+6281111111111', 'hash') returning id`;
+            values (${k2?.id}, 'bos', 'bos b', '+6281111111111', 'hash') returning id`;
           const [kol] = await tx`
-            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kolektor', 'Andi') returning id`;
+            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kolektor', 'andi') returning id`;
 
           // ---- wilayah -----------------------------------------------------
           const [w] = await tx`
             insert into wilayah (kantor_id, nama, dibuat_oleh)
-            values (${k?.id}, 'Pule Barat', ${kol?.id}) returning id, kunci`;
+            values (${k?.id}, 'pule barat', ${kol?.id}) returning id, kunci`;
           expect(w?.kunci).toBe("pule barat");
           await tolak(
             tx,
             "uniq_wilayah_kantor_kunci",
             (sp) =>
-              sp`insert into wilayah (kantor_id, nama, dibuat_oleh) values (${k?.id}, 'PULE BARAT', ${bos?.id})`,
+              sp`insert into wilayah (kantor_id, nama, dibuat_oleh) values (${k?.id}, 'pule barat', ${bos?.id})`,
           );
-          for (const nama of ["", " Pule", "Pule  Barat"]) {
+          for (const nama of ["", " pule", "pule  barat"]) {
             await tolak(
               tx,
               "wilayah_nama_check",
@@ -42,15 +42,28 @@ describe.skipIf(!url)("skema database", () => {
                 sp`insert into wilayah (kantor_id, nama, dibuat_oleh) values (${k?.id}, ${nama}, ${bos?.id})`,
             );
           }
+          // Konvensi #10: teks isian huruf kecil.
+          await tolak(
+            tx,
+            "wilayah_huruf_kecil_check",
+            (sp) =>
+              sp`insert into wilayah (kantor_id, nama, dibuat_oleh) values (${k?.id}, 'Sawah', ${bos?.id})`,
+          );
+          await tolak(
+            tx,
+            "nasabah_huruf_kecil_check",
+            (sp) =>
+              sp`insert into nasabah (kantor_id, kolektor_id, nama, wilayah_id) values (${k?.id}, ${kol?.id}, 'Budi', ${w?.id})`,
+          );
           // Kantor lain boleh punya kampung bernama sama.
           const [w2] = await tx`
             insert into wilayah (kantor_id, nama, dibuat_oleh)
-            values (${k2?.id}, 'Pule Barat', ${bos2?.id}) returning id`;
+            values (${k2?.id}, 'pule barat', ${bos2?.id}) returning id`;
           await tolak(
             tx,
             "wilayah_dibuat_oleh_fk",
             (sp) =>
-              sp`insert into wilayah (kantor_id, nama, dibuat_oleh) values (${k?.id}, 'Pasar', ${bos2?.id})`,
+              sp`insert into wilayah (kantor_id, nama, dibuat_oleh) values (${k?.id}, 'pasar', ${bos2?.id})`,
           );
 
           // ---- foto --------------------------------------------------------
@@ -102,7 +115,7 @@ describe.skipIf(!url)("skema database", () => {
             sp`insert into nasabah ${sp({
               kantor_id: k?.id,
               kolektor_id: kol?.id,
-              nama: "Sari",
+              nama: "sari",
               wilayah_id: w?.id,
               ...isi,
             } as Record<string, postgres.ParameterOrJSON<never>>)} returning id`;

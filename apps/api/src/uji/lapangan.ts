@@ -31,7 +31,7 @@ export function pengirimLapangan(app: ReturnType<typeof buatApp>) {
 
 export const kode = (r: { isi: Record<string, unknown> }) => r.isi.kode;
 
-/** Kantor siap uji + kolektor "Andi" + pembantu foto, akad, dan absen. */
+/** Kantor siap uji + kolektor "andi" + pembantu foto, akad, dan absen. */
 export async function siapkanLapangan(tx: Db, deps: Parameters<typeof siapkanKantor>[1] = {}) {
   const { app, bos, kolektor: andi, kantorId } = await siapkanKantor(tx, deps);
   const kirim = pengirimLapangan(app);
@@ -91,7 +91,7 @@ export async function siapkanDuaKoneksi(namaKantor: string, tanggalHari: readonl
   const penahan: { lepas: () => void; selesai: Promise<void> }[] = [];
 
   await a.db.insert(kantor).values({ id: kantorId, nama: namaKantor });
-  await a.db.insert(pengguna).values({ id: kolektorId, kantorId, peran: "kolektor", nama: "Uji" });
+  await a.db.insert(pengguna).values({ id: kolektorId, kantorId, peran: "kolektor", nama: "uji" });
   await a.db.insert(hariKolektor).values(
     tanggalHari.map((tanggal) => ({
       kantorId,

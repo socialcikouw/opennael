@@ -29,7 +29,7 @@ describe.skipIf(!URL_DB)("perangkat", () => {
       const milikAndi = await kirim("/auth/perangkat", { token: k });
       expect(milikAndi.isi).toHaveLength(1);
       expect(milikAndi.isi[0]).toMatchObject({
-        pengguna: { id: andi.pengguna.id, nama: "Andi", peran: "kolektor" },
+        pengguna: { id: andi.pengguna.id, nama: "andi", peran: "kolektor" },
         sedangDipakai: true,
       });
       const hpAndi = milikAndi.isi[0].id as string;
@@ -62,7 +62,7 @@ describe.skipIf(!URL_DB)("perangkat", () => {
       const riwayat = await kirim("/auth/perangkat?termasukDiputus=true", { token: b });
       expect(riwayat.isi).toHaveLength(3);
       expect(riwayat.isi.find((p: { id: string }) => p.id === hpAndi).diputus).toMatchObject({
-        oleh: { id: bos.pengguna.id, nama: "Bos" },
+        oleh: { id: bos.pengguna.id, nama: "bos" },
         alasan: "diputus",
       });
       expect((await putus("00000000-0000-4000-8000-000000000000", b)).status).toBe(404);

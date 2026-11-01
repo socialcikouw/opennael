@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { orang } from "../bersama/dasar";
+import { orang, teksKecil } from "../bersama/dasar";
 
 /**
  * KEBIJAKAN (REM BOS) — tiga lapis: kantor, kolektor, nasabah.
@@ -11,7 +11,7 @@ export const remInputSchema = z.object({
   pinjamanBaruDikunci: z.boolean(),
   naikPinjamanDikunci: z.boolean(),
   gulungPinjamanDikunci: z.boolean(),
-  alasanKunci: z.string().trim().min(1).max(100).nullish(),
+  alasanKunci: teksKecil(100).nullish(),
 });
 export type RemInput = z.infer<typeof remInputSchema>;
 

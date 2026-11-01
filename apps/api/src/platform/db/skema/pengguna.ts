@@ -11,7 +11,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { kantor } from "./kantor";
-import { jejakWaktu, waktu } from "./kolom";
+import { cekHurufKecil, jejakWaktu, waktu } from "./kolom";
 
 export const peranPenggunaEnum = pgEnum("peran_pengguna", ["bos", "kasir", "pengawas", "kolektor"]);
 
@@ -48,6 +48,7 @@ export const pengguna = pgTable(
     ...jejakWaktu(),
   },
   (t) => [
+    check("pengguna_huruf_kecil_check", cekHurufKecil(t.nama, t.resort, t.alasanNonaktif)),
     foreignKey({ name: "pengguna_kantor_fk", columns: [t.kantorId], foreignColumns: [kantor.id] }),
     unique("uniq_pengguna_id_kantor").on(t.id, t.kantorId),
     unique("uniq_pengguna_id_kolektor_kantor").on(t.id, t.kolektorKantorId),

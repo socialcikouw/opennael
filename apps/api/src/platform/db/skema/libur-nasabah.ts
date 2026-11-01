@@ -1,6 +1,15 @@
-import { date, foreignKey, index, pgTable, unique, uuid, varchar } from "drizzle-orm/pg-core";
+import {
+  check,
+  date,
+  foreignKey,
+  index,
+  pgTable,
+  unique,
+  uuid,
+  varchar,
+} from "drizzle-orm/pg-core";
 import { kantor } from "./kantor";
-import { waktu } from "./kolom";
+import { cekHurufKecil, waktu } from "./kolom";
 import { pengguna } from "./pengguna";
 import { pinjaman } from "./pinjaman";
 
@@ -23,6 +32,7 @@ export const liburNasabah = pgTable(
     dibuatAt: waktu().notNull().defaultNow(),
   },
   (t) => [
+    check("libur_nasabah_huruf_kecil_check", cekHurufKecil(t.alasanLibur)),
     foreignKey({
       name: "libur_nasabah_kantor_fk",
       columns: [t.kantorId],

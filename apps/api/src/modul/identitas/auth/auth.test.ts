@@ -45,8 +45,8 @@ async function dalamTransaksi(uji: (tx: Db) => Promise<void>) {
 
 const daftar = {
   kodeRegistrasi: KODE,
-  namaKantor: "Nael Capital Uji",
-  nama: "Bos Uji",
+  namaKantor: "nael capital uji",
+  nama: "bos uji",
   nomorHp: "0812-9999-0001",
   sandi: "sandi-rahasia-uji",
   perangkat: { nama: "HP Uji", platform: "android" },
@@ -79,7 +79,7 @@ describe.skipIf(!url)("auth", () => {
       const sesi = (await res.json()) as Sesi;
       expect(sesi.pengguna.peran).toBe("bos");
       expect(sesi.pengguna.nomorHp).toBe("+6281299990001");
-      expect(sesi.pengguna.kantor.nama).toBe("Nael Capital Uji");
+      expect(sesi.pengguna.kantor.nama).toBe("nael capital uji");
       expect(sesi.tokenSegar).toStartWith("pr1.");
 
       // Kantor lahir lengkap: pekan kerja & tarif pertama, satu perangkat.
@@ -91,7 +91,7 @@ describe.skipIf(!url)("auth", () => {
       )) as unknown as { hari_kerja: number; tarif_bp: number; perangkat: number }[];
       expect(isi).toEqual({ hari_kerja: 126, tarif_bp: 500, perangkat: 1 });
 
-      const ganda = await kirim("/auth/register", { ...daftar, namaKantor: "Kantor Lain" });
+      const ganda = await kirim("/auth/register", { ...daftar, namaKantor: "kantor lain" });
       expect(ganda.status).toBe(409);
       expect(((await ganda.json()) as { kode: string }).kode).toBe("NOMOR_HP_DIPAKAI");
 

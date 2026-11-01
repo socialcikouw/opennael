@@ -13,7 +13,7 @@ describe.skipIf(!URL_DB)("aktivitas & riwayat", () => {
       const andiId = andi.pengguna.id;
       const t = await kirim("/auth/tautan", { isi: {} });
       await kirim("/auth/tautan/setujui", {
-        isi: { kode: t.isi.kode, akun: { peran: "pengawas", nama: "Wawan" } },
+        isi: { kode: t.isi.kode, akun: { peran: "pengawas", nama: "wawan" } },
         token: b,
       });
       const pengawas = (
@@ -27,7 +27,7 @@ describe.skipIf(!URL_DB)("aktivitas & riwayat", () => {
       // Kas kantor: setor modal lalu dibatalkan.
       await kirim("/kas/buka", { isi: { tunai: 5_000_000, bank: 0 }, token: b });
       const mutasi = await kirim("/kas/mutasi", {
-        isi: { jenis: "setor_modal", keAkun: "tunai", nominal: 1_000_000, keterangan: "Modal" },
+        isi: { jenis: "setor_modal", keAkun: "tunai", nominal: 1_000_000, keterangan: "modal" },
         token: b,
       });
       expect(mutasi.status).toBe(200);
@@ -36,13 +36,13 @@ describe.skipIf(!URL_DB)("aktivitas & riwayat", () => {
         token: b,
       });
       // Data ditimpa: nama karyawan.
-      await kirim(`/pengguna/${andiId}`, { metode: "PATCH", isi: { nama: "Andi S" }, token: b });
+      await kirim(`/pengguna/${andiId}`, { metode: "PATCH", isi: { nama: "andi s" }, token: b });
       // Akad baru Rina hari ini, dicatat bos untuk Andi.
       const [w] = await baris<{ id: string }>(sql`
-        insert into wilayah (kantor_id, nama, dibuat_oleh) values (${kantorId}, 'Pule', ${andiId}) returning id`);
+        insert into wilayah (kantor_id, nama, dibuat_oleh) values (${kantorId}, 'pule', ${andiId}) returning id`);
       const [n] = await baris<{ id: string }>(sql`
         insert into nasabah (kantor_id, kolektor_id, nama, wilayah_id)
-        values (${kantorId}, ${andiId}, 'Rina', ${w?.id}) returning id`);
+        values (${kantorId}, ${andiId}, 'rina', ${w?.id}) returning id`);
       const [f] = await baris<{ id: string }>(sql`
         insert into foto (kantor_id, jenis, kunci_berkas, sha256, ukuran_byte, tipe_mime, diunggah_oleh)
         values (${kantorId}, 'serah_terima', 'f', ${"e".repeat(64)}, 1000, 'image/webp', ${andiId}) returning id`);
@@ -59,26 +59,26 @@ describe.skipIf(!URL_DB)("aktivitas & riwayat", () => {
       expect(waktu).toEqual([...waktu].sort().reverse());
       const cari = (kejadian: string) => semua.find((a) => a.kejadian === kejadian);
       expect(cari("mutasi_kas")).toMatchObject({
-        pelaku: { id: bosId, nama: "Bos" },
+        pelaku: { id: bosId, nama: "bos" },
         peran: "bos",
-        ringkasan: "Setor modal: Modal",
+        ringkasan: "Setor modal: modal",
         nominal: 1_000_000,
         alasan: null,
         rujukan: { tabel: "mutasi_kas_kantor", id: mutasi.isi.id },
       });
       expect(cari("batal_mutasi_kas")).toMatchObject({
-        ringkasan: "Batal setor modal: Modal",
+        ringkasan: "Batal setor modal: modal",
         nominal: 1_000_000,
         alasan: "salah ketik",
       });
       expect(cari("ubah_pengguna")).toMatchObject({
-        ringkasan: "Ubah data karyawan Andi S",
+        ringkasan: "Ubah data karyawan andi s",
         nominal: null,
         rujukan: { tabel: "pengguna", id: andiId },
       });
       expect(cari("akad")).toMatchObject({
         pelaku: { id: bosId },
-        ringkasan: "Akad baru harian Rina (pinjaman ke-1)",
+        ringkasan: "Akad baru harian rina (pinjaman ke-1)",
         nominal: 1_000_000,
       });
       expect(
@@ -86,7 +86,7 @@ describe.skipIf(!URL_DB)("aktivitas & riwayat", () => {
           .filter((a) => a.kejadian === "setujui_tautan")
           .map((a) => a.ringkasan)
           .sort(),
-      ).toEqual(["Setujui tautan HP Andi S", "Setujui tautan HP Wawan"]);
+      ).toEqual(["Setujui tautan HP andi s", "Setujui tautan HP wawan"]);
 
       // ---- saringan pelaku, tanggal lain, peran -----------------------------------------
       const milikAndi = (await kirim(`/aktivitas?pelakuId=${andiId}`, { token: b })).isi;
@@ -107,9 +107,9 @@ describe.skipIf(!URL_DB)("aktivitas & riwayat", () => {
         await kirim(`/riwayat?tabel=pengguna&barisId=${andiId}`, { token: pengawas.tokenAkses })
       ).isi;
       expect(jejak.find((j: { aksi: string }) => j.aksi === "ubah_pengguna")).toMatchObject({
-        pelaku: { id: bosId, nama: "Bos" },
-        sebelum: { nama: "Andi" },
-        sesudah: { nama: "Andi S" },
+        pelaku: { id: bosId, nama: "bos" },
+        sebelum: { nama: "andi" },
+        sesudah: { nama: "andi s" },
       });
       expect((await kirim("/riwayat?tabel=entah&barisId=x", { token: b })).status).toBe(400);
     });

@@ -10,7 +10,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { kantor } from "./kantor";
-import { waktu } from "./kolom";
+import { cekHurufKecil, waktu } from "./kolom";
 import { pengguna } from "./pengguna";
 
 /**
@@ -61,6 +61,7 @@ export const riwayatPerubahan = pgTable(
     dibuatAt: waktu().notNull().defaultNow(),
   },
   (t) => [
+    check("riwayat_perubahan_huruf_kecil_check", cekHurufKecil(t.alasanPerubahan)),
     foreignKey({
       name: "riwayat_perubahan_kantor_fk",
       columns: [t.kantorId],

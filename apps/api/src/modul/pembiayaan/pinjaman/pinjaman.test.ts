@@ -29,9 +29,9 @@ describe.skipIf(!URL_DB)("pinjaman", () => {
         values (${kantorId}, ${t(-60)}, 127, ${bos.pengguna.id})`);
       await tx.execute(sql`select set_config('nael.migrasi_data', '', true)`);
       const [dedi] = await baris<{ id: string }>(sql`
-        insert into pengguna (kantor_id, peran, nama) values (${kantorId}, 'kolektor', 'Dedi') returning id`);
+        insert into pengguna (kantor_id, peran, nama) values (${kantorId}, 'kolektor', 'dedi') returning id`);
       const [w] = await baris<{ id: string }>(sql`
-        insert into wilayah (kantor_id, nama, dibuat_oleh) values (${kantorId}, 'Pule', ${andiId}) returning id`);
+        insert into wilayah (kantor_id, nama, dibuat_oleh) values (${kantorId}, 'pule', ${andiId}) returning id`);
 
       const orang = async (nama: string, pemegang = andiId) => {
         const [n] = await baris<{ id: string }>(sql`
@@ -66,7 +66,7 @@ describe.skipIf(!URL_DB)("pinjaman", () => {
 
       // A: harian disalin T−5 (5 hari tagih s/d kemarin), 3 angsuran lunas,
       // libur sekali (T−2) → tertinggal 1. Pinjaman pertamanya sudah lunas.
-      const a = await orang("Ani");
+      const a = await orang("ani");
       const aLunas = await pinjamanLama({
         nasabahId: a,
         tanggalAkad: t(-40),
@@ -87,7 +87,7 @@ describe.skipIf(!URL_DB)("pinjaman", () => {
         values (${kantorId}, ${andiId}, ${aAktif}, ${t(-1)}, 'angsuran', 150000, 1050000)`);
 
       // B: tempoan jatuh tempo T−6 → seluruh saldo tertunggak; gulung dikunci bos.
-      const bNasabah = await orang("Budi");
+      const bNasabah = await orang("budi");
       const bPinjaman = await pinjamanLama({
         nasabahId: bNasabah,
         jenis: "tempoan",
@@ -96,14 +96,14 @@ describe.skipIf(!URL_DB)("pinjaman", () => {
       });
       const rem = await kirim(`/kebijakan/nasabah/${bNasabah}`, {
         metode: "PUT",
-        isi: { naikPinjamanDikunci: false, gulungPinjamanDikunci: true, alasanKunci: "Tunggakan" },
+        isi: { naikPinjamanDikunci: false, gulungPinjamanDikunci: true, alasanKunci: "tunggakan" },
         token: b,
       });
       expect(rem.status).toBe(200);
 
       // C: pegangan Dedi — tidak terlihat oleh Andi.
       const cPinjaman = await pinjamanLama({
-        nasabahId: await orang("Citra", dedi?.id),
+        nasabahId: await orang("citra", dedi?.id),
         pemegang: dedi?.id,
         tanggalAkad: t(-3),
         saldo: 1_200_000,
@@ -120,10 +120,10 @@ describe.skipIf(!URL_DB)("pinjaman", () => {
       const kartuA = semuaAktif.isi[0];
       const kartuB = semuaAktif.isi[1];
       expect(kartuA.tagih).toEqual({ tertinggal: 1, tunggakan: 50_000 });
-      expect(kartuA.kolektor).toEqual({ id: andiId, nama: "Andi" });
+      expect(kartuA.kolektor).toEqual({ id: andiId, nama: "andi" });
       expect(kartuA.kunciGulung).toEqual({ gulung: false, naik: false, alasan: null });
       expect(kartuB.tagih).toEqual({ tertinggal: 1, tunggakan: 1_250_000 });
-      expect(kartuB.kunciGulung).toEqual({ gulung: true, naik: false, alasan: "Tunggakan" });
+      expect(kartuB.kunciGulung).toEqual({ gulung: true, naik: false, alasan: "tunggakan" });
 
       // Riwayat satu nasabah: semua status, pinjamanKe menurun; yang selesai tanpa tagih.
       const riwayatA = await kirim(`/pinjaman?status=semua&nasabahId=${a}`, { token: b });
@@ -144,7 +144,7 @@ describe.skipIf(!URL_DB)("pinjaman", () => {
       const rincianA = await kirim(`/pinjaman/${aAktif}`, { token: k });
       expect(rincianA.status).toBe(200);
       expect(rincianA.isi).toMatchObject({
-        pencair: { id: andiId, nama: "Andi" },
+        pencair: { id: andiId, nama: "andi" },
         tanggalDisalin: t(-5),
         tagih: { tertinggal: 1, tunggakan: 50_000 },
         aturanMacet: {
@@ -200,18 +200,18 @@ describe.skipIf(!URL_DB)("pinjaman", () => {
         "PERAN_DILARANG",
       );
       await absen();
-      const sari = await akadBaru("Sari");
-      const tono = await akadBaru("Tono");
-      await akadBaru("Wati", { jenis: "tempoan", tenor: 14 });
+      const sari = await akadBaru("sari");
+      const tono = await akadBaru("tono");
+      await akadBaru("wati", { jenis: "tempoan", tenor: 14 });
       await kirim("/lapangan/bayar", { pinjamanId: sari.isi.id, setoranMurni: 50_000 }, k);
       await tx.execute(sql`update pinjaman set saldo = 1100000 where id = ${tono.isi.id}`);
       await kirim("/lapangan/libur", { pinjamanId: tono.isi.id, alasan: "sakit" }, k);
 
       const daftar = await kirim("/lapangan/pinjaman", undefined, k);
       expect(daftar.isi.map((p: { nasabah: { nama: string } }) => p.nasabah.nama)).toEqual([
-        "Sari",
-        "Tono",
-        "Wati",
+        "sari",
+        "tono",
+        "wati",
       ]);
       // Catatan hari ini: Sari sudah setor, penerus Tono libur, Wati belum.
       expect(daftar.isi.map((p: { hariIni: unknown }) => p.hariIni)).toEqual([

@@ -10,7 +10,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { bukuKas } from "./buku-kas";
-import { cekBatal, rupiah, waktu } from "./kolom";
+import { cekBatal, cekHurufKecil, rupiah, waktu } from "./kolom";
 import { pengguna } from "./pengguna";
 
 /** Akun kas kantor — satu brankas, satu rekening (docs/skema/schema-buku-kas.md). */
@@ -51,6 +51,7 @@ export const mutasiKasKantor = pgTable(
     alasanBatal: varchar({ length: 100 }),
   },
   (t) => [
+    check("mutasi_kas_kantor_huruf_kecil_check", cekHurufKecil(t.keterangan, t.alasanBatal)),
     foreignKey({
       name: "mutasi_kas_kantor_kantor_fk",
       columns: [t.kantorId],

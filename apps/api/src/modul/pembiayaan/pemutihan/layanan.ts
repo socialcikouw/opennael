@@ -126,7 +126,7 @@ export function buatLayananPemutihan(deps: PemutihanDeps) {
           .returning();
         if (!baru) throw new Error("pinjaman hilang");
         if (!n.diblokirAt) {
-          const alasanBlokir = `Pinjaman ke-${p.pinjamanKe} diputihkan (${LABEL_ALASAN[input.alasan]})`;
+          const alasanBlokir = `pinjaman ke-${p.pinjamanKe} diputihkan (${LABEL_ALASAN[input.alasan]})`;
           await tx
             .update(nasabah)
             .set({ diblokirAt: sekarang(), diblokirOleh: aktor.penggunaId, alasanBlokir })

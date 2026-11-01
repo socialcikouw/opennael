@@ -9,7 +9,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { kantor } from "./kantor";
-import { jejakWaktu } from "./kolom";
+import { cekHurufKecil, jejakWaktu } from "./kolom";
 import { nasabah } from "./nasabah";
 import { pengguna } from "./pengguna";
 
@@ -40,6 +40,7 @@ export const kebijakan = pgTable(
     ...jejakWaktu(),
   },
   (t) => [
+    check("kebijakan_huruf_kecil_check", cekHurufKecil(t.alasanKunci)),
     foreignKey({ name: "kebijakan_kantor_fk", columns: [t.kantorId], foreignColumns: [kantor.id] }),
     foreignKey({
       name: "kebijakan_kolektor_fk",

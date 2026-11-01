@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { orang, rupiah } from "../bersama/dasar";
+import { orang, rupiah, teksKecil } from "../bersama/dasar";
 import { akunKasSchema } from "../kas";
 
 /**
@@ -14,7 +14,7 @@ export const penarikanInputSchema = z.object({
   nominal: z.number().int().positive(),
   dariAkun: akunKasSchema,
   saldoSebelum: rupiah,
-  alasan: z.string().trim().min(1).max(200),
+  alasan: teksKecil(200),
 });
 export type PenarikanInput = z.infer<typeof penarikanInputSchema>;
 
@@ -36,7 +36,7 @@ export const penarikanSchema = z.object({
 export const koreksiInputSchema = z.object({
   saldoBaru: rupiah,
   saldoSebelum: rupiah,
-  alasan: z.string().trim().min(1).max(200),
+  alasan: teksKecil(200),
 });
 export type KoreksiInput = z.infer<typeof koreksiInputSchema>;
 

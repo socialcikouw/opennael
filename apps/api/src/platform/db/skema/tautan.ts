@@ -1,7 +1,7 @@
 import { sql } from "drizzle-orm";
 import { check, foreignKey, index, pgTable, unique, uuid, varchar } from "drizzle-orm/pg-core";
 import { kantor } from "./kantor";
-import { waktu } from "./kolom";
+import { cekHurufKecil, waktu } from "./kolom";
 import { pengguna } from "./pengguna";
 import { perangkat, platformPerangkatEnum } from "./perangkat";
 
@@ -33,6 +33,7 @@ export const tautan = pgTable(
     dibuatAt: waktu().notNull().defaultNow(),
   },
   (t) => [
+    check("tautan_huruf_kecil_check", cekHurufKecil(t.nama)),
     unique("uniq_tautan_kode").on(t.kode),
     foreignKey({ name: "tautan_kantor_fk", columns: [t.kantorId], foreignColumns: [kantor.id] }),
     foreignKey({

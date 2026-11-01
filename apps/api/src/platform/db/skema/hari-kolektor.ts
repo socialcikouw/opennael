@@ -11,7 +11,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { kantor } from "./kantor";
-import { jejakWaktu, rupiah, waktu } from "./kolom";
+import { cekHurufKecil, jejakWaktu, rupiah, waktu } from "./kolom";
 import { pengguna } from "./pengguna";
 
 export const statusAbsensiEnum = pgEnum("status_absensi", ["masuk_kerja", "tidak_kerja"]);
@@ -44,6 +44,7 @@ export const hariKolektor = pgTable(
     ...jejakWaktu(),
   },
   (t) => [
+    check("hari_kolektor_huruf_kecil_check", cekHurufKecil(t.alasanTidakKerja)),
     foreignKey({
       name: "hari_kolektor_kantor_fk",
       columns: [t.kantorId],

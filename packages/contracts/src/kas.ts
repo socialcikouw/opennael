@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { orang, rupiah, tanggal } from "./bersama/dasar";
+import { orang, rupiah, tanggal, teksKecil } from "./bersama/dasar";
 
 /**
  * KAS KANTOR (web bos; pencocokan juga pengawas) — buku kas, mutasi tangan,
@@ -50,7 +50,7 @@ export const mutasiInputSchema = z.object({
   dariAkun: akunKasSchema.nullish(),
   keAkun: akunKasSchema.nullish(),
   nominal: z.number().int().positive(),
-  keterangan: z.string().trim().min(1).max(200),
+  keterangan: teksKecil(200),
 });
 export type MutasiInput = z.infer<typeof mutasiInputSchema>;
 
@@ -116,7 +116,7 @@ export const laporanKasSchema = z.object({
 export const pencocokanInputSchema = z.object({
   akun: akunKasSchema,
   saldoNyata: rupiah,
-  keterangan: z.string().trim().min(1).max(200).optional(),
+  keterangan: teksKecil(200).optional(),
 });
 export type PencocokanInput = z.infer<typeof pencocokanInputSchema>;
 

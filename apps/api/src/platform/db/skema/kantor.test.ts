@@ -13,8 +13,8 @@ describe.skipIf(!url)("skema database", () => {
         .begin(async (tx) => {
           // ---- kantor ------------------------------------------------------
           const [k] =
-            await tx`insert into kantor (nama) values ('Uji A') returning id, jam_buka, jam_tutup`;
-          const [k2] = await tx`insert into kantor (nama) values ('Uji B') returning id`;
+            await tx`insert into kantor (nama) values ('uji a') returning id, jam_buka, jam_tutup`;
+          const [k2] = await tx`insert into kantor (nama) values ('uji b') returning id`;
           expect(k?.jam_buka).toBe("07:00:00");
           expect(k?.jam_tutup).toBe("24:00:00");
           await tolak(
@@ -27,15 +27,15 @@ describe.skipIf(!url)("skema database", () => {
           // ---- pengguna ----------------------------------------------------
           const [bos] = await tx`
             insert into pengguna (kantor_id, peran, nama, nomor_hp, hash_sandi)
-            values (${k?.id}, 'bos', 'Bos A', '+6281234567890', 'hash') returning id`;
+            values (${k?.id}, 'bos', 'bos a', '+6281234567890', 'hash') returning id`;
           const [bos2] = await tx`
             insert into pengguna (kantor_id, peran, nama, nomor_hp, hash_sandi)
-            values (${k2?.id}, 'bos', 'Bos B', '+6281111111111', 'hash') returning id`;
+            values (${k2?.id}, 'bos', 'bos b', '+6281111111111', 'hash') returning id`;
           const [kol] = await tx`
             insert into pengguna (kantor_id, peran, nama, resort)
-            values (${k?.id}, 'kolektor', 'Andi', 'Resort 1') returning id, kolektor_kantor_id`;
+            values (${k?.id}, 'kolektor', 'andi', 'resort 1') returning id, kolektor_kantor_id`;
           const [kasir] = await tx`
-            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kasir', 'Sari')
+            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kasir', 'sari')
             returning kolektor_kantor_id`;
           expect(kol?.kolektor_kantor_id).toBe(k?.id);
           expect(kasir?.kolektor_kantor_id).toBeNull();
@@ -56,7 +56,7 @@ describe.skipIf(!url)("skema database", () => {
             tx,
             "pengguna_resort_check",
             (sp) =>
-              sp`insert into pengguna (kantor_id, peran, nama, resort) values (${k?.id}, 'kasir', 'x', 'R')`,
+              sp`insert into pengguna (kantor_id, peran, nama, resort) values (${k?.id}, 'kasir', 'x', 'r')`,
           );
           await tolak(
             tx,
@@ -69,10 +69,10 @@ describe.skipIf(!url)("skema database", () => {
             "uniq_pengguna_bos_kantor",
             (sp) =>
               sp`insert into pengguna (kantor_id, peran, nama, nomor_hp, hash_sandi)
-               values (${k?.id}, 'bos', 'Bos kedua', '+6289999999999', 'hash')`,
+               values (${k?.id}, 'bos', 'bos kedua', '+6289999999999', 'hash')`,
           );
           // Kantor ketiga (belum punya bos) — yang diuji hanya nomor HP kembar.
-          const [k3] = await tx`insert into kantor (nama) values ('Uji C') returning id`;
+          const [k3] = await tx`insert into kantor (nama) values ('uji c') returning id`;
           await tolak(
             tx,
             "uniq_pengguna_nomor_hp_bos",
@@ -256,7 +256,7 @@ describe.skipIf(!url)("skema database", () => {
           // ---- riwayat_perubahan -------------------------------------------
           const [jejak] = await tx`
             insert into riwayat_perubahan (kantor_id, tabel, baris_id, aksi, sesudah, pelaku_id)
-            values (${k?.id}, 'pengguna', ${kol?.id}, 'buat_pengguna', '{"nama":"Andi"}', ${bos?.id}) returning id`;
+            values (${k?.id}, 'pengguna', ${kol?.id}, 'buat_pengguna', '{"nama":"andi"}', ${bos?.id}) returning id`;
           await tolak(
             tx,
             "riwayat_perubahan_append_only",

@@ -12,7 +12,7 @@ describe("kalender gerbang", () => {
     tanggal: "2026-10-26",
     dalamJamKerja: false,
     hariKerja: false,
-    liburKantor: "Maulid",
+    liburKantor: "maulid",
   };
 
   test("semua diperiksa: kalender apa adanya", () => {
@@ -113,10 +113,10 @@ describe.skipIf(!URL_DB)("kalender kantor", () => {
         token: k,
       });
       const [w] = await baris<{ id: string }>(sql`
-        insert into wilayah (kantor_id, nama, dibuat_oleh) values (${kantorId}, 'Pule', ${andiId})
+        insert into wilayah (kantor_id, nama, dibuat_oleh) values (${kantorId}, 'pule', ${andiId})
         returning id`);
       const [n] = await baris<{ id: string }>(sql`
-        insert into nasabah (kantor_id, kolektor_id, nama, wilayah_id) values (${kantorId}, ${andiId}, 'Sari', ${w?.id})
+        insert into nasabah (kantor_id, kolektor_id, nama, wilayah_id) values (${kantorId}, ${andiId}, 'sari', ${w?.id})
         returning id`);
       // ---- libur kantor ------------------------------------------------------------------
       const libur = (isi: Record<string, unknown>) => kirim("/libur-kantor", { isi, token: b });
@@ -125,7 +125,7 @@ describe.skipIf(!URL_DB)("kalender kantor", () => {
           await libur({
             tanggalMulai: besok,
             tanggalSelesai: geserTanggal(hari, 3),
-            alasan: "Lebaran",
+            alasan: "lebaran",
           })
         ).isi,
       ).toEqual({
@@ -137,7 +137,7 @@ describe.skipIf(!URL_DB)("kalender kantor", () => {
           await libur({
             tanggalMulai: geserTanggal(hari, 3),
             tanggalSelesai: geserTanggal(hari, 4),
-            alasan: "Lebaran",
+            alasan: "lebaran",
           })
         ).isi,
       ).toEqual({ ditambah: [geserTanggal(hari, 4)], dilewati: [geserTanggal(hari, 3)] });
@@ -172,7 +172,7 @@ describe.skipIf(!URL_DB)("kalender kantor", () => {
         kirim(`/libur-kantor/${tanggal}/batal`, { isi: { alasan: "jadi masuk" }, token: b });
       const deklarasi = Array(4).fill("deklarasi_libur_kantor");
       expect(await aksi("libur_kantor")).toEqual(deklarasi);
-      expect((await batalLibur(besok)).isi).toEqual({ tanggal: besok, alasan: "Lebaran" });
+      expect((await batalLibur(besok)).isi).toEqual({ tanggal: besok, alasan: "lebaran" });
       expect(kode(await batalLibur(besok))).toBe("LIBUR_TIDAK_DITEMUKAN");
       expect(kode(await batalLibur(hari))).toBe("HANYA_LIBUR_BELUM_TIBA");
       // Hanya pembatalan yang berhasil menambah jejak.
@@ -186,8 +186,8 @@ describe.skipIf(!URL_DB)("kalender kantor", () => {
       const bos = (
         await kirim("/auth/register", {
           kodeRegistrasi: KODE_REG,
-          namaKantor: "Kantor Kalender",
-          nama: "Bos",
+          namaKantor: "kantor kalender",
+          nama: "bos",
           nomorHp: "081299990012",
           sandi: "sandi-rahasia-uji",
         })
@@ -196,7 +196,7 @@ describe.skipIf(!URL_DB)("kalender kantor", () => {
       // Pekan kerja bawaan kantor baru: Senin–Sabtu (B2). Libur kantor Kamis 5 Nov.
       await tx.execute(sql`
         insert into libur_kantor (kantor_id, tanggal, alasan_libur, dibuat_oleh)
-        values (${kantorId}, '2026-11-05', 'Rapat', ${bos.pengguna.id})`);
+        values (${kantorId}, '2026-11-05', 'rapat', ${bos.pengguna.id})`);
       const r = await kirim("/lapangan/kalender?bulan=2026-11", undefined, bos.tokenAkses);
       expect(r.status).toBe(200);
       // November 2026: 30 hari, 5 Minggu → 25 hari kerja, dikurangi 1 libur kantor.
@@ -204,7 +204,7 @@ describe.skipIf(!URL_DB)("kalender kantor", () => {
       expect(r.isi.hariTagih).not.toContain("2026-11-01"); // Minggu
       expect(r.isi.hariTagih).not.toContain("2026-11-05"); // libur kantor
       expect(r.isi.hariTagih).toContain("2026-11-30");
-      expect(r.isi.liburKantor).toEqual([{ tanggal: "2026-11-05", alasan: "Rapat" }]);
+      expect(r.isi.liburKantor).toEqual([{ tanggal: "2026-11-05", alasan: "rapat" }]);
       expect(
         (await kirim("/lapangan/kalender?bulan=2026-13", undefined, bos.tokenAkses)).status,
       ).toBe(400);

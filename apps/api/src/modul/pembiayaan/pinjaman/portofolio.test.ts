@@ -18,10 +18,10 @@ describe.skipIf(!URL_DB)("portofolio kolektor", () => {
       const baris = async <T>(q: ReturnType<typeof sql>) => (await tx.execute(q)) as unknown as T[];
 
       const [dedi] = await baris<{ id: string }>(sql`
-        insert into pengguna (kantor_id, peran, nama) values (${kantorId}, 'kolektor', 'Dedi')
+        insert into pengguna (kantor_id, peran, nama) values (${kantorId}, 'kolektor', 'dedi')
         returning id`);
       const [w] = await baris<{ id: string }>(sql`
-        insert into wilayah (kantor_id, nama, dibuat_oleh) values (${kantorId}, 'Pule', ${andiId})
+        insert into wilayah (kantor_id, nama, dibuat_oleh) values (${kantorId}, 'pule', ${andiId})
         returning id`);
       const nasabahBaru = async (nama: string, pemegang: string) =>
         (
@@ -61,11 +61,11 @@ describe.skipIf(!URL_DB)("portofolio kolektor", () => {
         )[0]?.id as string;
       };
 
-      const ani = await nasabahBaru("Ani", andiId);
-      const budi = await nasabahBaru("Budi", andiId);
-      const citra = await nasabahBaru("Citra", andiId);
-      const dewi = await nasabahBaru("Dewi", andiId);
-      const eko = await nasabahBaru("Eko", dedi?.id as string);
+      const ani = await nasabahBaru("ani", andiId);
+      const budi = await nasabahBaru("budi", andiId);
+      const citra = await nasabahBaru("citra", andiId);
+      const dewi = await nasabahBaru("dewi", andiId);
+      const eko = await nasabahBaru("eko", dedi?.id as string);
 
       // Ani: pinjaman harian pertama sudah lunas (tak dihitung), kedua berjalan.
       await pinjamanLama({ nasabahId: ani, pemegang: andiId, ke: 1, saldo: 0, status: "lunas" });

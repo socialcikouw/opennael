@@ -23,12 +23,12 @@ describe.skipIf(!URL_DB)("profil kantor", () => {
         kirim("/kantor", { metode: "PATCH", isi, token });
       expect(kode(await ubahKantor({ nama: "x" }, k))).toBe("PERAN_DILARANG");
       expect(kode(await ubahKantor({ jamBuka: "23:00", jamTutup: "22:00" }))).toBe("JAM_TIDAK_SAH");
-      expect((await ubahKantor({ nama: "Nael Pule", jamBuka: "00:00" })).isi.nama).toBe(
-        "Nael Pule",
+      expect((await ubahKantor({ nama: "nael pule", jamBuka: "00:00" })).isi.nama).toBe(
+        "nael pule",
       );
       const [jejakKantor] = await baris<{ sesudah: Record<string, unknown> }>(sql`
         select sesudah from riwayat_perubahan where kantor_id = ${kantorId} and aksi = 'ubah_kantor'`);
-      expect(jejakKantor?.sesudah).toEqual({ nama: "Nael Pule" });
+      expect(jejakKantor?.sesudah).toEqual({ nama: "nael pule" });
     });
   }, 60_000);
 });

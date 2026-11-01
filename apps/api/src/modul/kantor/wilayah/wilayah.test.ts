@@ -23,19 +23,19 @@ describe.skipIf(!URL_DB)("kampung", () => {
           returning id`);
         return w?.id as string;
       };
-      const pule = await kampung("Pule");
-      const puleh = await kampung("Puleh");
-      const sawah = await kampung("Sawah");
-      const kosong = await kampung("Kosong");
+      const pule = await kampung("pule");
+      const puleh = await kampung("puleh");
+      const sawah = await kampung("sawah");
+      const kosong = await kampung("kosong");
       const orang = async (nama: string, wilayahId: string) => {
         const [n] = await baris<{ id: string }>(sql`
           insert into nasabah (kantor_id, kolektor_id, nama, wilayah_id)
           values (${kantorId}, ${andiId}, ${nama}, ${wilayahId}) returning id`);
         return n?.id as string;
       };
-      await orang("Ani", pule);
-      await orang("Budi", puleh);
-      const citra = await orang("Citra", puleh);
+      await orang("ani", pule);
+      await orang("budi", puleh);
+      const citra = await orang("citra", puleh);
       await tx.execute(sql`
         insert into pinjaman (kantor_id, pencair_id, dibuat_oleh, nasabah_id, pinjaman_ke, jenis, tenor,
           asal, tanggal_akad, tanggal_disalin, pokok, potongan_admin, tabungan_masuk, pencairan,
@@ -61,10 +61,10 @@ describe.skipIf(!URL_DB)("kampung", () => {
       const daftar = await kirim("/wilayah", { token: k });
       expect(daftar.status).toBe(200);
       expect(daftar.isi.map((w: { nama: string }) => w.nama)).toEqual([
-        "Kosong",
-        "Pule",
-        "Puleh",
-        "Sawah",
+        "kosong",
+        "pule",
+        "puleh",
+        "sawah",
       ]);
       expect(daftar.isi[2]).toMatchObject({
         id: puleh,
@@ -72,7 +72,7 @@ describe.skipIf(!URL_DB)("kampung", () => {
         nasabahAktif: 1,
         nasabahTotal: 2,
         dipakaiRute: 1,
-        dibuatOleh: { id: andiId, nama: "Andi" },
+        dibuatOleh: { id: andiId, nama: "andi" },
       });
       expect((await kirim("/wilayah?baru=7", { token: k })).status).toBe(403);
       expect((await kirim("/wilayah?baru=7", { token: b })).isi).toHaveLength(4);
@@ -80,34 +80,34 @@ describe.skipIf(!URL_DB)("kampung", () => {
       // Ganti nama: nama dirapikan; versi rute yang memuatnya naik.
       const ganti = (dari: string, ke: string, token = b) =>
         kirim("/wilayah/ganti-nama", { isi: { dari, ke }, token });
-      expect((await ganti(sawah, "Sawah Lor", k)).status).toBe(403);
+      expect((await ganti(sawah, "sawah lor", k)).status).toBe(403);
       const lor = await ganti(sawah, "  Sawah   Lor ");
-      expect(lor.isi).toMatchObject({ id: sawah, nama: "Sawah Lor", digabung: false });
-      expect((await ganti(sawah, "Sawah Lor")).isi.kode).toBe("TIDAK_ADA_PERUBAHAN");
+      expect(lor.isi).toMatchObject({ id: sawah, nama: "sawah lor", digabung: false });
+      expect((await ganti(sawah, "sawah lor")).isi.kode).toBe("TIDAK_ADA_PERUBAHAN");
       expect(await jejak("ganti_nama_wilayah")).toEqual([
-        { sebelum: { nama: "Sawah" }, sesudah: { nama: "Sawah Lor" } },
+        { sebelum: { nama: "sawah" }, sesudah: { nama: "sawah lor" } },
       ]);
 
-      // Gabung salah ketik: "Puleh" → "pule" (kunci Pule sudah ada).
+      // Gabung salah ketik: "puleh" → "pule" (kunci Pule sudah ada).
       const gabung = await ganti(puleh, "pule");
       expect(gabung.isi).toMatchObject({
         id: pule,
-        nama: "Pule",
+        nama: "pule",
         nasabahTotal: 3,
         nasabahAktif: 1,
         dipakaiRute: 1,
         digabung: true,
       });
       expect(await jejak("gabung_wilayah")).toEqual([
-        { sebelum: { id: puleh, nama: "Puleh" }, sesudah: { id: pule, nama: "Pule" } },
+        { sebelum: { id: puleh, nama: "puleh" }, sesudah: { id: pule, nama: "pule" } },
       ]);
       // Rute: Puleh→Pule lalu dipadatkan (posisi paling depan), urutan rapat.
       const rute = await kirim("/rute-kolektor", { token: k });
       expect(rute.isi).toMatchObject({
         versi: 3,
         urutan: [
-          { wilayahId: pule, nama: "Pule" },
-          { wilayahId: sawah, nama: "Sawah Lor" },
+          { wilayahId: pule, nama: "pule" },
+          { wilayahId: sawah, nama: "sawah lor" },
         ],
       });
       expect((await kirim("/wilayah", { token: b })).isi.map((w: { id: string }) => w.id)).toEqual([
@@ -122,9 +122,9 @@ describe.skipIf(!URL_DB)("kampung", () => {
       expect((await hapus(sawah)).isi.kode).toBe("WILAYAH_MASIH_DIPAKAI");
       expect((await hapus(kosong, k)).status).toBe(403);
       const terhapus = await hapus(kosong);
-      expect([terhapus.status, terhapus.isi]).toEqual([200, { id: kosong, nama: "Kosong" }]);
+      expect([terhapus.status, terhapus.isi]).toEqual([200, { id: kosong, nama: "kosong" }]);
       expect(await jejak("hapus_wilayah")).toEqual([
-        { sebelum: { nama: "Kosong" }, sesudah: null },
+        { sebelum: { nama: "kosong" }, sesudah: null },
       ]);
       expect((await hapus(kosong)).status).toBe(404);
     });
@@ -134,9 +134,9 @@ describe.skipIf(!URL_DB)("kampung", () => {
     await dalamTransaksi(async (tx) => {
       const { kirim, k, absen, akadBaru } = await siapkanLapangan(tx);
       await absen();
-      await akadBaru("Sari");
+      await akadBaru("sari");
       expect((await kirim("/lapangan/kampung", undefined, k)).isi).toEqual([
-        { id: expect.any(String), nama: "Pule Barat" },
+        { id: expect.any(String), nama: "pule barat" },
       ]);
     });
   }, 120_000);

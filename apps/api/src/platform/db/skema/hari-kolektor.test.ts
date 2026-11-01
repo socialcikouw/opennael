@@ -11,19 +11,19 @@ describe.skipIf(!url)("skema database", () => {
     try {
       await sql
         .begin(async (tx) => {
-          const [k] = await tx`insert into kantor (nama) values ('Uji A') returning id`;
+          const [k] = await tx`insert into kantor (nama) values ('uji a') returning id`;
           const [bos] = await tx`
             insert into pengguna (kantor_id, peran, nama, nomor_hp, hash_sandi)
-            values (${k?.id}, 'bos', 'Bos A', '+6281234567890', 'hash') returning id`;
+            values (${k?.id}, 'bos', 'bos a', '+6281234567890', 'hash') returning id`;
           const [kol] = await tx`
-            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kolektor', 'Andi') returning id`;
+            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kolektor', 'andi') returning id`;
           const [kasir] = await tx`
-            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kasir', 'Sari') returning id`;
+            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kasir', 'sari') returning id`;
           const [w] = await tx`
-            insert into wilayah (kantor_id, nama, dibuat_oleh) values (${k?.id}, 'Pule', ${kol?.id}) returning id`;
+            insert into wilayah (kantor_id, nama, dibuat_oleh) values (${k?.id}, 'pule', ${kol?.id}) returning id`;
           const [n] = await tx`
             insert into nasabah (kantor_id, kolektor_id, nama, wilayah_id)
-            values (${k?.id}, ${kol?.id}, 'Budi', ${w?.id}) returning id`;
+            values (${k?.id}, ${kol?.id}, 'budi', ${w?.id}) returning id`;
           const [p] = await tx`
             insert into pinjaman (kantor_id, pencair_id, dibuat_oleh, nasabah_id, pinjaman_ke, jenis, tenor,
               asal, tanggal_akad, tanggal_disalin, pokok, potongan_admin, tabungan_masuk, pencairan,
@@ -138,7 +138,7 @@ describe.skipIf(!url)("skema database", () => {
 
           // ---- libur_kantor ----------------------------------------------------
           await tx`insert into libur_kantor (kantor_id, tanggal, alasan_libur, dibuat_oleh)
-                   values (${k?.id}, ${hariIni}::date + 3, 'Idul Fitri', ${bos?.id})`;
+                   values (${k?.id}, ${hariIni}::date + 3, 'idul fitri', ${bos?.id})`;
           await tolak(
             tx,
             "libur_kantor_tidak_mundur",
@@ -149,7 +149,7 @@ describe.skipIf(!url)("skema database", () => {
           await tolak(
             tx,
             "libur_kantor_tidak_mundur",
-            (sp) => sp`update libur_kantor set alasan_libur = 'Lebaran' where kantor_id = ${k?.id}`,
+            (sp) => sp`update libur_kantor set alasan_libur = 'lebaran' where kantor_id = ${k?.id}`,
           );
           await tolak(
             tx,
@@ -167,7 +167,7 @@ describe.skipIf(!url)("skema database", () => {
           );
           // Hari ini boleh dideklarasikan, tetapi tak bisa dibatalkan lagi.
           await tx`insert into libur_kantor (kantor_id, tanggal, alasan_libur, dibuat_oleh)
-                   values (${k?.id}, ${hariIni}, 'Acara keluarga', ${bos?.id})`;
+                   values (${k?.id}, ${hariIni}, 'acara keluarga', ${bos?.id})`;
           await tolak(
             tx,
             "libur_kantor_tidak_mundur",
@@ -179,7 +179,7 @@ describe.skipIf(!url)("skema database", () => {
 
           // ---- kebijakan ---------------------------------------------------------
           await tx`insert into kebijakan (kantor_id, gulung_pinjaman_dikunci, alasan_kunci, diubah_oleh)
-                   values (${k?.id}, true, 'Akhir bulan', ${bos?.id})`;
+                   values (${k?.id}, true, 'akhir bulan', ${bos?.id})`;
           await tolak(
             tx,
             "uniq_kebijakan_kantor",

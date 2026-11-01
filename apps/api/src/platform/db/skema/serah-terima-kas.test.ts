@@ -11,22 +11,22 @@ describe.skipIf(!url)("skema database", () => {
     try {
       await sql
         .begin(async (tx) => {
-          const [k] = await tx`insert into kantor (nama) values ('Uji A') returning id`;
-          const [k2] = await tx`insert into kantor (nama) values ('Uji B') returning id`;
+          const [k] = await tx`insert into kantor (nama) values ('uji a') returning id`;
+          const [k2] = await tx`insert into kantor (nama) values ('uji b') returning id`;
           const [bos] = await tx`
             insert into pengguna (kantor_id, peran, nama, nomor_hp, hash_sandi)
-            values (${k?.id}, 'bos', 'Bos A', '+6281234567890', 'hash') returning id`;
+            values (${k?.id}, 'bos', 'bos a', '+6281234567890', 'hash') returning id`;
           const [bos2] = await tx`
             insert into pengguna (kantor_id, peran, nama, nomor_hp, hash_sandi)
-            values (${k2?.id}, 'bos', 'Bos B', '+6281111111111', 'hash') returning id`;
+            values (${k2?.id}, 'bos', 'bos b', '+6281111111111', 'hash') returning id`;
           const [kol] = await tx`
-            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kolektor', 'Andi') returning id`;
+            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kolektor', 'andi') returning id`;
           const [kol2] = await tx`
-            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kolektor', 'Dedi') returning id`;
+            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kolektor', 'dedi') returning id`;
           const [kasir] = await tx`
-            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kasir', 'Sari') returning id`;
+            insert into pengguna (kantor_id, peran, nama) values (${k?.id}, 'kasir', 'sari') returning id`;
           const [w] = await tx`
-            insert into wilayah (kantor_id, nama, dibuat_oleh) values (${k?.id}, 'Pule', ${kol?.id}) returning id`;
+            insert into wilayah (kantor_id, nama, dibuat_oleh) values (${k?.id}, 'pule', ${kol?.id}) returning id`;
           // Pinjaman salinan migrasi (tanpa foto), saldo 600.000.
           const pinjamanBaru = async (nama: string) => {
             const [n] = await tx`
@@ -51,7 +51,7 @@ describe.skipIf(!url)("skema database", () => {
                 ...isi,
               } as Record<string, postgres.ParameterOrJSON<never>>)} returning id`
             )[0]?.id as string;
-          const p1 = await pinjamanBaru("Budi");
+          const p1 = await pinjamanBaru("budi");
           // Hari Andi: kas lapangan 1 jt, uang jalan 50 rb; laporan belum dibuka.
           const [hk] = await tx`
             insert into hari_kolektor (kantor_id, kolektor_id, tanggal, absensi, kas_lapangan, uang_jalan)
@@ -64,19 +64,19 @@ describe.skipIf(!url)("skema database", () => {
             setoran_pelunasan: 10_000,
             saldo_sesudah: 540_000,
           });
-          const tLunas = await setor(await pinjamanBaru("Sari"), {
+          const tLunas = await setor(await pinjamanBaru("sari"), {
             jenis: "pelunasan",
             setoran_murni: 100_000,
             setoran_pelunasan: 500_000,
             tabungan_keluar: 500_000,
             saldo_sesudah: 0,
           });
-          const tGulung = await setor(await pinjamanBaru("Tono"), {
+          const tGulung = await setor(await pinjamanBaru("tono"), {
             jenis: "gulung",
             setoran_pelunasan: 600_000,
             saldo_sesudah: 0,
           });
-          const tLain = await setor(await pinjamanBaru("Rina"), {
+          const tLain = await setor(await pinjamanBaru("rina"), {
             setoran_murni: 50_000,
             saldo_sesudah: 550_000,
           });

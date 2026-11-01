@@ -51,8 +51,8 @@ describe.skipIf(!url)("tautan QR", () => {
       const bos = (
         await kirim("/auth/register", {
           kodeRegistrasi: KODE_REG,
-          namaKantor: "Kantor Tautan",
-          nama: "Bos",
+          namaKantor: "kantor tautan",
+          nama: "bos",
           nomorHp: "081299990002",
           sandi: "sandi-rahasia-uji",
         })
@@ -71,7 +71,7 @@ describe.skipIf(!url)("tautan QR", () => {
       expect((await klaim1("kunci-salah")).status).toBe(404);
 
       // ---- 2. bos menyetujui: akun kolektor baru ---------------------------
-      const akunBaru = { peran: "kolektor", nama: "Andi", resort: "Resort 1" };
+      const akunBaru = { peran: "kolektor", nama: "andi", resort: "resort 1" };
       expect(
         (await kirim("/auth/tautan/setujui", { kode: t1.isi.kode, akun: akunBaru })).status,
       ).toBe(401);
@@ -91,8 +91,9 @@ describe.skipIf(!url)("tautan QR", () => {
         bos.tokenAkses,
       );
       expect(setuju.status).toBe(200);
-      expect(setuju.isi.pengguna).toMatchObject({ nama: "Andi", peran: "kolektor" });
-      expect(setuju.isi.perangkat).toEqual({ nama: "HP Andi", platform: "android" });
+      expect(setuju.isi.pengguna).toMatchObject({ nama: "andi", peran: "kolektor" });
+      // Teks isian dikecilkan (konvensi skema 10): "HP Andi" tersimpan "hp andi".
+      expect(setuju.isi.perangkat).toEqual({ nama: "hp andi", platform: "android" });
       // Kode yang sudah disetujui tak bisa disetujui lagi.
       expect(
         (await kirim("/auth/tautan/setujui", { kode: t1.isi.kode, akun: akunBaru }, bos.tokenAkses))
@@ -105,7 +106,7 @@ describe.skipIf(!url)("tautan QR", () => {
       expect(tertaut.isi.status).toBe("tertaut");
       const andi = tertaut.isi as Sesi;
       expect(andi.pengguna.peran).toBe("kolektor");
-      expect((await kirim("/auth/me", undefined, andi.tokenAkses)).isi.nama).toBe("Andi");
+      expect((await kirim("/auth/me", undefined, andi.tokenAkses)).isi.nama).toBe("andi");
       expect((await klaim1()).status).toBe(409);
 
       // Kolektor tak bisa menyetujui tautan.
