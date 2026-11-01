@@ -24,7 +24,8 @@ import { Portofolio } from "./komponen/portofolio";
 
 /**
  * DASBOR KOLEKTOR — angka kerja sekilas, MENGIKUTI MODE aktif (Harian ·
- * Mingguan · Tempoan · Semua): bentuk layarnya sama, isinya tidak. Rasio bayar
+ * Mingguan · Tempoan · Semua): bentuk layarnya sama, isinya tidak. Di mode kerja
+ * tampil sebagai tab Analitik (paling kanan), di mode Semua sebagai Dasbor. Rasio bayar
  * hari ini (Tempoan: jatuh tempo), performa tagihan murni, portofolio (saldo
  * berjalan, macet, diputihkan, piutang aktif), dan setoran hari ini — semuanya
  * dari pinjaman jenis mode itu. Pengingat (belum absen, belum dicatat, laporan)

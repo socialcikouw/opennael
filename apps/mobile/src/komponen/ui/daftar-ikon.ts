@@ -10,6 +10,7 @@ import Bell from "lucide-react-native/icons/bell";
 import Calculator from "lucide-react-native/icons/calculator";
 import Calendar from "lucide-react-native/icons/calendar";
 import Camera from "lucide-react-native/icons/camera";
+import ChartColumnIncreasing from "lucide-react-native/icons/chart-column-increasing";
 import Check from "lucide-react-native/icons/check";
 import CheckCheck from "lucide-react-native/icons/check-check";
 import ChevronDown from "lucide-react-native/icons/chevron-down";
@@ -60,6 +61,7 @@ export const IKON = {
   eye: Eye,
   calendar: Calendar,
   camera: Camera,
+  "chart-column-increasing": ChartColumnIncreasing,
   "circle-pause": CirclePause,
   "user-plus": UserPlus,
   "trending-up": TrendingUp,
