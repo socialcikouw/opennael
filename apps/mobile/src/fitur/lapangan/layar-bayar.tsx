@@ -25,7 +25,8 @@ import { PapanTombol, tinggiTombolPapan } from "./komponen/papan-tombol";
  * sama dengan server; pelunasan sebagian lewat rincian pinjaman.
  *
  * Tata letak: atas = siapa & berapa (nasabah, patokan, nominal besar di
- * tengah); bawah = panel papan angka + KONFIRMASI dalam jangkauan jempol.
+ * tengah); bawah = panel papan angka (C ⌫ di atas · 1–9 · 00 0 000) + KONFIRMASI
+ * dalam jangkauan jempol.
  */
 export function LayarBayar({ id }: { id: string }) {
   const WARNA = useWarna();

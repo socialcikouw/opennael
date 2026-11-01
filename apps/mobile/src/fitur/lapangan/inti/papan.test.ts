@@ -5,12 +5,23 @@ import {
   KOSONGKAN,
   MUNDUR,
   nilaiDigit,
+  PAPAN_BAYAR,
   POKOK_MAKS,
   tekanBayar,
   tekanPokok,
 } from "./papan";
 
 describe("papan bayar", () => {
+  test("susunan: C ⌫ · 1 2 3 · 4 5 6 · 7 8 9 · 00 0 000", () => {
+    expect(PAPAN_BAYAR).toEqual([
+      [KOSONGKAN, MUNDUR],
+      ["1", "2", "3"],
+      ["4", "5", "6"],
+      ["7", "8", "9"],
+      ["00", "0", "000"],
+    ]);
+  });
+
   test("nol di depan diabaikan; 00 & 000 menambah nol di belakang", () => {
     expect(tekanBayar("", "0")).toBe("");
     expect(tekanBayar("", "000")).toBe("");

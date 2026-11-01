@@ -19,12 +19,16 @@ export type Papan = readonly (readonly string[])[];
 /** Rp 9.999.999.999 — jauh di atas saldo pinjaman mana pun. */
 export const DIGIT_MAKS = 10;
 
+/**
+ * Susunan pemilik (2 Nov 2026): C & ⌫ di atas, angka, lalu 00 · 0 · 000;
+ * KONFIRMASI di bawah papan (layar bayar).
+ */
 export const PAPAN_BAYAR: Papan = [
+  [KOSONGKAN, MUNDUR],
   ["1", "2", "3"],
   ["4", "5", "6"],
   ["7", "8", "9"],
-  ["0", "00", "000"],
-  [KOSONGKAN, MUNDUR],
+  ["00", "0", "000"],
 ];
 
 export function tekanBayar(digit: string, kunci: string): string {
