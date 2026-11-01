@@ -12,11 +12,14 @@ describe.skipIf(!URL_DB)("kebijakan (rem bos)", () => {
       const andiId = andi.pengguna.id;
       const kode = (r: { isi: Record<string, unknown> }) => r.isi.kode;
       const baris = async <T>(q: ReturnType<typeof sql>) => (await tx.execute(q)) as unknown as T[];
+      // Diurutkan menurut nama aksi, bukan `dibuat_at`: seluruh uji berjalan dalam satu
+      // transaksi, jadi `now()` — dan `dibuat_at` setiap baris — sama persis; urutan
+      // kejadian dibuktikan dengan membaca riwayat sebelum & sesudah tiap langkah.
       const aksi = async (tabel: string) =>
         (
           await baris<{ aksi: string }>(sql`
             select aksi from riwayat_perubahan where kantor_id = ${kantorId} and tabel = ${tabel}
-            order by dibuat_at`)
+            order by aksi`)
         ).map((r) => r.aksi);
 
       // ---- rem tiga lapis --------------------------------------------------------------
@@ -93,7 +96,8 @@ describe.skipIf(!URL_DB)("kebijakan (rem bos)", () => {
         pinjamanBaruDikunci: false,
         naikPinjamanDikunci: true,
       });
-      // Semua saklar mati → barisnya hilang.
+      expect(await aksi("kebijakan")).toEqual(["atur_rem", "atur_rem", "atur_rem"]);
+      // Semua saklar mati → barisnya hilang, dan langkah inilah yang tercatat lepas_rem.
       await rem("kantor", mati);
       expect((await kirim("/kebijakan/aktif", { token: b })).isi).toHaveLength(2);
       expect(await aksi("kebijakan")).toEqual(["atur_rem", "atur_rem", "atur_rem", "lepas_rem"]);
