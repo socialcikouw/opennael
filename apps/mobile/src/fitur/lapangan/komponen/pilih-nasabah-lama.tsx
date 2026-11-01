@@ -1,6 +1,6 @@
 import type { NasabahLama } from "@opennael/contracts";
 import { kunciWilayah } from "@opennael/domain";
-import { LABEL_JENIS, rupiah } from "@opennael/format";
+import { LABEL_JENIS, rupiah, tampilKampung } from "@opennael/format";
 import { useMemo, useState } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { useG } from "@/komponen/ui/gaya-bersama";
@@ -22,7 +22,9 @@ export function PilihNasabahLama(props: {
   const cocok = useMemo(() => {
     const kunci = kunciWilayah(cari);
     return (daftar.data ?? [])
-      .filter((n) => !kunci || kunciWilayah(`${n.nama} ${n.kampung}`).includes(kunci))
+      .filter(
+        (n) => !kunci || kunciWilayah(`${n.nama} ${tampilKampung(n.kampung)}`).includes(kunci),
+      )
       .slice(0, 30);
   }, [daftar.data, cari]);
 
@@ -31,7 +33,7 @@ export function PilihNasabahLama(props: {
     return (
       <Kartu>
         <Text style={g.teksTebal}>{n.nama}</Text>
-        <Text style={g.teksKecil}>{n.kampung}</Text>
+        <Text style={g.teksKecil}>{tampilKampung(n.kampung)}</Text>
         {n.terakhir ? (
           <Baris
             label={`Terakhir: ${LABEL_JENIS[n.terakhir.jenis]} ke-${n.terakhir.pinjamanKe}`}
@@ -67,7 +69,7 @@ export function PilihNasabahLama(props: {
         >
           <Text style={g.teksTebal}>{n.nama}</Text>
           <Text style={g.teksKecil}>
-            {n.kampung}
+            {tampilKampung(n.kampung)}
             {n.terakhir
               ? ` · terakhir ${LABEL_JENIS[n.terakhir.jenis]} ${rupiah(n.terakhir.pokok)}`
               : ""}

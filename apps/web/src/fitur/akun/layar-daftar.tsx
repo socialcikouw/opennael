@@ -41,7 +41,7 @@ export function LayarDaftar() {
   };
 
   return (
-    <KartuTengah judul="Buka kantor baru">
+    <KartuTengah judul="Buka Kantor Baru">
       <form className="space-y-4" onSubmit={kirim}>
         <Isian
           label="Kode registrasi"

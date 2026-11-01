@@ -45,7 +45,7 @@ export function LiburKantor() {
   };
   return (
     <Bagian
-      judul="Libur kantor"
+      judul="Libur Kantor"
       keterangan="Hari tanpa penagihan (mis. Lebaran). Hari ini atau ke depan; rentang dipecah per tanggal."
     >
       <form className="flex flex-wrap items-end gap-3" onSubmit={kirim}>
@@ -119,7 +119,7 @@ export function LiburKantor() {
       )}
       {batal ? (
         <DialogBatal
-          judul={`Batalkan libur ${formatTanggal(batal)}?`}
+          judul={`Batalkan Libur ${formatTanggal(batal)}?`}
           keterangan="Hari itu kembali menjadi hari tagih."
           segarkan={[kunci.liburKantor]}
           tutup={() => setBatal(null)}

@@ -1,10 +1,9 @@
 import type { TransaksiHari } from "@opennael/contracts";
-import { rupiah } from "@opennael/format";
+import { rupiah, tampilKampung } from "@opennael/format";
 import { router } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
 import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
 import { useTagihan } from "@/fitur/lapangan";
-import { judulKata } from "@/fitur/tagihan";
 import { useRuangTab } from "@/komponen/tab-mengambang";
 import { useG } from "@/komponen/ui/gaya-bersama";
 import { PesanGalat } from "@/komponen/ui/isian";
@@ -63,7 +62,7 @@ export function LayarStorting() {
       <BarisJenis
         jenis={b.jenis}
         nama={b.nama}
-        sub={`${judulKata(b.kampung)} · ${b.jenisTransaksi}`}
+        sub={`${tampilKampung(b.kampung)} · ${b.jenisTransaksi}`}
         nilai={rupiah(b.storting)}
         nilaiBahaya={b.storting < 0}
         lencana={b.transfer !== null ? `Transfer ${rupiah(b.transfer)}` : undefined}

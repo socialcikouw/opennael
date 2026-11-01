@@ -35,7 +35,7 @@ export function DialogCocokkan({ tutup }: { tutup: () => void }) {
     const h = m.data;
     return (
       <DialogFormulir
-        judul={`Hasil pencocokan ${h.akun}`}
+        judul={`Hasil Pencocokan ${h.akun}`}
         buka
         ubahBuka={(b) => !b && tutup()}
         kirim={tutup}
@@ -58,7 +58,7 @@ export function DialogCocokkan({ tutup }: { tutup: () => void }) {
   }
   return (
     <DialogFormulir
-      judul="Cocokkan kas"
+      judul="Cocokkan Kas"
       keterangan="Hitung uangnya lebih dulu. Saldo buku baru ditampilkan sesudah angka nyata disimpan. Bila ada selisih, server meminta keterangan."
       buka
       ubahBuka={(b) => !b && tutup()}

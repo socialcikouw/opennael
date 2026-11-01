@@ -247,7 +247,7 @@ export function LayarKas() {
       ) : null}
       {batal ? (
         <DialogBatal
-          judul="Batalkan mutasi?"
+          judul="Batalkan Mutasi?"
           keterangan={`${batal.jenis ? LABEL_MUTASI[batal.jenis] : "Mutasi"} ${rupiah(Math.abs(batal.nominal))}${batal.keterangan ? ` — ${batal.keterangan}` : ""}`}
           segarkan={KUNCI_KAS}
           tutup={() => setBatal(null)}

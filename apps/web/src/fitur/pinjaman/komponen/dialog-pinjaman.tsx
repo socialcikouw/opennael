@@ -133,7 +133,7 @@ export function DialogPinjaman({
         <DialogRiwayat
           tabel="pinjaman"
           barisId={p.id}
-          judul={`Riwayat suntingan ${judulPinjaman(p).toLowerCase()}`}
+          judul={`Riwayat Suntingan ${judulPinjaman(p).toLowerCase()}`}
           tutup={() => setAksi(null)}
         />
       ) : null}

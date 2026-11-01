@@ -138,8 +138,8 @@ export function LayarMutasi() {
             </View>
             <Text style={gaya.gembokJudul}>
               {gerbang === "masih-menagih"
-                ? `Mutasi kas terkunci · ${belum.length} belum ditagih`
-                : "Mutasi kas terkunci"}
+                ? `Mutasi Kas Terkunci · ${belum.length} Belum Ditagih`
+                : "Mutasi Kas Terkunci"}
             </Text>
             <Text style={gaya.gembokIsi}>
               {gerbang === "tidak-kerja" && hari?.alasanTidakKerja

@@ -1,5 +1,5 @@
 import type { KartuPinjaman } from "@opennael/contracts";
-import { LABEL_JENIS, namaTenor, rupiah } from "@opennael/format";
+import { LABEL_JENIS, namaTenor, rupiah, tampilKampung } from "@opennael/format";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import { useMemo } from "react";
@@ -26,7 +26,7 @@ const KOLOM = [
       <span>
         <span className="block font-medium">{c.getValue()}</span>
         <span className="block text-xs text-muted-foreground">
-          {c.row.original.nasabah.kampung}
+          {tampilKampung(c.row.original.nasabah.kampung)}
         </span>
       </span>
     ),

@@ -32,7 +32,7 @@ export function DialogBiaya({
   });
   return (
     <DialogFormulir
-      judul="Catat biaya tak terduga"
+      judul="Catat Biaya Tak Terduga"
       keterangan="Uang kolektor yang terpakai di lapangan hari ini (mis. ban bocor) — mengurangi tunai seharusnya."
       buka
       ubahBuka={(b) => !b && tutup()}

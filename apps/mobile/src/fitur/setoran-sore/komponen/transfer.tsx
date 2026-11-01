@@ -20,7 +20,7 @@ export function Transfer({ kolektorId, terkunci }: { kolektorId: string; terkunc
 
   return (
     <Kartu>
-      <Text style={g.subjudul}>Transfer setoran</Text>
+      <Text style={g.subjudul}>Transfer Setoran</Text>
       <Keterangan>Setoran yang dibayar nasabah lewat transfer, bukan tunai.</Keterangan>
       {setoran.isPending ? <ActivityIndicator color={WARNA.utama} /> : null}
       <PesanGalat pesan={setoran.error?.message} />

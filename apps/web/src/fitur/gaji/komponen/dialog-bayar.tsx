@@ -33,7 +33,7 @@ export function DialogBayar({ p, tutup }: { p: Pratinjau; tutup: () => void }) {
   });
   return (
     <DialogFormulir
-      judul={`Bayar gaji ${p.kolektor.nama}`}
+      judul={`Bayar Gaji ${p.kolektor.nama}`}
       keterangan={`${formatTanggal(p.periodeMulai, "tanpa")} – ${formatTanggal(p.periodeSelesai, "tanpa")} · gaji bersih ${rupiah(p.gajiBersih)}. Angka dihitung ulang & dibekukan server.`}
       buka
       ubahBuka={(b) => !b && tutup()}

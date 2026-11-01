@@ -45,7 +45,7 @@ export function TarifGaji() {
   });
   return (
     <Bagian
-      judul="Tarif gaji"
+      judul="Tarif Gaji"
       keterangan="Persen dari storting harian. Tarif khusus kolektor menimpa tarif kantor; kosongkan persen untuk kembali ikut tarif kantor."
     >
       <form

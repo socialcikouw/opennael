@@ -36,7 +36,7 @@ export function DialogRemKolektor({
   });
   return (
     <DialogFormulir
-      judul="Rem kolektor"
+      judul="Rem Kolektor"
       keterangan="Berlaku untuk satu kolektor, di atas rem kantor. Semua saklar mati = rem dilepas."
       buka
       ubahBuka={(b) => !b && tutup()}

@@ -32,7 +32,7 @@ export function DialogUbahNomor({
   });
   return (
     <DialogFormulir
-      judul="Ubah nomor pinjaman"
+      judul="Ubah Nomor Pinjaman"
       keterangan="Samakan dengan buku lama bila salah urut. Nomor yang sudah dipakai pinjaman lain nasabah ini ditolak."
       buka
       ubahBuka={(b) => !b && tutup()}

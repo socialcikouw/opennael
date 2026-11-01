@@ -47,7 +47,7 @@ export function DialogMutasi({ tutup }: { tutup: () => void }) {
   });
   return (
     <DialogFormulir
-      judul="Catat mutasi kas"
+      judul="Catat Mutasi Kas"
       keterangan="Uang masuk/keluar kantor di luar pekerjaan kolektor — tercatat hari ini."
       buka
       ubahBuka={(b) => !b && tutup()}

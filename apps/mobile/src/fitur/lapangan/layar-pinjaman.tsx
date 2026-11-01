@@ -1,4 +1,4 @@
-import { LABEL_JENIS, namaTenor, rupiah, tanggalPendek } from "@opennael/format";
+import { LABEL_JENIS, namaTenor, rupiah, tampilKampung, tanggalPendek } from "@opennael/format";
 import { router, Stack } from "expo-router";
 import { useState } from "react";
 import { Text, View } from "react-native";
@@ -70,7 +70,7 @@ export function LayarPinjaman({ id, lihat }: { id: string; lihat?: string }) {
           {p.status === "macet" ? <Lencana teks="Macet" warna="merah" /> : null}
         </View>
         <Text style={g.teksKecil}>
-          {p.nasabah.kampung} · akad {tanggalPendek(p.tanggalAkad)}
+          {tampilKampung(p.nasabah.kampung)} · akad {tanggalPendek(p.tanggalAkad)}
           {p.jatuhTempo ? ` · jatuh tempo ${tanggalPendek(p.jatuhTempo)}` : ""}
         </Text>
         <Baris label="Pokok" nilai={rupiah(p.pokok)} />

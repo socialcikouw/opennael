@@ -10,7 +10,7 @@ import {
   waktuKantor,
   type ZonaWaktu,
 } from "@opennael/domain";
-import { tanggalBertahun } from "@opennael/format";
+import { tampilKampung, tampilNama, tanggalBertahun } from "@opennael/format";
 import type { NamaIkon } from "../../../komponen/ui/daftar-ikon";
 import { type BahanGrid, type BarisPekan, nominalK, susunGrid } from "./grid";
 import { type MingguanVM, susunMingguan, susunTempo, type TempoVM } from "./khusus";
@@ -40,9 +40,9 @@ export interface KartuVM {
   /** Belum ditagih DAN wajib hari ini (B6) — sisa yang menahan laporan. */
   wajib: boolean;
   nama: string;
-  /** "Budi Santoso" — nama berhuruf judul untuk kepala kartu. */
-  namaJudul: string;
-  /** "pule barat · mingguan 8×" (kartu ringkas). */
+  /** "budi santoso" — nama tampil, huruf kecil (docs/tampilan.md). */
+  namaTampil: string;
+  /** "PULE BARAT · mingguan 8×" (kartu ringkas) — kampung HURUF BESAR. */
   subjudul: string;
   /** "12" — angsuran yang sudah lunas, isi lingkaran di depan nama. */
   angsuranKeTeks: string;
@@ -92,28 +92,6 @@ const NAMA_HARI = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu
 
 const ribuan = (n: number) => n.toLocaleString("id-ID");
 export const rupiahPendek = (n: number) => `Rp ${ribuan(n)}`;
-
-const SINGKATAN = new Set(["RT", "RW"]);
-const ROMAWI = /^(?:I{1,3}|IV|V|VI{1,3}|IX|X)$/i;
-
-/**
- * "BUDI SANTOSO" / "pule barat" → "Budi Santoso" / "Pule Barat". Kata ber-angka
- * apa adanya ("03"), angka Romawi dan RT/RW tetap kapital ("Dusun II", "RT 03"),
- * huruf setelah tanda hubung ikut kapital ("Sri-Rahayu").
- */
-export function judulKata(teks: string): string {
-  const huruf = (k: string) =>
-    k === "" ? k : k.charAt(0).toUpperCase() + k.slice(1).toLowerCase();
-  return teks
-    .trim()
-    .split(/\s+/)
-    .map((kata) => {
-      if (/\d/.test(kata)) return kata;
-      if (SINGKATAN.has(kata.toUpperCase()) || ROMAWI.test(kata)) return kata.toUpperCase();
-      return kata.split("-").map(huruf).join("-");
-    })
-    .join(" ");
-}
 
 /** "15.00" — jam dinding kantor dari waktu ISO (zona Indonesia berselisih jam tetap). */
 function jamDinding(iso: string, zona: ZonaWaktu): string {
@@ -186,8 +164,8 @@ function susun(p: KartuTagih, hariIni: string, bahan: BahanGrid, zona: ZonaWaktu
     ember: e,
     wajib: e === "belum" && wajibDitagihHariIni(p, hariIni),
     nama: p.nasabah.nama,
-    namaJudul: judulKata(p.nasabah.nama),
-    subjudul: `${p.nasabah.kampung.toLowerCase()}${ekor}`,
+    namaTampil: tampilNama(p.nasabah.nama),
+    subjudul: `${tampilKampung(p.nasabah.kampung)}${ekor}`,
     angsuranKeTeks: String(p.angsuranKe),
     pinjamanKeTeks: `Pinjaman Ke-${p.pinjamanKe}${ekor}`,
     lencana: lencana(p, e),

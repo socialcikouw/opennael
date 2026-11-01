@@ -1,3 +1,4 @@
+import { tampilKampung } from "@opennael/format";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Button } from "@/komponen/ui/button";
@@ -24,7 +25,7 @@ export function PilihNasabahLama({
           <span className="font-medium">{dipilih.nama}</span>
           <span className="text-muted-foreground">
             {" "}
-            · {dipilih.kampung} · dipegang {dipilih.kolektor}
+            · {tampilKampung(dipilih.kampung)} · dipegang {dipilih.kolektor}
           </span>
         </span>
         <Button size="sm" variant="ghost" onClick={() => pilih(null)}>
@@ -63,7 +64,7 @@ export function PilihNasabahLama({
                   <span className="font-medium">{n.nama}</span>
                   <span className="text-muted-foreground">
                     {" "}
-                    · {n.kampung.nama} · {n.kolektor?.nama ?? "—"}
+                    · {tampilKampung(n.kampung.nama)} · {n.kolektor?.nama ?? "—"}
                   </span>
                 </button>
               </li>

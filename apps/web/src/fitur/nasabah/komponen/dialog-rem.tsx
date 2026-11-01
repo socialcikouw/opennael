@@ -35,7 +35,7 @@ export function DialogRem({ n, tutup }: { n: Nasabah; tutup: () => void }) {
   });
   return (
     <DialogFormulir
-      judul={`Rem pinjaman ${n.nama}`}
+      judul={`Rem Pinjaman ${n.nama}`}
       keterangan="Rem lapis nasabah. Melarang pinjaman baru sama sekali = blokir (lewat pemutihan)."
       buka
       ubahBuka={(b) => !b && tutup()}

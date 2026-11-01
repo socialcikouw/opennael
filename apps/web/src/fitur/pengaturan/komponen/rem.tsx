@@ -48,7 +48,7 @@ export function Rem() {
   return (
     <>
       <Bagian
-        judul="Rem kantor"
+        judul="Rem Kantor"
         keterangan="Menahan pinjaman di seluruh kantor, mis. saat modal menipis."
       >
         {aktif.isPending ? (
@@ -64,7 +64,7 @@ export function Rem() {
         )}
       </Bagian>
       <Bagian
-        judul="Rem yang menyala"
+        judul="Rem Yang Menyala"
         keterangan="Semua lapis. Rem nasabah diatur dari layar Nasabah."
       >
         <Button

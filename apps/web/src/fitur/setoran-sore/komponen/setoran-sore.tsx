@@ -158,7 +158,7 @@ export function SetoranSore({ tanggal, hariIni }: { tanggal: string; hariIni: st
       {betulkan ? <DialogUbahHariIni hari={betulkan} tutup={() => setBetulkan(null)} /> : null}
       {bukaLagi ? (
         <DialogBatal
-          judul={`Batal laporan ${bukaLagi.kolektor.nama}?`}
+          judul={`Batal Laporan ${bukaLagi.kolektor.nama}?`}
           keterangan="Hari kolektor dibuka lagi — ia bisa mencatat setoran, akad, dan libur hari ini (mis. nasabah libur datang membayar sore), lalu membuka laporan ulang."
           segarkan={KUNCI_HARIAN}
           tutup={() => setBukaLagi(null)}
@@ -167,7 +167,7 @@ export function SetoranSore({ tanggal, hariIni }: { tanggal: string; hariIni: st
       ) : null}
       {rinci ? (
         <DialogFormulir
-          judul={`Rincian kas ${rinci.kolektor.nama}`}
+          judul={`Rincian Kas ${rinci.kolektor.nama}`}
           buka
           ubahBuka={(b) => !b && setRinci(null)}
           kirim={() => setRinci(null)}
@@ -179,7 +179,7 @@ export function SetoranSore({ tanggal, hariIni }: { tanggal: string; hariIni: st
       ) : null}
       {batal?.serahTerima ? (
         <DialogBatal
-          judul={`Batal terima kas ${batal.kolektor.nama}?`}
+          judul={`Batal Terima Kas ${batal.kolektor.nama}?`}
           keterangan="Kas dianggap belum diterima; kasir menghitung ulang."
           segarkan={KUNCI_HARIAN}
           tutup={() => setBatal(null)}

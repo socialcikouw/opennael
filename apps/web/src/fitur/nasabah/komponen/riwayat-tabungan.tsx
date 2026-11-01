@@ -93,7 +93,7 @@ export function RiwayatTabungan({ id }: { id: string }) {
         ))}
       </ul>
       <DialogFormulir
-        judul="Batalkan penarikan?"
+        judul="Batalkan Penarikan?"
         keterangan={`${rupiah(batal?.nominal ?? 0)} kembali ke tabungan nasabah. Hanya di hari yang sama.`}
         buka={batal !== null}
         ubahBuka={(b) => !b && setBatal(null)}

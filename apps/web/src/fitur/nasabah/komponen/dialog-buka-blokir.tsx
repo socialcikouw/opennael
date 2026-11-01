@@ -25,7 +25,7 @@ export function DialogBukaBlokir({ n, tutup }: { n: Nasabah; tutup: () => void }
   });
   return (
     <DialogFormulir
-      judul={`Buka blokir ${n.nama}?`}
+      judul={`Buka Blokir ${n.nama}?`}
       keterangan="Nasabah boleh meminjam lagi."
       buka
       ubahBuka={(b) => !b && tutup()}

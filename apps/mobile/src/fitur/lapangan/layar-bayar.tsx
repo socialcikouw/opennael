@@ -1,5 +1,5 @@
 import { hitungBayar } from "@opennael/domain";
-import { rupiah, tanggalBertahun } from "@opennael/format";
+import { rupiah, tampilKampung, tampilNama, tanggalBertahun } from "@opennael/format";
 import { useMutation } from "@tanstack/react-query";
 import { router, Stack } from "expo-router";
 import { useState } from "react";
@@ -89,7 +89,7 @@ export function LayarBayar({ id }: { id: string }) {
           <View style={gaya.isi}>
             <View style={gaya.barisKepala}>
               <Text style={gaya.nama} numberOfLines={1}>
-                {p.nasabah.nama}
+                {tampilNama(p.nasabah.nama)}
               </Text>
               <View style={[gaya.chip, { backgroundColor: aksen.lembut }]}>
                 <Text style={[gaya.chipTeks, { color: aksen.teks }]}>
@@ -99,7 +99,7 @@ export function LayarBayar({ id }: { id: string }) {
             </View>
             <View style={gaya.barisKepala}>
               <Text style={gaya.kampung} numberOfLines={1}>
-                {p.nasabah.kampung}
+                {tampilKampung(p.nasabah.kampung)}
               </Text>
               <View
                 style={[gaya.chip, gaya.chipWaktu]}

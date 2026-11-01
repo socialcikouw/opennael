@@ -30,7 +30,7 @@ export function DialogTarikTabungan({ n, tutup }: { n: Nasabah; tutup: () => voi
   });
   return (
     <DialogFormulir
-      judul={`Tarik tabungan ${n.nama}`}
+      judul={`Tarik Tabungan ${n.nama}`}
       keterangan={`Tabungan sekarang ${rupiah(saldo)}. Uang keluar dari kas kantor.`}
       buka
       ubahBuka={(b) => !b && tutup()}

@@ -19,7 +19,7 @@ export function Biaya({ hari, terkunci }: { hari: HariKolektor; terkunci: boolea
 
   return (
     <Kartu>
-      <Text style={g.subjudul}>Biaya tak terduga</Text>
+      <Text style={g.subjudul}>Biaya Tak Terduga</Text>
       <Keterangan>Uang kolektor yang terpakai di lapangan hari ini (mis. ban bocor).</Keterangan>
       {biaya.isPending ? <ActivityIndicator color={WARNA.utama} /> : null}
       <PesanGalat pesan={biaya.error?.message} />

@@ -103,7 +103,7 @@ export function DialogPerangkat({ orang, tutup }: { orang: Karyawan; tutup: () =
       </DialogFormulir>
       {putus ? (
         <DialogFormulir
-          judul="Putus perangkat ini?"
+          judul="Putus Perangkat Ini?"
           keterangan={
             orang.peran === "bos"
               ? "Browser itu harus masuk lagi dengan nomor HP dan kata sandi."

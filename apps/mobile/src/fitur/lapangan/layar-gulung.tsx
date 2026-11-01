@@ -1,5 +1,5 @@
 import { angsuranKe, hitungGulung, TENOR_PINJAMAN } from "@opennael/domain";
-import { LABEL_JENIS, rupiah } from "@opennael/format";
+import { LABEL_JENIS, rupiah, tampilKampung } from "@opennael/format";
 import { router, Stack } from "expo-router";
 import { useState } from "react";
 import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
@@ -80,7 +80,7 @@ export function LayarGulung({ id }: { id: string }) {
   };
   const konfirmasi = () => {
     if (!sah || !hasil || !tenor || !fotoMasihBerlaku(foto)) return;
-    Alert.alert("Setuju digulung?", `Pokok Pinjaman: ${rupiah(pokok)}`, [
+    Alert.alert("Setuju Digulung?", `Pokok Pinjaman: ${rupiah(pokok)}`, [
       { text: "Batal", style: "cancel" },
       {
         text: "Setuju",
@@ -116,7 +116,7 @@ export function LayarGulung({ id }: { id: string }) {
               {p.nasabah.nama}
             </Text>
             <Text style={gaya.kampung} numberOfLines={1}>
-              {p.nasabah.kampung.toLowerCase()} · saldo {rupiah(p.saldo)}
+              {tampilKampung(p.nasabah.kampung)} · saldo {rupiah(p.saldo)}
             </Text>
           </View>
           <View style={[gaya.chip, { backgroundColor: aksen.lembut }]}>

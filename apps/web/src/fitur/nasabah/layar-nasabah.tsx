@@ -1,5 +1,5 @@
 import type { NasabahJawaban } from "@opennael/contracts";
-import { rupiah } from "@opennael/format";
+import { rupiah, tampilKampung } from "@opennael/format";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi, Link } from "@tanstack/react-router";
 import { BookCopy, Search } from "lucide-react";
@@ -26,7 +26,7 @@ const KOLOM = [
     header: "Nama",
     cell: (c) => <span className="font-medium">{c.getValue()}</span>,
   }),
-  k.accessor((n) => n.kampung.nama, { id: "kampung", header: "Kampung" }),
+  k.accessor((n) => tampilKampung(n.kampung.nama), { id: "kampung", header: "Kampung" }),
   k.accessor((n) => n.kolektor?.nama ?? "—", { id: "pemegang", header: "Pemegang" }),
   k.accessor((n) => n.pinjamanAktif?.saldo ?? 0, {
     id: "pinjaman",

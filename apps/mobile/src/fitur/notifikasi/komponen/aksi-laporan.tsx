@@ -13,7 +13,7 @@ export function AksiLaporan() {
 
   const bukaLaporan = () =>
     Alert.alert(
-      "Buka laporan?",
+      "Buka Laporan?",
       "Sesudah laporan dibuka, setoran, akad, gulung, dan libur hari ini tidak bisa dicatat lagi.",
       [
         { text: "Batal", style: "cancel" },

@@ -26,7 +26,7 @@ export function DialogTransfer({ t, tutup }: { t: Transaksi; tutup: () => void }
   });
   return (
     <DialogFormulir
-      judul={`Transfer setoran ${t.nasabah.nama}`}
+      judul={`Transfer Setoran ${t.nasabah.nama}`}
       keterangan={`Setoran ini dibayar lewat transfer, bukan tunai. Paling banyak ${rupiah(t.batasTransfer)}.`}
       buka
       ubahBuka={(b) => !b && tutup()}

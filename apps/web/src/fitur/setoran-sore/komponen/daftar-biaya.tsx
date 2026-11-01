@@ -91,7 +91,7 @@ export function DaftarBiaya({
       {catat ? <DialogBiaya kolektor={kolektor} tutup={() => setCatat(false)} /> : null}
       {batal ? (
         <DialogBatal
-          judul={`Batalkan biaya ${batal.kolektor.nama}?`}
+          judul={`Batalkan Biaya ${batal.kolektor.nama}?`}
           segarkan={KUNCI_HARIAN}
           tutup={() => setBatal(null)}
           kirim={(alasan) => tulis.batal.biayaTakTerduga(batal.id, alasan)}

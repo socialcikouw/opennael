@@ -45,7 +45,7 @@ export function LayarPengawas() {
         ke="/pengawas/tunggakan"
       />
 
-      <Text style={g.subjudul}>Setoran sore hari ini</Text>
+      <Text style={g.subjudul}>Setoran Sore Hari Ini</Text>
       {hari.isPending ? <ActivityIndicator color={WARNA.utama} /> : null}
       <PesanGalat pesan={hari.error?.message} />
       {hari.data && hari.data.length === 0 ? (

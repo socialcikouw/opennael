@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import type { KartuTagih, Peristiwa } from "@opennael/contracts";
 import { jumlahSegmen, lipatKelompok, pilah, ringkasDroping, susunBaris } from "./daftar";
 import { nominalK, susunBahanGrid, susunGrid, susunKerangka } from "./grid";
-import { judulKata, kartuVM } from "./kartu";
+import { kartuVM } from "./kartu";
 
 // Kamis 29 Okt 2026.
 const KAMIS = "2026-10-29";
@@ -11,7 +11,7 @@ const ZONA = "WIB";
 function kartu(isi: Partial<KartuTagih> = {}): KartuTagih {
   return {
     id: crypto.randomUUID(),
-    nasabah: { id: crypto.randomUUID(), nama: "Sari", kampung: "Pule Barat" },
+    nasabah: { id: crypto.randomUUID(), nama: "sari", kampung: "pule barat" },
     pinjamanKe: 1,
     jenis: "harian",
     tenor: 24,
@@ -114,7 +114,7 @@ describe("kartu nasabah", () => {
     // Kotak info: lingkaran = angsuran ke-, nama, pinjaman ke-, tanggal & jam akad (WIB).
     expect(vm.angsuranKeTeks).toBe("11");
     expect(vm.pinjamanKeTeks).toBe("Pinjaman Ke-2");
-    expect(vm.namaJudul).toBe("Sari");
+    expect(vm.namaTampil).toBe("sari");
     expect(vm.akadTeks).toBe("1 Okt 26 • 15.00");
     expect([vm.pokokRp, vm.saldoRp, vm.angsuranRp, vm.tabunganRp]).toEqual([
       "Rp 1.000.000",
@@ -183,7 +183,7 @@ describe("kartu nasabah", () => {
       ZONA,
     );
     expect(m.hariTagih).toBe("Kamis");
-    expect(m.subjudul).toBe("pule barat · mingguan 8×");
+    expect(m.subjudul).toBe("PULE BARAT · mingguan 8×");
     expect(m.pinjamanKeTeks).toBe("Pinjaman Ke-1 · mingguan 8×");
   });
 
@@ -214,9 +214,9 @@ describe("daftar tagihan", () => {
 
   test("pilah segmen, judul rute bertotal, sudah ditagih di dasar", () => {
     const semua = [
-      vm({ nasabah: { id: "a", nama: "Sari", kampung: "Pule" }, ruteKe: 1 }),
-      vm({ nasabah: { id: "b", nama: "Budi", kampung: "Pule" }, ruteKe: 1, angsuran: 40_000 }),
-      vm({ nasabah: { id: "c", nama: "Citra", kampung: "Sawah" }, ruteKe: null }),
+      vm({ nasabah: { id: "a", nama: "sari", kampung: "pule" }, ruteKe: 1 }),
+      vm({ nasabah: { id: "b", nama: "budi", kampung: "pule" }, ruteKe: 1, angsuran: 40_000 }),
+      vm({ nasabah: { id: "c", nama: "citra", kampung: "sawah" }, ruteKe: null }),
       vm({ status: "macet" }),
       vm({ tanggalAkad: KAMIS, dropBaru: 1_000_000 }),
       vm({ hariIni: { jenis: "libur", alasan: null } }),
@@ -234,9 +234,9 @@ describe("daftar tagihan", () => {
 
   test("judul kelompok: nama, jumlah, total; kartu terakhir bertanda; Sudah ditagih tanpa uang", () => {
     const semua = [
-      vm({ nasabah: { id: "a", nama: "Sari", kampung: "Pule" }, ruteKe: 1 }),
-      vm({ nasabah: { id: "b", nama: "Budi", kampung: "Pule" }, ruteKe: 1, angsuran: 40_000 }),
-      vm({ nasabah: { id: "c", nama: "Citra", kampung: "Sawah" }, ruteKe: null }),
+      vm({ nasabah: { id: "a", nama: "sari", kampung: "pule" }, ruteKe: 1 }),
+      vm({ nasabah: { id: "b", nama: "budi", kampung: "pule" }, ruteKe: 1, angsuran: 40_000 }),
+      vm({ nasabah: { id: "c", nama: "citra", kampung: "sawah" }, ruteKe: null }),
       vm({ hariIni: { jenis: "libur", alasan: null } }),
     ];
     const p = pilah(semua, "");
@@ -253,32 +253,16 @@ describe("daftar tagihan", () => {
 
   test("lipat kelompok: kartunya disembunyikan, judulnya tetap dan bertanda terlipat", () => {
     const semua = [
-      vm({ nasabah: { id: "a", nama: "Sari", kampung: "Pule" } }),
-      vm({ nasabah: { id: "b", nama: "Budi", kampung: "Pule" } }),
-      vm({ nasabah: { id: "c", nama: "Citra", kampung: "Sawah" } }),
+      vm({ nasabah: { id: "a", nama: "sari", kampung: "pule" } }),
+      vm({ nasabah: { id: "b", nama: "budi", kampung: "pule" } }),
+      vm({ nasabah: { id: "c", nama: "citra", kampung: "sawah" } }),
     ];
     const baris = susunBaris(pilah(semua, "").aktif, []);
     expect(lipatKelompok(baris, new Set())).toEqual(baris);
 
-    const lipat = lipatKelompok(baris, new Set(["judul:Pule"]));
+    const lipat = lipatKelompok(baris, new Set(["judul:pule"]));
     expect(lipat.map((b) => b.jenis)).toEqual(["judul", "judul", "kartu"]);
     expect(lipat[0]).toMatchObject({ nama: "PULE", terlipat: true, jumlah: 2 });
     expect(lipat[1]).toMatchObject({ nama: "SAWAH", terlipat: false });
-  });
-});
-
-describe("judulKata", () => {
-  test("huruf judul dari kapital semua, kecil semua, dan spasi berlebih", () => {
-    expect(judulKata("BUDI SANTOSO")).toBe("Budi Santoso");
-    expect(judulKata("permata bintang")).toBe("Permata Bintang");
-    expect(judulKata("  budi   santoso ")).toBe("Budi Santoso");
-    expect(judulKata("sri-rahayu")).toBe("Sri-Rahayu");
-  });
-
-  test("angka apa adanya; angka Romawi dan RT/RW tetap kapital", () => {
-    expect(judulKata("pule barat 2")).toBe("Pule Barat 2");
-    expect(judulKata("dusun ii")).toBe("Dusun II");
-    expect(judulKata("rt 03 rw 01")).toBe("RT 03 RW 01");
-    expect(judulKata("")).toBe("");
   });
 });

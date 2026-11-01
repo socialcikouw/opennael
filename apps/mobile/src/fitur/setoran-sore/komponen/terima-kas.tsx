@@ -15,7 +15,7 @@ export function TerimaKas({ hari }: { hari: HariKolektor }) {
 
   const simpan = () =>
     Alert.alert(
-      "Simpan uang diterima?",
+      "Simpan Uang Diterima?",
       `${rupiah(tunai)} dari ${hari.kolektor.nama}. Sesudah disimpan, hari kolektor ini terkunci dan angkanya tidak bisa diubah kasir.`,
       [
         { text: "Batal", style: "cancel" },
@@ -28,7 +28,7 @@ export function TerimaKas({ hari }: { hari: HariKolektor }) {
 
   return (
     <Kartu>
-      <Text style={g.subjudul}>Terima kas</Text>
+      <Text style={g.subjudul}>Terima Kas</Text>
       <Keterangan>
         Catat transfer & biaya lebih dulu. Hitung uang fisiknya, lalu ketik jumlahnya — angka
         seharusnya baru tampil sesudah disimpan.

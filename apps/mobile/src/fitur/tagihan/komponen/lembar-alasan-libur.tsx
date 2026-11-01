@@ -33,7 +33,7 @@ export function LembarAlasanLibur(props: {
     <LembarBawah
       terbuka={props.vm !== null}
       onTutup={props.onTutup}
-      judul={props.vm ? `Libur — ${props.vm.namaJudul}` : "Libur"}
+      judul={props.vm ? `Libur — ${props.vm.namaTampil}` : "Libur"}
     >
       <View style={gaya.isi}>
         <Text style={gaya.keterangan}>

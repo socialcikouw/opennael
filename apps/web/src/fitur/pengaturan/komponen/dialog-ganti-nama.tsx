@@ -1,4 +1,5 @@
 import { kunciWilayah, rapikanNamaWilayah } from "@opennael/domain";
+import { tampilKampung } from "@opennael/format";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { DialogFormulir } from "@/komponen/dialog-formulir";
@@ -30,14 +31,14 @@ export function DialogGantiNama({
   });
   return (
     <DialogFormulir
-      judul={`Ganti nama ${w.nama}`}
+      judul={`Ganti Nama ${tampilKampung(w.nama)}`}
       keterangan="Nasabah dan rute yang memakai kampung ini ikut berganti nama."
       buka
       ubahBuka={(b) => !b && tutup()}
       kirim={() => m.mutate()}
       memuat={m.isPending}
       galat={m.error?.message}
-      labelKirim={tujuan ? `Gabung ke ${tujuan.nama}` : "Simpan"}
+      labelKirim={tujuan ? `Gabung ke ${tampilKampung(tujuan.nama)}` : "Simpan"}
       bahaya={!!tujuan}
       bisaKirim={rapi !== "" && rapi !== w.nama}
     >
@@ -50,8 +51,9 @@ export function DialogGantiNama({
       />
       {tujuan ? (
         <p className="rounded-md bg-amber-50 px-3 py-2 text-sm text-amber-800">
-          Nama ini sudah dipakai kampung <b>{tujuan.nama}</b>. {w.nama} akan digabung ke sana:{" "}
-          {w.nasabahTotal} nasabah dan {w.dipakaiRute} rute pindah, lalu {w.nama} dihapus.
+          Nama ini sudah dipakai kampung <b>{tampilKampung(tujuan.nama)}</b>.{" "}
+          {tampilKampung(w.nama)} akan digabung ke sana: {w.nasabahTotal} nasabah dan{" "}
+          {w.dipakaiRute} rute pindah, lalu {tampilKampung(w.nama)} dihapus.
         </p>
       ) : null}
     </DialogFormulir>

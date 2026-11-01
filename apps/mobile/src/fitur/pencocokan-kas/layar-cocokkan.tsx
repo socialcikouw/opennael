@@ -63,7 +63,7 @@ export function LayarCocokkan() {
 
   const simpan = () =>
     Alert.alert(
-      "Simpan hitungan?",
+      "Simpan Hitungan?",
       `${LABEL_AKUN[akun]}: ${rupiah(nyata)}. Saldo buku tampil sesudah disimpan.`,
       [
         { text: "Batal", style: "cancel" },
@@ -85,7 +85,7 @@ export function LayarCocokkan() {
         />
       ) : null}
       <Kartu>
-        <Text style={g.subjudul}>Hitung kas</Text>
+        <Text style={g.subjudul}>Hitung Kas</Text>
         <Keterangan>
           Hitung uang di brankas atau lihat saldo rekening lebih dulu, lalu ketik angkanya.
         </Keterangan>
@@ -121,7 +121,7 @@ export function LayarCocokkan() {
         />
       </Kartu>
 
-      <Text style={g.subjudul}>Riwayat 30 hari</Text>
+      <Text style={g.subjudul}>Riwayat 30 Hari</Text>
       {riwayat.isPending ? <ActivityIndicator color={WARNA.utama} /> : null}
       <PesanGalat pesan={riwayat.error?.message} />
       {riwayat.data && riwayat.data.length === 0 ? (

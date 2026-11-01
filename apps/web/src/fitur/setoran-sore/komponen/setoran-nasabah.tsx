@@ -104,7 +104,7 @@ export function SetoranNasabah({
       {transfer ? <DialogTransfer t={transfer} tutup={() => setTransfer(null)} /> : null}
       {batal ? (
         <DialogBatal
-          judul={`Batalkan setoran ${batal.nasabah.nama}?`}
+          judul={`Batalkan Setoran ${batal.nasabah.nama}?`}
           keterangan={`${LABEL_JENIS_TRANSAKSI[batal.jenis]} ${rupiah(batal.storting)}. Pinjaman kembali seperti sebelum setoran; gulung ikut membatalkan pinjaman penerusnya; transfer yang menempel ikut batal. Hanya sebelum kas kolektornya diterima.`}
           segarkan={[...KUNCI_HARIAN, kunci.nasabah]}
           tutup={() => setBatal(null)}

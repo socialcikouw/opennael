@@ -1,7 +1,8 @@
+import { judul, tampilKampung, tampilNama } from "@opennael/format";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { judulKata, MODE, modeAktif, useMode } from "@/fitur/tagihan";
+import { MODE, modeAktif, useMode } from "@/fitur/tagihan";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
 import { useGaya, useWarna, useWarnaMode } from "@/komponen/ui/tampilan";
@@ -59,7 +60,7 @@ export function ItemPengingat({ p, tanpaMutasi = false }: { p: Pengingat; tanpaM
         <View style={gaya.kepala}>
           <Ikon nama={IKON[p.jenis]} ukuran={20} warna={nada.ikon} />
           <View style={gaya.teks}>
-            <Text style={gaya.judul}>{p.judul}</Text>
+            <Text style={gaya.judul}>{judul(p.judul)}</Text>
             {p.isi ? <Text style={gaya.isi}>{p.isi}</Text> : null}
           </View>
         </View>
@@ -70,10 +71,10 @@ export function ItemPengingat({ p, tanpaMutasi = false }: { p: Pengingat; tanpaM
               <View key={n.id} style={[gaya.baris, i > 0 ? gaya.garisAtas : null]}>
                 <View style={gaya.teks}>
                   <Text style={gaya.nama} numberOfLines={1}>
-                    {judulKata(n.nama)}
+                    {tampilNama(n.nama)}
                   </Text>
                   <Text style={gaya.kampung} numberOfLines={1}>
-                    {judulKata(n.kampung)}
+                    {tampilKampung(n.kampung)}
                   </Text>
                 </View>
                 <Text style={gaya.keterangan} numberOfLines={1}>

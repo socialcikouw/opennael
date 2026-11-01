@@ -73,7 +73,7 @@ export function LayarAkad({ jenis: param }: { jenis?: string }) {
             ...(nomorHp ? { nomorHp } : {}),
           };
     Alert.alert(
-      "Simpan akad?",
+      "Simpan Akad?",
       `Serahkan ${rupiah(syarat.hasil.pencairan)} tunai ke ${namaNasabah}.`,
       [
         { text: "Batal", style: "cancel" },

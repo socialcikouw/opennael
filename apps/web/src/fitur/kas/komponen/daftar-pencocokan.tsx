@@ -90,7 +90,7 @@ export function DaftarPencocokan({
       <TabelData kolom={kolom} data={q.data} idBaris={(p) => p.id} kosong="Belum ada pencocokan" />
       {batal ? (
         <DialogBatal
-          judul="Batalkan pencocokan?"
+          judul="Batalkan Pencocokan?"
           keterangan="Untuk salah hitung — lalu cocokkan ulang."
           segarkan={KUNCI_KAS}
           tutup={() => setBatal(null)}

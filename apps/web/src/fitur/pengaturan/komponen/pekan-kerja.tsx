@@ -43,7 +43,7 @@ export function PekanKerja() {
   });
   return (
     <Bagian
-      judul="Pekan kerja"
+      judul="Pekan Kerja"
       keterangan="Hari kantor menagih. Perubahan berlaku mulai tanggal yang dipilih — tidak boleh mundur."
     >
       <div className="flex flex-wrap gap-2">

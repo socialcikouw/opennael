@@ -34,7 +34,7 @@ export function DialogPutihkan({ n, tutup }: { n: Nasabah; tutup: () => void }) 
   });
   return (
     <DialogFormulir
-      judul={`Putihkan pinjaman ${n.nama}?`}
+      judul={`Putihkan Pinjaman ${n.nama}?`}
       keterangan={`Piutang ${rupiah(p?.saldo ?? 0)} dihapus tanpa uang masuk; tabungan tidak disentuh dan nasabah diblokir.`}
       buka
       ubahBuka={(b) => !b && tutup()}

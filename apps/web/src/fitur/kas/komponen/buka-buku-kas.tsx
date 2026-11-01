@@ -20,7 +20,7 @@ export function BukaBukuKas() {
   return (
     <Card className="max-w-lg">
       <CardHeader>
-        <CardTitle>Buka buku kas</CardTitle>
+        <CardTitle>Buka Buku Kas</CardTitle>
         <CardDescription>
           Sekali saja, hari ini. Isi uang yang ada sekarang di brankas dan di rekening kantor. Salah
           ketik masih bisa dibetulkan sampai akhir hari ini.

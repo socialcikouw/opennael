@@ -1,6 +1,6 @@
 import { kunci } from "@opennael/api-client";
 import { hitungLunas, liburPerluAlasan } from "@opennael/domain";
-import { rupiah } from "@opennael/format";
+import { judul, rupiah } from "@opennael/format";
 import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -72,7 +72,7 @@ export function useAksiKartu(hariIni: ReturnType<typeof useHariIni>) {
   const gerbangTutup = useCallback((): boolean => {
     if (!gerbang || gerbang.buka) return false;
     Alert.alert(
-      gerbang.perluAbsen ? "Absen dulu" : (gerbang.judul ?? "Lapangan tutup"),
+      gerbang.perluAbsen ? "Absen Dulu" : judul(gerbang.judul ?? "lapangan tutup"),
       gerbang.perluAbsen
         ? "Transaksi bisa dicatat sesudah absen pagi di tab Notifikasi."
         : gerbang.isi,
@@ -110,7 +110,7 @@ export function useAksiKartu(hariIni: ReturnType<typeof useHariIni>) {
       gulung: (vm) => {
         const status = vm.progres?.status ?? "boleh";
         if (status !== "boleh") {
-          Alert.alert("Belum bisa digulung", vm.progres?.petunjuk);
+          Alert.alert("Belum Bisa Digulung", vm.progres?.petunjuk);
           return;
         }
         if (gerbangTutup()) return;
@@ -128,7 +128,7 @@ export function useAksiKartu(hariIni: ReturnType<typeof useHariIni>) {
           setLiburBeralasan(vm);
           return;
         }
-        Alert.alert("Tandai libur", `Yakin ${vm.nama} libur hari ini?`, [
+        Alert.alert("Tandai Libur", `Yakin ${vm.nama} libur hari ini?`, [
           { text: "Batal", style: "cancel" },
           {
             text: "Yakin",

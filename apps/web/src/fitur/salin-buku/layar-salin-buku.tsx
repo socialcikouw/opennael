@@ -128,7 +128,7 @@ export function LayarSalinBuku() {
   return (
     <>
       <KepalaHalaman
-        judul="Salin dari buku"
+        judul="Salin Dari Buku"
         keterangan="Pindahkan pinjaman yang masih berjalan di buku lama. Tanpa uang keluar — tidak tercatat sebagai droping."
         aksi={
           <Button asChild variant="outline">
@@ -303,7 +303,7 @@ export function LayarSalinBuku() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Disalin hari ini</CardTitle>
+            <CardTitle>Disalin Hari Ini</CardTitle>
             <CardDescription>Salah ketik? Batalkan hari ini, lalu salin ulang.</CardDescription>
           </CardHeader>
           <CardContent>

@@ -91,7 +91,7 @@ export function LayarTautkan() {
 
   if (!kode) {
     return (
-      <KartuFormulir judul="Tautkan HP karyawan">
+      <KartuFormulir judul="Tautkan HP Karyawan">
         <p className="text-muted-foreground">
           Di HP karyawan, buka aplikasi OpenNael — layar "Tautkan HP ini" menampilkan QR dan kode.
         </p>
@@ -124,7 +124,7 @@ export function LayarTautkan() {
   }
 
   return (
-    <KartuFormulir judul={`Akun untuk HP ${tampilanKode(kode)}`}>
+    <KartuFormulir judul={`Akun Untuk HP ${tampilanKode(kode)}`}>
       <form
         className="space-y-4"
         onSubmit={(e) => {

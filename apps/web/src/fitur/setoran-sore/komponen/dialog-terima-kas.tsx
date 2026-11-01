@@ -31,7 +31,7 @@ export function DialogTerimaKas({ hari, tutup }: { hari: HariKas; tutup: () => v
   if (m.data && st) {
     return (
       <DialogFormulir
-        judul={`Kas ${hari.kolektor.nama} diterima`}
+        judul={`Kas ${hari.kolektor.nama} Diterima`}
         buka
         ubahBuka={(b) => !b && tutup()}
         kirim={tutup}
@@ -44,7 +44,7 @@ export function DialogTerimaKas({ hari, tutup }: { hari: HariKas; tutup: () => v
   }
   return (
     <DialogFormulir
-      judul={`Terima kas ${hari.kolektor.nama}`}
+      judul={`Terima Kas ${hari.kolektor.nama}`}
       keterangan="Hitung uang fisiknya lebih dulu, lalu ketik jumlahnya. Angka seharusnya baru tampil sesudah disimpan."
       buka
       ubahBuka={(b) => !b && tutup()}

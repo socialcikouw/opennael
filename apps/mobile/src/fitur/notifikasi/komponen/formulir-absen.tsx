@@ -34,7 +34,7 @@ export function FormulirAbsen() {
 
   return (
     <Kartu>
-      <Text style={g.subjudul}>Absen pagi</Text>
+      <Text style={g.subjudul}>Absen Pagi</Text>
       <Pilihan
         segmen
         pilihan={[

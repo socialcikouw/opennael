@@ -46,7 +46,7 @@ export function DialogUbahHariIni({ hari, tutup }: { hari: HariKas; tutup: () =>
   });
   return (
     <DialogFormulir
-      judul={`Betulkan angka pagi ${hari.kolektor.nama}`}
+      judul={`Betulkan Angka Pagi ${hari.kolektor.nama}`}
       keterangan="Kas lapangan dan uang jalan yang diisi kolektor saat absen. Hanya sebelum kasnya diterima; tercatat di aktivitas."
       buka
       ubahBuka={(b) => !b && tutup()}

@@ -73,7 +73,7 @@ export function DaftarTransfer({ tanggal, hariIni }: { tanggal: string; hariIni:
       </p>
       {batal ? (
         <DialogBatal
-          judul={`Batalkan transfer ${batal.nasabah.nama}?`}
+          judul={`Batalkan Transfer ${batal.nasabah.nama}?`}
           segarkan={KUNCI_HARIAN}
           tutup={() => setBatal(null)}
           kirim={(alasan) => tulis.batal.transferSetoran(batal.id, alasan)}

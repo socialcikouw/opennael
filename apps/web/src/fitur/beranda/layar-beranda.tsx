@@ -125,7 +125,7 @@ export function LayarBeranda() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Per kolektor</CardTitle>
+          <CardTitle>Per Kolektor</CardTitle>
           <CardDescription>
             Penagihan, akad, dan setoran sore {formatTanggal(t, "tanpa")}
           </CardDescription>
@@ -148,7 +148,7 @@ export function LayarBeranda() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Performa penagihan 30 hari</CardTitle>
+          <CardTitle>Performa Penagihan 30 Hari</CardTitle>
           <CardDescription>
             Batang: setoran murni. Garis: persentase terhadap angsuran berjalan kemarin.
           </CardDescription>
@@ -160,7 +160,7 @@ export function LayarBeranda() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Aktivitas terbaru</CardTitle>
+          <CardTitle>Aktivitas Terbaru</CardTitle>
           <CardAction>
             <Button asChild size="sm" variant="outline">
               <Link to="/aktivitas" search={{ tanggal: t === hariIni ? undefined : t }}>

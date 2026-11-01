@@ -170,7 +170,7 @@ export function LayarTautkan() {
               </View>
               <View style={gaya.tengah}>
                 <Text style={g.subjudul}>
-                  {galat ? "Kode tidak bisa diminta" : "Kode sudah tidak berlaku"}
+                  {galat ? "Kode Tidak Bisa Diminta" : "Kode Sudah Tidak Berlaku"}
                 </Text>
                 <Text style={[g.teksKecil, gaya.rataTengah]}>
                   Minta kode baru, lalu tunjukkan ke bos.

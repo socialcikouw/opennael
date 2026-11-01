@@ -1,4 +1,4 @@
-import { rupiah } from "@opennael/format";
+import { rupiah, tampilKampung } from "@opennael/format";
 import {
   ArrowRightLeft,
   Ban,
@@ -88,7 +88,7 @@ export function DialogNasabah({
               )}
             </DialogTitle>
             <DialogDescription>
-              {n.kampung.nama} · dipegang {n.kolektor?.nama ?? "—"}
+              {tampilKampung(n.kampung.nama)} · dipegang {n.kolektor?.nama ?? "—"}
               {n.nomorHp ? ` · ${n.nomorHp}` : ""}
               {n.nik ? ` · NIK ${n.nik}` : ""}
             </DialogDescription>
@@ -160,7 +160,7 @@ export function DialogNasabah({
         <DialogRiwayat
           tabel="nasabah"
           barisId={n.id}
-          judul={`Riwayat suntingan ${n.nama}`}
+          judul={`Riwayat Suntingan ${n.nama}`}
           tutup={() => setRiwayat(false)}
         />
       ) : null}

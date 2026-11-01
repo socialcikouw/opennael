@@ -1,3 +1,4 @@
+import { tampilKampung } from "@opennael/format";
 import { useMutation } from "@tanstack/react-query";
 import { DialogFormulir } from "@/komponen/dialog-formulir";
 import { ambil, api } from "@/lib/api";
@@ -14,7 +15,7 @@ export function DialogHapusKampung({ w, tutup }: { w: Kampung; tutup: () => void
   });
   return (
     <DialogFormulir
-      judul={`Hapus kampung ${w.nama}?`}
+      judul={`Hapus Kampung ${tampilKampung(w.nama)}?`}
       keterangan="Kampung ini tidak dipakai nasabah maupun rute. Penghapusan tercatat di aktivitas."
       buka
       ubahBuka={(b) => !b && tutup()}

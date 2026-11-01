@@ -33,7 +33,7 @@ export function DialogPindah({
   });
   return (
     <DialogFormulir
-      judul={`Pindah pemegang ${n.nama}`}
+      judul={`Pindah Pemegang ${n.nama}`}
       keterangan={`Sekarang dipegang ${n.kolektor?.nama ?? "—"}. Pinjaman aktifnya ikut pindah.`}
       buka
       ubahBuka={(b) => !b && tutup()}

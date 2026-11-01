@@ -1,3 +1,4 @@
+import { judul } from "@opennael/format";
 import { router } from "expo-router";
 import { Tabs } from "expo-router/js-tabs";
 import { useMemo, useState } from "react";
@@ -64,9 +65,9 @@ export default function TabKolektor() {
     if (!gerbang || gerbang.buka) {
       router.push({ pathname: "/kolektor/akad", params: jenis ? { jenis } : {} });
     } else if (gerbang.perluAbsen) {
-      Alert.alert("Absen dulu", "Akad baru bisa dicatat sesudah absen pagi di tab Notifikasi.");
+      Alert.alert("Absen Dulu", "Akad baru bisa dicatat sesudah absen pagi di tab Notifikasi.");
     } else {
-      Alert.alert(gerbang.judul ?? "Lapangan tutup", gerbang.isi);
+      Alert.alert(judul(gerbang.judul ?? "lapangan tutup"), gerbang.isi);
     }
   };
 

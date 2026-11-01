@@ -1,3 +1,4 @@
+import { judul } from "@opennael/format";
 import { StyleSheet, Text, View } from "react-native";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
@@ -11,7 +12,7 @@ export function KotakKosong(props: { ikon: NamaIkon; judul: string; isi: string 
   return (
     <View style={gaya.kosong}>
       <Ikon nama={props.ikon} ukuran={28} warna={WARNA.redup} />
-      <Text style={gaya.judul}>{props.judul}</Text>
+      <Text style={gaya.judul}>{judul(props.judul)}</Text>
       <Text style={gaya.isi}>{props.isi}</Text>
     </View>
   );

@@ -7,7 +7,7 @@ import { ambil, api } from "@/lib/api";
 export function DialogHapusLibur({ libur, tutup }: { libur: Peristiwa; tutup: () => void }) {
   return (
     <DialogBatal
-      judul={`Hapus tanda libur ${libur.nasabah.nama}?`}
+      judul={`Hapus Tanda Libur ${libur.nasabah.nama}?`}
       keterangan="Tanda libur hari ini dihapus dan tercatat di riwayat. Sesudahnya kolektor bisa mencatat setoran pinjaman ini lagi."
       segarkan={[kunci.nasabah, kunci.harian]}
       tutup={tutup}

@@ -59,7 +59,7 @@ export function DisalinHariIni() {
       </ul>
       {batal ? (
         <DialogBatal
-          judul="Batalkan salinan?"
+          judul="Batalkan Salinan?"
           keterangan={`${batal.ringkasan}. Tabungan pembukanya ikut ditarik. Hanya hari ini, sebelum ada setoran.`}
           segarkan={[kunci.nasabah]}
           tutup={() => setBatal(null)}

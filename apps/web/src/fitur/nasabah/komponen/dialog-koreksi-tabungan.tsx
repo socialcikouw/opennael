@@ -30,7 +30,7 @@ export function DialogKoreksiTabungan({ n, tutup }: { n: Nasabah; tutup: () => v
   const selisih = (saldoBaru ?? 0) - saldo;
   return (
     <DialogFormulir
-      judul={`Koreksi tabungan ${n.nama}`}
+      judul={`Koreksi Tabungan ${n.nama}`}
       keterangan="Membetulkan angka tabungan yang salah catat — tanpa uang keluar/masuk."
       buka
       ubahBuka={(b) => !b && tutup()}

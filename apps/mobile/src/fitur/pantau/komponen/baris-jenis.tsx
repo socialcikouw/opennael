@@ -1,7 +1,8 @@
 import type { JenisPinjaman } from "@opennael/domain";
+import { tampilNama } from "@opennael/format";
 import { memo } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { judulKata, MODE } from "@/fitur/tagihan";
+import { MODE } from "@/fitur/tagihan";
 import { useGaya, useWarna, useWarnaMode } from "@/komponen/ui/tampilan";
 import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
 
@@ -24,7 +25,7 @@ export const BarisJenis = memo(function BarisJenis(props: {
   const gaya = useGaya(buatGaya);
   const WARNA = useWarna();
   const w = useWarnaMode(props.jenis);
-  const nama = judulKata(props.nama);
+  const nama = tampilNama(props.nama);
   return (
     <Pressable
       accessibilityRole={props.onPress ? "button" : undefined}

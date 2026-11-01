@@ -1,4 +1,4 @@
-import { waktu } from "@opennael/format";
+import { tampilKampung, waktu } from "@opennael/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowDown, ArrowUp, Plus, Trash2 } from "lucide-react";
 import { type FormEvent, useState } from "react";
@@ -59,7 +59,7 @@ export function RuteKolektor() {
 
   return (
     <Bagian
-      judul="Rute kolektor"
+      judul="Rute Kolektor"
       keterangan="Urutan kampung yang didatangi; kartu tagihan di HP kolektor mengikutinya. Kolektor juga bisa mengaturnya sendiri."
     >
       <PilihanAsli
@@ -93,7 +93,7 @@ export function RuteKolektor() {
                 className="flex items-center gap-2 rounded-md border bg-card px-3 py-1.5 text-sm"
               >
                 <span className="w-6 text-muted-foreground tabular-nums">{i + 1}.</span>
-                <span className="flex-1">{nama}</span>
+                <span className="flex-1">{tampilKampung(nama)}</span>
                 <Button
                   size="icon"
                   variant="ghost"

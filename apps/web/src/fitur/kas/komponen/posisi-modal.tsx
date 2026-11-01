@@ -13,7 +13,7 @@ export function PosisiModal({ tanggal }: { tanggal: string }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Posisi modal</CardTitle>
+        <CardTitle>Posisi Modal</CardTitle>
         <CardDescription>Akhir {formatTanggal(tanggal)}</CardDescription>
       </CardHeader>
       <CardContent>

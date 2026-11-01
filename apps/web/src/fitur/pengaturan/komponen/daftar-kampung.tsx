@@ -1,5 +1,5 @@
 import { kunciWilayah } from "@opennael/domain";
-import { waktu } from "@opennael/format";
+import { tampilKampung, waktu } from "@opennael/format";
 import { useQuery } from "@tanstack/react-query";
 import { Pencil, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -27,7 +27,7 @@ export function DaftarKampung() {
     return [
       k.accessor("nama", {
         header: "Kampung",
-        cell: (c) => <span className="font-medium">{c.getValue()}</span>,
+        cell: (c) => <span className="font-medium">{tampilKampung(c.getValue())}</span>,
       }),
       k.accessor("nasabahTotal", {
         header: "Nasabah",

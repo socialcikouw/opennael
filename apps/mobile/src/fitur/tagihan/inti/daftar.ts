@@ -1,3 +1,4 @@
+import { tampilKampung } from "@opennael/format";
 import type { KartuVM } from "./kartu";
 
 /**
@@ -86,7 +87,7 @@ export function susunBaris(kartu: readonly KartuVM[], sudah: readonly KartuVM[])
       jenis: "judul",
       id: `judul:${kampung}`,
       sudah: false,
-      nama: kampung.toUpperCase(),
+      nama: tampilKampung(kampung),
       jumlah: akhir - awal,
       total,
       terlipat: false,

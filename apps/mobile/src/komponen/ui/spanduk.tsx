@@ -1,3 +1,4 @@
+import { judul } from "@opennael/format";
 import { Text, View } from "react-native";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { useGaya } from "@/komponen/ui/tampilan";
@@ -40,7 +41,7 @@ export function Spanduk(props: {
     <View style={[g.kotakPesan, g.spanduk, gaya.kotak]}>
       <Ikon nama={gaya.ikon} warna={gaya.warna} />
       <View style={g.spandukIsi}>
-        <Text style={g.spandukJudul}>{props.judul}</Text>
+        <Text style={g.spandukJudul}>{judul(props.judul)}</Text>
         {props.isi ? <Text style={g.spandukTeks}>{props.isi}</Text> : null}
       </View>
     </View>

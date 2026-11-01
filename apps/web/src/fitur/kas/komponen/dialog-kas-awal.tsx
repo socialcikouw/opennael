@@ -30,7 +30,7 @@ export function DialogKasAwal({
   });
   return (
     <DialogFormulir
-      judul="Betulkan kas awal"
+      judul="Betulkan Kas Awal"
       keterangan="Hanya di hari buku kas dibuka."
       buka
       ubahBuka={(b) => !b && tutup()}

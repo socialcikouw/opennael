@@ -26,12 +26,12 @@ export function LayarGaji() {
   return (
     <>
       <KepalaHalaman
-        judul="Gaji kolektor"
+        judul="Gaji Kolektor"
         keterangan="Storting × tarif dikurangi tekor (aturan-usaha J). Pilih kolektor dan periode."
       />
       <Card>
         <CardHeader>
-          <CardTitle>Pratinjau & bayar</CardTitle>
+          <CardTitle>Pratinjau & Bayar</CardTitle>
           <CardDescription>Periode harus sudah lewat dan belum pernah dibayar.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -86,7 +86,7 @@ export function LayarGaji() {
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>Riwayat slip</CardTitle>
+          <CardTitle>Riwayat Slip</CardTitle>
           <CardDescription>
             {pilihKolektor ? "Kolektor yang dipilih di atas." : "Semua kolektor."}
           </CardDescription>

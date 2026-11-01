@@ -81,7 +81,7 @@ export function RiwayatSlip({ kolektorId, hariIni }: { kolektorId?: string; hari
       <TabelData kolom={kolom} data={q.data} idBaris={(s) => s.id} kosong="Belum ada slip gaji" />
       {batal ? (
         <DialogBatal
-          judul={`Batalkan gaji ${batal.kolektor.nama}?`}
+          judul={`Batalkan Gaji ${batal.kolektor.nama}?`}
           keterangan={`${rupiah(batal.gajiBersih)} kembali ke kas ${batal.dariAkun}. Hanya di hari yang sama.`}
           segarkan={[kunci.gaji, kunci.kas]}
           tutup={() => setBatal(null)}

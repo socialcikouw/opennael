@@ -16,7 +16,7 @@ export function PanelLunas({ p }: { p: KartuTagih }) {
 
   const konfirmasi = () =>
     Alert.alert(
-      "Lunaskan pinjaman?",
+      "Lunaskan Pinjaman?",
       kembalian > 0
         ? `Kembalikan ${rupiah(kembalian)} tunai ke ${p.nasabah.nama}.`
         : `Terima ${rupiah(r.setoranMurni)} dari ${p.nasabah.nama}.`,

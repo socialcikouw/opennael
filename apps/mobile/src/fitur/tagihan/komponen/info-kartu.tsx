@@ -36,7 +36,7 @@ export function InfoKartu({
       <View
         style={gaya.baris}
         accessible
-        accessibilityLabel={`${vm.namaJudul}, angsuran ke-${vm.p.angsuranKe}, akad ${vm.akadTeks}`}
+        accessibilityLabel={`${vm.namaTampil}, angsuran ke-${vm.p.angsuranKe}, akad ${vm.akadTeks}`}
         accessibilityActions={onLunasi ? [{ name: "lunasi", label: "Lunasi pinjaman" }] : []}
         onAccessibilityAction={(e) => {
           if (e.nativeEvent.actionName === "lunasi") onLunasi?.();
@@ -53,7 +53,7 @@ export function InfoKartu({
           </Text>
         </View>
         <Text style={gaya.nama} numberOfLines={1}>
-          {vm.namaJudul}
+          {vm.namaTampil}
         </Text>
         <Text style={gaya.akad}>{vm.akadTeks}</Text>
       </View>

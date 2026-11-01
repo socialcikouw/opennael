@@ -57,7 +57,7 @@ export function ProfilKantor() {
   if (q.isError) return <GalatMuat galat={q.error} ulangi={() => void q.refetch()} />;
   return (
     <Bagian
-      judul="Profil kantor"
+      judul="Profil Kantor"
       keterangan="Jam kerja membatasi kapan kolektor bisa mencatat di lapangan. Zona waktu menentukan tanggal pembukuan."
     >
       <form

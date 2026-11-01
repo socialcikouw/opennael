@@ -1,10 +1,9 @@
 import type { KartuTagih } from "@opennael/contracts";
-import { jam, rupiah } from "@opennael/format";
+import { jam, rupiah, tampilKampung } from "@opennael/format";
 import { router } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
 import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
 import { useHariIni, useTagihan } from "@/fitur/lapangan";
-import { judulKata } from "@/fitur/tagihan";
 import { useRuangTab } from "@/komponen/tab-mengambang";
 import { useG } from "@/komponen/ui/gaya-bersama";
 import { PesanGalat } from "@/komponen/ui/isian";
@@ -63,7 +62,7 @@ export function LayarDroping() {
       <BarisJenis
         jenis={b.jenis}
         nama={b.nama}
-        sub={`${judulKata(b.kampung)} · ke-${b.pinjamanKe}${b.waktuAkad ? ` · ${jam(b.waktuAkad, zona)}` : ""}`}
+        sub={`${tampilKampung(b.kampung)} · ke-${b.pinjamanKe}${b.waktuAkad ? ` · ${jam(b.waktuAkad, zona)}` : ""}`}
         nilai={rupiah(b.pokok)}
         lencana={b.asal}
         catatan={`Pencairan ${rupiah(b.pencairan)}`}
