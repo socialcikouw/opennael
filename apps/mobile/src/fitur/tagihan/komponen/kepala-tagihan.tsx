@@ -1,4 +1,4 @@
-import { type ReactNode, useState, useSyncExternalStore } from "react";
+import { type ReactNode, useState } from "react";
 import { type LayoutChangeEvent, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import Animated, { interpolate, type SharedValue, useAnimatedStyle } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -7,31 +7,10 @@ import { useGaya, useWarna } from "@/komponen/ui/tampilan";
 import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/komponen/ui/tema";
 import { TAB_KERJA, type TabKerja } from "../inti/daftar";
 
-/** Rute kartu teratas — dilaporkan daftar, hanya didengar chip rute (menggulung tak merender ulang layar). */
-export function buatSimpananRute() {
-  let rute: string | null = null;
-  const pendengar = new Set<() => void>();
-  return {
-    ambil: () => rute,
-    tulis(baru: string | null) {
-      if (baru === rute) return;
-      rute = baru;
-      for (const p of pendengar) p();
-    },
-    dengar(p: () => void) {
-      pendengar.add(p);
-      return () => {
-        pendengar.delete(p);
-      };
-    },
-  };
-}
-export type SimpananRute = ReturnType<typeof buatSimpananRute>;
-
 /**
  * KEPALA layar Tagihan — melayang di atas daftar. Bagian LIPAT (merek +
  * lencana mode, tombol cari, kartu atas) terangkat & memudar saat daftar
- * digulung; bagian MENEMPEL (segmen, penanda lapangan tutup, chip rute) tetap
+ * digulung; bagian MENEMPEL (segmen, penanda lapangan tutup) tetap
  * di puncak. Gulir balik memunculkan bagian lipat lagi (`lipat` dikendalikan
  * layar). Selama kolom cari terbuka, kepala tidak melipat.
  */
@@ -52,8 +31,6 @@ export function KepalaTagihan(props: {
   cariTerbuka: boolean;
   onCariTerbuka: (buka: boolean) => void;
   tutup: { judul: string; isi?: string | undefined } | null;
-  simpananRute: SimpananRute;
-  onBukaRute: () => void;
 }) {
   const WARNA = useWarna();
   const gaya = useGaya(buatGaya);
@@ -140,11 +117,6 @@ export function KepalaTagihan(props: {
             </View>
           </View>
         ) : null}
-        <ChipRute
-          simpanan={props.simpananRute}
-          warna={props.mode.warna}
-          onPress={props.onBukaRute}
-        />
       </View>
     </Animated.View>
   );
@@ -207,31 +179,6 @@ function SegmenTab(props: {
         );
       })}
     </View>
-  );
-}
-
-/** Rute kelompok kartu teratas, mis. "Rute 1 - PULE BARAT : 10 = 500K" — ketuk untuk lompat rute. */
-function ChipRute(props: { simpanan: SimpananRute; warna: WarnaMode; onPress: () => void }) {
-  const gaya = useGaya(buatGaya);
-  const rute = useSyncExternalStore(props.simpanan.dengar, props.simpanan.ambil);
-  if (!rute) return <View style={gaya.chipKosong} />;
-  return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={`${rute}. Ketuk untuk lompat ke rute lain`}
-      onPress={props.onPress}
-      style={({ pressed }) => [
-        gaya.chip,
-        { backgroundColor: props.warna.lembut },
-        pressed ? gaya.ditekan : null,
-      ]}
-    >
-      <Ikon nama="map-pin" ukuran={12} warna={props.warna.teks} />
-      <Text style={[gaya.chipTeks, { color: props.warna.teks }]} numberOfLines={1}>
-        {rute}
-      </Text>
-      <Ikon nama="chevron-down" ukuran={14} warna={props.warna.teks} />
-    </Pressable>
   );
 }
 
@@ -319,16 +266,4 @@ const buatGaya = (WARNA: Warna) =>
     isi: { flex: 1 },
     tutupJudul: { ...HURUF.xs, fontWeight: TEBAL.tebal, color: WARNA.waspadaTua },
     tutupIsi: { ...HURUF.xs, color: WARNA.waspada },
-    chip: {
-      alignSelf: "flex-start",
-      maxWidth: "100%",
-      flexDirection: "row",
-      alignItems: "center",
-      gap: RUANG[1],
-      paddingHorizontal: RUANG[2.5],
-      paddingVertical: RUANG[1],
-      borderRadius: SUDUT.bulat,
-    },
-    chipTeks: { ...HURUF.xs, flexShrink: 1, fontWeight: TEBAL.semi },
-    chipKosong: { height: 0 },
   });

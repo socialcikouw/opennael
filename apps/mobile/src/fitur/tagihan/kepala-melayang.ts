@@ -45,7 +45,6 @@ export function useKepalaMelayang(cariTerbuka: boolean) {
   });
 
   const [tinggiKepala, setTinggiKepala] = useState(insets.top + 220);
-  const [lipatPt, setLipatPt] = useState(0);
   const daftar = useRef<FlatList<Baris>>(null);
   const keAtas = useCallback(() => {
     lipat.set(0);
@@ -59,8 +58,6 @@ export function useKepalaMelayang(cariTerbuka: boolean) {
     onScroll,
     tinggiKepala,
     setTinggiKepala,
-    lipatPt,
-    setLipatPt,
     daftar,
     keAtas,
   };

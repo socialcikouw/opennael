@@ -20,11 +20,9 @@ const ATAS_JUDUL = RUANG[3];
  */
 export const JudulKelompok = memo(function JudulKelompok({
   baris,
-  aksen,
   onLipat,
 }: {
   baris: Extract<Baris, { jenis: "judul" }>;
-  aksen: WarnaMode;
   onLipat: (id: string) => void;
 }) {
   const WARNA = useWarna();
@@ -40,13 +38,8 @@ export const JudulKelompok = memo(function JudulKelompok({
       }`}
       style={gaya.judul}
     >
-      <View style={[gaya.jumlah, { backgroundColor: aksen.lembut }]}>
-        <Text
-          style={[gaya.jumlahTeks, { color: aksen.teks }]}
-          numberOfLines={1}
-          adjustsFontSizeToFit
-          minimumFontScale={0.7}
-        >
+      <View style={gaya.jumlah}>
+        <Text style={gaya.jumlahTeks} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}>
           {baris.jumlah}
         </Text>
       </View>
@@ -128,14 +121,23 @@ const buatGaya = (WARNA: Warna) =>
       paddingBottom: RUANG[2],
     },
     // Lebar 30 (garis tengah di 15) = garis tengah rel kartu di bawahnya.
+    // Abu netral berbentuk kotak: sengaja beda dari lingkaran angsuran ke- di kartu (pekat, berwarna mode).
     jumlah: {
       width: LEBAR_REL - RUANG[2],
       height: TINGGI_JUMLAH,
       borderRadius: SUDUT.kecil,
       alignItems: "center",
       justifyContent: "center",
+      borderWidth: 1,
+      borderColor: WARNA.garisTegas,
+      backgroundColor: WARNA.abu,
     },
-    jumlahTeks: { ...HURUF.xs, fontWeight: TEBAL.ekstra, fontVariant: ["tabular-nums"] },
+    jumlahTeks: {
+      ...HURUF.xs,
+      fontWeight: TEBAL.tebal,
+      color: WARNA.teksKedua,
+      fontVariant: ["tabular-nums"],
+    },
     nama: {
       ...HURUF.xs,
       flex: 1,

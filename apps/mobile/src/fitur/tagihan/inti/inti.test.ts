@@ -1,14 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import type { KartuTagih, Peristiwa } from "@opennael/contracts";
-import {
-  daftarLompat,
-  jumlahSegmen,
-  kemajuan,
-  lipatKelompok,
-  pilah,
-  ringkasDroping,
-  susunBaris,
-} from "./daftar";
+import { jumlahSegmen, kemajuan, lipatKelompok, pilah, ringkasDroping, susunBaris } from "./daftar";
 import { nominalK, susunBahanGrid, susunGrid, susunKerangka } from "./grid";
 import { judulKata, kartuVM } from "./kartu";
 
@@ -132,7 +124,7 @@ describe("kartu nasabah", () => {
     ]);
     expect(vm.progres).toMatchObject({
       status: "belum",
-      sinyal: { teks: "Tidak Bisa Digulung", ikon: "circle-x" },
+      sinyal: "Belum Bisa Digulung",
     });
     // Alasan terperinci tetap ada untuk tombol Gulung yang mati.
     expect(vm.progres?.petunjuk).toBe("Gulung mulai angsuran ke-12");
@@ -140,7 +132,7 @@ describe("kartu nasabah", () => {
     const bisa = kartuVM(kartu({ pinjamanKe: 1, angsuranKe: 20 }), KAMIS, bahan, ZONA);
     expect(bisa.progres).toMatchObject({
       status: "boleh",
-      sinyal: { teks: "Bisa Digulung", ikon: "circle-check" },
+      sinyal: "Bisa Digulung",
     });
     expect(vm.bayarTeks).toBe("Rp 50.000");
     expect(vm.grid).not.toBeNull();
@@ -221,9 +213,9 @@ describe("daftar tagihan", () => {
     expect(jumlahSegmen(p)).toEqual({ aktif: 3, macet: 1, droping: 1 });
     const baris = susunBaris(p.aktif, p.sudah.aktif);
     expect(
-      baris.filter((b) => b.jenis === "judul").map((b) => b.jenis === "judul" && b.label),
-    ).toEqual(["Rute 1 - PULE", "Belum diatur - SAWAH", "Sudah ditagih"]);
-    expect(baris[0]).toMatchObject({ ringkas: "2 = 90K" });
+      baris.filter((b) => b.jenis === "judul").map((b) => b.jenis === "judul" && b.nama),
+    ).toEqual(["PULE", "SAWAH", "SUDAH DITAGIH"]);
+    expect(baris[0]).toMatchObject({ jumlah: 2, total: 90_000 });
     expect(kemajuan(semua)).toEqual({ bayar: 0, libur: 1, sisa: 4 });
     expect(ringkasDroping(p.droping)).toEqual({ baru: 1_000_000, gulung: 0 });
     expect(pilah(semua, "sawah").aktif).toHaveLength(1);
@@ -261,11 +253,6 @@ describe("daftar tagihan", () => {
     expect(lipat.map((b) => b.jenis)).toEqual(["judul", "judul", "kartu"]);
     expect(lipat[0]).toMatchObject({ nama: "PULE", terlipat: true, jumlah: 2 });
     expect(lipat[1]).toMatchObject({ nama: "SAWAH", terlipat: false });
-    // Lembar lompat memakai jumlah nasabah kelompok, bukan baris yang tampil.
-    expect(daftarLompat(lipat).map((l) => [l.label, l.jumlah, l.indeks])).toEqual([
-      ["Rute 1 - PULE", 2, 0],
-      ["Rute 1 - SAWAH", 1, 1],
-    ]);
   });
 });
 

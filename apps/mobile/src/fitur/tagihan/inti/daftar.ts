@@ -45,11 +45,6 @@ export type Baris =
   | {
       jenis: "judul";
       id: string;
-      /** "Rute 1 - PULE BARAT" — chip rute & lembar lompat. */
-      label: string;
-      /** "10 = 500K". */
-      ringkas: string;
-      rute: string;
       sudah: boolean;
       /** Nama kelompok di judul kartu: "PULE BARAT". */
       nama: string;
@@ -64,42 +59,32 @@ export type Baris =
       jenis: "kartu";
       id: string;
       vm: KartuVM;
-      rute: string;
       /** Kartu terakhir kelompoknya: rel pohon berhenti di sini. */
       terakhir: boolean;
     }
-  | { jenis: "sudah"; id: string; vm: KartuVM; rute: string };
-
-/** 500000 → "500K" — total angsuran kelompok (target tagih kampung itu). */
-const ribuanK = (n: number) => `${Math.round(n / 1000).toLocaleString("id-ID")}K`;
+  | { jenis: "sudah"; id: string; vm: KartuVM };
 
 /**
- * Kartu segmen (urut rute) → baris berjudul kampung: "Rute 1 - PULE BARAT"
- * · "10 = 500K" (jumlah nasabah = total angsurannya). Kampung yang belum
- * masuk rute: "Belum diatur - <KAMPUNG>". Kelompok "Sudah ditagih" di dasar —
- * SENGAJA hanya jumlah nasabah, tanpa uang hari ini.
+ * Kartu segmen → baris berjudul kampung: nama, jumlah nasabah, dan total
+ * angsurannya (target tagih kampung itu). Urutan kelompok & kartu mengikuti
+ * masukan — yaitu urutan rute yang diatur di Pengaturan (kampung yang belum
+ * masuk rute di belakang); judulnya tak mencetak nomor rute. Kelompok "Sudah
+ * ditagih" di dasar — SENGAJA hanya jumlah nasabah, tanpa uang hari ini.
  */
 export function susunBaris(kartu: readonly KartuVM[], sudah: readonly KartuVM[]): Baris[] {
   const hasil: Baris[] = [];
   let awal = 0;
   while (awal < kartu.length) {
     const kampung = kartu[awal]?.p.nasabah.kampung ?? "";
-    const ruteKe = kartu[awal]?.p.ruteKe ?? null;
     let akhir = awal;
     let total = 0;
     while (akhir < kartu.length && kartu[akhir]?.p.nasabah.kampung === kampung) {
       total += kartu[akhir]?.p.angsuran ?? 0;
       akhir++;
     }
-    const label = `${ruteKe !== null ? `Rute ${ruteKe}` : "Belum diatur"} - ${kampung.toUpperCase()}`;
-    const ringkas = `${akhir - awal} = ${ribuanK(total)}`;
-    const rute = `${label} : ${ringkas}`;
     hasil.push({
       jenis: "judul",
       id: `judul:${kampung}`,
-      label,
-      ringkas,
-      rute,
       sudah: false,
       nama: kampung.toUpperCase(),
       jumlah: akhir - awal,
@@ -108,27 +93,21 @@ export function susunBaris(kartu: readonly KartuVM[], sudah: readonly KartuVM[])
     });
     for (let i = awal; i < akhir; i++) {
       const vm = kartu[i];
-      if (vm) hasil.push({ jenis: "kartu", id: vm.id, vm, rute, terakhir: i === akhir - 1 });
+      if (vm) hasil.push({ jenis: "kartu", id: vm.id, vm, terakhir: i === akhir - 1 });
     }
     awal = akhir;
   }
   if (sudah.length > 0) {
-    const label = "Sudah ditagih";
-    const ringkas = `${sudah.length} nasabah`;
-    const rute = `${label} : ${ringkas}`;
     hasil.push({
       jenis: "judul",
       id: "judul:sudah",
-      label,
-      ringkas,
-      rute,
       sudah: true,
-      nama: label.toUpperCase(),
+      nama: "SUDAH DITAGIH",
       jumlah: sudah.length,
       total: null,
       terlipat: false,
     });
-    for (const vm of sudah) hasil.push({ jenis: "sudah", id: `sudah:${vm.id}`, vm, rute });
+    for (const vm of sudah) hasil.push({ jenis: "sudah", id: `sudah:${vm.id}`, vm });
   }
   return hasil;
 }
@@ -180,33 +159,4 @@ export function ringkasDroping(droping: readonly KartuVM[]): { baru: number; gul
     gulung += vm.p.dropGulung;
   }
   return { baru, gulung };
-}
-
-export interface LompatRute {
-  id: string;
-  label: string;
-  /** Jumlah nasabah kelompok (bukan jumlah baris yang tampil — kelompok bisa terlipat). */
-  jumlah: number;
-  /** Indeks baris judul — sasaran gulungan. */
-  indeks: number;
-  rute: string;
-  sudah: boolean;
-}
-
-/** Judul-judul kelompok di daftar yang sedang tampil — isi lembar "Lompat ke rute". */
-export function daftarLompat(baris: readonly Baris[]): LompatRute[] {
-  const hasil: LompatRute[] = [];
-  baris.forEach((b, indeks) => {
-    if (b.jenis === "judul") {
-      hasil.push({
-        id: b.id,
-        label: b.label,
-        jumlah: b.jumlah,
-        indeks,
-        rute: b.rute,
-        sudah: b.sudah,
-      });
-    }
-  });
-  return hasil;
 }

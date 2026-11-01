@@ -14,8 +14,7 @@ export const LEBAR_REL = 38;
 export const TENGAH_REL = 15;
 export const TEBAL_REL = 2;
 
-/** Jarak antarbaris di dalam kartu, dan sesudah kartu terakhir sebelum kartu/judul berikutnya. */
-export const JARAK_KOTAK = RUANG[2];
+/** Jarak sesudah kartu, sebelum kartu/judul berikutnya (rel melewatinya, kecuali kartu terakhir kelompok). */
 export const JARAK_KARTU = RUANG[3];
 
 /**

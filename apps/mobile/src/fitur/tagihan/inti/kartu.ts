@@ -57,8 +57,8 @@ export interface KartuVM {
     status: StatusGulung;
     /** Alasan terperinci — dibaca saat tombol Gulung yang mati diketuk. */
     petunjuk: string;
-    /** Sinyal satu baris di kartu: "✓ Bisa Digulung" / "✕ Tidak Bisa Digulung". */
-    sinyal: { teks: string; ikon: NamaIkon };
+    /** Sinyal di kartu: "Bisa Digulung" · "Belum Bisa Digulung" · "Tidak Bisa Digulung" (macet). */
+    sinyal: string;
   } | null;
   /** Grid setoran sebulan — hanya harian di ember belum. */
   grid: BarisPekan[] | null;
@@ -143,13 +143,14 @@ const PETUNJUK: Record<StatusGulung, (ambang: number) => string> = {
   terkunci: () => "Macet · tak bisa digulung",
 };
 
-const SINYAL = {
-  bisa: { teks: "Bisa Digulung", ikon: "circle-check" },
-  tidak: { teks: "Tidak Bisa Digulung", ikon: "circle-x" },
-} as const satisfies Record<string, { teks: string; ikon: NamaIkon }>;
+const SINYAL: Record<StatusGulung, string> = {
+  boleh: "Bisa Digulung",
+  belum: "Belum Bisa Digulung",
+  terkunci: "Tidak Bisa Digulung",
+};
 
 function progres(p: KartuTagih, status: StatusGulung): NonNullable<KartuVM["progres"]> {
-  const sinyal = status === "boleh" ? SINYAL.bisa : SINYAL.tidak;
+  const sinyal = SINYAL[status];
   if (p.jenis === "harian") {
     return { status, petunjuk: PETUNJUK[status](nomorGulungMinimal(p.pinjamanKe)), sinyal };
   }

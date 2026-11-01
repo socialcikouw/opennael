@@ -1,9 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { LembarBawah } from "@/komponen/lembar-bawah";
 import { Ikon } from "@/komponen/ui/ikon";
 import { useGaya, useWarna } from "@/komponen/ui/tampilan";
 import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/komponen/ui/tema";
-import type { LompatRute } from "../inti/daftar";
 
 /**
  * Kartu RASIO BAYAR di kepala layar: bayar ÷ (bayar + libur) hari ini, bilah,
@@ -109,58 +107,6 @@ export function KartuJatuhTempo(props: {
   );
 }
 
-/**
- * Lembar LOMPAT KE RUTE — satu baris per kelompok di daftar yang sedang
- * tampil: nama rute & jumlah kartunya; kelompok yang sedang di layar
- * ditandai. Memilih = lembar tertutup, lalu daftar menggulung ke judul itu.
- */
-export function LembarRute(props: {
-  terbuka: boolean;
-  rute: readonly LompatRute[];
-  ruteKini: string | null;
-  aksen: WarnaMode;
-  onPilih: (r: LompatRute) => void;
-  onTutup: () => void;
-  onSelesaiTutup: () => void;
-}) {
-  const WARNA = useWarna();
-  const gaya = useGaya(buatGaya);
-  return (
-    <LembarBawah
-      terbuka={props.terbuka}
-      onTutup={props.onTutup}
-      onSelesaiTutup={props.onSelesaiTutup}
-      judul="Lompat ke rute"
-    >
-      {props.rute.map((r) => {
-        const kini = r.rute === props.ruteKini;
-        return (
-          <Pressable
-            key={r.id}
-            onPress={() => props.onPilih(r)}
-            accessibilityRole="button"
-            style={({ pressed }) => [
-              gaya.baris,
-              kini ? { backgroundColor: props.aksen.lembut, borderColor: props.aksen.teks } : null,
-              pressed ? gaya.ditekan : null,
-            ]}
-          >
-            <Ikon
-              nama={r.sudah ? "circle-check" : "map-pin"}
-              ukuran={16}
-              warna={kini ? props.aksen.teks : WARNA.redup}
-            />
-            <Text style={gaya.ruteTeks} numberOfLines={1}>
-              {r.label}
-            </Text>
-            <Text style={gaya.ruteJumlah}>{r.jumlah}</Text>
-          </Pressable>
-        );
-      })}
-    </LembarBawah>
-  );
-}
-
 const buatGaya = (WARNA: Warna) =>
   StyleSheet.create({
     kartu: {
@@ -186,21 +132,4 @@ const buatGaya = (WARNA: Warna) =>
     angkaSel: { ...HURUF["2xl"], fontWeight: TEBAL.ekstra, fontVariant: ["tabular-nums"] },
     legendaTeks: { ...HURUF.xs, color: WARNA.redup },
     legendaAngka: { fontWeight: TEBAL.tebal, color: WARNA.teks },
-    baris: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: RUANG[2.5],
-      padding: RUANG[3],
-      borderRadius: SUDUT.sedang,
-      borderWidth: 1,
-      borderColor: WARNA.garis,
-    },
-    ditekan: { opacity: 0.7 },
-    ruteTeks: { ...HURUF.sm, flex: 1, fontWeight: TEBAL.semi, color: WARNA.teks },
-    ruteJumlah: {
-      ...HURUF.sm,
-      fontWeight: TEBAL.tebal,
-      color: WARNA.teksKedua,
-      fontVariant: ["tabular-nums"],
-    },
   });

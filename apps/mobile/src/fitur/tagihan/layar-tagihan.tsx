@@ -1,6 +1,6 @@
 import { kunciWilayah } from "@opennael/domain";
 import { router } from "expo-router";
-import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useDeferredValue, useEffect, useState } from "react";
 import { RefreshControl, StyleSheet, View } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -11,26 +11,20 @@ import { RUANG, type Warna } from "@/komponen/ui/tema";
 import { Tombol } from "@/komponen/ui/tombol";
 import { useAksiKartu } from "./aksi-kartu";
 import { useDaftarTagihan, useDataTagihan } from "./data-tagihan";
-import {
-  type Baris,
-  daftarLompat,
-  jumlahSegmen,
-  type LompatRute,
-  type TabKerja,
-} from "./inti/daftar";
+import { type Baris, jumlahSegmen, type TabKerja } from "./inti/daftar";
 import { useKepalaMelayang } from "./kepala-melayang";
 import { JudulKelompok, KerangkaKartu, Kosong } from "./komponen/daftar-bagian";
 import { KartuNasabah } from "./komponen/kartu-nasabah";
 import { KartuDroping, KartuSudah } from "./komponen/kartu-sudah";
-import { buatSimpananRute, KepalaTagihan } from "./komponen/kepala-tagihan";
-import { KartuJatuhTempo, KartuRasio, LembarRute } from "./komponen/ringkasan";
+import { KepalaTagihan } from "./komponen/kepala-tagihan";
+import { KartuJatuhTempo, KartuRasio } from "./komponen/ringkasan";
 import { LayarSemua } from "./layar-semua";
 import { useLipatKelompok } from "./lipat-kelompok";
 import { jenisDariMode, MODE, useMode } from "./mode";
 
 /**
  * TAGIHAN — klon layar Kerja aplikasi lama (naelcapital): kepala melayang
- * yang melipat, segmen Aktif · Macet · Droping, daftar per rute, kartu
+ * yang melipat, segmen Aktif · Macet · Droping, daftar per kampung (urut rute), kartu
  * nasabah lengkap, dan transaksi langsung dari kartu. Isinya mengikuti mode
  * aplikasi (Harian · Mingguan · Tempoan); mode Semua = direktori hanya-baca
  * (`fitur/semua`).
@@ -87,18 +81,8 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
   const { stempel, aksi, gerbang } = useAksiKartu(hariIni);
 
   // ---- gulungan & kepala melayang ---------------------------------------
-  const {
-    lipat,
-    terangkat,
-    tinggiLipat,
-    onScroll,
-    tinggiKepala,
-    setTinggiKepala,
-    lipatPt,
-    setLipatPt,
-    daftar,
-    keAtas,
-  } = useKepalaMelayang(cariTerbuka);
+  const { lipat, terangkat, tinggiLipat, onScroll, tinggiKepala, setTinggiKepala, daftar, keAtas } =
+    useKepalaMelayang(cariTerbuka);
   const gantiTab = useCallback(
     (t: TabKerja) => {
       setTab(t);
@@ -107,33 +91,11 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
     [keAtas],
   );
 
-  // ---- chip & lompat rute -------------------------------------------------
-  const [simpananRute] = useState(buatSimpananRute);
-  useEffect(() => {
-    simpananRute.tulis(baris[0]?.rute ?? null);
-  }, [baris, simpananRute]);
-  const onViewableItemsChanged = useRef(
-    ({ viewableItems }: { viewableItems: { item: Baris }[] }) => {
-      const pertama = viewableItems[0]?.item;
-      if (pertama) simpananRute.tulis(pertama.rute);
-    },
-  ).current;
-  const [lembarRute, setLembarRute] = useState(false);
-  const sasaranRute = useRef<number | null>(null);
-  const lompat = useMemo(() => (lembarRute ? daftarLompat(tampil) : []), [lembarRute, tampil]);
-  const offsetRute = tinggiKepala - lipatPt;
-  const gulirKeRute = () => {
-    const indeks = sasaranRute.current;
-    sasaranRute.current = null;
-    if (indeks !== null)
-      daftar.current?.scrollToIndex({ index: indeks, animated: true, viewOffset: offsetRute });
-  };
-
   // ---- tampilan -----------------------------------------------------------
   const renderItem = useCallback(
     ({ item }: { item: Baris }) => {
       if (item.jenis === "judul") {
-        return <JudulKelompok baris={item} aksen={aksen} onLipat={ubahLipat} />;
+        return <JudulKelompok baris={item} onLipat={ubahLipat} />;
       }
       if (item.jenis === "sudah") return <KartuSudah vm={item.vm} aksen={aksen} />;
       return (
@@ -188,23 +150,6 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
         keyboardDismissMode="on-drag"
         initialNumToRender={6}
         windowSize={7}
-        onViewableItemsChanged={onViewableItemsChanged}
-        viewabilityConfig={{ itemVisiblePercentThreshold: 10 }}
-        onScrollToIndexFailed={(info) => {
-          daftar.current?.scrollToOffset({
-            offset: info.averageItemLength * info.index,
-            animated: false,
-          });
-          setTimeout(
-            () =>
-              daftar.current?.scrollToIndex({
-                index: info.index,
-                animated: true,
-                viewOffset: offsetRute,
-              }),
-            120,
-          );
-        }}
         contentContainerStyle={{ paddingTop: tinggiKepala + RUANG[2], paddingBottom: ruangTab }}
         refreshControl={
           <RefreshControl
@@ -239,10 +184,7 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
       <KepalaTagihan
         lipat={lipat}
         terangkat={terangkat}
-        onUkurLipat={(t) => {
-          tinggiLipat.set(t);
-          setLipatPt(t);
-        }}
+        onUkurLipat={(t) => tinggiLipat.set(t)}
         onUkur={setTinggiKepala}
         mode={{ label: MODE[mode].label, warna: aksen }}
         kartuAtas={
@@ -266,21 +208,6 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
         cariTerbuka={cariTerbuka}
         onCariTerbuka={setCariTerbuka}
         tutup={tutup}
-        simpananRute={simpananRute}
-        onBukaRute={() => setLembarRute(true)}
-      />
-
-      <LembarRute
-        terbuka={lembarRute}
-        rute={lompat}
-        ruteKini={simpananRute.ambil()}
-        aksen={aksen}
-        onPilih={(r: LompatRute) => {
-          sasaranRute.current = r.indeks;
-          setLembarRute(false);
-        }}
-        onTutup={() => setLembarRute(false)}
-        onSelesaiTutup={gulirKeRute}
       />
     </View>
   );

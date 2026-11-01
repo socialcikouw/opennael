@@ -4,14 +4,14 @@ import { HURUF, RUANG, TEBAL, type Warna } from "@/komponen/ui/tema";
 import type { KartuVM } from "../inti/kartu";
 
 /**
- * Pokok (kiri) dan Sisa Saldo (kanan). Angsuran hanya dicetak bila tak ada
+ * Pokok Pinjaman (kiri) dan Sisa Saldo (kanan). Angsuran hanya dicetak bila tak ada
  * tombol Bayar — tombol itu sudah mencetak nominalnya.
  */
 export function AngkaKartu({ vm, tanpaAngsuran }: { vm: KartuVM; tanpaAngsuran: boolean }) {
   const gaya = useGaya(buatGaya);
   return (
     <View style={gaya.baris}>
-      <Angka label="Pokok" nilai={vm.pokokRp} rata={gaya.kiri} />
+      <Angka label="Pokok Pinjaman" nilai={vm.pokokRp} rata={gaya.kiri} />
       {tanpaAngsuran ? null : <Angka label="Angsuran" nilai={vm.angsuranRp} rata={gaya.tengah} />}
       <Angka label="Sisa Saldo" nilai={vm.saldoRp} rata={gaya.kanan} tegas />
     </View>
