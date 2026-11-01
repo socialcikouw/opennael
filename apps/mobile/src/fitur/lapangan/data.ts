@@ -1,6 +1,7 @@
 import { kunci } from "@opennael/api-client";
 import type { Peristiwa } from "@opennael/contracts";
 import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMemo } from "react";
 import { api, kueri, panggil } from "@/lib/api";
 
 /**
@@ -36,20 +37,25 @@ export function usePeristiwaBulan(hariIni: string | undefined) {
  * mingguan sepanjang tenor bisa melewati sebulan. Peta tetap sama selama
  * isinya tak berubah, jadi kartu tak disusun ulang sia-sia.
  */
-export function useRiwayatPinjaman(ids: readonly string[]) {
-  return useQueries({
+export function useRiwayatPinjaman(
+  ids: readonly string[],
+): ReadonlyMap<string, readonly Peristiwa[]> {
+  const rekam = useQueries({
     queries: ids.map((id) => kueri.lapangan.riwayatPinjaman(id)),
     combine: gabungRiwayat,
   });
+  // `combine` mengembalikan objek polos supaya berbagi-struktur TanStack bekerja (ia tak
+  // menyentuh `Map`); petanya dibungkus sesudahnya dan hanya berganti bila isinya berganti.
+  return useMemo(() => new Map(Object.entries(rekam)), [rekam]);
 }
 
 function gabungRiwayat(hasil: { data?: Peristiwa[] | undefined }[]) {
-  const peta = new Map<string, readonly Peristiwa[]>();
+  const rekam: Record<string, readonly Peristiwa[]> = {};
   for (const h of hasil) {
     const pertama = h.data?.[0];
-    if (pertama) peta.set(pertama.pinjamanId, h.data ?? []);
+    if (pertama) rekam[pertama.pinjamanId] = h.data ?? [];
   }
-  return peta;
+  return rekam;
 }
 
 export function useKampung() {
