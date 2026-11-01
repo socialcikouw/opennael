@@ -1,8 +1,8 @@
 import { router } from "expo-router";
 import { Tabs } from "expo-router/js-tabs";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Alert } from "react-native";
-import { bacaGerbang, useHariIni } from "@/fitur/lapangan";
+import { bacaGerbang, useGerbangMutasi, useHariIni } from "@/fitur/lapangan";
 import { useJumlahPengingat } from "@/fitur/notifikasi";
 import { HurufMode, jenisDariMode, LembarMode, MODE, type ModeApp, useMode } from "@/fitur/tagihan";
 import { TabMengambang } from "@/komponen/tab-mengambang";
@@ -51,6 +51,12 @@ export default function TabKolektor() {
   const pengingat = useJumlahPengingat();
   const [lembarMode, setLembarMode] = useState(false);
   const jenis = jenisDariMode(mode);
+  // Mutasi bergembok selama masih ada nasabah wajib yang belum ditagih (C6).
+  const { gerbang: gerbangMutasi } = useGerbangMutasi();
+  const ikon = useMemo(
+    () => ({ ...IKON, mutasi: gerbangMutasi === "siap" ? IKON.mutasi : "lock" }) as const,
+    [gerbangMutasi],
+  );
 
   // Gerbang (C4) hanya untuk menjelaskan lebih awal — server tetap memutuskan.
   const tambah = () => {
@@ -73,7 +79,7 @@ export default function TabKolektor() {
         tabBar={(p) => (
           <TabMengambang
             {...p}
-            ikon={IKON}
+            ikon={ikon}
             tampil={TAB[mode]}
             lencana={{ notifikasi: pengingat }}
             warna={warnaMode}

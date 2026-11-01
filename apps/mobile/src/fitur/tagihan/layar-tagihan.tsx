@@ -21,6 +21,7 @@ import { GagalSegar } from "./komponen/gagal-segar";
 import { KartuNasabah } from "./komponen/kartu-nasabah";
 import { KartuDroping, KartuSudah } from "./komponen/kartu-sudah";
 import { KepalaTagihan } from "./komponen/kepala-tagihan";
+import { LembarAlasanLibur } from "./komponen/lembar-alasan-libur";
 import { KartuJatuhTempo } from "./komponen/ringkasan";
 import { useLipatKelompok } from "./lipat-kelompok";
 import { jenisDariMode, MODE, useMode } from "./mode";
@@ -87,7 +88,7 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
   const { tampil, ubah: ubahLipat } = useLipatKelompok(baris, tab, kunciCari !== "");
 
   // ---- transaksi ----------------------------------------------------------
-  const { stempel, sibuk, aksi, gerbang } = useAksiKartu(hariIni);
+  const { stempel, sibuk, aksi, gerbang, lembarLibur } = useAksiKartu(hariIni);
   const statusKartu = useMemo(() => ({ stempel, sibuk }), [stempel, sibuk]);
 
   // ---- gulungan & kepala melayang ---------------------------------------
@@ -230,6 +231,12 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
         cariTerbuka={cariTerbuka}
         onCariTerbuka={setCariTerbuka}
         tutup={tutup}
+      />
+
+      <LembarAlasanLibur
+        vm={lembarLibur.vm}
+        onTutup={lembarLibur.tutup}
+        onKirim={lembarLibur.kirim}
       />
     </View>
   );

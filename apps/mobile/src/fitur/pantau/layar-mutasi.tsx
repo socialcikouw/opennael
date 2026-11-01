@@ -1,9 +1,11 @@
 import { tanggal as formatTanggal, jam, rupiah } from "@opennael/format";
 import { useCallback, useMemo } from "react";
 import { RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
-import { ItemPengingat, usePengingat } from "@/fitur/notifikasi";
+import { type GerbangMutasi, useGerbangMutasi, useKasHariIni } from "@/fitur/lapangan";
+import { AksiLaporan, ItemPengingat, usePengingat } from "@/fitur/notifikasi";
 import { useRuangTab } from "@/komponen/tab-mengambang";
 import { useG } from "@/komponen/ui/gaya-bersama";
+import { Ikon } from "@/komponen/ui/ikon";
 import { PesanGalat } from "@/komponen/ui/isian";
 import { Baris, Kartu } from "@/komponen/ui/kartu";
 import { Memuat } from "@/komponen/ui/layar";
@@ -13,7 +15,7 @@ import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
 import { Tombol } from "@/komponen/ui/tombol";
 import { useZonaKantor } from "@/lib/kantor";
 import { useTarikSegarkan } from "@/lib/tarik-segarkan";
-import { useBiayaHariIni, useKasHariIni } from "./data";
+import { useBiayaHariIni } from "./data";
 import { barisArusKas, type KeadaanKas, keadaanKas } from "./inti/arus-kas";
 import { KartuTotal } from "./komponen/kartu-total";
 
@@ -27,13 +29,27 @@ const LABEL_KEADAAN: Record<KeadaanKas, string> = {
 
 const TANDA = { awal: undefined, masuk: "+", keluar: "−" } as const;
 
+/** Penjelasan gembok per keadaan gerbang (selain `siap`). */
+const ALASAN_GEMBOK: Record<Exclude<GerbangMutasi, "siap">, string> = {
+  memuat: "Memeriksa tagihan hari ini…",
+  "belum-absen": "Absen pagi dulu. Mutasi kas terbuka sesudah semua nasabah hari ini ditagih.",
+  "tidak-kerja": "Anda tidak kerja hari ini — tak ada arus kas lapangan.",
+  "belum-ada-nasabah": "Belum ada nasabah untuk ditagih dan belum ada catatan hari ini.",
+  "masih-menagih":
+    "Masih ada nasabah yang belum ditagih. Mutasi kas terbuka sesudah semuanya dicatat — bayar atau libur.",
+};
+
 /**
  * MUTASI (mode Semua) — arus kas kolektor hari ini (aturan-usaha I1): kas
  * lapangan + storting + tabungan masuk + admin − droping − transfer − biaya
- * tak terduga = tunai yang harus disetor sore. Angkanya dari server, ikut
- * bergerak sampai laporan dibuka, lalu terkunci saat kasir menerima kas
- * (tampil tekor / lebih setor). Absen & buka laporan juga bisa dari sini —
- * di mode Semua tak ada tab Notifikasi.
+ * tak terduga = tunai yang harus disetor sore.
+ *
+ * TERGEMBOK (ikon tab ikut menjadi gembok) selama gerbang Mutasi belum terbuka
+ * (C6): semua nasabah wajib hari ini — harian, mingguan di hari tagihnya,
+ * tempoan sejak jatuh tempo — harus sudah dicatat. Selama terkunci tampil
+ * alasannya dan siapa yang menahan, dengan tombol pindah ke mode jenisnya.
+ * Sesudah terbuka: arus kas, lalu Buka laporan (mengunci catatan lapangan hari
+ * ini). Sesudah kasir menerima kas: tekor / lebih setor.
  */
 export function LayarMutasi() {
   const gaya = useGaya(buatGaya);
@@ -42,7 +58,8 @@ export function LayarMutasi() {
   const aksen = useWarnaMode("semua");
   const ruangTab = useRuangTab();
   const zona = useZonaKantor();
-  const { hariIni, tagihan, pengingat, belum } = usePengingat();
+  const { hariIni, tagihan, pengingat } = usePengingat();
+  const { gerbang, belum } = useGerbangMutasi();
   const tanggal = hariIni.data?.kalender.tanggal;
   const kas = useKasHariIni();
   const biaya = useBiayaHariIni(tanggal);
@@ -76,8 +93,11 @@ export function LayarMutasi() {
   const st = hari?.serahTerima ?? null;
   // Sesudah kas diterima, angka yang berlaku adalah yang dibekukan saat itu.
   const harusSetor = st?.tunaiSeharusnya ?? hari?.rincian?.tunaiSeharusnya ?? 0;
-  // Pengingat (absen, belum dicatat, laporan siap) hanya relevan sebelum laporan dibuka.
-  const tampilPengingat = keadaan === "belum-absen" || keadaan === "lapangan";
+  const terbuka = gerbang === "siap";
+  // Saat tergembok: yang menahan (absen, kabar gerbang, yang belum ditagih per jenis).
+  const penahan = (pengingat ?? []).filter(
+    (p) => p.jenis === "absen" || p.jenis === "gerbang" || p.jenis === "belum",
+  );
 
   return (
     <ScrollView
@@ -110,24 +130,30 @@ export function LayarMutasi() {
         />
       ) : null}
 
-      {tampilPengingat
-        ? pengingat?.map((p) => (
-            <ItemPengingat
-              key={p.jenis}
-              p={p}
-              jumlahBelum={belum?.length ?? 0}
-              tautanTagihan={false}
-            />
-          ))
-        : null}
+      {terbuka ? null : (
+        <>
+          <View style={gaya.gembok}>
+            <View style={gaya.gembokIkon}>
+              <Ikon nama="lock" ukuran={30} warna={WARNA.redup} />
+            </View>
+            <Text style={gaya.gembokJudul}>
+              {gerbang === "masih-menagih"
+                ? `Mutasi kas terkunci · ${belum.length} belum ditagih`
+                : "Mutasi kas terkunci"}
+            </Text>
+            <Text style={gaya.gembokIsi}>
+              {gerbang === "tidak-kerja" && hari?.alasanTidakKerja
+                ? `Anda tidak kerja hari ini: ${hari.alasanTidakKerja}.`
+                : ALASAN_GEMBOK[gerbang]}
+            </Text>
+          </View>
+          {penahan.map((p) => (
+            <ItemPengingat key={p.kunci} p={p} tanpaMutasi />
+          ))}
+        </>
+      )}
 
-      {keadaan === "tidak-kerja" ? (
-        <Spanduk
-          judul="Tidak kerja hari ini"
-          isi={hari?.alasanTidakKerja ?? "Tak ada arus kas lapangan."}
-        />
-      ) : null}
-      {keadaan === "laporan" && hari?.laporanDibukaAt ? (
+      {terbuka && keadaan === "laporan" && hari?.laporanDibukaAt ? (
         <Spanduk
           warna="hijau"
           judul={`Laporan dibuka pukul ${jam(hari.laporanDibukaAt, zona)}`}
@@ -135,7 +161,7 @@ export function LayarMutasi() {
         />
       ) : null}
 
-      {hari && hari.absensi === "masuk_kerja" ? (
+      {terbuka && hari && hari.absensi === "masuk_kerja" ? (
         <>
           <KartuTotal
             label={st ? "TUNAI SEHARUSNYA DISETOR" : "TUNAI YANG HARUS DISETOR"}
@@ -168,6 +194,16 @@ export function LayarMutasi() {
               ) : null
             }
           />
+
+          {keadaan === "lapangan" ? (
+            <View style={gaya.bagian}>
+              <Text style={g.teksRedup}>
+                Semua nasabah hari ini sudah ditagih. Periksa angkanya, lalu buka laporan dan
+                serahkan tunai ke kasir.
+              </Text>
+              <AksiLaporan />
+            </View>
+          ) : null}
 
           <View style={gaya.bagian}>
             <Text style={gaya.judulBagian}>BIAYA TAK TERDUGA</Text>
@@ -205,6 +241,26 @@ const buatGaya = (WARNA: Warna) =>
       borderTopColor: WARNA.garis,
     },
     bagian: { gap: RUANG[2] },
+    gembok: {
+      alignItems: "center",
+      gap: RUANG[2],
+      borderRadius: SUDUT.besar,
+      borderWidth: 1,
+      borderStyle: "dashed",
+      borderColor: WARNA.garisTegas,
+      paddingHorizontal: RUANG[5],
+      paddingVertical: RUANG[6],
+    },
+    gembokIkon: {
+      width: 64,
+      height: 64,
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: SUDUT.bulat,
+      backgroundColor: WARNA.abu,
+    },
+    gembokJudul: { ...HURUF.lg, fontWeight: TEBAL.tebal, textAlign: "center", color: WARNA.teks },
+    gembokIsi: { ...HURUF.sm, textAlign: "center", color: WARNA.redup },
     judulBagian: {
       ...HURUF["2xs"],
       fontWeight: TEBAL.ekstra,

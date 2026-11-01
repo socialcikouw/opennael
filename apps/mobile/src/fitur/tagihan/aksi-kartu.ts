@@ -1,11 +1,12 @@
 import { kunci } from "@opennael/api-client";
-import { hitungLunas } from "@opennael/domain";
+import { hitungLunas, liburPerluAlasan } from "@opennael/domain";
 import { rupiah } from "@opennael/format";
 import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Alert, LayoutAnimation } from "react-native";
 import { bacaGerbang, kabarTercatat, type Stempel, tulis, type useHariIni } from "@/fitur/lapangan";
+import type { KartuVM } from "./inti/kartu";
 import type { AksiKartu } from "./komponen/kartu-nasabah";
 
 /** Lama stempel tampil di kartu sebelum kartu turun ke "Sudah ditagih". */
@@ -79,6 +80,27 @@ export function useAksiKartu(hariIni: ReturnType<typeof useHariIni>) {
     return true;
   }, [gerbang]);
 
+  /** Kartu yang sedang meminta alasan libur (tempoan, G1); null = lembar tertutup. */
+  const [liburBeralasan, setLiburBeralasan] = useState<KartuVM | null>(null);
+  const lembarLibur = useMemo(
+    () => ({
+      vm: liburBeralasan,
+      tutup: () => setLiburBeralasan(null),
+      kirim: (alasan: string) => {
+        const vm = liburBeralasan;
+        if (!vm) return;
+        setLiburBeralasan(null);
+        void catat(
+          vm.id,
+          () => tulis.libur({ pinjamanId: vm.id, alasan }),
+          "libur",
+          "Gagal mencatat libur",
+        );
+      },
+    }),
+    [liburBeralasan, catat],
+  );
+
   const aksi: AksiKartu = useMemo(
     () => ({
       bayar: (vm) => {
@@ -101,6 +123,11 @@ export function useAksiKartu(hariIni: ReturnType<typeof useHariIni>) {
           return;
         }
         if (gerbangTutup()) return;
+        // G1: libur tempoan wajib beralasan → lembar alasan.
+        if (liburPerluAlasan(vm.p)) {
+          setLiburBeralasan(vm);
+          return;
+        }
         Alert.alert("Tandai libur", `Yakin ${vm.nama} libur hari ini?`, [
           { text: "Batal", style: "cancel" },
           {
@@ -142,5 +169,5 @@ export function useAksiKartu(hariIni: ReturnType<typeof useHariIni>) {
     [gerbangTutup, catat],
   );
 
-  return { stempel, sibuk, aksi, gerbang };
+  return { stempel, sibuk, aksi, gerbang, lembarLibur };
 }

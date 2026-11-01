@@ -159,11 +159,23 @@ describe("kartu nasabah", () => {
     expect(sudah.judulSudah).toBe("SUDAH BAYAR • 50K");
   });
 
-  test("tempoan: tombol utama Lunasi seharga saldo, tanpa libur; mingguan berhari tagih", () => {
-    const t = kartuVM(kartu({ jenis: "tempoan", tenor: 14, saldo: 1_250_000 }), KAMIS, bahan, ZONA);
+  test("tempoan: Lunasi seharga saldo; Libur hanya sejak jatuh tempo (G1); mingguan berhari tagih", () => {
+    const tempoan = { jenis: "tempoan" as const, tenor: 14, saldo: 1_250_000 };
+    const t = kartuVM(kartu({ ...tempoan, jatuhTempo: "2026-11-05" }), KAMIS, bahan, ZONA);
     expect(t.sekaliBayar).toBe(true);
     expect(t.bayarTeks).toBe("Rp 1.250.000");
     expect(t.tampilkanLibur).toBe(false);
+    expect(t.wajib).toBe(false);
+    // Jatuh tempo kemarin: wajib ditagih & boleh libur walau angsuran terbayar 0 (G3 tak berlaku).
+    const lewat = kartuVM(
+      kartu({ ...tempoan, angsuranKe: 0, jatuhTempo: "2026-10-28" }),
+      KAMIS,
+      bahan,
+      ZONA,
+    );
+    expect(lewat.tampilkanLibur).toBe(true);
+    expect(lewat.alasanLibur).toBeNull();
+    expect(lewat.wajib).toBe(true);
     const m = kartuVM(
       kartu({ jenis: "mingguan", tenor: 8, tanggalAkad: "2026-10-22" }),
       KAMIS,

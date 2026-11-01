@@ -211,7 +211,8 @@ function susun(p: KartuTagih, hariIni: string, bahan: BahanGrid, zona: ZonaWaktu
     aksi: e === "belum",
     bayarTeks: rupiahPendek(tempoan ? p.saldo : p.angsuran),
     sekaliBayar: tempoan,
-    tampilkanLibur: !tempoan,
+    // Tempoan: Libur hanya sejak jatuh tempo (G1); sebelumnya tak ditampilkan sama sekali.
+    tampilkanLibur: !tempoan || libur === null,
     alasanLibur: libur?.pesan ?? null,
     judulSudah: e === "sudah" ? judulSudah(p) : null,
     cari: `${kunciWilayah(p.nasabah.nama)} ${kunciWilayah(p.nasabah.kampung)}`,

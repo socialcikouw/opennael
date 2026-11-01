@@ -13,8 +13,8 @@ import type { AksiKartu } from "./kartu-nasabah";
  *   [ BAYAR                  Rp 15.000 ]
  * Libur & Gulung tonal; mati beserta alasannya bila belum boleh (tetap bisa
  * diketuk untuk membacanya). Bayar — satu-satunya bidang berwarna pekat,
- * selebar kartu — mencetak nominalnya (tempoan: Lunasi seharga saldo; tanpa
- * Libur, Gulung selebar kartu). Lunasi nasabah lain: tahan lama kartunya.
+ * selebar kartu — mencetak nominalnya (tempoan: Lunasi seharga saldo; Libur
+ * hanya sejak jatuh tempo, beralasan — G1). Lunasi nasabah lain: tahan lama kartunya.
  */
 export function KakiKartu({ vm, aksi, aksen }: { vm: KartuVM; aksi: AksiKartu; aksen: WarnaMode }) {
   const gaya = useGaya(buatGaya);

@@ -60,8 +60,7 @@ export function useMode(): ModeApp {
 export interface RingkasMode {
   /** Pinjaman aktif (berjalan/macet) jenis ini. */
   aktif: number;
-  /** Perlu didatangi hari ini dan belum dicatat: yang wajib (B6), plus tempoan
-   * yang jatuh tempo hari ini atau sudah lewat. */
+  /** Wajib ditagih hari ini (B6 — termasuk tempoan sejak jatuh tempo) dan belum dicatat. */
   tagih: number;
 }
 
@@ -77,10 +76,7 @@ export function ringkasPerMode(
     semua: { aktif: 0, tagih: 0 },
   };
   for (const p of daftar) {
-    const perlu =
-      !p.hariIni &&
-      (wajibDitagihHariIni(p, hariIni) ||
-        (p.jenis === "tempoan" && p.jatuhTempo !== null && p.jatuhTempo <= hariIni));
+    const perlu = !p.hariIni && wajibDitagihHariIni(p, hariIni);
     for (const r of [hasil[p.jenis], hasil.semua]) {
       r.aktif++;
       if (perlu) r.tagih++;

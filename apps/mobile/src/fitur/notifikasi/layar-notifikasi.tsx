@@ -15,24 +15,26 @@ import { usePengingat } from "./data";
 import { ItemPengingat } from "./komponen/item-pengingat";
 
 /**
- * NOTIFIKASI — pengingat kolektor: belum absen, kabar gerbang lapangan (libur,
- * di luar jam kerja, …), tagihan wajib yang belum dicatat, dan laporan yang
- * sudah boleh dibuka. Diturunkan dari data lapangan di HP; notifikasi kiriman
- * server belum ada (dirancang di docs lebih dulu). Tab ini menampilkan
- * banyaknya pengingat yang menunggu tindakan (`useJumlahPengingat`).
+ * NOTIFIKASI — SATU untuk ketiga mode kerja (isi & angka lonceng sama):
+ * belum absen, kabar gerbang lapangan, yang belum ditagih dirinci per jenis
+ * (harian · mingguan · tempoan jatuh tempo sekarang · tempoan lewat jatuh
+ * tempo) beserta nama & nominalnya, tempoan jatuh tempo besok, Mutasi kas yang
+ * sudah terbuka, laporan, dan hasil serah terima kas. Diturunkan dari data
+ * lapangan di HP; notifikasi kiriman server belum ada.
  */
 export function LayarNotifikasi() {
   const WARNA = useWarna();
   const gaya = useGaya(buatGaya);
   const g = useG();
   const ruangTab = useRuangTab();
-  const { hariIni, tagihan, pengingat, belum } = usePengingat();
+  const { hariIni, tagihan, kas, pengingat } = usePengingat();
 
   const { refetch: segarHariIni } = hariIni;
   const { refetch: segarTagihan } = tagihan;
+  const { refetch: segarKas } = kas;
   const segarkan = useCallback(
-    () => Promise.all([segarHariIni(), segarTagihan()]),
-    [segarHariIni, segarTagihan],
+    () => Promise.all([segarHariIni(), segarTagihan(), segarKas()]),
+    [segarHariIni, segarTagihan, segarKas],
   );
   const { aktif: menarik, tarik } = useTarikSegarkan(segarkan);
 
@@ -63,7 +65,7 @@ export function LayarNotifikasi() {
       ) : null}
       {tagihan.isError ? <PesanGalat pesan={tagihan.error?.message} /> : null}
       {pengingat.map((p) => (
-        <ItemPengingat key={p.jenis} p={p} jumlahBelum={belum?.length ?? 0} />
+        <ItemPengingat key={p.kunci} p={p} />
       ))}
       {pengingat.length === 0 ? (
         <View style={gaya.kosong}>
