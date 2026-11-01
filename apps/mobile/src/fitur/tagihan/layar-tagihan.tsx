@@ -58,9 +58,6 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
   const [cariTerbuka, setCariTerbuka] = useState(false);
   const kunciCari = kunciWilayah(useDeferredValue(cari));
   const [tab, setTab] = useState<TabKerja>(segmenAwal === "droping" ? "droping" : "aktif");
-  useEffect(() => {
-    if (segmenAwal === "droping") setTab("droping");
-  }, [segmenAwal]);
 
   // ---- data → kartu → segmen → baris -------------------------------------
   const { bahan, partisi, baris, maju, jatuhTempo, droping } = useDaftarTagihan({
@@ -92,6 +89,16 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
     },
     [keAtas],
   );
+
+  // Parameter `segmen=droping` (dari layar Gulung) dipakai sekali lalu dibuang — kalau
+  // dibiarkan, gulung berikutnya tak mengubah nilainya (efek tak jalan) dan ganti mode
+  // (layar dipasang ulang) membuka Droping lagi.
+  useEffect(() => {
+    if (segmenAwal !== "droping") return;
+    setTab("droping");
+    keAtas();
+    router.setParams({ segmen: undefined });
+  }, [segmenAwal, keAtas]);
 
   // ---- tampilan -----------------------------------------------------------
   const renderItem = useCallback(
