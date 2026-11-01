@@ -109,7 +109,7 @@ describe.skipIf(!URL_DB)("kalender kantor", () => {
 
       // Kolektor sudah absen dan punya pinjaman salinan agar hari ini bisa "berjalan".
       await kirim("/lapangan/absen", {
-        isi: { absensi: "masuk_kerja", kasLapangan: 0, uangJalan: 0 },
+        isi: { absensi: "masuk_kerja", kasLapangan: 100_000, uangJalan: 10_000 },
         token: k,
       });
       const [w] = await baris<{ id: string }>(sql`

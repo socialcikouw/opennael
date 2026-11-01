@@ -114,7 +114,7 @@ describe.skipIf(!URL_DB)("pembatalan bos", () => {
 
       // ---- lapangan hari ini -----------------------------------------------------
       await kirim("/lapangan/absen", {
-        isi: { absensi: "masuk_kerja", kasLapangan: 2_000_000, uangJalan: 0 },
+        isi: { absensi: "masuk_kerja", kasLapangan: 2_000_000, uangJalan: 50_000 },
         token: k,
       });
       const setorA = await kirim("/lapangan/bayar", {

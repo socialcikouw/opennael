@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { orang, tanggal } from "../bersama/dasar";
 import { jenisPinjamanSchema } from "../pembiayaan/pinjaman";
+import { nominalKasPagi } from "./absensi";
 
 /**
  * SETORAN SORE — kasir menerima kas kolektor (hitung buta), mencatat transfer
@@ -74,8 +75,8 @@ export type TerimaKasInput = z.infer<typeof terimaKasSchema>;
 /** `PATCH /hari-kolektor/:kolektorId/hari-ini` — pembetulan angka pagi oleh bos. */
 export const ubahHariIniSchema = z
   .object({
-    kasLapangan: z.number().int().min(0).optional(),
-    uangJalan: z.number().int().min(0).optional(),
+    kasLapangan: nominalKasPagi.optional(),
+    uangJalan: nominalKasPagi.optional(),
   })
   .refine((v) => v.kasLapangan !== undefined || v.uangJalan !== undefined, {
     message: "Isi kas lapangan atau uang jalan",

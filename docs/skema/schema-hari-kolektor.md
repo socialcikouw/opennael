@@ -39,8 +39,8 @@ Alur satu hari:
 | `tanggal` | `date` | — | | Hari pembukuan (kalender kantor). |
 | `absensi` | enum `status_absensi` (`masuk_kerja`, `tidak_kerja`) | — | | |
 | `alasan_tidak_kerja` | `varchar(100)` | ya | | Wajib saat `tidak_kerja`, kosong saat `masuk_kerja`. |
-| `kas_lapangan` | `bigint` | — | `0` | Modal tunai yang dibawa ke lapangan (dari bos). |
-| `uang_jalan` | `bigint` | — | `0` | Uang operasional hari itu (bensin, makan). |
+| `kas_lapangan` | `bigint` | — | `0` | Modal tunai yang dibawa ke lapangan (dari bos). Masuk kerja: minimal 5.000, kelipatan 5.000 ([aturan-usaha I0](../aturan-usaha.md)). |
+| `uang_jalan` | `bigint` | — | `0` | Uang operasional hari itu (bensin, makan). Masuk kerja: minimal 5.000, kelipatan 5.000 (I0). |
 | `laporan_dibuka_at` | `timestamptz` | ya | | Kolektor membuka laporan mutasi kas → operasi lapangannya berhenti. Bos boleh mengosongkannya kembali (sebelum kas diterima), dicatat di riwayat. |
 | `transfer_lama` | `bigint` | ya | | **Arsip.** Total transfer hari-hari sebelum peralihan ke `transfer_setoran` (tanpa rincian nasabah). Diisi sekali saat migrasi, **tak pernah ditulis lagi**. |
 | `tekor_lama` | `bigint` | ya | | **Arsip.** Total tekor manual hari-hari sebelum peralihan (dari `beban_kolektor` lama). Diisi sekali saat migrasi, tak pernah ditulis lagi — lihat [schema-biaya-tak-terduga.md](schema-biaya-tak-terduga.md#tekor-lama-sebelum-peralihan). |
@@ -58,6 +58,7 @@ Alur satu hari:
 | `idx_hari_kolektor_kantor_tanggal` | INDEX | `(kantor_id, tanggal)` — layar bos/kasir & buku kas per rentang tanggal. |
 | `hari_kolektor_absensi_check` | CHECK | `(absensi = 'masuk_kerja' AND alasan_tidak_kerja IS NULL)` **atau** `(absensi = 'tidak_kerja' AND alasan_tidak_kerja IS NOT NULL AND kas_lapangan = 0 AND uang_jalan = 0 AND laporan_dibuka_at IS NULL AND transfer_lama IS NULL)` |
 | `hari_kolektor_nominal_check` | CHECK | `kas_lapangan >= 0 AND uang_jalan >= 0 AND (transfer_lama IS NULL OR transfer_lama >= 0) AND (tekor_lama IS NULL OR tekor_lama > 0)` |
+| `hari_kolektor_kelipatan_check` | CHECK `NOT VALID` | `absensi = 'tidak_kerja'` **atau** `(kas_lapangan >= 5000 AND kas_lapangan % 5000 = 0 AND uang_jalan >= 5000 AND uang_jalan % 5000 = 0)` — aturan-usaha I0 (2 Nov 2026). `NOT VALID`: berlaku untuk baris baru & yang diubah; catatan sebelum aturan ini (data uji, salinan aplikasi lama) tidak diperiksa ulang. |
 | `hari_kolektor_terkunci` | TRIGGER (BEFORE UPDATE) | Bila ada `serah_terima_kas` berlaku untuk baris ini: tolak perubahan `kas_lapangan`, `uang_jalan`, `laporan_dibuka_at` (`KAS_SUDAH_DITERIMA`). Jaring pengaman; service memeriksanya lebih dulu. |
 
 ## Perubahan dari skema sekarang
@@ -116,9 +117,9 @@ serah terima (kurang setor), bukan masukan.
 
 | Metode & jalur | Peran | Isi |
 |---|---|---|
-| `POST /lapangan/absen` | kolektor | Absen: `{ absensi: masuk_kerja, kasLapangan, uangJalan }` atau `{ absensi: tidak_kerja, alasan }`. |
+| `POST /lapangan/absen` | kolektor | Absen: `{ absensi: masuk_kerja, kasLapangan, uangJalan }` (masing-masing minimal 5.000, kelipatan 5.000 — I0) atau `{ absensi: tidak_kerja, alasan }`. |
 | `POST /lapangan/laporan` | kolektor | Membuka laporan (tanpa angka transfer lagi). Idempoten. Ditolak `MASIH_ADA_TAGIHAN` (422) selama masih ada pinjaman wajib ditagih hari ini yang belum dicatat ([aturan-usaha C6](../aturan-usaha.md)). |
-| `PATCH /hari-kolektor/:kolektorId/hari-ini` | bos | `{ kasLapangan?, uangJalan? }` (minimal satu) — hari ini, kolektor masuk kerja (`BELUM_ABSEN`, `TIDAK_KERJA_HARI_INI`), sebelum kas diterima (`KAS_SUDAH_DITERIMA`). Jejak `perbaiki_hari_kolektor`. |
+| `PATCH /hari-kolektor/:kolektorId/hari-ini` | bos | `{ kasLapangan?, uangJalan? }` (minimal satu; yang diisi minimal 5.000, kelipatan 5.000 — I0) — hari ini, kolektor masuk kerja (`BELUM_ABSEN`, `TIDAK_KERJA_HARI_INI`), sebelum kas diterima (`KAS_SUDAH_DITERIMA`). Jejak `perbaiki_hari_kolektor`. |
 | `POST /hari-kolektor/:kolektorId/laporan/batal` | bos | `{ alasan }` — membuka kembali hari kolektor (mis. nasabah libur datang membayar sore): hari ini, laporan sudah dibuka (`LAPORAN_BELUM_DIBUKA`), sebelum kas diterima. Jejak `batal_laporan` beserta alasannya. |
 | `GET /hari-kolektor` | bos, kasir, pengawas: semua; kolektor: miliknya | `?kolektorId=&tanggalMulai=&tanggalSelesai=` — beserta total transfer & serah terima yang berlaku. |
 

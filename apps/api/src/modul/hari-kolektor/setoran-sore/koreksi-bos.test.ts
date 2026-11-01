@@ -68,6 +68,9 @@ describe.skipIf(!URL_DB)("koreksi bos: hari kolektor & libur nasabah", () => {
       });
       expect((await ubah({ kasLapangan: 1_200_000 }, k)).status).toBe(403);
       expect((await ubah({})).status).toBe(400);
+      // I0 juga untuk pembetulan bos: minimal 5.000, kelipatan 5.000.
+      expect((await ubah({ kasLapangan: 0 })).isi.kode).toBe("VALIDASI");
+      expect((await ubah({ uangJalan: 52_000 })).isi.kode).toBe("VALIDASI");
       expect((await ubah({ kasLapangan: 1_000_000 })).isi.kode).toBe("TIDAK_ADA_PERUBAHAN");
       const dibetulkan = await ubah({ kasLapangan: 1_200_000, uangJalan: 50_000 });
       expect(dibetulkan.status).toBe(200);

@@ -37,8 +37,8 @@ describe.skipIf(!url)("skema database", () => {
             insert into transaksi (kantor_id, pencatat_id, pinjaman_id, tanggal, jenis, setoran_murni, saldo_sesudah)
             values (${k?.id}, ${kol?.id}, ${pSetor}, '2026-10-02', 'angsuran', 50000, 1150000) returning id`;
           const [hk] = await tx`
-            insert into hari_kolektor (kantor_id, kolektor_id, tanggal, absensi, laporan_dibuka_at)
-            values (${k?.id}, ${kol?.id}, '2026-10-02', 'masuk_kerja', now()) returning id`;
+            insert into hari_kolektor (kantor_id, kolektor_id, tanggal, absensi, kas_lapangan, uang_jalan, laporan_dibuka_at)
+            values (${k?.id}, ${kol?.id}, '2026-10-02', 'masuk_kerja', 1000000, 50000, now()) returning id`;
           const [st] = await tx`
             insert into serah_terima_kas (kantor_id, hari_kolektor_id, tunai_seharusnya, tunai_diterima, diterima_oleh)
             values (${k?.id}, ${hk?.id}, 50000, 50000, ${bos?.id}) returning id`;

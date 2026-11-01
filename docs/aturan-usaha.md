@@ -316,6 +316,16 @@ tak boleh menjadi minus; salah koreksi dibetulkan dengan koreksi tandingan.
 
 ## I. Kas harian kolektor
 
+**I0. Kas lapangan dan uang jalan** (diisi saat absen masuk kerja, dibetulkan
+bos): **wajib diisi, minimal Rp 5.000, dan kelipatan Rp 5.000** — masing-masing.
+Nol tidak boleh. Tidak kerja = keduanya 0 (bukan uang yang dibawa). Dijaga
+kontrak, server, dan database (`hari_kolektor_kelipatan_check`, hanya untuk
+baris baru/diubah: catatan lama dibiarkan). *Keputusan pemilik, 2 Nov 2026*
+(sebelumnya: bilangan bulat ≥ 0).
+
+> Contoh: kas lapangan 1.000.000 dan uang jalan 50.000 → diterima. Uang jalan
+> 0, 2.500, atau 52.000 → ditolak.
+
 **I1. Tunai seharusnya** diserahkan kolektor sore hari:
 
 ```

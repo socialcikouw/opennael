@@ -6,6 +6,21 @@ import { wajib } from "./galat";
  * di sini hanya rumusnya.
  */
 
+/**
+ * I0. Kas lapangan & uang jalan saat masuk kerja (absen, pembetulan bos):
+ * wajib, minimal Rp 5.000, kelipatan Rp 5.000 — masing-masing.
+ */
+export const ATURAN_KAS_PAGI = { minimal: 5_000, kelipatan: 5_000 } as const;
+
+/** I0: nominal kas lapangan / uang jalan sah? */
+export function kasPagiSah(nominal: number): boolean {
+  return (
+    Number.isInteger(nominal) &&
+    nominal >= ATURAN_KAS_PAGI.minimal &&
+    nominal % ATURAN_KAS_PAGI.kelipatan === 0
+  );
+}
+
 /** Rincian satu hari kolektor yang menyusun tunai seharusnya. */
 export interface RincianKas {
   kasLapangan: number;

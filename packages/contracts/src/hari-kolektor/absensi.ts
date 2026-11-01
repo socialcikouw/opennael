@@ -1,18 +1,25 @@
+import { ATURAN_KAS_PAGI } from "@opennael/domain";
 import { z } from "zod";
-import { rupiah } from "../bersama/dasar";
 
 /**
  * ABSENSI KOLEKTOR (aplikasi HP) — absen pagi, keadaan hari ini.
- * Aturan: docs/aturan-usaha.md (C).
+ * Aturan: docs/aturan-usaha.md (C, I0).
  */
+
+/** I0: kas lapangan / uang jalan saat masuk kerja — wajib, minimal & kelipatan Rp 5.000. */
+export const nominalKasPagi = z
+  .number({ error: "Wajib diisi" })
+  .int()
+  .min(ATURAN_KAS_PAGI.minimal, "Minimal Rp 5.000")
+  .multipleOf(ATURAN_KAS_PAGI.kelipatan, "Harus kelipatan Rp 5.000");
 
 /** `POST /lapangan/absen` — sekali sehari. */
 export const absenSchema = z.discriminatedUnion("absensi", [
   z.object({
     absensi: z.literal("masuk_kerja"),
     /** Modal tunai yang diberikan bos untuk dibawa ke lapangan. */
-    kasLapangan: rupiah,
-    uangJalan: rupiah,
+    kasLapangan: nominalKasPagi,
+    uangJalan: nominalKasPagi,
   }),
   z.object({
     absensi: z.literal("tidak_kerja"),

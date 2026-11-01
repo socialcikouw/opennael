@@ -52,7 +52,7 @@ describe.skipIf(!URL_DB)("kebijakan (rem bos)", () => {
       });
       // Rem dipakai lapangan: akad baru ditolak.
       await kirim("/lapangan/absen", {
-        isi: { absensi: "masuk_kerja", kasLapangan: 0, uangJalan: 0 },
+        isi: { absensi: "masuk_kerja", kasLapangan: 100_000, uangJalan: 10_000 },
         token: k,
       });
       const [foto] = await baris<{ id: string }>(sql`

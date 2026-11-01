@@ -98,6 +98,8 @@ export async function siapkanDuaKoneksi(namaKantor: string, tanggalHari: readonl
       kolektorId,
       tanggal,
       absensi: "masuk_kerja" as const,
+      kasLapangan: 1_000_000,
+      uangJalan: 50_000,
     })),
   );
 

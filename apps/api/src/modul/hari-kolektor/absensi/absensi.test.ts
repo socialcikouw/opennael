@@ -15,6 +15,24 @@ describe.skipIf(!URL_DB)("absensi kolektor", () => {
       );
       expect(kode(await akadBaru("Sari"))).toBe("BELUM_ABSEN");
       expect((await kirim("/lapangan/hari-ini", undefined, k)).isi.hari).toBeNull();
+      // I0: kas lapangan & uang jalan wajib, minimal 5.000, kelipatan 5.000.
+      for (const [kasLapangan, uangJalan] of [
+        [0, 50_000],
+        [1_000_000, 0],
+        [1_000_000, 2_500],
+        [1_002_000, 50_000],
+      ]) {
+        const salah = await kirim(
+          "/lapangan/absen",
+          { absensi: "masuk_kerja", kasLapangan, uangJalan },
+          k,
+        );
+        expect(salah.status).toBe(400);
+        expect(kode(salah)).toBe("VALIDASI");
+      }
+      expect(
+        kode(await kirim("/lapangan/absen", { absensi: "masuk_kerja", kasLapangan: 1_000_000 }, k)),
+      ).toBe("VALIDASI");
       const hasil = await kirim(
         "/lapangan/absen",
         { absensi: "masuk_kerja", kasLapangan: 1_000_000, uangJalan: 50_000 },
@@ -76,7 +94,7 @@ describe.skipIf(!URL_DB)("absensi kolektor", () => {
       const mengubah = await f.tahan(hari, (tx) =>
         tx
           .update(hariKolektor)
-          .set({ absensi: "tidak_kerja", alasanTidakKerja: "sakit" })
+          .set({ absensi: "tidak_kerja", alasanTidakKerja: "sakit", kasLapangan: 0, uangJalan: 0 })
           .where(f.milik(hari)),
       );
       const buka = layanan.bukaLaporan(f.aktor).catch((e: unknown) => e);

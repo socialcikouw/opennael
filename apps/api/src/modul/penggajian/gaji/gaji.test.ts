@@ -56,8 +56,8 @@ describe.skipIf(!URL_DB)("gaji kolektor", () => {
       const hari = async (tanggal: string, tekorLama: number | null = null) =>
         (
           (await tx.execute(sql`
-            insert into hari_kolektor (kantor_id, kolektor_id, tanggal, absensi, kas_lapangan, laporan_dibuka_at, tekor_lama)
-            values (${kantorId}, ${andiId}, ${tanggal}, 'masuk_kerja', 1000000, now(), ${tekorLama})
+            insert into hari_kolektor (kantor_id, kolektor_id, tanggal, absensi, kas_lapangan, uang_jalan, laporan_dibuka_at, tekor_lama)
+            values (${kantorId}, ${andiId}, ${tanggal}, 'masuk_kerja', 1000000, 50000, now(), ${tekorLama})
             returning id`)) as unknown as { id: string }[]
         )[0]?.id as string;
       await hari("2026-10-03", 8_000);

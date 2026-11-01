@@ -40,15 +40,35 @@ describe.skipIf(!url)("skema database", () => {
             tx,
             "uniq_hari_kolektor_kolektor_tanggal",
             (sp) =>
-              sp`insert into hari_kolektor (kantor_id, kolektor_id, tanggal, absensi)
-               values (${k?.id}, ${kol?.id}, '2026-10-02', 'masuk_kerja')`,
+              sp`insert into hari_kolektor (kantor_id, kolektor_id, tanggal, absensi, kas_lapangan, uang_jalan)
+               values (${k?.id}, ${kol?.id}, '2026-10-02', 'masuk_kerja', 1000000, 50000)`,
           );
           await tolak(
             tx,
             "hari_kolektor_kolektor_fk",
             (sp) =>
-              sp`insert into hari_kolektor (kantor_id, kolektor_id, tanggal, absensi)
-               values (${k?.id}, ${kasir?.id}, '2026-10-02', 'masuk_kerja')`,
+              sp`insert into hari_kolektor (kantor_id, kolektor_id, tanggal, absensi, kas_lapangan, uang_jalan)
+               values (${k?.id}, ${kasir?.id}, '2026-10-02', 'masuk_kerja', 1000000, 50000)`,
+          );
+          // I0: masuk kerja — kas lapangan & uang jalan minimal 5.000, kelipatan 5.000.
+          for (const [kas, jalan] of [
+            [0, 50000],
+            [1000000, 0],
+            [1000000, 2500],
+            [1002000, 50000],
+          ] as const) {
+            await tolak(
+              tx,
+              "hari_kolektor_kelipatan_check",
+              (sp) =>
+                sp`insert into hari_kolektor (kantor_id, kolektor_id, tanggal, absensi, kas_lapangan, uang_jalan)
+                 values (${k?.id}, ${kol?.id}, '2026-10-03', 'masuk_kerja', ${kas}, ${jalan})`,
+            );
+          }
+          await tolak(
+            tx,
+            "hari_kolektor_kelipatan_check",
+            (sp) => sp`update hari_kolektor set uang_jalan = 52000 where kolektor_id = ${kol?.id}`,
           );
           // Tidak kerja: alasan wajib, tanpa uang lapangan & laporan.
           await tolak(
@@ -72,12 +92,14 @@ describe.skipIf(!url)("skema database", () => {
               sp`insert into hari_kolektor (kantor_id, kolektor_id, tanggal, absensi, alasan_tidak_kerja)
                values (${k?.id}, ${kol?.id}, '2026-10-03', 'masuk_kerja', 'x')`,
           );
+          // (Nominal negatif kas/uang jalan masuk kerja sudah tertangkap kelipatan_check lebih
+          // dulu — Postgres memeriksa CHECK menurut nama; di sini lewat arsip transfer_lama.)
           await tolak(
             tx,
             "hari_kolektor_nominal_check",
             (sp) =>
-              sp`insert into hari_kolektor (kantor_id, kolektor_id, tanggal, absensi, uang_jalan)
-               values (${k?.id}, ${kol?.id}, '2026-10-03', 'masuk_kerja', -1)`,
+              sp`insert into hari_kolektor (kantor_id, kolektor_id, tanggal, absensi, kas_lapangan, uang_jalan, transfer_lama)
+               values (${k?.id}, ${kol?.id}, '2026-10-03', 'masuk_kerja', 1000000, 50000, -1)`,
           );
 
           // ---- libur_nasabah ↔ transaksi (satu peristiwa per hari) -----------

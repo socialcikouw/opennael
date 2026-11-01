@@ -70,5 +70,12 @@ export const hariKolektor = pgTable(
         AND (${t.transferLama} IS NULL OR ${t.transferLama} >= 0)
         AND (${t.tekorLama} IS NULL OR ${t.tekorLama} > 0)`,
     ),
+    // I0 (2 Nov 2026). Di migrasi dipasang NOT VALID: catatan lama tak diperiksa ulang.
+    check(
+      "hari_kolektor_kelipatan_check",
+      sql`${t.absensi} = 'tidak_kerja'
+        OR (${t.kasLapangan} >= 5000 AND ${t.kasLapangan} % 5000 = 0
+          AND ${t.uangJalan} >= 5000 AND ${t.uangJalan} % 5000 = 0)`,
+    ),
   ],
 );

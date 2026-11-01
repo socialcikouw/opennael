@@ -82,7 +82,7 @@ describe.skipIf(!URL_DB)("foto bukti", () => {
 
       // Dipakai akad: foto hasil unggah lolos pemeriksaan serah terima.
       await kirim("/lapangan/absen", {
-        isi: { absensi: "masuk_kerja", kasLapangan: 0, uangJalan: 0 },
+        isi: { absensi: "masuk_kerja", kasLapangan: 100_000, uangJalan: 10_000 },
         token: k,
       });
       const akad = await kirim("/lapangan/akad", {
@@ -198,7 +198,7 @@ describe.skipIf(!URL_DB)("foto bukti", () => {
 
       // Sudah dipakai akad (serah terima) atau menjadi KTP nasabah: tetap foto kembar.
       await kirim("/lapangan/absen", {
-        isi: { absensi: "masuk_kerja", kasLapangan: 0, uangJalan: 0 },
+        isi: { absensi: "masuk_kerja", kasLapangan: 100_000, uangJalan: 10_000 },
         token: k,
       });
       const akad = await kirim("/lapangan/akad", {

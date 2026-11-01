@@ -1,8 +1,15 @@
 import { describe, expect, test } from "bun:test";
 import { GalatAturan } from "./galat";
-import { batasTransfer, syaratAkunMutasi, tekorDanLebih, tunaiSeharusnya } from "./kas";
+import { batasTransfer, kasPagiSah, syaratAkunMutasi, tekorDanLebih, tunaiSeharusnya } from "./kas";
 
 describe("kas harian kolektor (aturan-usaha I)", () => {
+  test("I0: kas lapangan & uang jalan minimal 5.000, kelipatan 5.000", () => {
+    for (const sah of [5_000, 10_000, 50_000, 1_000_000]) expect(kasPagiSah(sah)).toBe(true);
+    for (const salah of [0, -5_000, 2_500, 4_999, 52_000, 7_500.5, 1_000_001]) {
+      expect(kasPagiSah(salah)).toBe(false);
+    }
+  });
+
   test("contoh I2: tunai seharusnya 1.250.000, diterima 1.200.000 → tekor 50.000", () => {
     const seharusnya = tunaiSeharusnya({
       kasLapangan: 1_000_000,

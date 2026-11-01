@@ -37,7 +37,11 @@ describe.skipIf(!URL_DB)("gerbang lapangan", () => {
         (await ketat(`/auth/tautan/${t.isi.id}/klaim`, { klaim: t.isi.klaim })).isi as Sesi
       ).tokenAkses;
       const absen = (kirim: ReturnType<typeof pengirimLapangan>) =>
-        kirim("/lapangan/absen", { absensi: "masuk_kerja", kasLapangan: 0, uangJalan: 0 }, k);
+        kirim(
+          "/lapangan/absen",
+          { absensi: "masuk_kerja", kasLapangan: 100_000, uangJalan: 10_000 },
+          k,
+        );
 
       // Jam kerja setengah jam di paruh hari yang lain — pasti di luar jam sekarang.
       const jamWib = (new Date().getUTCHours() + 7) % 24;
