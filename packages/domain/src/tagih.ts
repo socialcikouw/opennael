@@ -66,13 +66,30 @@ export function posisiTagih(b: BahanTagih, hariIni: string): PosisiTagih {
  * WAJIB DITAGIH HARI INI — docs/aturan-usaha.md B6 (yang menahan laporan, C6).
  * Pinjaman aktif yang sudah mulai ditagih (B1: bukan akad hari ini): harian
  * setiap hari kerja; mingguan hanya pada hari tagihnya (akad + 7k hari);
- * tempoan tidak pernah. Hari kerja sendiri dijaga gerbang lapangan.
+ * tempoan sejak jatuh tempo (hari ini atau sudah lewat). Hari kerja sendiri
+ * dijaga gerbang lapangan.
  */
 export function wajibDitagihHariIni(
-  p: { jenis: JenisPinjaman; tanggalAkad: string },
+  p: { jenis: JenisPinjaman; tanggalAkad: string; jatuhTempo: string | null },
   hariIni: string,
 ): boolean {
   if (p.jenis === "harian") return selisihHari(p.tanggalAkad, hariIni) > 0;
   if (p.jenis === "mingguan") return hariTagihMingguan(p.tanggalAkad, hariIni);
-  return false;
+  return sudahJatuhTempo(p, hariIni);
+}
+
+/**
+ * Tempoan yang jatuh tempo hari ini atau sudah lewat (B6, G1). Akad hari ini tak
+ * pernah (B1); jatuh tempo kosong = bukan tempoan → false.
+ */
+export function sudahJatuhTempo(
+  p: { jenis: JenisPinjaman; tanggalAkad: string; jatuhTempo: string | null },
+  hariIni: string,
+): boolean {
+  return (
+    p.jenis === "tempoan" &&
+    p.jatuhTempo !== null &&
+    p.jatuhTempo <= hariIni &&
+    selisihHari(p.tanggalAkad, hariIni) > 0
+  );
 }

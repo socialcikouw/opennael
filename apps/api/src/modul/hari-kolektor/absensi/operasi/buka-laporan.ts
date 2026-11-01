@@ -46,6 +46,7 @@ export function buatBukaLaporan(deps: GerbangDeps) {
           id: pinjaman.id,
           jenis: pinjaman.jenis,
           tanggalAkad: pinjaman.tanggalAkad,
+          jatuhTempo: pinjaman.jatuhTempo,
           nama: nasabah.nama,
         })
         .from(pinjaman)

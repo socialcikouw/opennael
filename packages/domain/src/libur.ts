@@ -1,5 +1,6 @@
 import type { JenisPinjaman } from "./akad";
 import { hariTagihMingguan } from "./kalender";
+import { sudahJatuhTempo } from "./tagih";
 
 /**
  * LIBUR NASABAH — docs/aturan-usaha.md G1–G3: boleh-tidaknya pinjaman ini
@@ -7,11 +8,14 @@ import { hariTagihMingguan } from "./kalender";
  * kolektor (tombol Libur mati beserta alasannya) — satu aturan.
  */
 export function tolakLibur(
-  p: { jenis: JenisPinjaman; tanggalAkad: string; angsuranKe: number },
+  p: { jenis: JenisPinjaman; tanggalAkad: string; jatuhTempo: string | null; angsuranKe: number },
   hariIni: string,
 ): { kode: string; pesan: string } | null {
+  // G1: tempoan hanya sejak jatuh tempo; G3 tak berlaku (angsuran terbayarnya 0 sampai lunas).
   if (p.jenis === "tempoan") {
-    return { kode: "LIBUR_TIDAK_BERLAKU", pesan: "Pinjaman tempoan tidak punya hari libur" };
+    return sudahJatuhTempo(p, hariIni)
+      ? null
+      : { kode: "LIBUR_TIDAK_BERLAKU", pesan: "Tempoan baru boleh libur sejak jatuh tempo" };
   }
   if (p.jenis === "mingguan" && !hariTagihMingguan(p.tanggalAkad, hariIni)) {
     return {
@@ -26,4 +30,9 @@ export function tolakLibur(
     };
   }
   return null;
+}
+
+/** G1: libur tempoan wajib beralasan (mis. "belum ada uang"). */
+export function liburPerluAlasan(p: { jenis: JenisPinjaman }): boolean {
+  return p.jenis === "tempoan";
 }

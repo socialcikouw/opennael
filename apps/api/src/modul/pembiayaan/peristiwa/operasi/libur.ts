@@ -1,4 +1,4 @@
-import { angsuranKe, tolakLibur } from "@opennael/domain";
+import { angsuranKe, liburPerluAlasan, tolakLibur } from "@opennael/domain";
 import { liburNasabah } from "../../../../platform/db/skema";
 import type { Aktor } from "../../../../platform/http/aktor";
 import { melanggar } from "../../../../platform/http/galat";
@@ -23,6 +23,9 @@ export function buatLibur(deps: GerbangDeps) {
       // G1–G3 — aturan yang sama dengan tombol Libur di HP.
       const tolak = tolakLibur({ ...p, angsuranKe: angsuranKe(p) }, tanggal);
       if (tolak) throw melanggar(tolak.kode, tolak.pesan);
+      if (liburPerluAlasan(p) && !input.alasan?.trim()) {
+        throw melanggar("ALASAN_LIBUR_WAJIB", "Libur tempoan wajib diberi alasan");
+      }
       const [l] = await tx
         .insert(liburNasabah)
         .values({

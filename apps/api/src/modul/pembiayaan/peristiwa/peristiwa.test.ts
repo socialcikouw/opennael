@@ -236,10 +236,33 @@ describe.skipIf(!URL_DB)("peristiwa & buku nasabah", () => {
       expect(
         kode(await kirim("/lapangan/bayar", { pinjamanId: penerus, setoranMurni: 50_000 }, k)),
       ).toBe("PERISTIWA_SUDAH_ADA");
+      // G1: tempoan sebelum jatuh tempo tak boleh libur.
       const wati = await akadBaru("Wati", { jenis: "tempoan", tenor: 14 });
-      expect(kode(await kirim("/lapangan/libur", { pinjamanId: wati.isi.id }, k))).toBe(
+      const pWati = wati.isi.id as string;
+      expect(kode(await kirim("/lapangan/libur", { pinjamanId: pWati, alasan: "x" }, k))).toBe(
         "LIBUR_TIDAK_BERLAKU",
       );
+      // Mundurkan akad 14 hari: jatuh tempo (kolom turunan) = hari ini.
+      await tx.execute(
+        sql`update pinjaman set tanggal_akad = tanggal_akad - 14 where id = ${pWati}`,
+      );
+      // B6: tempoan yang jatuh tempo wajib → laporan ditahan, menyebut Wati.
+      const tahan = await kirim("/lapangan/laporan", {}, k);
+      expect(kode(tahan)).toBe("MASIH_ADA_TAGIHAN");
+      expect(tahan.isi.pesan).toContain("Wati");
+      // G1: sejak jatuh tempo boleh libur, tapi wajib beralasan.
+      expect(kode(await kirim("/lapangan/libur", { pinjamanId: pWati }, k))).toBe(
+        "ALASAN_LIBUR_WAJIB",
+      );
+      const liburWati = await kirim(
+        "/lapangan/libur",
+        { pinjamanId: pWati, alasan: "belum ada uang" },
+        k,
+      );
+      expect(liburWati.status).toBe(201);
+      expect(liburWati.isi).toMatchObject({ alasanLibur: "belum ada uang" });
+      // Semua yang wajib sudah dicatat → laporan terbuka.
+      expect((await kirim("/lapangan/laporan", {}, k)).status).toBe(200);
     });
   }, 120_000);
 });

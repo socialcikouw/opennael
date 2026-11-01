@@ -76,6 +76,7 @@ export async function kunciPinjaman(tx: Db, aktor: Aktor, pinjamanId: string) {
       angsuran: pinjaman.angsuran,
       pinjamanKe: pinjaman.pinjamanKe,
       tanggalAkad: pinjaman.tanggalAkad,
+      jatuhTempo: pinjaman.jatuhTempo,
       tabungan: nasabah.saldoTabungan,
     })
     .from(pinjaman)

@@ -4,13 +4,16 @@ import { belumDicatat } from "./belum-dicatat";
 
 const T = "2026-11-01";
 
-type Bahan = Pick<KartuTagih, "jenis" | "tanggalAkad" | "hariIni"> & { nama: string };
+type Bahan = Pick<KartuTagih, "jenis" | "tanggalAkad" | "jatuhTempo" | "hariIni"> & {
+  nama: string;
+};
 const kartu = (
   nama: string,
   jenis: Bahan["jenis"],
   tanggalAkad: string,
   hariIni: Bahan["hariIni"] = null,
-): Bahan => ({ nama, jenis, tanggalAkad, hariIni });
+  jatuhTempo: string | null = null,
+): Bahan => ({ nama, jenis, tanggalAkad, hariIni, jatuhTempo });
 
 describe("belumDicatat (B6 + C6)", () => {
   test("harian yang sudah mulai ditagih dan belum dicatat apa pun", () => {
@@ -34,16 +37,25 @@ describe("belumDicatat (B6 + C6)", () => {
     expect(hasil.map((p) => p.nama)).toEqual(["Belum"]);
   });
 
-  test("mingguan hanya pada hari tagihnya; tempoan tidak pernah", () => {
+  test("mingguan hanya pada hari tagihnya; tempoan sejak jatuh tempo", () => {
     const hasil = belumDicatat(
       [
         kartu("Tepat", "mingguan", "2026-10-25"), // akad + 7 hari = hari ini
         kartu("Lain", "mingguan", "2026-10-26"), // hari tagihnya besok
-        kartu("Tempo", "tempoan", "2026-10-20"),
+        kartu("Nanti", "tempoan", "2026-10-25", null, "2026-11-08"),
+        kartu("Tempo", "tempoan", "2026-10-18", null, T), // jatuh tempo hari ini
+        kartu("Lewat", "tempoan", "2026-10-11", null, "2026-10-25"),
+        kartu(
+          "Libur",
+          "tempoan",
+          "2026-10-11",
+          { jenis: "libur", alasan: "belum ada uang" },
+          "2026-10-25",
+        ),
       ],
       T,
     );
-    expect(hasil.map((p) => p.nama)).toEqual(["Tepat"]);
+    expect(hasil.map((p) => p.nama)).toEqual(["Tepat", "Tempo", "Lewat"]);
   });
 
   test("urutan masukan dipertahankan", () => {

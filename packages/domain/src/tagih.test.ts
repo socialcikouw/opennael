@@ -84,23 +84,33 @@ describe("posisi tagih (aturan-usaha B5)", () => {
 describe("wajib ditagih hari ini (aturan-usaha B6)", () => {
   // Kamis 29 Okt 2026.
   const kamis = "2026-10-29";
+  const wajib = (
+    jenis: "harian" | "mingguan" | "tempoan",
+    tanggalAkad: string,
+    jatuhTempo?: string,
+  ) => wajibDitagihHariIni({ jenis, tanggalAkad, jatuhTempo: jatuhTempo ?? null }, kamis);
 
-  test("contoh C6: hanya harian yang sudah mulai ditagih", () => {
-    expect(wajibDitagihHariIni({ jenis: "harian", tanggalAkad: "2026-10-20" }, kamis)).toBe(true);
+  test("contoh C6: harian yang sudah mulai ditagih & tempoan yang sudah jatuh tempo", () => {
+    expect(wajib("harian", "2026-10-20")).toBe(true);
     // Mingguan akad Senin 26 — hari ini Kamis: bukan hari tagihnya.
-    expect(wajibDitagihHariIni({ jenis: "mingguan", tanggalAkad: "2026-10-26" }, kamis)).toBe(
-      false,
-    );
-    expect(wajibDitagihHariIni({ jenis: "tempoan", tanggalAkad: "2026-10-01" }, kamis)).toBe(false);
+    expect(wajib("mingguan", "2026-10-26")).toBe(false);
+    // Citra: tempoan jatuh tempo minggu depan — belum wajib.
+    expect(wajib("tempoan", "2026-10-22", "2026-11-05")).toBe(false);
+    // Eka: tempoan jatuh tempo kemarin — wajib (keputusan pemilik 1 Nov 2026).
+    expect(wajib("tempoan", "2026-10-14", "2026-10-28")).toBe(true);
     // Akad hari ini belum ditagih (B1).
-    expect(wajibDitagihHariIni({ jenis: "harian", tanggalAkad: kamis }, kamis)).toBe(false);
+    expect(wajib("harian", kamis)).toBe(false);
+  });
+
+  test("tempoan wajib sejak jatuh tempo: tepat hari ini, juga sesudahnya", () => {
+    expect(wajib("tempoan", "2026-10-22", kamis)).toBe(true);
+    expect(wajib("tempoan", "2026-10-01", "2026-10-08")).toBe(true);
+    expect(wajib("tempoan", "2026-10-23", "2026-10-30")).toBe(false);
   });
 
   test("mingguan wajib tepat pada akad + 7k hari", () => {
-    expect(wajibDitagihHariIni({ jenis: "mingguan", tanggalAkad: "2026-10-22" }, kamis)).toBe(true);
-    expect(wajibDitagihHariIni({ jenis: "mingguan", tanggalAkad: "2026-10-08" }, kamis)).toBe(true);
-    expect(wajibDitagihHariIni({ jenis: "mingguan", tanggalAkad: "2026-10-23" }, kamis)).toBe(
-      false,
-    );
+    expect(wajib("mingguan", "2026-10-22")).toBe(true);
+    expect(wajib("mingguan", "2026-10-08")).toBe(true);
+    expect(wajib("mingguan", "2026-10-23")).toBe(false);
   });
 });

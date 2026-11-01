@@ -103,7 +103,11 @@ ini):
 - mingguan: hanya pada hari tagihnya (akad + 7, 14, … hari). Di hari lain ia
   tetap boleh dibayar, tetapi tidak wajib — libur pun hanya boleh pada hari
   tagihnya (G2);
-- tempoan: tidak pernah (dibayar sekali penuh kapan pun nasabahnya siap).
+- tempoan: setiap hari kerja **sejak jatuh tempo** — jatuh tempo hari ini atau
+  sudah lewat dan belum lunas. Sebelum jatuh tempo tidak wajib (dibayar sekali
+  penuh kapan pun nasabahnya siap). Nasabah yang belum bisa membayar dicatat
+  libur beralasan (G1). *Keputusan pemilik, 1 Nov 2026* (sebelumnya: tempoan
+  tidak pernah wajib).
 
 **B5. Tertinggal & tunggakan** (yang tampil di kartu kolektor), dihitung menurut
 **jumlah angsuran yang sudah terbayar**, bukan tanggal tiap setoran; hari ini
@@ -161,12 +165,15 @@ Dijaga **server** (`MASIH_ADA_TAGIHAN`, menyebut nasabah yang tersisa), bukan
 hanya aplikasi. Tanpa pengecualian: nasabah yang belum boleh libur (G3) dan
 tidak membayar tetap menahan laporan — kolektor menagih sampai dapat. Laporan
 yang sudah terbuka tetap terbuka (tidak diperiksa ulang). Mengikuti aplikasi
-lama (gerbang Mutasi), kini di server.
+lama (gerbang Mutasi), kini di server. Di HP, layar Mutasi kas tergembok
+selama gerbang ini belum terbuka.
 
 > Contoh: Andi memegang Sari (harian), Budi (mingguan, akad Senin — hari ini
-> Kamis), Citra (tempoan), dan Dewi (harian, akad hari ini). Yang wajib hanya
-> Sari. Sari belum setor → laporan ditolak "Masih ada 1 nasabah yang belum
-> dicatat: Sari". Sari diliburkan → laporan boleh dibuka.
+> Kamis), Citra (tempoan, jatuh tempo minggu depan), Eka (tempoan, jatuh tempo
+> kemarin), dan Dewi (harian, akad hari ini). Yang wajib Sari dan Eka. Sari
+> belum setor → laporan ditolak "Masih ada 2 nasabah yang belum dicatat: Eka,
+> Sari". Sari diliburkan dan Eka diliburkan dengan alasan "belum ada uang" →
+> laporan boleh dibuka.
 
 ---
 
@@ -264,13 +271,20 @@ tunggakan, bukan hanya setoran) diusulkan dan dikerjakan terpisah kelak.
 
 ## G. Libur nasabah
 
-**G1.** Pinjaman tempoan tidak punya libur.
+**G1. Tempoan hanya boleh diliburkan sejak jatuh tempo** (jatuh tempo hari ini
+atau sudah lewat), **dengan alasan wajib** (mis. "belum ada uang"). Sebelum
+jatuh tempo ditolak (`LIBUR_TIDAK_BERLAKU`); tanpa alasan ditolak
+(`ALASAN_LIBUR_WAJIB`). Libur tempoan hanya catatan "sudah didatangi" untuk
+B6/C6 — jatuh tempo tidak bergeser, tunggakan (B5) dan macet (F3) tetap
+dihitung dari jatuh tempo. *Keputusan pemilik, 1 Nov 2026* (sebelumnya:
+tempoan tidak punya libur).
 
 **G2.** Mingguan hanya bisa diliburkan **pada hari tagihnya**.
 
 **G3. Pinjaman yang angsuran terbayarnya baru 0 atau 1 belum boleh libur.**
 Dijaga **server** (`LIBUR_BELUM_BOLEH`), bukan hanya aplikasi kolektor seperti
-di aturan lama. *Keputusan pemilik, 23 Okt 2026.*
+di aturan lama. *Keputusan pemilik, 23 Okt 2026.* Tidak berlaku untuk tempoan
+(satu kali bayar — angsuran terbayarnya selalu 0 sampai lunas; G1).
 
 **G4.** Libur yang salah dihapus bos **pada hari yang sama**; jejaknya tersimpan.
 

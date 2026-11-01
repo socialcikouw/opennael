@@ -4,10 +4,11 @@ import { rasioHariIni, rasioMode } from "./rasio";
 
 const T = "2026-11-01";
 
-type Bahan = Pick<KartuTagih, "jenis" | "tanggalAkad" | "hariIni">;
+type Bahan = Pick<KartuTagih, "jenis" | "tanggalAkad" | "jatuhTempo" | "hariIni">;
 const harian = (hariIni: Bahan["hariIni"] = null, tanggalAkad = "2026-10-20"): Bahan => ({
   jenis: "harian",
   tanggalAkad,
+  jatuhTempo: null,
   hariIni,
 });
 const bayar = (storting: number): Bahan["hariIni"] => ({ jenis: "angsuran", storting });
@@ -43,9 +44,9 @@ describe("rasioHariIni", () => {
   test("mingguan di luar hari tagih bukan sisa, tetapi bayar lebih awal tetap terhitung", () => {
     const r = rasioHariIni(
       [
-        { jenis: "mingguan", tanggalAkad: "2026-10-26", hariIni: null }, // hari tagihnya bukan hari ini
-        { jenis: "mingguan", tanggalAkad: "2026-10-26", hariIni: bayar(100_000) },
-        { jenis: "tempoan", tanggalAkad: "2026-10-20", hariIni: null },
+        { jenis: "mingguan", tanggalAkad: "2026-10-26", jatuhTempo: null, hariIni: null }, // hari tagihnya bukan hari ini
+        { jenis: "mingguan", tanggalAkad: "2026-10-26", jatuhTempo: null, hariIni: bayar(100_000) },
+        { jenis: "tempoan", tanggalAkad: "2026-10-20", jatuhTempo: null, hariIni: null },
       ],
       T,
     );
@@ -55,12 +56,12 @@ describe("rasioHariIni", () => {
 
 describe("rasioMode — tiap mode memakai datanya sendiri", () => {
   const campur: Bahan[] = [
-    { jenis: "harian", tanggalAkad: "2026-10-20", hariIni: bayar(50_000) },
-    { jenis: "harian", tanggalAkad: "2026-10-20", hariIni: bayar(50_000) },
-    { jenis: "harian", tanggalAkad: "2026-10-20", hariIni: libur },
-    { jenis: "mingguan", tanggalAkad: "2026-10-25", hariIni: null }, // wajib hari ini, belum dicatat
-    { jenis: "mingguan", tanggalAkad: "2026-10-25", hariIni: bayar(150_000) },
-    { jenis: "tempoan", tanggalAkad: "2026-10-20", hariIni: bayar(1_250_000) },
+    { jenis: "harian", tanggalAkad: "2026-10-20", jatuhTempo: null, hariIni: bayar(50_000) },
+    { jenis: "harian", tanggalAkad: "2026-10-20", jatuhTempo: null, hariIni: bayar(50_000) },
+    { jenis: "harian", tanggalAkad: "2026-10-20", jatuhTempo: null, hariIni: libur },
+    { jenis: "mingguan", tanggalAkad: "2026-10-25", jatuhTempo: null, hariIni: null }, // wajib hari ini, belum dicatat
+    { jenis: "mingguan", tanggalAkad: "2026-10-25", jatuhTempo: null, hariIni: bayar(150_000) },
+    { jenis: "tempoan", tanggalAkad: "2026-10-20", jatuhTempo: null, hariIni: bayar(1_250_000) },
   ];
 
   test("harian, mingguan, dan tempoan menghasilkan angka yang berbeda", () => {
