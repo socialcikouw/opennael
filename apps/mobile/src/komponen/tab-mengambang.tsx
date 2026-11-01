@@ -46,8 +46,11 @@ export function TabMengambang({
   warna,
   kiri,
   tambah,
+  lencana,
 }: BottomTabBarProps & {
   ikon: Record<string, NamaIkon>;
+  /** Penanda angka di ikon tab menurut nama rute (mis. pengingat yang menunggu); 0 = tanpa penanda. */
+  lencana?: Record<string, number>;
   warna?: WarnaMode;
   kiri?: { isi: ReactNode; label: string; onPress: () => void };
   tambah?: { label: string; onPress: () => void };
@@ -78,6 +81,7 @@ export function TabMengambang({
           const ikonTab = ikon[route.name] ?? "circle";
           const aktif = i === state.index;
           const warnaTab = aktif ? aksen.teks : WARNA.redup;
+          const menunggu = lencana?.[route.name] ?? 0;
           const tekan = () => {
             const e = emitter.emit({
               type: "tabPress",
@@ -91,12 +95,17 @@ export function TabMengambang({
               key={route.key}
               accessibilityRole="tab"
               accessibilityState={{ selected: aktif }}
-              accessibilityLabel={judul}
+              accessibilityLabel={menunggu > 0 ? `${judul}, ${menunggu} menunggu` : judul}
               onPress={tekan}
               style={({ pressed }) => [gaya.tab, pressed ? gaya.ditekan : null]}
             >
               <View style={[gaya.ikonTab, aktif ? { backgroundColor: aksen.lembut } : null]}>
                 <Ikon nama={ikonTab} ukuran={26} warna={warnaTab} tebal={aktif} />
+                {menunggu > 0 ? (
+                  <View style={gaya.lencana}>
+                    <Text style={gaya.lencanaTeks}>{menunggu > 9 ? "9+" : menunggu}</Text>
+                  </View>
+                ) : null}
               </View>
               <Text style={[gaya.label, { color: warnaTab }]} numberOfLines={1}>
                 {judul}
@@ -161,6 +170,24 @@ const buatGaya = (WARNA: Warna) =>
       borderRadius: SUDUT.bulat,
     },
     label: { ...HURUF["2xs"], fontWeight: TEBAL.biasa },
+    lencana: {
+      position: "absolute",
+      top: -RUANG[1],
+      right: RUANG[1],
+      minWidth: 18,
+      height: 18,
+      paddingHorizontal: RUANG[1],
+      borderRadius: SUDUT.bulat,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: WARNA.bahayaBingkai,
+    },
+    lencanaTeks: {
+      ...HURUF["2xs"],
+      fontWeight: TEBAL.ekstra,
+      color: WARNA.putih,
+      fontVariant: ["tabular-nums"],
+    },
     bulat: {
       width: TOMBOL,
       height: TOMBOL,

@@ -1,0 +1,1 @@
+export { useJumlahPengingat } from "./data";

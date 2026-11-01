@@ -130,26 +130,6 @@ export function lipatKelompok(baris: readonly Baris[], terlipat: ReadonlySet<str
   return hasil;
 }
 
-/**
- * Kemajuan hari ini (tanpa saringan cari): yang dibayar, yang diliburkan, dan
- * sisa wajib. Hanya jumlah nasabah — uang hari ini sengaja tak dicetak.
- */
-export function kemajuan(semua: readonly KartuVM[]): {
-  bayar: number;
-  libur: number;
-  sisa: number;
-} {
-  let bayar = 0;
-  let libur = 0;
-  let sisa = 0;
-  for (const vm of semua) {
-    if (vm.p.hariIni?.jenis === "angsuran") bayar++;
-    else if (vm.p.hariIni?.jenis === "libur") libur++;
-    else if (vm.wajib) sisa++;
-  }
-  return { bayar, libur, sisa };
-}
-
 /** Total droping hari ini (semua, bukan yang tersaring cari): uang baru & bagian gulung. */
 export function ringkasDroping(droping: readonly KartuVM[]): { baru: number; gulung: number } {
   let baru = 0;

@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Text } from "react-native";
+import { tulis, useTulis } from "@/fitur/lapangan";
 import { useG } from "@/komponen/ui/gaya-bersama";
 import { Isian, IsianUang, PesanGalat } from "@/komponen/ui/isian";
 import { Kartu } from "@/komponen/ui/kartu";
 import { Pilihan } from "@/komponen/ui/pilihan";
 import { Tombol } from "@/komponen/ui/tombol";
-import { tulis, useTulis } from "../data";
 
 export function FormulirAbsen() {
   const g = useG();

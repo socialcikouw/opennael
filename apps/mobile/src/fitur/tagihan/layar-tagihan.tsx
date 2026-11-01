@@ -21,7 +21,7 @@ import { GagalSegar } from "./komponen/gagal-segar";
 import { KartuNasabah } from "./komponen/kartu-nasabah";
 import { KartuDroping, KartuSudah } from "./komponen/kartu-sudah";
 import { KepalaTagihan } from "./komponen/kepala-tagihan";
-import { KartuJatuhTempo, KartuRasio } from "./komponen/ringkasan";
+import { KartuJatuhTempo } from "./komponen/ringkasan";
 import { LayarSemua } from "./layar-semua";
 import { useLipatKelompok } from "./lipat-kelompok";
 import { jenisDariMode, MODE, useMode } from "./mode";
@@ -72,7 +72,7 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
   const [tab, setTab] = useState<TabKerja>(segmenAwal === "droping" ? "droping" : "aktif");
 
   // ---- data → kartu → segmen → baris -------------------------------------
-  const { bahan, partisi, baris, maju, jatuhTempo, droping } = useDaftarTagihan({
+  const { bahan, partisi, baris, jatuhTempo, droping } = useDaftarTagihan({
     mode,
     jenis,
     tab,
@@ -165,7 +165,10 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
   const tutup =
     gerbang && !gerbang.buka
       ? gerbang.perluAbsen
-        ? { judul: "Belum absen", isi: "Absen pagi di Beranda dulu supaya transaksi bisa dicatat." }
+        ? {
+            judul: "Belum absen",
+            isi: "Absen pagi di tab Notifikasi dulu supaya transaksi bisa dicatat.",
+          }
         : { judul: gerbang.judul ?? "Lapangan tutup", isi: gerbang.isi }
       : null;
 
@@ -219,19 +222,7 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
         onUkurLipat={(t) => tinggiLipat.set(t)}
         onUkur={setTinggiKepala}
         mode={{ label: MODE[mode].label, warna: aksen }}
-        kartuAtas={
-          jatuhTempo ? (
-            <KartuJatuhTempo r={jatuhTempo} aksen={aksen} />
-          ) : (
-            <KartuRasio
-              bayar={maju.bayar}
-              libur={maju.libur}
-              sisa={maju.sisa}
-              aksen={aksen}
-              onLaporan={() => router.navigate("/kolektor")}
-            />
-          )
-        }
+        kartuAtas={jatuhTempo ? <KartuJatuhTempo r={jatuhTempo} aksen={aksen} /> : null}
         tab={tab}
         jumlah={jumlahSegmen(partisi)}
         onGantiTab={gantiTab}

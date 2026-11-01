@@ -20,11 +20,12 @@ import CirclePause from "lucide-react-native/icons/circle-pause";
 import Clock from "lucide-react-native/icons/clock";
 import CloudOff from "lucide-react-native/icons/cloud-off";
 import Delete from "lucide-react-native/icons/delete";
+import Eraser from "lucide-react-native/icons/eraser";
 import Eye from "lucide-react-native/icons/eye";
 import FileText from "lucide-react-native/icons/file-text";
 import HandCoins from "lucide-react-native/icons/hand-coins";
-import House from "lucide-react-native/icons/house";
 import ImageIcon from "lucide-react-native/icons/image";
+import LayoutDashboard from "lucide-react-native/icons/layout-dashboard";
 import Lock from "lucide-react-native/icons/lock";
 import LogOut from "lucide-react-native/icons/log-out";
 import MapPin from "lucide-react-native/icons/map-pin";
@@ -51,6 +52,7 @@ import X from "lucide-react-native/icons/x";
  * baru: impor lalu tambahkan di peta ini.
  */
 export const IKON = {
+  eraser: Eraser,
   eye: Eye,
   calendar: Calendar,
   camera: Camera,
@@ -81,7 +83,7 @@ export const IKON = {
   clock: Clock,
   "cloud-off": CloudOff,
   "file-text": FileText,
-  house: House,
+  "layout-dashboard": LayoutDashboard,
   image: ImageIcon,
   "log-out": LogOut,
   "map-pin": MapPin,

@@ -1,68 +1,11 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import { Ikon } from "@/komponen/ui/ikon";
+import { StyleSheet, Text, View } from "react-native";
 import { useGaya, useWarna } from "@/komponen/ui/tampilan";
 import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/komponen/ui/tema";
 
 /**
- * Kartu RASIO BAYAR di kepala layar: bayar ÷ (bayar + libur) hari ini, bilah,
- * legenda Bayar · Libur, dan sisa wajib. Hanya jumlah nasabah — uang hari ini
- * sengaja tak dicetak. Sisa nol → ajakan membuka laporan.
+ * Kartu JATUH TEMPO di kepala mode Tempoan — jumlah nasabah saja. (Rasio bayar hari
+ * ini pindah ke Dasbor; tempoan memang tak ditagih setiap hari.)
  */
-export function KartuRasio(props: {
-  bayar: number;
-  libur: number;
-  sisa: number;
-  aksen: WarnaMode;
-  onLaporan: () => void;
-}) {
-  const WARNA = useWarna();
-  const gaya = useGaya(buatGaya);
-  const ditagih = props.bayar + props.libur;
-  const total = ditagih + props.sisa;
-  const persen = ditagih > 0 ? Math.round((props.bayar / ditagih) * 100) : 0;
-  const beres = total > 0 && props.sisa === 0;
-  return (
-    <View style={gaya.kartu}>
-      <View style={gaya.barisLabel}>
-        <Text style={gaya.label}>RASIO BAYAR</Text>
-        {beres ? (
-          <Pressable onPress={props.onLaporan} style={gaya.selesai} accessibilityRole="button">
-            <Ikon nama="circle-check" ukuran={12} warna={WARNA.utama} />
-            <Text style={[gaya.ket, { color: WARNA.utama }]}>
-              Tagihan wajib selesai · buka laporan
-            </Text>
-          </Pressable>
-        ) : (
-          <Text style={gaya.ket}>
-            {total > 0 ? `${props.sisa} sisa dari ${total}` : "Tak ada tagihan wajib"}
-          </Text>
-        )}
-      </View>
-      <View style={gaya.rasio}>
-        <Text style={[gaya.angka, { color: props.aksen.teks }]}>
-          {ditagih > 0 ? `${persen}%` : "—"}
-        </Text>
-        <View style={gaya.kanan}>
-          <View style={gaya.rel}>
-            <View
-              style={[gaya.isiRel, { width: `${persen}%`, backgroundColor: props.aksen.isi }]}
-            />
-          </View>
-          <View style={gaya.legenda}>
-            <Text style={gaya.legendaTeks}>
-              Bayar <Text style={gaya.legendaAngka}>{props.bayar}</Text>
-            </Text>
-            <Text style={gaya.legendaTeks}>
-              Libur <Text style={gaya.legendaAngka}>{props.libur}</Text>
-            </Text>
-          </View>
-        </View>
-      </View>
-    </View>
-  );
-}
-
-/** Kartu JATUH TEMPO di kepala mode Tempoan (pengganti rasio bayar) — jumlah nasabah saja. */
 export function KartuJatuhTempo(props: {
   r: { lewat: number; hariIni: number; pekan: number; berjalan: number };
   aksen: WarnaMode;
@@ -120,16 +63,7 @@ const buatGaya = (WARNA: Warna) =>
     barisLabel: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
     label: { ...HURUF["2xs"], fontWeight: TEBAL.ekstra, letterSpacing: 0.8, color: WARNA.redup },
     ket: { ...HURUF.xs, color: WARNA.redup },
-    selesai: { flexDirection: "row", alignItems: "center", gap: RUANG[1] },
-    rasio: { flexDirection: "row", alignItems: "center", gap: RUANG[3] },
-    angka: { ...HURUF["3xl"], fontWeight: TEBAL.ekstra, fontVariant: ["tabular-nums"] },
-    kanan: { flex: 1, gap: RUANG[1.5] },
-    rel: { height: 8, borderRadius: SUDUT.bulat, backgroundColor: WARNA.abu },
-    isiRel: { height: 8, borderRadius: SUDUT.bulat },
-    legenda: { flexDirection: "row", gap: RUANG[4] },
     barisSel: { flexDirection: "row" },
     sel: { flex: 1, alignItems: "center", gap: 2 },
     angkaSel: { ...HURUF["2xl"], fontWeight: TEBAL.ekstra, fontVariant: ["tabular-nums"] },
-    legendaTeks: { ...HURUF.xs, color: WARNA.redup },
-    legendaAngka: { fontWeight: TEBAL.tebal, color: WARNA.teks },
   });

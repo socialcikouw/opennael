@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import type { KartuTagih, Peristiwa } from "@opennael/contracts";
-import { jumlahSegmen, kemajuan, lipatKelompok, pilah, ringkasDroping, susunBaris } from "./daftar";
+import { jumlahSegmen, lipatKelompok, pilah, ringkasDroping, susunBaris } from "./daftar";
 import { nominalK, susunBahanGrid, susunGrid, susunKerangka } from "./grid";
 import { judulKata, kartuVM } from "./kartu";
 
@@ -216,7 +216,6 @@ describe("daftar tagihan", () => {
       baris.filter((b) => b.jenis === "judul").map((b) => b.jenis === "judul" && b.nama),
     ).toEqual(["PULE", "SAWAH", "SUDAH DITAGIH"]);
     expect(baris[0]).toMatchObject({ jumlah: 2, total: 90_000 });
-    expect(kemajuan(semua)).toEqual({ bayar: 0, libur: 1, sisa: 4 });
     expect(ringkasDroping(p.droping)).toEqual({ baru: 1_000_000, gulung: 0 });
     expect(pilah(semua, "sawah").aktif).toHaveLength(1);
   });

@@ -3,6 +3,7 @@ import { Tabs } from "expo-router/js-tabs";
 import { useState } from "react";
 import { Alert } from "react-native";
 import { bacaGerbang, useHariIni } from "@/fitur/lapangan";
+import { useJumlahPengingat } from "@/fitur/notifikasi";
 import { HurufMode, jenisDariMode, LembarMode, MODE, useMode } from "@/fitur/tagihan";
 import { TabMengambang } from "@/komponen/tab-mengambang";
 import { useWarna, useWarnaMode } from "@/komponen/ui/tampilan";
@@ -10,21 +11,23 @@ import { TEBAL } from "@/komponen/ui/tema";
 
 /** Ikon Lucide tiap tab. */
 const IKON = {
-  index: "house",
+  index: "layout-dashboard",
   tagihan: "users-round",
   notifikasi: "bell",
 } as const;
 
 /**
- * Tab kolektor: (mode) · Beranda · Tagihan · Notifikasi · (+). Tombol kiri =
+ * Tab kolektor: (mode) · Dasbor · Tagihan · Notifikasi · (+). Tombol kiri =
  * huruf mode aktif (H/M/T/S), membuka lembar Ganti Mode. Warna tab aktif & +
  * mengikuti mode; + membuka akad berjenis mode itu (tidak ada + di mode Semua).
+ * Lonceng Notifikasi bertanda angka pengingat yang menunggu tindakan.
  */
 export default function TabKolektor() {
   const WARNA = useWarna();
   const mode = useMode();
   const warnaMode = useWarnaMode(mode);
   const hariIni = useHariIni();
+  const pengingat = useJumlahPengingat();
   const [lembarMode, setLembarMode] = useState(false);
   const jenis = jenisDariMode(mode);
 
@@ -34,7 +37,7 @@ export default function TabKolektor() {
     if (!gerbang || gerbang.buka) {
       router.push({ pathname: "/kolektor/akad", params: jenis ? { jenis } : {} });
     } else if (gerbang.perluAbsen) {
-      Alert.alert("Absen dulu", "Akad baru bisa dicatat sesudah absen pagi di Beranda.");
+      Alert.alert("Absen dulu", "Akad baru bisa dicatat sesudah absen pagi di tab Notifikasi.");
     } else {
       Alert.alert(gerbang.judul ?? "Lapangan tutup", gerbang.isi);
     }
@@ -47,6 +50,7 @@ export default function TabKolektor() {
           <TabMengambang
             {...p}
             ikon={IKON}
+            lencana={{ notifikasi: pengingat }}
             warna={warnaMode}
             kiri={{
               isi: <HurufMode mode={mode} />,
@@ -67,7 +71,7 @@ export default function TabKolektor() {
           sceneStyle: { backgroundColor: WARNA.latar },
         }}
       >
-        <Tabs.Screen name="index" options={{ title: "Beranda" }} />
+        <Tabs.Screen name="index" options={{ title: "Dasbor" }} />
         <Tabs.Screen name="tagihan" options={{ title: "Tagihan", headerShown: false }} />
         <Tabs.Screen name="notifikasi" options={{ title: "Notifikasi" }} />
       </Tabs>

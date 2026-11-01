@@ -7,7 +7,7 @@ import {
   useTagihan,
 } from "@/fitur/lapangan";
 import { useZonaKantor } from "@/lib/kantor";
-import { kemajuan, pilah, ringkasDroping, susunBaris, type TabKerja } from "./inti/daftar";
+import { pilah, ringkasDroping, susunBaris, type TabKerja } from "./inti/daftar";
 import { susunBahanGrid } from "./inti/grid";
 import { kartuVM } from "./inti/kartu";
 import { ringkasJatuhTempo } from "./inti/khusus";
@@ -73,7 +73,6 @@ export function useDaftarTagihan({
     () => susunBaris(partisi[tab], tab === "droping" ? [] : partisi.sudah[tab]),
     [partisi, tab],
   );
-  const maju = useMemo(() => kemajuan(semua), [semua]);
   const jatuhTempo = useMemo(
     () =>
       mode === "tempoan"
@@ -85,5 +84,5 @@ export function useDaftarTagihan({
     () => ringkasDroping(semua.filter((vm) => vm.ember === "droping")),
     [semua],
   );
-  return { bahan, semua, partisi, baris, maju, jatuhTempo, droping };
+  return { bahan, semua, partisi, baris, jatuhTempo, droping };
 }

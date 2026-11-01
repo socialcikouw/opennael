@@ -1,5 +1,5 @@
-import { LayarBeranda } from "@/fitur/lapangan/layar-beranda";
+import { LayarDasbor } from "@/fitur/dasbor/layar-dasbor";
 
-export default function Beranda() {
-  return <LayarBeranda />;
+export default function Dasbor() {
+  return <LayarDasbor />;
 }

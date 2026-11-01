@@ -72,7 +72,9 @@ export function useAksiKartu(hariIni: ReturnType<typeof useHariIni>) {
     if (!gerbang || gerbang.buka) return false;
     Alert.alert(
       gerbang.perluAbsen ? "Absen dulu" : (gerbang.judul ?? "Lapangan tutup"),
-      gerbang.perluAbsen ? "Transaksi bisa dicatat sesudah absen pagi di Beranda." : gerbang.isi,
+      gerbang.perluAbsen
+        ? "Transaksi bisa dicatat sesudah absen pagi di tab Notifikasi."
+        : gerbang.isi,
     );
     return true;
   }, [gerbang]);
