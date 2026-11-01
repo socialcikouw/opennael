@@ -44,10 +44,12 @@ describe.skipIf(!URL_DB)("pemutihan", () => {
             select p.status, p.saldo::int, p.tanggal_macet::text, n.diblokir_at is not null as diblokir
             from pinjaman p join nasabah n on n.id = p.nasabah_id where p.id = ${pinjamanId}`)
         )[0];
+      // Urut nama aksi, bukan `dibuat_at`: satu transaksi uji = `now()` sama untuk semua baris;
+      // urutan kejadian dibuktikan dengan membaca jejak sesudah tiap langkah.
       const jejak = async (barisId: string) =>
         (
           await baris<{ aksi: string }>(sql`
-            select aksi from riwayat_perubahan where baris_id = ${barisId} order by dibuat_at`)
+            select aksi from riwayat_perubahan where baris_id = ${barisId} order by aksi`)
         ).map((r) => r.aksi);
       const putihkan = (id: string, token = b) =>
         kirim(`/pinjaman/${id}/putihkan`, {

@@ -17,11 +17,12 @@ describe.skipIf(!URL_DB)("tarif gaji", () => {
         sql`select kantor_hari_ini(${kantorId})::text as t`,
       );
       const hari = hariIni?.t as string;
+      // Urut nama aksi, bukan `dibuat_at`: satu transaksi uji = `now()` sama untuk semua baris.
       const aksi = async (tabel: string) =>
         (
           await baris<{ aksi: string }>(sql`
             select aksi from riwayat_perubahan where kantor_id = ${kantorId} and tabel = ${tabel}
-            order by dibuat_at`)
+            order by aksi`)
         ).map((r) => r.aksi);
 
       // ---- tarif gaji ----------------------------------------------------------------------

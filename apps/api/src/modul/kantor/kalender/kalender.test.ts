@@ -52,11 +52,12 @@ describe.skipIf(!URL_DB)("kalender kantor", () => {
         sql`select kantor_hari_ini(${kantorId})::text as t`,
       );
       const hari = hariIni?.t as string;
+      // Urut nama aksi, bukan `dibuat_at`: satu transaksi uji = `now()` sama untuk semua baris.
       const aksi = async (tabel: string) =>
         (
           await baris<{ aksi: string }>(sql`
             select aksi from riwayat_perubahan where kantor_id = ${kantorId} and tabel = ${tabel}
-            order by dibuat_at`)
+            order by aksi`)
         ).map((r) => r.aksi);
 
       // ---- pekan kerja (bertanggal, tak mundur, tanggal sama ditimpa) ----------------------
@@ -97,11 +98,13 @@ describe.skipIf(!URL_DB)("kalender kantor", () => {
       );
       const hari = hariIni?.t as string;
       const besok = geserTanggal(hari, 1);
+      // Urut nama aksi, bukan `dibuat_at`: satu transaksi uji = `now()` sama untuk semua baris;
+      // urutan kejadian dibuktikan dengan membaca riwayat sebelum & sesudah langkahnya.
       const aksi = async (tabel: string) =>
         (
           await baris<{ aksi: string }>(sql`
             select aksi from riwayat_perubahan where kantor_id = ${kantorId} and tabel = ${tabel}
-            order by dibuat_at`)
+            order by aksi`)
         ).map((r) => r.aksi);
 
       // Kolektor sudah absen dan punya pinjaman salinan agar hari ini bisa "berjalan".
@@ -167,16 +170,13 @@ describe.skipIf(!URL_DB)("kalender kantor", () => {
       expect((await kirim("/libur-kantor", { token: k })).isi).toHaveLength(4);
       const batalLibur = (tanggal: string) =>
         kirim(`/libur-kantor/${tanggal}/batal`, { isi: { alasan: "jadi masuk" }, token: b });
+      const deklarasi = Array(4).fill("deklarasi_libur_kantor");
+      expect(await aksi("libur_kantor")).toEqual(deklarasi);
       expect((await batalLibur(besok)).isi).toEqual({ tanggal: besok, alasan: "Lebaran" });
       expect(kode(await batalLibur(besok))).toBe("LIBUR_TIDAK_DITEMUKAN");
       expect(kode(await batalLibur(hari))).toBe("HANYA_LIBUR_BELUM_TIBA");
-      expect(await aksi("libur_kantor")).toEqual([
-        "deklarasi_libur_kantor",
-        "deklarasi_libur_kantor",
-        "deklarasi_libur_kantor",
-        "deklarasi_libur_kantor",
-        "batal_libur_kantor",
-      ]);
+      // Hanya pembatalan yang berhasil menambah jejak.
+      expect(await aksi("libur_kantor")).toEqual(["batal_libur_kantor", ...deklarasi]);
     });
   }, 60_000);
 
