@@ -79,6 +79,33 @@ export function kueriLapangan({ api, ambil }: Bahan) {
             ),
           enabled: !!mulai && !!sampai,
         }),
+      /**
+       * Hari kolektor ini sendiri dari sisi kas (rincian tunai seharusnya, laporan, serah
+       * terima) — tab Mutasi. Server hanya memberi kolektor miliknya, dengan rincian.
+       */
+      kas: () =>
+        queryOptions({
+          queryKey: [...kunci.lapangan, "kas"],
+          queryFn: () => ambil(() => api.hariKolektor["hari-kolektor"].$get({ query: {} })),
+        }),
+      /** Setoran berlaku kolektor ini hari ini (beserta transfernya) — tab Storting. */
+      setoran: () =>
+        queryOptions({
+          queryKey: [...kunci.lapangan, "setoran"],
+          queryFn: () => ambil(() => api.hariKolektor.transaksi.$get({ query: {} })),
+        }),
+      /** Biaya tak terduga kolektor ini pada `tanggal` (dicatat kasir) — tab Mutasi. */
+      biaya: (tanggal: string | undefined) =>
+        queryOptions({
+          queryKey: [...kunci.lapangan, "biaya", tanggal],
+          queryFn: () =>
+            ambil(() =>
+              api.hariKolektor["biaya-tak-terduga"].$get({
+                query: { tanggalMulai: tanggal, tanggalSelesai: tanggal },
+              }),
+            ),
+          enabled: tanggal !== undefined,
+        }),
       kampung: () =>
         queryOptions({
           queryKey: [...kunci.lapangan, "kampung"],

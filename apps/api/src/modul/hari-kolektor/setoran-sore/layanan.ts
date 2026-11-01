@@ -20,6 +20,7 @@ import {
   serahTerimaKas,
   transaksi,
   transferSetoran,
+  wilayah,
 } from "../../../platform/db/skema";
 import type { Aktor } from "../../../platform/http/aktor";
 import {
@@ -479,6 +480,8 @@ export function buatLayananSetoranSore(deps: SetoranSoreDeps) {
           pinjamanId: transaksi.pinjamanId,
           nasabahId: nasabah.id,
           nasabahNama: nasabah.nama,
+          kampung: wilayah.nama,
+          jenisPinjaman: pinjaman.jenis,
           jenis: transaksi.jenis,
           setoranMurni: transaksi.setoranMurni,
           setoranPelunasan: transaksi.setoranPelunasan,
@@ -490,6 +493,7 @@ export function buatLayananSetoranSore(deps: SetoranSoreDeps) {
         .from(transaksi)
         .innerJoin(pinjaman, eq(pinjaman.id, transaksi.pinjamanId))
         .innerJoin(nasabah, eq(nasabah.id, pinjaman.nasabahId))
+        .innerJoin(wilayah, eq(wilayah.id, nasabah.wilayahId))
         .leftJoin(
           transferSetoran,
           and(eq(transferSetoran.transaksiId, transaksi.id), isNull(transferSetoran.dibatalkanAt)),

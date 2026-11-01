@@ -393,6 +393,27 @@ const KASUS: [string, unknown, readonly unknown[], string, unknown[]][] = [
     [],
   ],
   [
+    "lapangan.kas",
+    kueri.lapangan.kas(),
+    ["lapangan", "kas"],
+    "hariKolektor.hari-kolektor.$get",
+    [{ query: {} }],
+  ],
+  [
+    "lapangan.setoran",
+    kueri.lapangan.setoran(),
+    ["lapangan", "setoran"],
+    "hariKolektor.transaksi.$get",
+    [{ query: {} }],
+  ],
+  [
+    "lapangan.biaya",
+    kueri.lapangan.biaya(T),
+    ["lapangan", "biaya", T],
+    "hariKolektor.biaya-tak-terduga.$get",
+    [{ query: { tanggalMulai: T, tanggalSelesai: T } }],
+  ],
+  [
     "setoran.hari",
     kueri.setoran.hari(),
     ["setoran", "hari"],
@@ -472,6 +493,8 @@ describe("katalog kueri", () => {
       kunciDari(kueri.lapangan.performa("2026-10-26", T, "tempoan")),
     );
     expect(aktif(kueri.lapangan.peristiwaBulan(T))).toBe(true);
+    expect(aktif(kueri.lapangan.biaya(undefined))).toBe(false);
+    expect(aktif(kueri.lapangan.biaya(T))).toBe(true);
     expect(aktif(kueri.setoran.biaya("k1", undefined))).toBe(false);
     expect(aktif(kueri.setoran.biaya("k1", T))).toBe(true);
   });

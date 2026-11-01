@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { orang, tanggal } from "../bersama/dasar";
+import { jenisPinjamanSchema } from "../pembiayaan/pinjaman";
 
 /**
  * SETORAN SORE — kasir menerima kas kolektor (hitung buta), mencatat transfer
@@ -87,6 +88,10 @@ export const transaksiHariSchema = z.object({
   id: z.uuid(),
   pinjamanId: z.uuid(),
   nasabah: orang,
+  /** Kampung nasabah — tab Storting HP kolektor. */
+  kampung: z.string(),
+  /** Jenis pinjaman yang dibayar (harian · mingguan · tempoan) — saringan tab Storting HP. */
+  jenisPinjaman: jenisPinjamanSchema,
   jenis: z.enum(["angsuran", "pelunasan", "gulung"]),
   setoranMurni: z.number(),
   setoranPelunasan: z.number(),
@@ -97,6 +102,7 @@ export const transaksiHariSchema = z.object({
   /** Transfer berlaku yang menempel pada setoran ini. */
   transfer: z.object({ id: z.uuid(), nominal: z.number() }).nullable(),
 });
+export type TransaksiHari = z.infer<typeof transaksiHariSchema>;
 
 // ---- transfer setoran --------------------------------------------------------
 

@@ -119,9 +119,13 @@ describe.skipIf(!URL_DB)("setoran sore", () => {
       const setoran = await kirim(`/transaksi?kolektorId=${andiId}`, { token: ks });
       expect(setoran.isi).toHaveLength(2);
       expect(setoran.isi.find((s: { id: string }) => s.id === setorBudi.isi.id)).toMatchObject({
+        kampung: "Pule",
+        jenisPinjaman: "harian",
         batasTransfer: 1_200_000,
         transfer: { id: tf.isi.id, nominal: 70_000 },
       });
+      // Kolektor membaca setorannya sendiri tanpa kolektorId (tab Storting HP).
+      expect((await kirim("/transaksi", { token: k })).isi).toHaveLength(2);
 
       // ---- hitung buta ----------------------------------------------------------
       const RINCIAN = {
