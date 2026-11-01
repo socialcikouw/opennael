@@ -20,6 +20,7 @@ Dokumen yang dibaca lebih dulu:
 | [`docs/keputusan.md`](docs/keputusan.md) | Keputusan besar beserta alasan dan yang ditolak — keputusan baru ditambahkan di sini |
 | [`docs/skema/`](docs/skema/README.md) | Rancangan database per tabel + konvensi penamaan |
 | [`docs/arsitektur/`](docs/arsitektur/README.md) | Susunan kode: [pedoman](docs/arsitektur/pedoman-struktur.md) (aturan umum struktur) dan [struktur](docs/arsitektur/struktur.md) (peta pemindahan, batas API, urutan kerja, gerbang verifikasi) |
+| [`docs/tampilan.md`](docs/tampilan.md) | **Huruf besar-kecil**: teks isian disimpan lowercase; tampilan nama lowercase, kampung UPPERCASE, keterangan/alasan lowercase, judul Kapital Tiap Kata — lewat pembantu `@opennael/format`, web & HP |
 
 Skill proyek: **`tabel-baru`** (`.claude/skills/tabel-baru/SKILL.md`) — langkah baku
 membangun satu tabel dari `docs/skema/`. Claude Code memuatnya otomatis;
@@ -174,6 +175,10 @@ memantau `.env`**: sesudah mengubahnya, matikan lalu nyalakan ulang
 - **Postgres polos.** Jangan memakai fitur khusus Supabase (Auth, Storage,
   RLS, Realtime, Edge Functions) — produksi berjalan di Postgres VPS dan harus
   pindah tanpa mengubah kode. Supabase hanya tempat Postgres pengembangan.
+- **Teks isian huruf kecil** (konvensi skema #10, [`docs/tampilan.md`](docs/tampilan.md)):
+  nama, kampung, alasan, keterangan disimpan lowercase — kontrak memakai
+  `teksKecil`, database CHECK `<tabel>_huruf_kecil_check`. Kolom teks isian
+  baru wajib ikut keduanya; tampilan lewat pembantu `@opennael/format`.
 - **Uang**: `bigint` rupiah, tanpa pecahan. Tabel uang **hanya bertambah** —
   salah catat dibatalkan (`dibatalkan_at/_oleh/alasan_batal`), tidak disunting
   atau dihapus. Riwayat (`riwayat_perubahan`) hanya untuk data yang ditimpa

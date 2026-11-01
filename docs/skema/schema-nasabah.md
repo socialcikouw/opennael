@@ -30,7 +30,7 @@ orang, opsional), **kampung** (`wilayah_id`), **titik rumah** (GPS), dan
 | `foto_ktp_id` | `uuid` | ya | | Foto KTP terakhir (opsional), lihat [schema-foto.md](schema-foto.md). Foto wajah nasabah = foto serah terima pinjaman terakhirnya (diturunkan). |
 | `diblokir_at` | `timestamptz` | ya | | Terisi = tak bisa akad baru (otomatis saat pinjamannya diputihkan). |
 | `diblokir_oleh` | `uuid` | ya | | Bos yang memutihkan / memblokir. |
-| `alasan_blokir` | `varchar(200)` | ya | | Mis. "Pinjaman ke-24 diputihkan (meninggal)". |
+| `alasan_blokir` | `varchar(200)` | ya | | Mis. "pinjaman ke-24 diputihkan (meninggal)" — huruf kecil (konvensi #10). |
 | `dibuat_at` | `timestamptz` | — | `now()` | |
 | `diubah_at` | `timestamptz` | — | `now()` | |
 

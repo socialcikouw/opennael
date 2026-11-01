@@ -42,6 +42,7 @@ mengikuti rilis aplikasi.
 | 7 | **Boolean tanpa awalan `is_`** — kata keadaan. | `aktif`, `pinjaman_baru_dikunci` |
 | 8 | **Nama constraint berpola**: `<tabel>_<isi>_check`, `<tabel>_<kolom>_fk`, `uniq_<tabel>_<kolom>`, `idx_<tabel>_<kolom>`. | `kebijakan_sasaran_check` |
 | 9 | **Jenis waktu terbaca dari namanya**: `timestamptz` → `*_at`; `date` → `tanggal_*` atau kata benda tanggal; jam dinding → `jam_*` bertipe `time`. | `dibuat_at`, `tanggal_akad`, `jatuh_tempo`, `jam_buka` |
+| 10 | **Teks isian disimpan huruf kecil** *(keputusan pemilik, 2 Nov 2026)*: setiap kolom huruf yang diisi orang — nama (nasabah, karyawan, kantor, kampung, resort, perangkat, tautan), `alasan_*`, `keterangan*` — selalu lowercase. Kontrak mengecilkan masukan (`teksKecil` di `packages/contracts`); database menolak huruf besar dengan CHECK `<tabel>_huruf_kecil_check` (`kolom = lower(kolom)`, kolom boleh kosong dengan `IS NULL OR`). Bukan untuk kode/kunci sistem (`aksi`, `kode`, `kunci_berkas`, `tipe_mime`, hash, NIK, nomor HP). Nilai enum sudah huruf kecil. Cara menampilkannya di aplikasi: [`../tampilan.md`](../tampilan.md). | `budi santoso`, `pule barat`, `sakit`, `ganti ban dalam` |
 
 ### Padanan nama lama → baru (yang berlaku lintas tabel)
 
