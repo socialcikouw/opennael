@@ -53,6 +53,30 @@ export function kueriLapangan({ api, ambil }: Bahan) {
           queryFn: () =>
             ambil(() => api.pembiayaan.transaksi.peristiwa.$get({ query: { pinjamanId } })),
         }),
+      /**
+       * Portofolio pegangan kolektor (jumlah & saldo berjalan, macet, diputihkan) — kartu
+       * Dasbor. Berawalan `lapangan`, jadi ikut segar sesudah tiap transaksi lapangan.
+       */
+      portofolio: () =>
+        queryOptions({
+          queryKey: [...kunci.lapangan, "portofolio"],
+          queryFn: () => ambil(() => api.pembiayaan.lapangan.portofolio.$get()),
+        }),
+      /**
+       * Performa penagihan harian kolektor ini (aturan-usaha N) untuk rentang tanggal —
+       * Dasbor. Server membatasi kolektor ke dirinya; berawalan `lapangan` agar ikut segar.
+       */
+      performa: (mulai: string | undefined, sampai: string | undefined) =>
+        queryOptions({
+          queryKey: [...kunci.lapangan, "performa", mulai, sampai],
+          queryFn: () =>
+            ambil(() =>
+              api.pelaporan.ringkasan.performa.$get({
+                query: { mulai: mulai ?? "", selesai: sampai ?? "" },
+              }),
+            ),
+          enabled: !!mulai && !!sampai,
+        }),
       kampung: () =>
         queryOptions({
           queryKey: [...kunci.lapangan, "kampung"],

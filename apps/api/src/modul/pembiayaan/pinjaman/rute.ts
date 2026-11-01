@@ -3,6 +3,7 @@ import {
   idParamSchema,
   kartuPinjamanSchema,
   kartuTagihSchema,
+  portofolioSchema,
   rincianPinjamanSchema,
   riwayatStatusSchema,
   saringPinjamanSchema,
@@ -75,6 +76,18 @@ const daftarPegangan = createRoute({
   },
 });
 
+const portofolio = createRoute({
+  method: "get",
+  path: "/lapangan/portofolio",
+  tags: ["lapangan"],
+  summary: "Portofolio pegangan kolektor ini: jumlah & saldo berjalan, macet, diputihkan",
+  security: aman,
+  responses: {
+    200: { description: "Ringkasan portofolio", ...json(portofolioSchema) },
+    ...galatLapangan,
+  },
+});
+
 export function rutePinjaman(layanan: LayananPinjaman, periksa: PeriksaTokenAkses) {
   const router = buatRouter();
   const masuk = wajibMasuk(periksa);
@@ -94,7 +107,6 @@ export function rutePinjaman(layanan: LayananPinjaman, periksa: PeriksaTokenAkse
     .openapi(riwayatStatus, async (c) =>
       c.json(await layanan.riwayatStatus(c.get("aktor"), c.req.valid("param").id), 200),
     )
-    .openapi(daftarPegangan, async (c) =>
-      c.json(await layanan.daftarPinjaman(c.get("aktor")), 200),
-    );
+    .openapi(daftarPegangan, async (c) => c.json(await layanan.daftarPinjaman(c.get("aktor")), 200))
+    .openapi(portofolio, async (c) => c.json(await layanan.portofolio(c.get("aktor")), 200));
 }

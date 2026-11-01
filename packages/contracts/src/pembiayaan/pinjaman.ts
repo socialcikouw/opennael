@@ -55,6 +55,20 @@ export const kartuTagihSchema = pinjamanSchema.extend({
 });
 export type KartuTagih = z.infer<typeof kartuTagihSchema>;
 
+const bilahPortofolioSchema = z.object({ jumlah: z.number(), saldo: z.number() });
+
+/**
+ * `GET /lapangan/portofolio` — pegangan kolektor per status: banyaknya pinjaman
+ * dan Σ saldo. `diputihkan` = seluruh riwayat (saldo tak disentuh pemutihan,
+ * jadi angkanya nilai yang dihapus). Docs: schema-pinjaman.md.
+ */
+export const portofolioSchema = z.object({
+  berjalan: bilahPortofolioSchema,
+  macet: bilahPortofolioSchema,
+  diputihkan: bilahPortofolioSchema,
+});
+export type Portofolio = z.infer<typeof portofolioSchema>;
+
 /**
  * PINJAMAN — kartu & rincian untuk bos, pengawas, dan kolektor (pegangannya),
  * sunting nomor urut (bos), garis waktu status. Docs: schema-pinjaman.md,
