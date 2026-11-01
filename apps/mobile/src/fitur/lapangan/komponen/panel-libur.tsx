@@ -1,4 +1,5 @@
 import type { KartuTagih } from "@opennael/contracts";
+import { tolakLibur } from "@opennael/domain";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Isian, PesanGalat } from "@/komponen/ui/isian";
@@ -7,16 +8,22 @@ import { Keterangan } from "@/komponen/ui/teks";
 import { Tombol } from "@/komponen/ui/tombol";
 import { tulis, useTulis } from "../data";
 
-export function PanelLibur({ p }: { p: KartuTagih }) {
+/**
+ * Libur dari rincian pinjaman (harian & mingguan). Boleh-tidaknya memakai aturan
+ * yang sama dengan tombol Libur di kartu dan server (G2–G3, `tolakLibur`).
+ */
+export function PanelLibur({ p, tanggal }: { p: KartuTagih; tanggal: string }) {
   const [alasan, setAlasan] = useState("");
   const libur = useTulis(tulis.libur);
-  // G3: angsuran terbayar baru 0 atau 1 belum boleh libur (server juga menolak).
-  const belumBoleh = p.angsuranKe < 2;
+  const tolak = tolakLibur(p, tanggal);
 
   return (
     <Kartu>
-      {belumBoleh ? (
-        <Keterangan>Belum boleh libur: angsuran terbayar baru {p.angsuranKe}.</Keterangan>
+      {tolak ? (
+        <Keterangan>
+          BELUM BISA LIBUR, {tolak.pesan.charAt(0).toLowerCase()}
+          {tolak.pesan.slice(1)}.
+        </Keterangan>
       ) : (
         <Isian
           label="Alasan (boleh kosong)"
@@ -31,7 +38,7 @@ export function PanelLibur({ p }: { p: KartuTagih }) {
         judul="Catat libur hari ini"
         ikon="moon"
         memuat={libur.isPending}
-        nonaktif={belumBoleh}
+        nonaktif={tolak !== null}
         onPress={() =>
           libur.mutate(
             { pinjamanId: p.id, ...(alasan.trim() ? { alasan: alasan.trim() } : {}) },

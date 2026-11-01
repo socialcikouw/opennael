@@ -98,7 +98,9 @@ export function LayarPinjaman({ id, lihat }: { id: string; lihat?: string }) {
           <Pilihan segmen pilihan={pilihanAksi} nilai={aksiAktif} onPilih={setAksi} />
           {aksiAktif === "setor" ? <PanelSetor p={p} /> : null}
           {aksiAktif === "lunas" ? <PanelLunas p={p} /> : null}
-          {aksiAktif === "libur" ? <PanelLibur p={p} /> : null}
+          {aksiAktif === "libur" && hariIni.data ? (
+            <PanelLibur p={p} tanggal={hariIni.data.kalender.tanggal} />
+          ) : null}
           {aksiAktif === "gulung" ? (
             <Tombol
               judul="Lanjut ke gulung"

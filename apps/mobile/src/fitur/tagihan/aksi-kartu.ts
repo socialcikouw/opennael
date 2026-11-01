@@ -119,7 +119,7 @@ export function useAksiKartu(hariIni: ReturnType<typeof useHariIni>) {
       libur: (vm) => {
         if (berjalan.current.has(vm.id)) return;
         if (vm.alasanLibur) {
-          Alert.alert("Belum bisa libur", vm.alasanLibur);
+          Alert.alert("BELUM BISA LIBUR", vm.alasanLibur);
           return;
         }
         if (gerbangTutup()) return;

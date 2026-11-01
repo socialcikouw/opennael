@@ -26,7 +26,7 @@ export function tolakLibur(
   if (p.angsuranKe < 2) {
     return {
       kode: "LIBUR_BELUM_BOLEH",
-      pesan: "Pinjaman yang baru terbayar 0–1 angsuran belum boleh libur",
+      pesan: "Nomor 0 dan 1 wajib harus bayar",
     };
   }
   return null;
