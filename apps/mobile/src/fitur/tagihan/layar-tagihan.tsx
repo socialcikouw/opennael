@@ -1,4 +1,6 @@
+import { kunci } from "@opennael/api-client";
 import { kunciWilayah } from "@opennael/domain";
+import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
 import { RefreshControl, StyleSheet, View } from "react-native";
@@ -9,6 +11,7 @@ import { PesanGalat } from "@/komponen/ui/isian";
 import { useGaya, useWarnaMode } from "@/komponen/ui/tampilan";
 import { RUANG, type Warna } from "@/komponen/ui/tema";
 import { Tombol } from "@/komponen/ui/tombol";
+import { useTarikSegarkan } from "@/lib/tarik-segarkan";
 import { useAksiKartu } from "./aksi-kartu";
 import { useDaftarTagihan, useDataTagihan } from "./data-tagihan";
 import { type Baris, jumlahSegmen, type TabKerja } from "./inti/daftar";
@@ -53,6 +56,15 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
   const aksen = useWarnaMode(mode);
 
   const { hariIni, tanggal, tagihan, kalender, peristiwa, riwayat } = useDataTagihan(jenis);
+
+  // Tarik-segarkan menyegarkan semua bacaan lapangan (hari ini, kartu, kalender, peristiwa,
+  // riwayat); pemutarnya hanya menyala karena ditarik, bukan karena penyegaran di latar.
+  const klien = useQueryClient();
+  const segarkan = useCallback(
+    () => klien.invalidateQueries({ queryKey: kunci.lapangan }),
+    [klien],
+  );
+  const { aktif: menarik, tarik } = useTarikSegarkan(segarkan);
 
   const [cari, setCari] = useState("");
   const [cariTerbuka, setCariTerbuka] = useState(false);
@@ -174,12 +186,8 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
         contentContainerStyle={{ paddingTop: tinggiKepala + RUANG[2], paddingBottom: ruangTab }}
         refreshControl={
           <RefreshControl
-            refreshing={tagihan.isRefetching}
-            onRefresh={() => {
-              void hariIni.refetch();
-              void tagihan.refetch();
-              void peristiwa.refetch();
-            }}
+            refreshing={menarik}
+            onRefresh={tarik}
             progressViewOffset={tinggiKepala}
             tintColor={aksen.teks}
             colors={[aksen.teks]}

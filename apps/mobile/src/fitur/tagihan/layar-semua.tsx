@@ -29,6 +29,7 @@ import {
 } from "@/komponen/ui/tema";
 import { Tombol } from "@/komponen/ui/tombol";
 import { useZonaKantor } from "@/lib/kantor";
+import { useTarikSegarkan } from "@/lib/tarik-segarkan";
 import { susunBahanGrid } from "./inti/grid";
 import { kartuVM, rupiahPendek } from "./inti/kartu";
 import {
@@ -64,6 +65,15 @@ export function LayarSemua() {
   const tanggal = hariIni.data?.kalender.tanggal;
   const tagihan = useTagihan();
   const zona = useZonaKantor();
+
+  // Pemutar tarik-segarkan hanya menyala karena ditarik, bukan karena penyegaran di latar.
+  const { refetch: segarHariIni } = hariIni;
+  const { refetch: segarTagihan } = tagihan;
+  const segarkan = useCallback(
+    () => Promise.all([segarHariIni(), segarTagihan()]),
+    [segarHariIni, segarTagihan],
+  );
+  const { aktif: menarik, tarik } = useTarikSegarkan(segarkan);
 
   const [saringan, setSaringan] = useState<SaringanSemua>("semua");
   const [urutan, setUrutan] = useState<UrutanSemua>("rute");
@@ -201,11 +211,8 @@ export function LayarSemua() {
         contentContainerStyle={{ paddingTop: RUANG[2], paddingBottom: ruangTab }}
         refreshControl={
           <RefreshControl
-            refreshing={tagihan.isRefetching}
-            onRefresh={() => {
-              void hariIni.refetch();
-              void tagihan.refetch();
-            }}
+            refreshing={menarik}
+            onRefresh={tarik}
             tintColor={aksen.teks}
             colors={[aksen.teks]}
           />
