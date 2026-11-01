@@ -1,5 +1,5 @@
 import type { BottomTabBarProps } from "expo-router/js-tabs";
-import type { ReactNode } from "react";
+import { type ReactNode, useEffect } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
@@ -34,7 +34,9 @@ export function useRuangTab(): number {
  * TAB BAR MENGAMBANG — (kiri) · pil berisi tab-tab layar · (+). Judul dari
  * `title` tiap layar; ikon Lucide per nama rute. Tab aktif & tombol + memakai
  * `warna` (warna mode aplikasi; bawaan hijau merek). Tombol kiri & + tidak
- * tampil bila tak diberikan (mis. mode Semua tanpa +).
+ * tampil bila tak diberikan (mis. mode Semua tanpa +). `tampil` = rute yang
+ * tampil di pil, urut seperti itu (bawaan: semua rute); bila tab yang sedang
+ * dibuka tak lagi tampil (ganti mode), pindah ke tab tampil pertama.
  */
 export function TabMengambang({
   state,
@@ -47,8 +49,10 @@ export function TabMengambang({
   kiri,
   tambah,
   lencana,
+  tampil,
 }: BottomTabBarProps & {
   ikon: Record<string, NamaIkon>;
+  tampil?: readonly string[];
   /** Penanda angka di ikon tab menurut nama rute (mis. pengingat yang menunggu); 0 = tanpa penanda. */
   lencana?: Record<string, number>;
   warna?: WarnaMode;
@@ -63,6 +67,17 @@ export function TabMengambang({
     isi: WARNA.utamaIsi,
     teksIsi: WARNA.teksAtasUtama,
   };
+  const rute = tampil
+    ? tampil.flatMap((nama) => state.routes.filter((r) => r.name === nama))
+    : state.routes;
+  const kunciAktif = state.routes[state.index]?.key;
+  const tersembunyi = !rute.some((r) => r.key === kunciAktif);
+  const kunciPertama = rute[0]?.key;
+  useEffect(() => {
+    if (tersembunyi && kunciPertama) navigateToTab(kunciPertama);
+  }, [tersembunyi, kunciPertama, navigateToTab]);
+  // Lima tab sepil: bantalan sorot ikon dirampingkan supaya label tak terpotong.
+  const rapat = rute.length > 4;
   return (
     <View pointerEvents="box-none" style={[gaya.wadah, { bottom: insets.bottom + JARAK_BAWAH }]}>
       {kiri ? (
@@ -76,10 +91,10 @@ export function TabMengambang({
         </Pressable>
       ) : null}
       <View style={gaya.pil}>
-        {state.routes.map((route, i) => {
+        {rute.map((route) => {
           const judul = descriptors[route.key]?.options.title ?? route.name;
           const ikonTab = ikon[route.name] ?? "circle";
-          const aktif = i === state.index;
+          const aktif = route.key === kunciAktif;
           const warnaTab = aktif ? aksen.teks : WARNA.redup;
           const menunggu = lencana?.[route.name] ?? 0;
           const tekan = () => {
@@ -99,7 +114,13 @@ export function TabMengambang({
               onPress={tekan}
               style={({ pressed }) => [gaya.tab, pressed ? gaya.ditekan : null]}
             >
-              <View style={[gaya.ikonTab, aktif ? { backgroundColor: aksen.lembut } : null]}>
+              <View
+                style={[
+                  gaya.ikonTab,
+                  rapat ? gaya.ikonTabRapat : null,
+                  aktif ? { backgroundColor: aksen.lembut } : null,
+                ]}
+              >
                 <Ikon nama={ikonTab} ukuran={26} warna={warnaTab} tebal={aktif} />
                 {menunggu > 0 ? (
                   <View style={gaya.lencana}>
@@ -169,6 +190,7 @@ const buatGaya = (WARNA: Warna) =>
       justifyContent: "center",
       borderRadius: SUDUT.bulat,
     },
+    ikonTabRapat: { paddingHorizontal: RUANG[2] },
     label: { ...HURUF["2xs"], fontWeight: TEBAL.biasa },
     lencana: {
       position: "absolute",

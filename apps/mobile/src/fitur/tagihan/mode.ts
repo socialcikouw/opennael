@@ -4,10 +4,12 @@ import { useSyncExternalStore } from "react";
 
 /**
  * MODE APLIKASI KOLEKTOR — tiga "wajah" sesuai jenis pinjaman (Harian ·
- * Mingguan · Tempoan) dan satu wajah pantau (Semua: ketiganya, hanya-baca —
- * tanpa transaksi dan tanpa tombol +). Mode mengubah isi tab Tagihan, jenis
- * akad dari tombol +, dan warna aksen. Absen & laporan tetap satu untuk semua
- * mode: laporan menghitung kewajiban hari ini dari semua jenis (C6).
+ * Mingguan · Tempoan) dan satu wajah pantau (Semua: ketiganya, tanpa transaksi
+ * nasabah dan tanpa tombol +). Mode mengubah isi tab Tagihan & Dasbor, jenis
+ * akad dari tombol +, dan warna aksen. Mode Semua punya tab sendiri: Dasbor ·
+ * Mutasi · Storting · Droping · Setelan (`fitur/pantau`). Absen & laporan tetap
+ * satu untuk semua mode: laporan menghitung kewajiban hari ini dari semua jenis
+ * (C6) — di mode kerja lewat Notifikasi, di mode Semua lewat Mutasi.
  *
  * Mode tidak disimpan: aplikasi selalu dibuka di mode Harian.
  */

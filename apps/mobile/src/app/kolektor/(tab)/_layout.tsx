@@ -14,13 +14,23 @@ const IKON = {
   index: "layout-dashboard",
   tagihan: "users-round",
   notifikasi: "bell",
+  mutasi: "arrow-left-right",
+  storting: "banknote-arrow-down",
+  droping: "banknote-arrow-up",
+  setelan: "settings",
 } as const;
 
+/** Tab mode kerja (Harian · Mingguan · Tempoan) dan mode pantau Semua. */
+const TAB_KERJA = ["index", "tagihan", "notifikasi"] as const;
+const TAB_SEMUA = ["index", "mutasi", "storting", "droping", "setelan"] as const;
+
 /**
- * Tab kolektor: (mode) · Dasbor · Tagihan · Notifikasi · (+). Tombol kiri =
- * huruf mode aktif (H/M/T/S), membuka lembar Ganti Mode. Warna tab aktif & +
- * mengikuti mode; + membuka akad berjenis mode itu (tidak ada + di mode Semua).
- * Lonceng Notifikasi bertanda angka pengingat yang menunggu tindakan.
+ * Tab kolektor: (mode) · tab-tab · (+). Tombol kiri = huruf mode aktif
+ * (H/M/T/S), membuka lembar Ganti Mode. Mode kerja: Dasbor · Tagihan ·
+ * Notifikasi + tombol + (akad berjenis mode itu). Mode Semua (pantau, tanpa
+ * +): Dasbor · Mutasi (arus kas) · Storting · Droping · Setelan. Warna tab
+ * aktif & + mengikuti mode. Lonceng Notifikasi bertanda angka pengingat yang
+ * menunggu tindakan.
  */
 export default function TabKolektor() {
   const WARNA = useWarna();
@@ -50,6 +60,7 @@ export default function TabKolektor() {
           <TabMengambang
             {...p}
             ikon={IKON}
+            tampil={jenis ? TAB_KERJA : TAB_SEMUA}
             lencana={{ notifikasi: pengingat }}
             warna={warnaMode}
             kiri={{
@@ -74,6 +85,10 @@ export default function TabKolektor() {
         <Tabs.Screen name="index" options={{ title: "Dasbor" }} />
         <Tabs.Screen name="tagihan" options={{ title: "Tagihan", headerShown: false }} />
         <Tabs.Screen name="notifikasi" options={{ title: "Notifikasi" }} />
+        <Tabs.Screen name="mutasi" options={{ title: "Mutasi" }} />
+        <Tabs.Screen name="storting" options={{ title: "Storting" }} />
+        <Tabs.Screen name="droping" options={{ title: "Droping" }} />
+        <Tabs.Screen name="setelan" options={{ title: "Setelan" }} />
       </Tabs>
       <LembarMode terbuka={lembarMode} onTutup={() => setLembarMode(false)} />
     </>

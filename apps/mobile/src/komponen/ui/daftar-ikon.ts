@@ -4,6 +4,8 @@ import ArrowLeftRight from "lucide-react-native/icons/arrow-left-right";
 import ArrowUpDown from "lucide-react-native/icons/arrow-up-down";
 import BadgeCheck from "lucide-react-native/icons/badge-check";
 import Banknote from "lucide-react-native/icons/banknote";
+import BanknoteArrowDown from "lucide-react-native/icons/banknote-arrow-down";
+import BanknoteArrowUp from "lucide-react-native/icons/banknote-arrow-up";
 import Bell from "lucide-react-native/icons/bell";
 import Calculator from "lucide-react-native/icons/calculator";
 import Calendar from "lucide-react-native/icons/calendar";
@@ -36,12 +38,14 @@ import RefreshCw from "lucide-react-native/icons/refresh-cw";
 import Repeat from "lucide-react-native/icons/repeat";
 import Search from "lucide-react-native/icons/search";
 import SearchX from "lucide-react-native/icons/search-x";
+import Settings from "lucide-react-native/icons/settings";
 import TrendingDown from "lucide-react-native/icons/trending-down";
 import TrendingUp from "lucide-react-native/icons/trending-up";
 import TriangleAlert from "lucide-react-native/icons/triangle-alert";
 import UserPlus from "lucide-react-native/icons/user-plus";
 import Users from "lucide-react-native/icons/users";
 import UsersRound from "lucide-react-native/icons/users-round";
+import Wallet from "lucide-react-native/icons/wallet";
 import X from "lucide-react-native/icons/x";
 
 /**
@@ -69,6 +73,8 @@ export const IKON = {
   delete: Delete,
   "badge-check": BadgeCheck,
   banknote: Banknote,
+  "banknote-arrow-down": BanknoteArrowDown,
+  "banknote-arrow-up": BanknoteArrowUp,
   bell: Bell,
   calculator: Calculator,
   check: Check,
@@ -93,8 +99,10 @@ export const IKON = {
   "refresh-cw": RefreshCw,
   repeat: Repeat,
   search: Search,
+  settings: Settings,
   "triangle-alert": TriangleAlert,
   users: Users,
+  wallet: Wallet,
   x: X,
 } as const satisfies Record<string, LucideIcon>;
 

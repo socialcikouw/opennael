@@ -28,7 +28,8 @@ import { Portofolio } from "./komponen/portofolio";
  * hari ini (Tempoan: jatuh tempo), performa tagihan murni, portofolio (saldo
  * berjalan, macet, diputihkan, piutang aktif), dan setoran hari ini — semuanya
  * dari pinjaman jenis mode itu. Pengingat (belum absen, belum dicatat, laporan)
- * satu untuk semua mode dan ada di tab Notifikasi; daftar tagih di tab Tagihan.
+ * satu untuk semua mode dan ada di tab Notifikasi (mode Semua: di Mutasi);
+ * daftar tagih di tab Tagihan. Mode Semua memindahkan tampilan & keluar ke Setelan.
  */
 export function LayarDasbor() {
   const gaya = useGaya(buatGaya);
@@ -114,7 +115,10 @@ export function LayarDasbor() {
           r={rasio}
           gagal={tagihan.isError && !tagihan.data}
           aksen={aksen}
-          onLaporan={() => router.navigate("/kolektor/notifikasi")}
+          // Mode Semua tak punya tab Notifikasi: buka laporan dari Mutasi.
+          onLaporan={() =>
+            router.navigate(mode === "semua" ? "/kolektor/mutasi" : "/kolektor/notifikasi")
+          }
         />
       )}
       <KartuPerforma
@@ -143,7 +147,8 @@ export function LayarDasbor() {
         </View>
       ) : null}
 
-      <KakiAkun />
+      {/* Mode Semua punya tab Setelan untuk tampilan & keluar. */}
+      {mode === "semua" ? null : <KakiAkun />}
     </ScrollView>
   );
 }

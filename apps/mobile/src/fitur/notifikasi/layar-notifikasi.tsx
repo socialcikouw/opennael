@@ -1,4 +1,3 @@
-import { router } from "expo-router";
 import { useCallback } from "react";
 import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 import { useRuangTab } from "@/komponen/tab-mengambang";
@@ -13,9 +12,7 @@ import { RUANG, SUDUT, type Warna } from "@/komponen/ui/tema";
 import { Tombol } from "@/komponen/ui/tombol";
 import { useTarikSegarkan } from "@/lib/tarik-segarkan";
 import { usePengingat } from "./data";
-import type { Pengingat } from "./inti/pengingat";
-import { AksiLaporan } from "./komponen/aksi-laporan";
-import { FormulirAbsen } from "./komponen/formulir-absen";
+import { ItemPengingat } from "./komponen/item-pengingat";
 
 /**
  * NOTIFIKASI — pengingat kolektor: belum absen, kabar gerbang lapangan (libur,
@@ -78,34 +75,10 @@ export function LayarNotifikasi() {
   );
 }
 
-/** Satu pengingat beserta tindakannya (formulir absen, lihat yang belum, buka laporan). */
-function ItemPengingat({ p, jumlahBelum }: { p: Pengingat; jumlahBelum: number }) {
-  const gaya = useGaya(buatGaya);
-  return (
-    <View style={gaya.item}>
-      <Spanduk
-        judul={p.judul}
-        isi={p.isi ?? undefined}
-        warna={p.jenis === "laporan" ? "hijau" : "kuning"}
-      />
-      {p.jenis === "absen" ? <FormulirAbsen /> : null}
-      {p.jenis === "belum" ? (
-        <Tombol
-          judul={`Lihat yang belum (${jumlahBelum})`}
-          ikon="users"
-          onPress={() => router.navigate("/kolektor/tagihan")}
-        />
-      ) : null}
-      {p.jenis === "laporan" ? <AksiLaporan /> : null}
-    </View>
-  );
-}
-
 const buatGaya = (WARNA: Warna) =>
   StyleSheet.create({
     galat: { gap: RUANG[4], paddingHorizontal: RUANG[5], paddingVertical: RUANG[6] },
     isi: { gap: RUANG[4], paddingHorizontal: RUANG[5], paddingTop: RUANG[2] },
-    item: { gap: RUANG[3] },
     kosong: {
       alignItems: "center",
       gap: RUANG[2],
