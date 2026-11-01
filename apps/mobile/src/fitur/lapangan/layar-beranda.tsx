@@ -1,5 +1,6 @@
 import { wajibDitagihHariIni } from "@opennael/domain";
 import { tanggal as formatTanggal, rupiah } from "@opennael/format";
+import { useCallback } from "react";
 import { RefreshControl, ScrollView, Text, View } from "react-native";
 import { useRuangTab } from "@/komponen/tab-mengambang";
 import { useG } from "@/komponen/ui/gaya-bersama";
@@ -10,6 +11,7 @@ import { Spanduk } from "@/komponen/ui/spanduk";
 import { useGaya } from "@/komponen/ui/tampilan";
 import { Tombol } from "@/komponen/ui/tombol";
 import { useSesi } from "@/lib/sesi";
+import { useTarikSegarkan } from "@/lib/tarik-segarkan";
 import { useHariIni, useTagihan } from "./data";
 import { buatGaya } from "./gaya-beranda";
 import { bacaGerbang } from "./gerbang";
@@ -28,22 +30,28 @@ export function LayarBeranda() {
   const tagihan = useTagihan();
   const ruangTab = useRuangTab();
 
-  const segarkan = () => {
-    void hariIni.refetch();
-    void tagihan.refetch();
-  };
+  // Pemutar tarik-segarkan hanya menyala karena ditarik, bukan karena penyegaran di latar.
+  const { refetch: segarHariIni } = hariIni;
+  const { refetch: segarTagihan } = tagihan;
+  const segarkan = useCallback(
+    () => Promise.all([segarHariIni(), segarTagihan()]),
+    [segarHariIni, segarTagihan],
+  );
+  const { aktif: menarik, tarik } = useTarikSegarkan(segarkan);
 
   if (hariIni.isPending) return <Memuat teks="Memuat kerja hari ini…" />;
-  if (hariIni.isError) {
+  // Layar galat penuh hanya bila belum ada data; gagal menyegarkan data yang sudah ada
+  // cukup spanduk di atas isi (kolektor tetap melihat Beranda terakhirnya).
+  const keadaan = hariIni.data;
+  if (!keadaan) {
     return (
       <View style={[g.layar, gaya.galat]}>
-        <PesanGalat pesan={hariIni.error.message} />
-        <Tombol judul="Coba lagi" ikon="refresh-cw" onPress={segarkan} />
+        <PesanGalat pesan={hariIni.error?.message} />
+        <Tombol judul="Coba lagi" ikon="refresh-cw" onPress={() => void segarkan()} />
       </View>
     );
   }
 
-  const keadaan = hariIni.data;
   const gerbang = bacaGerbang(keadaan);
   const semua = tagihan.data ?? [];
   // Wajib ditagih hari ini (aturan-usaha B6) — yang menahan laporan (C6).
@@ -60,12 +68,7 @@ export function LayarBeranda() {
       contentContainerStyle={[gaya.isi, { paddingBottom: ruangTab }]}
       keyboardShouldPersistTaps="handled"
       automaticallyAdjustKeyboardInsets
-      refreshControl={
-        <RefreshControl
-          refreshing={hariIni.isRefetching || tagihan.isRefetching}
-          onRefresh={segarkan}
-        />
-      }
+      refreshControl={<RefreshControl refreshing={menarik} onRefresh={tarik} />}
     >
       <View style={g.tumpuk05}>
         <Text style={gaya.tanggal}>{formatTanggal(keadaan.kalender.tanggal, "panjang")}</Text>
@@ -73,6 +76,12 @@ export function LayarBeranda() {
         <Text style={g.teksRedup}>{s?.pengguna.kantor.nama}</Text>
       </View>
 
+      {hariIni.isError ? (
+        <Spanduk
+          judul="Gagal menyegarkan"
+          isi="Data mungkin belum terbaru. Tarik ke bawah untuk mencoba lagi."
+        />
+      ) : null}
       {gerbang.judul ? <Spanduk judul={gerbang.judul} isi={gerbang.isi} /> : null}
       {gerbang.perluAbsen ? <FormulirAbsen /> : null}
 
