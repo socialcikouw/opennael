@@ -1,6 +1,6 @@
 import { kunciWilayah } from "@opennael/domain";
 import { router } from "expo-router";
-import { useCallback, useDeferredValue, useEffect, useState } from "react";
+import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
 import { RefreshControl, StyleSheet, View } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -78,7 +78,8 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
   const { tampil, ubah: ubahLipat } = useLipatKelompok(baris, tab, kunciCari !== "");
 
   // ---- transaksi ----------------------------------------------------------
-  const { stempel, aksi, gerbang } = useAksiKartu(hariIni);
+  const { stempel, sibuk, aksi, gerbang } = useAksiKartu(hariIni);
+  const statusKartu = useMemo(() => ({ stempel, sibuk }), [stempel, sibuk]);
 
   // ---- gulungan & kepala melayang ---------------------------------------
   const { lipat, terangkat, tinggiLipat, onScroll, tinggiKepala, setTinggiKepala, daftar, keAtas } =
@@ -105,11 +106,12 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
           aksen={aksen}
           kolomHariIni={bahan?.kerangka.kolomHariIni ?? -1}
           stempel={stempel.get(item.vm.id) ?? null}
+          sibuk={sibuk.has(item.vm.id)}
           terakhir={item.terakhir}
         />
       );
     },
-    [aksi, aksen, bahan, stempel, ubahLipat],
+    [aksi, aksen, bahan, stempel, sibuk, ubahLipat],
   );
 
   if (hariIni.isError || tagihan.isError) {
@@ -143,7 +145,7 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
         data={memuat ? [] : tampil}
         keyExtractor={(b) => b.id}
         renderItem={renderItem}
-        extraData={stempel}
+        extraData={statusKartu}
         onScroll={onScroll}
         scrollEventThrottle={16}
         keyboardShouldPersistTaps="handled"

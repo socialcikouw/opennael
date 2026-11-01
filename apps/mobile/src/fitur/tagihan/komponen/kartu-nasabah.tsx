@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
 import Animated, { ZoomIn } from "react-native-reanimated";
 import type { Stempel } from "@/fitur/lapangan";
 import { useGaya, useWarna } from "@/komponen/ui/tampilan";
@@ -40,11 +40,15 @@ export const KartuNasabah = memo(function KartuNasabah(props: {
   stempel: Stempel | null;
   /** Kartu terakhir kelompoknya: rel berhenti di akhir kartu ini. */
   terakhir: boolean;
+  /** Libur/Lunasi kartu ini masih berjalan: selubung "Mencatat…", tanpa tahan-lama. */
+  sibuk: boolean;
 }) {
   const gaya = useGaya(buatGaya);
   const { vm } = props;
+  // `bisaAksi` menentukan susunan kartu (kaki tombol ada/tidak) — tetap saat sibuk supaya
+  // kartu tak melompat; sibuk hanya mematikan tahan-lama dan menutup tombol dengan selubung.
   const bisaAksi = vm.aksi && props.stempel === null;
-  const lunasi = bisaAksi ? () => props.aksi.lunas(vm) : null;
+  const lunasi = bisaAksi && !props.sibuk ? () => props.aksi.lunas(vm) : null;
 
   const kotak = (
     <View style={gaya.kotak}>
@@ -58,7 +62,11 @@ export const KartuNasabah = memo(function KartuNasabah(props: {
       ) : null}
       <AngkaKartu vm={vm} tanpaAngsuran={bisaAksi} />
       {bisaAksi ? <KakiKartu vm={vm} aksi={props.aksi} aksen={props.aksen} /> : null}
-      {props.stempel ? <StempelKartu jenis={props.stempel} aksen={props.aksen} /> : null}
+      {props.stempel ? (
+        <StempelKartu jenis={props.stempel} aksen={props.aksen} />
+      ) : props.sibuk ? (
+        <SelubungSibuk aksen={props.aksen} />
+      ) : null}
     </View>
   );
 
@@ -97,6 +105,17 @@ function StempelKartu({ jenis, aksen }: { jenis: Stempel; aksen: WarnaMode }) {
   );
 }
 
+/** Selama tulisan berjalan: menutup kartu (tombol tak terjangkau sentuhan) dengan penanda tunggu. */
+function SelubungSibuk({ aksen }: { aksen: WarnaMode }) {
+  const gaya = useGaya(buatGaya);
+  return (
+    <View style={gaya.selubung} accessibilityLiveRegion="polite">
+      <ActivityIndicator color={aksen.teks} />
+      <Text style={[gaya.sibukTeks, { color: aksen.teks }]}>Mencatat…</Text>
+    </View>
+  );
+}
+
 const buatGaya = (WARNA: Warna) =>
   StyleSheet.create({
     wadah: { marginHorizontal: RUANG[4] },
@@ -113,9 +132,11 @@ const buatGaya = (WARNA: Warna) =>
       ...StyleSheet.absoluteFill,
       alignItems: "center",
       justifyContent: "center",
+      gap: RUANG[2],
       borderRadius: SUDUT.besar,
       backgroundColor: WARNA.tiraiTerang,
     },
+    sibukTeks: { ...HURUF.sm, fontWeight: TEBAL.semi },
     stempel: {
       paddingHorizontal: RUANG[5],
       paddingVertical: RUANG[2],

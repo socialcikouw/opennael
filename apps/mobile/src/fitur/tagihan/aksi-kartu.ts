@@ -1,29 +1,26 @@
 import { kunci } from "@opennael/api-client";
 import { hitungLunas } from "@opennael/domain";
 import { rupiah } from "@opennael/format";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Alert, LayoutAnimation } from "react-native";
 import { bacaGerbang, kabarTercatat, type Stempel, tulis, type useHariIni } from "@/fitur/lapangan";
 import type { AksiKartu } from "./komponen/kartu-nasabah";
-
-const gagal = (judul: string) => (e: Error) => Alert.alert(judul, e.message);
 
 /** Lama stempel tampil di kartu sebelum kartu turun ke "Sudah ditagih". */
 const LAMA_STEMPEL_MS = 900;
 
 /**
  * Transaksi dari kartu (bayar, gulung, libur, lunas): gerbang lapangan,
- * stempel sesaat sesudah tercatat, lalu data disegarkan.
+ * stempel sesaat sesudah tercatat, lalu data disegarkan. `sibuk` = id pinjaman
+ * yang tulisannya masih berjalan (kartunya menampilkan "Mencatat…").
  */
 export function useAksiKartu(hariIni: ReturnType<typeof useHariIni>) {
   const klien = useQueryClient();
 
   // ---- transaksi ----------------------------------------------------------
   const [stempel, setStempel] = useState<ReadonlyMap<string, Stempel>>(new Map());
-  const { mutate: catatLibur } = useMutation({ mutationFn: tulis.libur });
-  const { mutate: catatLunas } = useMutation({ mutationFn: tulis.lunas });
 
   /** Stempel di kartu sebentar, lalu data disegarkan & kartunya turun ke "Sudah ditagih". */
   const tercatat = useCallback(
@@ -45,6 +42,29 @@ export function useAksiKartu(hariIni: ReturnType<typeof useHariIni>) {
 
   // Bayar dicatat di layarnya sendiri: stempel dipasang di sini sesudah kembali.
   useEffect(() => kabarTercatat.dengar(tercatat), [tercatat]);
+
+  // Libur & Lunasi berjalan per kartu: tiap panggilan membawa hasil dan galatnya sendiri
+  // (satu `useMutation` bersama hanya memanggil callback panggilan terakhir). `berjalan`
+  // = penjaga kirim ganda; `sibuk` cuplikannya untuk tampilan ("Mencatat…" di kartu).
+  const berjalan = useRef(new Set<string>());
+  const [sibuk, setSibuk] = useState<ReadonlySet<string>>(new Set());
+  const catat = useCallback(
+    async (id: string, kerja: () => Promise<unknown>, cap: Stempel, judulGagal: string) => {
+      if (berjalan.current.has(id)) return;
+      berjalan.current.add(id);
+      setSibuk(new Set(berjalan.current));
+      try {
+        await kerja();
+        tercatat(id, cap);
+      } catch (e) {
+        Alert.alert(judulGagal, e instanceof Error ? e.message : String(e));
+      } finally {
+        berjalan.current.delete(id);
+        setSibuk(new Set(berjalan.current));
+      }
+    },
+    [tercatat],
+  );
 
   const gerbang = useMemo(() => (hariIni.data ? bacaGerbang(hariIni.data) : null), [hariIni.data]);
   /** Gerbang lapangan (C4) dijelaskan di tempat — server tetap memutuskan. */
@@ -73,6 +93,7 @@ export function useAksiKartu(hariIni: ReturnType<typeof useHariIni>) {
         router.push({ pathname: "/kolektor/gulung/[id]", params: { id: vm.id } });
       },
       libur: (vm) => {
+        if (berjalan.current.has(vm.id)) return;
         if (vm.alasanLibur) {
           Alert.alert("Belum bisa libur", vm.alasanLibur);
           return;
@@ -84,17 +105,17 @@ export function useAksiKartu(hariIni: ReturnType<typeof useHariIni>) {
             text: "Yakin",
             style: "destructive",
             onPress: () =>
-              catatLibur(
-                { pinjamanId: vm.id },
-                {
-                  onSuccess: () => tercatat(vm.id, "libur"),
-                  onError: gagal("Gagal mencatat libur"),
-                },
+              void catat(
+                vm.id,
+                () => tulis.libur({ pinjamanId: vm.id }),
+                "libur",
+                "Gagal mencatat libur",
               ),
           },
         ]);
       },
       lunas: (vm) => {
+        if (berjalan.current.has(vm.id)) return;
         if (gerbangTutup()) return;
         const r = hitungLunas(vm.p.saldo, vm.p.tabungan);
         const kembali = -r.storting;
@@ -110,18 +131,14 @@ export function useAksiKartu(hariIni: ReturnType<typeof useHariIni>) {
             {
               text: "Yakin",
               style: "destructive",
-              onPress: () =>
-                catatLunas(vm.id, {
-                  onSuccess: () => tercatat(vm.id, "lunas"),
-                  onError: gagal("Gagal melunasi"),
-                }),
+              onPress: () => void catat(vm.id, () => tulis.lunas(vm.id), "lunas", "Gagal melunasi"),
             },
           ],
         );
       },
     }),
-    [gerbangTutup, catatLibur, catatLunas, tercatat],
+    [gerbangTutup, catat],
   );
 
-  return { stempel, aksi, gerbang };
+  return { stempel, sibuk, aksi, gerbang };
 }
