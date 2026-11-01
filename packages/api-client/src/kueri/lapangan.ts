@@ -1,3 +1,4 @@
+import type { JenisPerforma } from "@opennael/contracts";
 import { queryOptions } from "@tanstack/react-query";
 import type { Bahan } from "../bahan";
 import { kunci } from "../kunci";
@@ -63,16 +64,17 @@ export function kueriLapangan({ api, ambil }: Bahan) {
           queryFn: () => ambil(() => api.pembiayaan.lapangan.portofolio.$get()),
         }),
       /**
-       * Performa penagihan harian kolektor ini (aturan-usaha N) untuk rentang tanggal —
-       * Dasbor. Server membatasi kolektor ke dirinya; berawalan `lapangan` agar ikut segar.
+       * Performa penagihan harian kolektor ini (aturan-usaha N) untuk rentang tanggal,
+       * menurut `jenis` (harian · mingguan · tempoan · semua) — Dasbor mengikuti mode.
+       * Server membatasi kolektor ke dirinya; berawalan `lapangan` agar ikut segar.
        */
-      performa: (mulai: string | undefined, sampai: string | undefined) =>
+      performa: (mulai: string | undefined, sampai: string | undefined, jenis: JenisPerforma) =>
         queryOptions({
-          queryKey: [...kunci.lapangan, "performa", mulai, sampai],
+          queryKey: [...kunci.lapangan, "performa", jenis, mulai, sampai],
           queryFn: () =>
             ambil(() =>
               api.pelaporan.ringkasan.performa.$get({
-                query: { mulai: mulai ?? "", selesai: sampai ?? "" },
+                query: { mulai: mulai ?? "", selesai: sampai ?? "", jenis },
               }),
             ),
           enabled: !!mulai && !!sampai,

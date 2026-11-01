@@ -1,4 +1,4 @@
-import type { Portofolio as DataPortofolio } from "@opennael/contracts";
+import type { PortofolioJenis as DataPortofolio } from "@opennael/contracts";
 import { rupiah } from "@opennael/format";
 import { StyleSheet, Text, View } from "react-native";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";

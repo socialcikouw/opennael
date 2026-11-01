@@ -105,7 +105,7 @@ posisi modal (tanggal X) = saldo tunai buku + saldo bank buku   (rumus buku kas 
 
 | Metode & jalur | Peran | Isi |
 |---|---|---|
-| `GET /ringkasan/performa?mulai=&selesai=&kolektorId=` | bos, pengawas; kolektor: miliknya | Deret harian performa penagihan (aturan-usaha N): setoran murni harian, patokan (angsuran berjalan kemarin − angsuran mati), persentase. |
+| `GET /ringkasan/performa?mulai=&selesai=&kolektorId=&jenis=` | bos, pengawas; kolektor: miliknya | Deret harian performa penagihan (aturan-usaha N): setoran murni, patokan, persentase. `jenis` = `harian` (bawaan; patokan = angsuran berjalan kemarin − angsuran mati, dari potret), `mingguan` · `tempoan` (patokan = angsuran yang jatuh tagih hari itu, N3 — dari pinjaman & riwayat status, bukan potret), atau `semua` (ketiganya dijumlah, N4). |
 | `GET /kas/posisi-modal?tanggal=` | **bos** | Rincian: saldo tunai (di brankas + dibawa kolektor), saldo bank, piutang berjalan, piutang macet, tabungan nasabah, posisi modal. **Pengawas tidak** — memuat saldo buku, sama dengan laporan kas (hitung buta pencocokan; keputusan pemilik 24 Okt 2026). |
 
 ## Service / logika nantinya

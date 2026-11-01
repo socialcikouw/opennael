@@ -76,6 +76,18 @@ describe("susunPerforma", () => {
     });
   });
 
+  test("hari tanpa patokan (0) tak jadi batang, tetapi hari ini tetap membawa angkanya", () => {
+    const deret = [
+      baris("2026-11-02", 0, 0, null), // mingguan: tak ada yang jatuh tagih
+      baris("2026-11-03", 300_000, 400_000, 75),
+      baris("2026-11-04", 0, 0, null),
+    ];
+    const r = susunPerforma(deret, TAGIH, T);
+    expect(r.titik.map((t) => t.tanggal)).toEqual(["2026-11-03"]);
+    expect(r.hariIni).toEqual({ setoranMurni: 0, patokan: 0, persentase: null });
+    expect(r.rataRata).toBe(75);
+  });
+
   test("awal bulan tanpa hari lalu: rata-rata null", () => {
     const r = susunPerforma([baris("2026-11-02", 100, 200, 50)], ["2026-11-02"], "2026-11-02");
     expect(r.rataRata).toBeNull();

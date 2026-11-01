@@ -226,6 +226,190 @@ describe.skipIf(!URL_DB)("ringkasan & layar baca bos", () => {
     });
   }, 60_000);
 
+  test("performa mingguan, tempoan, dan semua jenis (aturan-usaha N3, N4)", async () => {
+    await dalamTransaksi(async (tx) => {
+      const { kirim, bos, kolektor: andi, kantorId } = await siapkanKantor(tx);
+      const b = bos.tokenAkses;
+      const k = andi.tokenAkses;
+      const andiId = andi.pengguna.id;
+      const kode = (r: { isi: Record<string, unknown> }) => r.isi.kode;
+      const t = await kirim("/auth/tautan", { isi: {} });
+      await kirim("/auth/tautan/setujui", {
+        isi: { kode: t.isi.kode, akun: { peran: "kolektor", nama: "Dedi" } },
+        token: b,
+      });
+      const dedi = (await kirim(`/auth/tautan/${t.isi.id}/klaim`, { isi: { klaim: t.isi.klaim } }))
+        .isi as Sesi;
+      const d = pembuat(tx, kantorId, bos.pengguna.id);
+      const [h] = await d.baris<{ t: string }>(sql`select kantor_hari_ini(${kantorId})::text as t`);
+      const hari = h?.t as string;
+      const kemarin = geserTanggal(hari, -1);
+
+      /** Pinjaman mingguan/tempoan berangsuran tertentu (salinan migrasi, riwayat status lewat trigger). */
+      const jenisLain = async (
+        kolektorId: string,
+        nama: string,
+        isi: {
+          jenis: "mingguan" | "tempoan";
+          akad: string;
+          angsuran: number;
+          status?: "berjalan" | "macet" | "lunas" | "digulung";
+          tanggalMacet?: string;
+          tanggalSelesai?: string;
+        },
+      ) => {
+        const nasabahId = await d.nasabah(kolektorId, nama);
+        const tenor = isi.jenis === "mingguan" ? 8 : 14;
+        const selesai = isi.status === "lunas" || isi.status === "digulung";
+        const total = isi.jenis === "mingguan" ? isi.angsuran * tenor : isi.angsuran;
+        const [p] = await d.baris<{ id: string }>(sql`
+          insert into pinjaman (kantor_id, pencair_id, dibuat_oleh, nasabah_id, pinjaman_ke, jenis, tenor,
+            asal, tanggal_akad, tanggal_disalin, pokok, potongan_admin, tabungan_masuk, pencairan,
+            total_kembali, angsuran, saldo_awal, drop_baru, saldo, status, tanggal_macet, tanggal_selesai)
+          values (${kantorId}, ${kolektorId}, ${bos.pengguna.id}, ${nasabahId}, 1, ${isi.jenis}, ${tenor},
+            'migrasi', ${isi.akad}, ${isi.akad}, 100000, 0, 0, 0, ${total}, ${isi.angsuran}, ${total}, 0,
+            ${selesai ? 0 : total}, ${isi.status ?? "berjalan"}, ${isi.tanggalMacet ?? null},
+            ${selesai ? (isi.tanggalSelesai ?? hari) : null})
+          returning id`);
+        return p?.id as string;
+      };
+
+      // ---- mingguan: contoh N3 — empat pinjaman jatuh tagih hari ini (akad 14 hari lalu) ----
+      const akad = geserTanggal(hari, -14);
+      const pA = await jenisLain(andiId, "A", { jenis: "mingguan", akad, angsuran: 150_000 });
+      const pB = await jenisLain(andiId, "B", { jenis: "mingguan", akad, angsuran: 125_000 });
+      await jenisLain(andiId, "C", {
+        jenis: "mingguan",
+        akad,
+        angsuran: 100_000,
+        status: "macet",
+        tanggalMacet: geserTanggal(hari, -7),
+      });
+      await jenisLain(andiId, "D", {
+        jenis: "mingguan",
+        akad,
+        angsuran: 200_000,
+        status: "digulung",
+        tanggalSelesai: hari,
+      });
+      // Bukan hari tagihnya (akad 13 hari lalu), dan milik kolektor lain.
+      await jenisLain(andiId, "E", {
+        jenis: "mingguan",
+        akad: geserTanggal(hari, -13),
+        angsuran: 500_000,
+      });
+      await jenisLain(dedi.pengguna.id, "F", { jenis: "mingguan", akad, angsuran: 50_000 });
+      await d.setor(andiId, pA, hari, { murni: 150_000 });
+      await d.setor(andiId, pB, hari, { murni: 70_000 });
+
+      // ---- tempoan: jatuh tempo hari ini; satu lunas hari ini (membayar), satu macet kemarin ----
+      const akadTempo = geserTanggal(hari, -14);
+      const pT = await jenisLain(andiId, "T1", {
+        jenis: "tempoan",
+        akad: akadTempo,
+        angsuran: 1_250_000,
+        status: "lunas",
+        tanggalSelesai: hari,
+      });
+      await jenisLain(andiId, "T2", {
+        jenis: "tempoan",
+        akad: akadTempo,
+        angsuran: 900_000,
+        status: "macet",
+        tanggalMacet: geserTanggal(hari, -3),
+      });
+      await d.setor(andiId, pT, hari, { murni: 1_250_000 });
+
+      // ---- harian: potret kemarin 2.000.000, setoran murni 1.000.000 ----
+      await tx.execute(sql`
+        insert into posisi_harian (kantor_id, kolektor_id, tanggal, jenis, jumlah_berjalan, saldo_berjalan, angsuran_berjalan)
+        values (${kantorId}, ${andiId}, ${kemarin}, 'harian', 40, 10000000, 2000000)`);
+      const pH = await d.pinjaman(andiId, await d.nasabah(andiId, "H"), { pokok: 10_000_000 });
+      await d.setor(andiId, pH, hari, { murni: 1_000_000 });
+
+      const baca = async (jenis: string, token = b, kolektorId = andiId) =>
+        (
+          await kirim(
+            `/ringkasan/performa?mulai=${hari}&selesai=${hari}&kolektorId=${kolektorId}&jenis=${jenis}`,
+            { token },
+          )
+        ).isi;
+
+      // N3 mingguan: A + B berjalan = 275.000 (C macet, D digulung hari ini, E bukan hari tagih).
+      expect(await baca("mingguan")).toEqual([
+        { tanggal: hari, setoranMurni: 220_000, patokan: 275_000, persentase: 80 },
+      ]);
+      // N3 tempoan: T1 lunas hari ini tetap masuk, T2 macet tidak → 1.250.000 / 1.250.000.
+      expect(await baca("tempoan")).toEqual([
+        { tanggal: hari, setoranMurni: 1_250_000, patokan: 1_250_000, persentase: 100 },
+      ]);
+      // N1 harian tak berubah; tanpa jenis = harian (kompatibel mundur untuk web).
+      const harian = { tanggal: hari, setoranMurni: 1_000_000, patokan: 2_000_000, persentase: 50 };
+      expect(await baca("harian")).toEqual([harian]);
+      expect(
+        (
+          await kirim(`/ringkasan/performa?mulai=${hari}&selesai=${hari}&kolektorId=${andiId}`, {
+            token: b,
+          })
+        ).isi,
+      ).toEqual([harian]);
+      // N4 semua: ketiganya dijumlah.
+      const semua = (await baca("semua")) as {
+        setoranMurni: number;
+        patokan: number;
+        persentase: number;
+      }[];
+      expect(semua).toHaveLength(1);
+      expect(semua[0]).toMatchObject({
+        tanggal: hari,
+        setoranMurni: 2_470_000,
+        patokan: 3_525_000,
+      });
+      expect(semua[0]?.persentase).toBeCloseTo((2_470_000 / 3_525_000) * 100, 6);
+
+      // Kolektor membaca miliknya tanpa kolektorId; kantor (bos tanpa kolektorId) mencakup Dedi juga.
+      expect(
+        (
+          await kirim(`/ringkasan/performa?mulai=${hari}&selesai=${hari}&jenis=mingguan`, {
+            token: k,
+          })
+        ).isi,
+      ).toEqual([{ tanggal: hari, setoranMurni: 220_000, patokan: 275_000, persentase: 80 }]);
+      expect(
+        (
+          await kirim(`/ringkasan/performa?mulai=${hari}&selesai=${hari}&jenis=mingguan`, {
+            token: b,
+          })
+        ).isi,
+      ).toEqual([
+        {
+          tanggal: hari,
+          setoranMurni: 220_000,
+          patokan: 325_000,
+          persentase: (220_000 / 325_000) * 100,
+        },
+      ]);
+      // Hari lain tanpa yang jatuh tagih: patokan 0, persentase kosong (bukan nol).
+      expect(
+        (
+          await kirim(
+            `/ringkasan/performa?mulai=${kemarin}&selesai=${kemarin}&kolektorId=${andiId}&jenis=mingguan`,
+            { token: b },
+          )
+        ).isi,
+      ).toEqual([{ tanggal: kemarin, setoranMurni: 0, patokan: 0, persentase: null }]);
+      // Jenis tak dikenal ditolak.
+      expect(
+        (
+          await kirim(`/ringkasan/performa?mulai=${hari}&selesai=${hari}&jenis=bulanan`, {
+            token: b,
+          })
+        ).status,
+      ).toBe(400);
+      expect(kode(await kirim(`/ringkasan/performa?jenis=mingguan`))).toBe("BELUM_MASUK");
+    });
+  }, 60_000);
+
   test("nasabah serupa & neraca nasabah", async () => {
     await dalamTransaksi(async (tx) => {
       const { kirim, bos, kolektor: andi, kantorId } = await siapkanKantor(tx);

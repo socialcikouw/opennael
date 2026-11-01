@@ -397,11 +397,11 @@ dihitung); kas yang sedang dibawa kolektor sudah termasuk saldo tunai buku.
 
 ---
 
-## N. Performa penagihan harian
+## N. Performa penagihan
 
 *(Ditambahkan 24 Okt 2026 — rumus yang sama dengan layar persentase aplikasi
-lama.)* Hanya pinjaman **harian** — kewajiban mingguan & tempoan tidak jatuh
-setiap hari.
+lama.)* N1–N2 hanya untuk pinjaman **harian**: kewajiban mingguan & tempoan
+tidak jatuh setiap hari, jadi keduanya dihitung dengan N3 (diperluas 1 Nov 2026).
 
 **N1.** Untuk satu hari D:
 
@@ -418,6 +418,37 @@ Patokan ≤ 0 → persentase kosong (pembagian tak bermakna).
 > Contoh: akhir kemarin 40 pinjaman harian berjalan, angsuran 50.000 → 2.000.000.
 > Hari ini 2 di antaranya lunas (mati 100.000) → patokan 1.900.000. Setoran murni
 > harian hari ini 1.710.000 → **90%**.
+
+**N3. Mingguan & tempoan** *(ditambahkan 1 Nov 2026 atas permintaan pemilik,
+untuk Dasbor HP per mode).* Patokan dihitung dari pinjaman yang **jatuh tagih
+pada D**: mingguan bila D = tanggal akad + 7k hari dengan 1 ≤ k ≤ tenor (B3);
+tempoan bila D = jatuh tempo (akad + tenor bila tak tersimpan).
+
+```
+patokan(D)    = Σ angsuran pinjaman jenis itu yang
+                (a) jatuh tagih pada D,
+                (b) berstatus berjalan pada akhir D−1   (sudah lahir, belum selesai, tidak macet —
+                                                          padanan potret posisi_harian D−1),
+                (c) tidak berakhir pada D karena digulung atau diputihkan
+persentase(D) = setoran murni jenis itu hari D ÷ patokan(D) × 100
+```
+
+- **Lunas pada D tidak dikurangi** (beda dari N1): tempoan hampir selalu lunas di
+  hari jatuh tempo justru karena dibayar; uang itu sudah ada di setoran murni.
+- Status akhir D−1 dibaca dari `riwayat_status_pinjaman` (perpindahan terakhir
+  dengan `tanggal ≤ D−1`), bukan dari `posisi_harian` — potret tidak menyimpan
+  hari tagih tiap pinjaman. Jadi tak ada keadaan "belum ada potret" untuk jenis ini.
+- Tak ada pinjaman jatuh tagih (patokan 0) → persentase **kosong**, bukan nol
+  (N2, klausa kedua). Pemegang = pegangan kolektor sekarang.
+
+> Contoh mingguan: Rabu ini jatuh tagih empat pinjaman — A angsuran 150.000 dan
+> B 125.000 berjalan; C 100.000 macet sejak pekan lalu (tak masuk, b); D 200.000
+> digulung hari itu juga (tak masuk, c) → patokan 275.000. Setoran murni mingguan
+> Rabu 220.000 → **80%**.
+
+**N4. Semua jenis.** Patokan dan setoran murni ketiga jenis dijumlah per hari;
+patokan harian yang kosong (belum ada potret) dihitung nol. Persentase kosong
+bila jumlah patokan ≤ 0.
 
 ---
 

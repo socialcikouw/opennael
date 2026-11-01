@@ -161,3 +161,20 @@ export function ringkasJatuhTempo(tempo: readonly TempoVM[]): {
   }
   return r;
 }
+
+/**
+ * Ringkasan jatuh tempo dari daftar tagih mentah: hanya yang bertempoan dihitung.
+ * Dasbor mode Tempoan memakainya sebagai ganti rasio bayar (tempoan tak ditagih
+ * setiap hari).
+ */
+export function jatuhTempoDari(
+  pinjaman: readonly Pick<
+    KartuTagih,
+    "jenis" | "tanggalAkad" | "tenor" | "jatuhTempo" | "status"
+  >[],
+  hariIni: string,
+) {
+  return ringkasJatuhTempo(
+    pinjaman.filter((p) => p.jenis === "tempoan").map((p) => susunTempo(p, hariIni)),
+  );
+}

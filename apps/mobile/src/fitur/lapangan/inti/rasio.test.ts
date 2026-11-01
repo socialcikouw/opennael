@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import type { KartuTagih } from "@opennael/contracts";
-import { rasioHariIni } from "./rasio";
+import { rasioHariIni, rasioMode } from "./rasio";
 
 const T = "2026-11-01";
 
@@ -50,5 +50,61 @@ describe("rasioHariIni", () => {
       T,
     );
     expect(r).toEqual({ bayar: 1, libur: 0, sisa: 0, persen: 100, setoran: 100_000 });
+  });
+});
+
+describe("rasioMode — tiap mode memakai datanya sendiri", () => {
+  const campur: Bahan[] = [
+    { jenis: "harian", tanggalAkad: "2026-10-20", hariIni: bayar(50_000) },
+    { jenis: "harian", tanggalAkad: "2026-10-20", hariIni: bayar(50_000) },
+    { jenis: "harian", tanggalAkad: "2026-10-20", hariIni: libur },
+    { jenis: "mingguan", tanggalAkad: "2026-10-25", hariIni: null }, // wajib hari ini, belum dicatat
+    { jenis: "mingguan", tanggalAkad: "2026-10-25", hariIni: bayar(150_000) },
+    { jenis: "tempoan", tanggalAkad: "2026-10-20", hariIni: bayar(1_250_000) },
+  ];
+
+  test("harian, mingguan, dan tempoan menghasilkan angka yang berbeda", () => {
+    expect(rasioMode(campur, T, "harian")).toEqual({
+      bayar: 2,
+      libur: 1,
+      sisa: 0,
+      persen: 67,
+      setoran: 100_000,
+    });
+    expect(rasioMode(campur, T, "mingguan")).toEqual({
+      bayar: 1,
+      libur: 0,
+      sisa: 1,
+      persen: 100,
+      setoran: 150_000,
+    });
+    expect(rasioMode(campur, T, "tempoan")).toEqual({
+      bayar: 1,
+      libur: 0,
+      sisa: 0,
+      persen: 100,
+      setoran: 1_250_000,
+    });
+  });
+
+  test("Semua = ketiga jenis bersama", () => {
+    expect(rasioMode(campur, T, null)).toEqual({
+      bayar: 4,
+      libur: 1,
+      sisa: 1,
+      persen: 80,
+      setoran: 1_500_000,
+    });
+    expect(rasioMode(campur, T, null)).toEqual(rasioHariIni(campur, T));
+  });
+
+  test("jenis yang tak punya pinjaman: semua nol", () => {
+    expect(rasioMode(campur.slice(0, 3), T, "tempoan")).toEqual({
+      bayar: 0,
+      libur: 0,
+      sisa: 0,
+      persen: null,
+      setoran: 0,
+    });
   });
 });

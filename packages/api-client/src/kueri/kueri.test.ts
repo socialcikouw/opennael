@@ -373,10 +373,10 @@ const KASUS: [string, unknown, readonly unknown[], string, unknown[]][] = [
   ],
   [
     "lapangan.performa",
-    kueri.lapangan.performa("2026-10-26", T),
-    ["lapangan", "performa", "2026-10-26", T],
+    kueri.lapangan.performa("2026-10-26", T, "mingguan"),
+    ["lapangan", "performa", "mingguan", "2026-10-26", T],
     "pelaporan.ringkasan.performa.$get",
-    [{ query: { mulai: "2026-10-26", selesai: T } }],
+    [{ query: { mulai: "2026-10-26", selesai: T, jenis: "mingguan" } }],
   ],
   [
     "lapangan.kampung",
@@ -465,8 +465,12 @@ describe("katalog kueri", () => {
     expect(aktif(kueri.lapangan.kalender(undefined))).toBe(false);
     expect(aktif(kueri.lapangan.kalender("2026-11"))).toBe(true);
     expect(aktif(kueri.lapangan.peristiwaBulan(undefined))).toBe(false);
-    expect(aktif(kueri.lapangan.performa(undefined, undefined))).toBe(false);
-    expect(aktif(kueri.lapangan.performa("2026-10-26", "2026-11-01"))).toBe(true);
+    expect(aktif(kueri.lapangan.performa(undefined, undefined, "harian"))).toBe(false);
+    expect(aktif(kueri.lapangan.performa("2026-10-26", "2026-11-01", "semua"))).toBe(true);
+    // Jenis berbeda = kunci berbeda: pindah mode tak memakai cache jenis lain.
+    expect(kunciDari(kueri.lapangan.performa("2026-10-26", T, "harian"))).not.toEqual(
+      kunciDari(kueri.lapangan.performa("2026-10-26", T, "tempoan")),
+    );
     expect(aktif(kueri.lapangan.peristiwaBulan(T))).toBe(true);
     expect(aktif(kueri.setoran.biaya("k1", undefined))).toBe(false);
     expect(aktif(kueri.setoran.biaya("k1", T))).toBe(true);

@@ -44,3 +44,16 @@ export function rasioHariIni(
     setoran,
   };
 }
+
+/**
+ * Rasio untuk satu mode: `jenis` menyaring pinjaman (null = Semua, ketiganya).
+ * Mode mengubah ISI, bukan hanya tampilan — Dasbor Harian, Mingguan, dan Tempoan
+ * tidak pernah memakai angka yang sama.
+ */
+export function rasioMode(
+  pinjaman: readonly Pick<KartuTagih, "jenis" | "tanggalAkad" | "hariIni">[],
+  tanggal: string,
+  jenis: KartuTagih["jenis"] | null,
+): RasioHariIni {
+  return rasioHariIni(jenis ? pinjaman.filter((p) => p.jenis === jenis) : pinjaman, tanggal);
+}

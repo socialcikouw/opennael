@@ -14,6 +14,17 @@ export const saringRingkasanSchema = z.object({
   kolektorId: z.uuid().optional(),
 });
 
+/**
+ * `GET /ringkasan/performa` — jenis yang diukur (aturan-usaha N): `harian` (bawaan,
+ * N1), `mingguan` · `tempoan` (N3), atau `semua` (N4: ketiganya dijumlah).
+ */
+export const jenisPerformaSchema = z.enum(["harian", "mingguan", "tempoan", "semua"]);
+export type JenisPerforma = z.infer<typeof jenisPerformaSchema>;
+
+export const saringPerformaSchema = saringRingkasanSchema.extend({
+  jenis: jenisPerformaSchema.default("harian"),
+});
+
 export const angkaRingkasanSchema = z.object({
   /** Setoran dari nasabah — menurut pencatat & tanggal transaksi. */
   penagihan: z.object({

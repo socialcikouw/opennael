@@ -39,7 +39,10 @@ export function susunPerforma(
   if (!hariTagih) return { hariIni: null, titik: [], rataRata: null };
   const tagih = new Set(hariTagih);
   const baris = deret.filter((b) => b.tanggal <= hariIni && tagih.has(b.tanggal));
+  // Hari tanpa patokan (0: tak ada angsuran jatuh tagih, lazim untuk mingguan dan tempoan)
+  // tak jadi batang; patokan null (harian belum berpotret) tetap tampil sebagai tonggak kosong.
   const titik = baris
+    .filter((b) => b.patokan !== 0)
     .map((b) => ({ tanggal: b.tanggal, persentase: b.persentase, hariIni: b.tanggal === hariIni }))
     .sort((a, b) => a.tanggal.localeCompare(b.tanggal));
 

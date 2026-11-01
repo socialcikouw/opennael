@@ -10,14 +10,17 @@ const TINGGI_BATANG = 56;
 const BATANG_MIN = 4;
 
 /**
- * PERFORMA TAGIHAN MURNI (aturan-usaha N): setoran murni harian ÷ patokan, hanya
- * pinjaman harian. Angka besar = hari ini; batang = tiap hari tagih bulan ini
- * (hari ini paling pekat); di bawahnya rata-rata hari yang sudah lewat.
- * `p` null = belum dimuat; `gagal` = tak ada data dan pemuatan gagal.
+ * PERFORMA TAGIHAN MURNI (aturan-usaha N): setoran murni ÷ patokan, untuk
+ * jenis pinjaman mode aktif (harian: N1; mingguan & tempoan: N3; semua: N4).
+ * Angka besar = hari ini; batang = tiap hari yang ada tagihannya bulan ini (hari
+ * ini paling pekat); di bawahnya rata-rata hari yang sudah lewat. `p` null =
+ * belum dimuat; `gagal` = tak ada data dan pemuatan gagal; `jenis` = keterangan
+ * jenis di pojok kartu.
  */
 export function KartuPerforma(props: {
   p: RingkasPerforma | null;
   gagal: boolean;
+  jenis: string;
   aksen: WarnaMode;
 }) {
   const gaya = useGaya(buatGaya);
@@ -28,7 +31,7 @@ export function KartuPerforma(props: {
     <View style={gaya.kartu}>
       <View style={gaya.barisLabel}>
         <Text style={gaya.label}>PERFORMA TAGIHAN MURNI</Text>
-        <Text style={gaya.ket}>hanya harian</Text>
+        <Text style={gaya.ket}>{props.jenis}</Text>
       </View>
       <View style={gaya.utama}>
         <Text style={[gaya.angka, { color: aksen.teks }]}>
@@ -79,7 +82,7 @@ function penjelasHariIni(p: RingkasPerforma | null, gagal: boolean): string {
   const h = p.hariIni;
   if (!h) return "Hari ini bukan hari tagih.";
   if (h.patokan === null) return "Belum ada potret kemarin untuk patokan.";
-  if (h.persentase === null) return "Tak ada angsuran harian yang jadi patokan hari ini.";
+  if (h.persentase === null) return "Tak ada angsuran yang jadi patokan hari ini.";
   return `Setoran murni ${rupiah(h.setoranMurni)} dari patokan ${rupiah(h.patokan)}`;
 }
 

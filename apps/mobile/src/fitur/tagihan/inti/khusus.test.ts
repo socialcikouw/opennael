@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import type { Peristiwa } from "@opennael/contracts";
-import { ringkasJatuhTempo, susunMingguan, susunTempo } from "./khusus";
+import { jatuhTempoDari, ringkasJatuhTempo, susunMingguan, susunTempo } from "./khusus";
 
 // Kamis 29 Okt 2026.
 const KAMIS = "2026-10-29";
@@ -87,5 +87,37 @@ describe("tempoan", () => {
     expect(
       ringkasJatuhTempo([t("2026-10-20"), t(KAMIS), t("2026-11-05"), t("2026-11-20")]),
     ).toEqual({ lewat: 1, hariIni: 1, pekan: 1, berjalan: 4 });
+  });
+});
+
+describe("jatuhTempoDari — hanya tempoan yang dihitung", () => {
+  const p = (jenis: "harian" | "mingguan" | "tempoan", jatuhTempo: string | null) => ({
+    jenis,
+    tanggalAkad: "2026-10-01",
+    tenor: 30,
+    jatuhTempo,
+    status: "berjalan" as const,
+  });
+  test("harian & mingguan tak ikut; tempoan dipilah lewat/hari ini/pekan", () => {
+    expect(
+      jatuhTempoDari(
+        [
+          p("harian", null),
+          p("mingguan", null),
+          p("tempoan", "2026-10-20"),
+          p("tempoan", KAMIS),
+          p("tempoan", "2026-11-05"),
+        ],
+        KAMIS,
+      ),
+    ).toEqual({ lewat: 1, hariIni: 1, pekan: 1, berjalan: 3 });
+  });
+  test("tanpa tempoan: semua nol", () => {
+    expect(jatuhTempoDari([p("harian", null)], KAMIS)).toEqual({
+      lewat: 0,
+      hariIni: 0,
+      pekan: 0,
+      berjalan: 0,
+    });
   });
 });

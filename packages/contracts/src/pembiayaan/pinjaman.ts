@@ -57,15 +57,24 @@ export type KartuTagih = z.infer<typeof kartuTagihSchema>;
 
 const bilahPortofolioSchema = z.object({ jumlah: z.number(), saldo: z.number() });
 
-/**
- * `GET /lapangan/portofolio` — pegangan kolektor per status: banyaknya pinjaman
- * dan Σ saldo. `diputihkan` = seluruh riwayat (saldo tak disentuh pemutihan,
- * jadi angkanya nilai yang dihapus). Docs: schema-pinjaman.md.
- */
-export const portofolioSchema = z.object({
+/** Pegangan satu jenis pinjaman per status: banyaknya pinjaman dan Σ saldo. */
+export const portofolioJenisSchema = z.object({
   berjalan: bilahPortofolioSchema,
   macet: bilahPortofolioSchema,
   diputihkan: bilahPortofolioSchema,
+});
+export type PortofolioJenis = z.infer<typeof portofolioJenisSchema>;
+
+/**
+ * `GET /lapangan/portofolio` — pegangan kolektor per jenis lalu per status.
+ * `diputihkan` = seluruh riwayat (saldo tak disentuh pemutihan, jadi angkanya
+ * nilai yang dihapus). Dipecah per jenis supaya Dasbor HP mengikuti mode tanpa
+ * permintaan ulang. Docs: schema-pinjaman.md.
+ */
+export const portofolioSchema = z.object({
+  harian: portofolioJenisSchema,
+  mingguan: portofolioJenisSchema,
+  tempoan: portofolioJenisSchema,
 });
 export type Portofolio = z.infer<typeof portofolioSchema>;
 

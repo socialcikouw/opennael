@@ -50,14 +50,15 @@ export function buatKueriPinjaman(deps: { db: Db; sekarang?: (() => Date) | unde
     },
 
     /**
-     * Portofolio pegangan kolektor ini (nasabah yang kini dipegangnya): banyaknya
-     * pinjaman dan Σ saldo yang berjalan, macet, dan diputihkan. Satu kueri
-     * agregat — tanpa mengunduh riwayat pinjaman selesai.
+     * Portofolio pegangan kolektor ini (nasabah yang kini dipegangnya) per jenis:
+     * banyaknya pinjaman dan Σ saldo yang berjalan, macet, dan diputihkan. Satu
+     * kueri agregat — tanpa mengunduh riwayat pinjaman selesai.
      */
     async portofolio(aktor: Aktor): Promise<Portofolio> {
       wajibPeran(aktor, "kolektor");
       const baris = await deps.db
         .select({
+          jenis: pinjaman.jenis,
           status: pinjaman.status,
           jumlah: count(),
           saldo: sql<number>`coalesce(sum(${pinjaman.saldo}), 0)`.mapWith(Number),
@@ -71,15 +72,16 @@ export function buatKueriPinjaman(deps: { db: Db; sekarang?: (() => Date) | unde
             inArray(pinjaman.status, ["berjalan", "macet", "diputihkan"]),
           ),
         )
-        .groupBy(pinjaman.status);
-      const hasil: Portofolio = {
+        .groupBy(pinjaman.jenis, pinjaman.status);
+      const kosong = () => ({
         berjalan: { jumlah: 0, saldo: 0 },
         macet: { jumlah: 0, saldo: 0 },
         diputihkan: { jumlah: 0, saldo: 0 },
-      };
+      });
+      const hasil: Portofolio = { harian: kosong(), mingguan: kosong(), tempoan: kosong() };
       for (const b of baris) {
         if (b.status === "berjalan" || b.status === "macet" || b.status === "diputihkan") {
-          hasil[b.status] = { jumlah: b.jumlah, saldo: b.saldo };
+          hasil[b.jenis][b.status] = { jumlah: b.jumlah, saldo: b.saldo };
         }
       }
       return hasil;
