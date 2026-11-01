@@ -43,6 +43,7 @@ import {
   URUTAN_SEMUA,
   type UrutanSemua,
 } from "./inti/semua";
+import { GagalSegar } from "./komponen/gagal-segar";
 import { MODE } from "./mode";
 
 /**
@@ -92,10 +93,20 @@ export function LayarSemua() {
 
   const renderItem = useCallback(({ item }: { item: BarisSemua }) => <BarisNasabah b={item} />, []);
 
-  if (hariIni.isError || tagihan.isError) {
+  // Layar galat penuh hanya bila belum ada data; gagal menyegarkan data yang sudah ada
+  // cukup spanduk di atas daftar.
+  const galatMuat =
+    hariIni.isError && !hariIni.data
+      ? hariIni.error
+      : tagihan.isError && !tagihan.data
+        ? tagihan.error
+        : null;
+  const gagalSegar = galatMuat === null && (hariIni.isError || tagihan.isError);
+
+  if (galatMuat) {
     return (
       <View style={[gaya.layar, gaya.galat, { paddingTop: insets.top + RUANG[6] }]}>
-        <PesanGalat pesan={(hariIni.error ?? tagihan.error)?.message} />
+        <PesanGalat pesan={galatMuat.message} />
         <Tombol
           judul="Coba lagi"
           ikon="refresh-cw"
@@ -200,22 +211,29 @@ export function LayarSemua() {
           />
         }
         ListHeaderComponent={
-          !memuat && data.length > 0 ? (
-            <View style={gaya.kepalaDaftar}>
-              <Text style={gaya.ringkas} numberOfLines={1}>
-                {data.length} nasabah · saldo {rupiahPendek(totalSaldo)}
-              </Text>
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={`Urutan: ${LABEL_URUTAN[urutan]}. Ketuk untuk ganti.`}
-                hitSlop={8}
-                onPress={gantiUrutan}
-                style={({ pressed }) => [gaya.urut, pressed ? gaya.ditekan : null]}
-              >
-                <Ikon nama="arrow-up-down" ukuran={13} warna={aksen.teks} />
-                <Text style={[gaya.urutTeks, { color: aksen.teks }]}>{LABEL_URUTAN[urutan]}</Text>
-              </Pressable>
-            </View>
+          gagalSegar || (!memuat && data.length > 0) ? (
+            <>
+              {gagalSegar ? <GagalSegar /> : null}
+              {!memuat && data.length > 0 ? (
+                <View style={gaya.kepalaDaftar}>
+                  <Text style={gaya.ringkas} numberOfLines={1}>
+                    {data.length} nasabah · saldo {rupiahPendek(totalSaldo)}
+                  </Text>
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={`Urutan: ${LABEL_URUTAN[urutan]}. Ketuk untuk ganti.`}
+                    hitSlop={8}
+                    onPress={gantiUrutan}
+                    style={({ pressed }) => [gaya.urut, pressed ? gaya.ditekan : null]}
+                  >
+                    <Ikon nama="arrow-up-down" ukuran={13} warna={aksen.teks} />
+                    <Text style={[gaya.urutTeks, { color: aksen.teks }]}>
+                      {LABEL_URUTAN[urutan]}
+                    </Text>
+                  </Pressable>
+                </View>
+              ) : null}
+            </>
           ) : undefined
         }
         ListEmptyComponent={

@@ -14,6 +14,7 @@ import { useDaftarTagihan, useDataTagihan } from "./data-tagihan";
 import { type Baris, jumlahSegmen, type TabKerja } from "./inti/daftar";
 import { useKepalaMelayang } from "./kepala-melayang";
 import { JudulKelompok, KerangkaKartu, Kosong } from "./komponen/daftar-bagian";
+import { GagalSegar } from "./komponen/gagal-segar";
 import { KartuNasabah } from "./komponen/kartu-nasabah";
 import { KartuDroping, KartuSudah } from "./komponen/kartu-sudah";
 import { KepalaTagihan } from "./komponen/kepala-tagihan";
@@ -114,10 +115,20 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
     [aksi, aksen, bahan, stempel, sibuk, ubahLipat],
   );
 
-  if (hariIni.isError || tagihan.isError) {
+  // Layar galat penuh hanya bila belum ada data; gagal menyegarkan data yang sudah ada
+  // (sinyal hilang, tarik-segarkan) cukup spanduk di atas daftar.
+  const galatMuat =
+    hariIni.isError && !hariIni.data
+      ? hariIni.error
+      : tagihan.isError && !tagihan.data
+        ? tagihan.error
+        : null;
+  const gagalSegar = galatMuat === null && (hariIni.isError || tagihan.isError);
+
+  if (galatMuat) {
     return (
       <View style={[gaya.layar, gaya.galat, { paddingTop: insets.top + RUANG[6] }]}>
-        <PesanGalat pesan={(hariIni.error ?? tagihan.error)?.message} />
+        <PesanGalat pesan={galatMuat.message} />
         <Tombol
           judul="Coba lagi"
           ikon="refresh-cw"
@@ -131,6 +142,7 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
   }
 
   const memuat = hariIni.isPending || tagihan.isPending;
+  const tampilDroping = !memuat && tab === "droping" && droping.baru + droping.gulung > 0;
   const tutup =
     gerbang && !gerbang.buka
       ? gerbang.perluAbsen
@@ -167,8 +179,11 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
           />
         }
         ListHeaderComponent={
-          !memuat && tab === "droping" && droping.baru + droping.gulung > 0 ? (
-            <KartuDroping baru={droping.baru} gulung={droping.gulung} />
+          gagalSegar || tampilDroping ? (
+            <>
+              {gagalSegar ? <GagalSegar /> : null}
+              {tampilDroping ? <KartuDroping baru={droping.baru} gulung={droping.gulung} /> : null}
+            </>
           ) : undefined
         }
         ListEmptyComponent={
