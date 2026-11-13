@@ -4,7 +4,8 @@ import { useState } from "react";
 import { Text, View } from "react-native";
 import { useG } from "@/komponen/ui/gaya-bersama";
 import { Baris, Kartu } from "@/komponen/ui/kartu";
-import { Gulir, Memuat } from "@/komponen/ui/layar";
+import { Kerangka } from "@/komponen/ui/kerangka";
+import { Gulir } from "@/komponen/ui/layar";
 import { Lencana } from "@/komponen/ui/lencana";
 import { Pilihan } from "@/komponen/ui/pilihan";
 import { Spanduk } from "@/komponen/ui/spanduk";
@@ -31,7 +32,7 @@ export function LayarPinjaman({ id, lihat }: { id: string; lihat?: string }) {
   const [aksi, setAksi] = useState<Aksi | null>(null);
   const aksiAktif = aksi ?? (tempoan ? "lunas" : "setor");
 
-  if (tagihan.isPending || hariIni.isPending) return <Memuat />;
+  if (tagihan.isPending || hariIni.isPending) return <Kerangka jenis="rincian" />;
   if (!p) {
     return (
       <Gulir onSegarkan={segarkan}>

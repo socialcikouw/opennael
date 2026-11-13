@@ -4,7 +4,8 @@ import { Alert, Linking, Pressable, Text, View } from "react-native";
 import { useG } from "@/komponen/ui/gaya-bersama";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Baris, Kartu } from "@/komponen/ui/kartu";
-import { Gulir, Memuat } from "@/komponen/ui/layar";
+import { Kerangka } from "@/komponen/ui/kerangka";
+import { Gulir } from "@/komponen/ui/layar";
 import { Lencana } from "@/komponen/ui/lencana";
 import { useWarna } from "@/komponen/ui/tampilan";
 import { Keterangan } from "@/komponen/ui/teks";
@@ -45,7 +46,7 @@ export function LayarNasabah({ id }: { id: string }) {
   const fotoId = pinjaman.data ? fotoTerbaru(pinjaman.data) : (kartu?.fotoSerahTerimaId ?? null);
 
   if (!nama) {
-    if (nasabah.isPending) return <Memuat />;
+    if (nasabah.isPending) return <Kerangka jenis="rincian" />;
     return (
       <Gulir onSegarkan={segarkan}>
         <Keterangan>{nasabah.error?.message ?? "Nasabah ini tidak bisa dimuat."}</Keterangan>

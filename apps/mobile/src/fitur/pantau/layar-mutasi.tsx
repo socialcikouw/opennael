@@ -8,7 +8,7 @@ import { useG } from "@/komponen/ui/gaya-bersama";
 import { Ikon } from "@/komponen/ui/ikon";
 import { PesanGalat } from "@/komponen/ui/isian";
 import { Baris, Kartu } from "@/komponen/ui/kartu";
-import { Memuat } from "@/komponen/ui/layar";
+import { Kerangka } from "@/komponen/ui/kerangka";
 import { Spanduk } from "@/komponen/ui/spanduk";
 import { useGaya, useWarna, useWarnaMode } from "@/komponen/ui/tampilan";
 import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
@@ -79,7 +79,7 @@ export function LayarMutasi() {
   const arus = useMemo(() => (hari?.rincian ? barisArusKas(hari.rincian) : []), [hari]);
   const daftarBiaya = biaya.data?.biaya.filter((b) => !b.dibatalkanAt) ?? [];
 
-  if (hariIni.isPending || kas.isPending) return <Memuat teks="Memuat mutasi…" />;
+  if (hariIni.isPending || kas.isPending) return <Kerangka jenis="daftar" teks="Memuat mutasi…" />;
   const galat = !hariIni.data ? hariIni.error : kas.isError && !kas.data ? kas.error : null;
   if (galat || !tanggal) {
     return (

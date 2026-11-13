@@ -9,7 +9,7 @@ import { useRuangTab } from "@/komponen/tab-mengambang";
 import { useG } from "@/komponen/ui/gaya-bersama";
 import { PesanGalat } from "@/komponen/ui/isian";
 import { KotakAngka } from "@/komponen/ui/kartu";
-import { Memuat } from "@/komponen/ui/layar";
+import { Kerangka } from "@/komponen/ui/kerangka";
 import { Spanduk } from "@/komponen/ui/spanduk";
 import { useGaya, useWarnaMode } from "@/komponen/ui/tampilan";
 import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
@@ -60,7 +60,7 @@ export function LayarDasbor() {
   );
   const { aktif: menarik, tarik } = useTarikSegarkan(segarkan);
 
-  if (hariIni.isPending) return <Memuat teks="Memuat dasbor…" />;
+  if (hariIni.isPending) return <Kerangka jenis="daftar" teks="Memuat dasbor…" />;
   // Layar galat penuh hanya bila keadaan hari ini belum pernah berhasil dimuat; gagal
   // menyegarkan data yang sudah ada cukup spanduk di atas isi.
   const keadaan = hariIni.data;

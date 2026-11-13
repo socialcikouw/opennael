@@ -7,7 +7,7 @@ import { useHariIni, useTagihan } from "@/fitur/lapangan";
 import { useRuangTab } from "@/komponen/tab-mengambang";
 import { useG } from "@/komponen/ui/gaya-bersama";
 import { PesanGalat } from "@/komponen/ui/isian";
-import { Memuat } from "@/komponen/ui/layar";
+import { Kerangka } from "@/komponen/ui/kerangka";
 import { Spanduk } from "@/komponen/ui/spanduk";
 import { useWarnaMode } from "@/komponen/ui/tampilan";
 import { RUANG } from "@/komponen/ui/tema";
@@ -74,7 +74,8 @@ export function LayarDroping() {
     [zona],
   );
 
-  if (hariIni.isPending || tagihan.isPending) return <Memuat teks="Memuat droping…" />;
+  if (hariIni.isPending || tagihan.isPending)
+    return <Kerangka jenis="daftar" teks="Memuat droping…" />;
   const galat = !tagihan.data ? tagihan.error : !hariIni.data ? hariIni.error : null;
   if (galat) {
     return (

@@ -4,7 +4,7 @@ import { useRuangTab } from "@/komponen/tab-mengambang";
 import { useG } from "@/komponen/ui/gaya-bersama";
 import { Ikon } from "@/komponen/ui/ikon";
 import { PesanGalat } from "@/komponen/ui/isian";
-import { Memuat } from "@/komponen/ui/layar";
+import { Kerangka } from "@/komponen/ui/kerangka";
 import { Spanduk } from "@/komponen/ui/spanduk";
 import { useGaya, useWarna } from "@/komponen/ui/tampilan";
 import { Keterangan } from "@/komponen/ui/teks";
@@ -38,7 +38,7 @@ export function LayarNotifikasi() {
   );
   const { aktif: menarik, tarik } = useTarikSegarkan(segarkan);
 
-  if (hariIni.isPending) return <Memuat teks="Memuat pengingat…" />;
+  if (hariIni.isPending) return <Kerangka jenis="daftar" teks="Memuat pengingat…" />;
   // Layar galat penuh hanya bila keadaan hari ini belum pernah berhasil dimuat.
   if (!pengingat) {
     return (

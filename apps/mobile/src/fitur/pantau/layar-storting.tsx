@@ -7,7 +7,7 @@ import { useTagihan } from "@/fitur/lapangan";
 import { useRuangTab } from "@/komponen/tab-mengambang";
 import { useG } from "@/komponen/ui/gaya-bersama";
 import { PesanGalat } from "@/komponen/ui/isian";
-import { Memuat } from "@/komponen/ui/layar";
+import { Kerangka } from "@/komponen/ui/kerangka";
 import { Spanduk } from "@/komponen/ui/spanduk";
 import { useWarnaMode } from "@/komponen/ui/tampilan";
 import { RUANG } from "@/komponen/ui/tema";
@@ -81,7 +81,7 @@ export function LayarStorting() {
     [aktif],
   );
 
-  if (setoran.isPending) return <Memuat teks="Memuat storting…" />;
+  if (setoran.isPending) return <Kerangka jenis="daftar" teks="Memuat storting…" />;
   if (!setoran.data) {
     return (
       <View style={[g.layar, gaya.galat]}>
