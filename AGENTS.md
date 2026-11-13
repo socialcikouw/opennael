@@ -51,7 +51,7 @@ tidak dipakai kasir, pengawas, atau kolektor.
 | `packages/api-client` | Klien API bersama web & HP: transport bersesi (token akses, refresh sekali dibagi), sesi dengan penyimpan yang disuntik aplikasi, **kunci idempoten tertunda + ulang otomatis** operasi tulis idempoten (penyimpan disuntik: web `localStorage`, HP brankas), `panggil`/`ambil`, klien `hc` bertipe per konteks (`api.<konteks>.<jalur>`), **katalog kueri** `kueri.*` (kunci + fungsi + opsi bawaan tiap bacaan) beserta awalan kunci `kunci.*`. |
 | `packages/format` | Format tampilan murni yang dipakai web & HP: uang (`rupiah`, `bacaUang`), tanggal kantor (`tanggal`, `jam`, `waktu`), label enum. Tanpa React/I/O/warna. |
 | `docs/skema` | Rancangan database final, satu dokumen per tabel. |
-| `scripts` | Skrip repo: rilis OTA (`kirim-ota.ts`), pemeriksa arsitektur (`cek-arsitektur.ts` + `kepemilikan-tabel.ts`, diuji `bun test scripts`). Skrip milik satu paket tinggal di paket itu (mis. `apps/api/scripts/migrasi.ts`). |
+| `scripts` | Skrip repo: rilis OTA (`kirim-ota.ts`), pemeriksa arsitektur (`cek-arsitektur.ts` + `arsitektur/` + `kepemilikan-tabel.ts`, diuji `bun test scripts`). Skrip milik satu paket tinggal di paket itu (mis. `apps/api/scripts/migrasi.ts`). |
 
 Arah ketergantungan: `apps/*` → `packages/*`; `packages/domain` tidak
 bergantung pada apa pun; `packages/contracts` hanya pada `zod` (dan `domain`
