@@ -138,8 +138,8 @@ describe("kartu nasabah", () => {
     expect(vm.grid).not.toBeNull();
   });
 
-  test("macet, droping (lencana asal), sudah ditagih (kartu ringkas)", () => {
-    expect(kartuVM(kartu({ status: "macet" }), KAMIS, bahan, ZONA).lencana?.teks).toBe("Macet");
+  test("macet (tanpa lencana), droping (lencana asal), sudah ditagih (kartu ringkas)", () => {
+    expect(kartuVM(kartu({ status: "macet" }), KAMIS, bahan, ZONA).lencana).toBeNull();
     const drop = kartuVM(
       kartu({ tanggalAkad: KAMIS, asal: "gulung", jenisGulung: "naik" }),
       KAMIS,

@@ -30,7 +30,7 @@ import { type MingguanVM, susunMingguan, susunTempo, type TempoVM } from "./khus
 /** Ember kartu hari ini: belum ditagih · droping (akad hari ini) · sudah ditagih (bayar/libur). */
 export type Ember = "belum" | "droping" | "sudah";
 
-/** Nada lencana: merah (macet), hijau (baru / gulung naik), kuning (gulung turun), abu. */
+/** Nada lencana: hijau (baru / gulung naik), kuning (gulung turun), abu (gulung tetap); merah cadangan. */
 export type Nada = "merah" | "hijau" | "kuning" | "abu";
 
 export interface KartuVM {
@@ -105,8 +105,8 @@ function ember(p: KartuTagih, hariIni: string): Ember {
   return p.hariIni ? "sudah" : "belum";
 }
 
+/** Lencana asal kartu droping. Macet tanpa lencana: segmen Macet sudah menjelaskannya. */
 function lencana(p: KartuTagih, e: Ember): KartuVM["lencana"] {
-  if (p.status === "macet") return { teks: "Macet", nada: "merah", ikon: "triangle-alert" };
   if (e !== "droping") return null;
   if (p.asal !== "gulung") return { teks: "Baru", nada: "hijau", ikon: "user-plus" };
   if (p.jenisGulung === "naik") return { teks: "Gulung Naik", nada: "hijau", ikon: "trending-up" };

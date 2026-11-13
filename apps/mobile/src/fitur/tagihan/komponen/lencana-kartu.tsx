@@ -14,7 +14,7 @@ function useNada(): Record<Nada, { teks: string; latar: string }> {
   };
 }
 
-/** Lencana status nasabah: Macet · Baru · Gulung naik/tetap/turun. */
+/** Lencana asal kartu droping: Baru · Gulung Naik/Tetap/Turun (macet tak berlencana — ada segmen Macet). */
 export function LencanaStatus({ lencana }: { lencana: NonNullable<KartuVM["lencana"]> }) {
   const gaya = useGaya(buatGaya);
   const nada = useNada()[lencana.nada];
