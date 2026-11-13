@@ -28,9 +28,25 @@ Bukan teks isian, jadi **tidak** dikecilkan: kode & kunci sistem (`aksi`,
 | **Alamat / kampung** | HURUF BESAR | `PULE BARAT` | `tampilKampung` |
 | **Keterangan, alasan, caption** (teks penjelas, isi pemberitahuan) | huruf kecil, apa adanya | `sakit`, `ganti ban dalam` | `tampilKeterangan` |
 | **Judul** layar, kartu, dialog, pemberitahuan | Kapital Tiap Kata | `Bayar Angsuran`, `Mutasi Kas Terkunci` | `judul` |
-| **Tombol & label bagian kecil** | HURUF BESAR (gaya yang sudah ada) | `KONFIRMASI`, `BAYAR`, `BIAYA TAK TERDUGA` | — |
+| **Label**: judul kolom tabel, label angka/ringkasan, label isian formulir, pilihan/chip, tab & menu navigasi, lencana status | Kapital Tiap Kata | `Tunai Diterima`, `Saldo Berjalan`, `Masuk Kerja`, `Salin Dari Buku`, `Gulung Naik` | ditulis langsung; teks yang dirangkai dari data lewat `judul` |
+| **Tombol biasa** (simpan, coba lagi, menu aksi) | kalimat biasa | `Simpan akad`, `Coba lagi`, `Tarik tabungan` | — |
+| **Tombol khusus kartu tagihan & judul bagian kecil** | HURUF BESAR (gaya yang sudah ada) | `KONFIRMASI`, `BAYAR`, `BIAYA TAK TERDUGA` | — |
+
+*Diperjelas 14 Nov 2026 (keputusan pemilik): label non-tombol Kapital Tiap Kata
+sampai ke judul kolom, isian, pilihan, tab, menu, dan lencana; tombol biasa tetap
+kalimat biasa.*
 
 Aturan tambahan:
+
+- Petunjuk dalam kurung sesudah label tetap huruf kecil: `Kata Sandi (minimal 8
+  karakter)`, `Keterangan (opsional)`.
+- Kalimat bukan label: `placeholder`, pesan galat, keadaan kosong ("Belum ada
+  nasabah"), toast, `aria-label`, serta alasan cepat yang ikut disimpan sebagai
+  alasan tetap kalimat biasa.
+- Avatar inisial memakai huruf besar.
+- Judul kolom tabel web dijaga `bun run cek:arsitektur` (aturan
+  `huruf-judul-kolom`): literal `header: "…"` yang punya kata berhuruf kecil
+  setelah spasi ditolak.
 
 - Nama yang muncul **di dalam** judul tetap huruf kecil: `Libur — budi santoso`
   (bagian tetap judulnya yang Kapital Tiap Kata; nama dirangkai sesudahnya).

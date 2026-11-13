@@ -65,7 +65,7 @@ export function PekanKerja() {
         })}
       </div>
       <div className="flex flex-wrap items-end gap-3">
-        <Medan label="Berlaku mulai">
+        <Medan label="Berlaku Mulai">
           <Input
             type="date"
             className="w-44"

@@ -21,10 +21,10 @@ function susunUbin(data: DataPortofolio | undefined, gagal: boolean): Ubin[] {
   const kosong = gagal ? "Gagal memuat" : "Memuat…";
   if (!data) {
     return [
-      { ikon: "trending-up", label: "Saldo berjalan", nilai: null, sub: kosong, nada: "netral" },
+      { ikon: "trending-up", label: "Saldo Berjalan", nilai: null, sub: kosong, nada: "netral" },
       { ikon: "triangle-alert", label: "Macet", nilai: null, sub: kosong, nada: "netral" },
       { ikon: "eraser", label: "Diputihkan", nilai: null, sub: kosong, nada: "redup" },
-      { ikon: "banknote", label: "Piutang aktif", nilai: null, sub: kosong, nada: "netral" },
+      { ikon: "banknote", label: "Piutang Aktif", nilai: null, sub: kosong, nada: "netral" },
     ];
   }
   const { berjalan, macet, diputihkan } = data;
@@ -33,7 +33,7 @@ function susunUbin(data: DataPortofolio | undefined, gagal: boolean): Ubin[] {
   return [
     {
       ikon: "trending-up",
-      label: "Saldo berjalan",
+      label: "Saldo Berjalan",
       nilai: berjalan.saldo,
       sub: `${berjalan.jumlah} pinjaman`,
       nada: "netral",
@@ -54,7 +54,7 @@ function susunUbin(data: DataPortofolio | undefined, gagal: boolean): Ubin[] {
     },
     {
       ikon: "banknote",
-      label: "Piutang aktif",
+      label: "Piutang Aktif",
       nilai: piutang,
       sub: `${berjalan.jumlah + macet.jumlah} pinjaman`,
       nada: "netral",

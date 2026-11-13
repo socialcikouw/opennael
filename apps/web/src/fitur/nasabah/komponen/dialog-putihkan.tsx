@@ -9,7 +9,7 @@ import { useSegarkanNasabah } from "../data";
 import type { Nasabah } from "../inti";
 
 const ALASAN_PUTIH = [
-  { nilai: "macet_lama", label: "Macet lama" },
+  { nilai: "macet_lama", label: "Macet Lama" },
   { nilai: "meninggal", label: "Meninggal" },
   { nilai: "lainnya", label: "Lainnya" },
 ] as const;

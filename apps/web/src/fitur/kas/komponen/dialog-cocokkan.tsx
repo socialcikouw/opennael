@@ -43,8 +43,8 @@ export function DialogCocokkan({ tutup }: { tutup: () => void }) {
         labelKirim="Selesai"
       >
         <div className="divide-y">
-          <Baris label="Saldo nyata (dihitung)">{rupiah(h.saldoNyata)}</Baris>
-          <Baris label="Saldo buku">{rupiah(h.saldoBuku)}</Baris>
+          <Baris label="Saldo Nyata (dihitung)">{rupiah(h.saldoNyata)}</Baris>
+          <Baris label="Saldo Buku">{rupiah(h.saldoBuku)}</Baris>
           <Baris label={h.selisih < 0 ? "Kurang" : h.selisih > 0 ? "Lebih" : "Selisih"} tebal>
             <span
               className={cn(h.selisih < 0 && "text-red-700", h.selisih > 0 && "text-emerald-700")}
@@ -74,7 +74,7 @@ export function DialogCocokkan({ tutup }: { tutup: () => void }) {
           <option value="bank">Bank</option>
         </PilihanAsli>
       </Medan>
-      <IsianRupiah label="Saldo nyata" nilai={nyata} ubah={setNyata} />
+      <IsianRupiah label="Saldo Nyata" nilai={nyata} ubah={setNyata} />
       <Isian
         label="Keterangan (wajib bila ada selisih)"
         value={keterangan}

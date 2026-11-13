@@ -84,7 +84,7 @@ export function DialogNasabah({
                   {p.status === "macet" ? "Macet" : "Berjalan"} · {rupiah(p.saldo)}
                 </Badge>
               ) : (
-                <Badge variant="secondary">Tanpa pinjaman aktif</Badge>
+                <Badge variant="secondary">Tanpa Pinjaman Aktif</Badge>
               )}
             </DialogTitle>
             <DialogDescription>

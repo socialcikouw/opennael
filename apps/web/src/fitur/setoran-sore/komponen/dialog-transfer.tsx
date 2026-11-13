@@ -36,7 +36,7 @@ export function DialogTransfer({ t, tutup }: { t: Transaksi; tutup: () => void }
       labelKirim="Catat transfer"
       bisaKirim={!!nominal && nominal <= t.batasTransfer}
     >
-      <IsianRupiah label="Nominal transfer" nilai={nominal} ubah={setNominal} />
+      <IsianRupiah label="Nominal Transfer" nilai={nominal} ubah={setNominal} />
     </DialogFormulir>
   );
 }

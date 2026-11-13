@@ -44,21 +44,21 @@ export function LayarDaftar() {
     <KartuTengah judul="Buka Kantor Baru">
       <form className="space-y-4" onSubmit={kirim}>
         <Isian
-          label="Kode registrasi"
+          label="Kode Registrasi"
           value={isi.kodeRegistrasi}
           onChange={(e) => ubah("kodeRegistrasi")(e.target.value)}
           autoComplete="off"
           required
         />
         <Isian
-          label="Nama kantor"
+          label="Nama Kantor"
           value={isi.namaKantor}
           onChange={(e) => ubah("namaKantor")(e.target.value)}
           placeholder="Nael Capital"
           required
         />
         <Pilihan
-          label="Zona waktu"
+          label="Zona Waktu"
           value={isi.zonaWaktu}
           onChange={(e) => ubah("zonaWaktu")(e.target.value)}
         >
@@ -82,7 +82,7 @@ export function LayarDaftar() {
           required
         />
         <Isian
-          label="Kata sandi (minimal 8 karakter)"
+          label="Kata Sandi (minimal 8 karakter)"
           type="password"
           autoComplete="new-password"
           value={isi.sandi}

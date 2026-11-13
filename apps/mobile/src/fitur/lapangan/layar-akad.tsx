@@ -94,8 +94,8 @@ export function LayarAkad({ jenis: param }: { jenis?: string }) {
       <Pilihan
         segmen
         pilihan={[
-          { nilai: "baru", teks: "Orang baru" },
-          { nilai: "lama", teks: "Nasabah lama" },
+          { nilai: "baru", teks: "Orang Baru" },
+          { nilai: "lama", teks: "Nasabah Lama" },
         ]}
         nilai={siapa}
         onPilih={setSiapa}
@@ -104,7 +104,7 @@ export function LayarAkad({ jenis: param }: { jenis?: string }) {
       {siapa === "baru" ? (
         <>
           <Isian
-            label="Nama nasabah"
+            label="Nama Nasabah"
             value={nama}
             onChangeText={setNama}
             maxLength={50}
@@ -142,7 +142,7 @@ export function LayarAkad({ jenis: param }: { jenis?: string }) {
       ) : (
         <Pilihan
           segmen
-          label="Jenis pinjaman"
+          label="Jenis Pinjaman"
           pilihan={(["harian", "mingguan", "tempoan"] as const).map((j) => ({
             nilai: j,
             teks: LABEL_JENIS[j],
@@ -168,17 +168,17 @@ export function LayarAkad({ jenis: param }: { jenis?: string }) {
 
       {syarat.hasil ? (
         <Kartu>
-          <Baris label="Potongan admin" nilai={rupiah(syarat.hasil.potonganAdmin)} />
-          <Baris label="Masuk tabungan" nilai={rupiah(syarat.hasil.tabunganMasuk)} />
+          <Baris label="Potongan Admin" nilai={rupiah(syarat.hasil.potonganAdmin)} />
+          <Baris label="Masuk Tabungan" nilai={rupiah(syarat.hasil.tabunganMasuk)} />
           <Baris
-            label="Tunai ke nasabah"
+            label="Tunai Ke Nasabah"
             nilai={rupiah(syarat.hasil.pencairan)}
             tebal
             warna={WARNA.utama}
           />
-          <Baris label="Total kembali" nilai={rupiah(syarat.hasil.totalKembali)} />
+          <Baris label="Total Kembali" nilai={rupiah(syarat.hasil.totalKembali)} />
           <Baris
-            label={jenis === "tempoan" ? "Dibayar sekali" : "Angsuran"}
+            label={jenis === "tempoan" ? "Dibayar Sekali" : "Angsuran"}
             nilai={rupiah(syarat.hasil.angsuran)}
           />
         </Kartu>

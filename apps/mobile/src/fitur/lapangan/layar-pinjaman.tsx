@@ -74,7 +74,7 @@ export function LayarPinjaman({ id, lihat }: { id: string; lihat?: string }) {
           {p.jatuhTempo ? ` · jatuh tempo ${tanggalPendek(p.jatuhTempo)}` : ""}
         </Text>
         <Baris label="Pokok" nilai={rupiah(p.pokok)} />
-        <Baris label="Total kembali" nilai={rupiah(p.totalKembali)} />
+        <Baris label="Total Kembali" nilai={rupiah(p.totalKembali)} />
         {tempoan ? null : (
           <Baris
             label="Angsuran"
@@ -82,7 +82,7 @@ export function LayarPinjaman({ id, lihat }: { id: string; lihat?: string }) {
           />
         )}
         <Baris label="Saldo" nilai={rupiah(p.saldo)} tebal />
-        <Baris label="Tabungan nasabah" nilai={rupiah(p.tabungan)} />
+        <Baris label="Tabungan Nasabah" nilai={rupiah(p.tabungan)} />
       </Kartu>
 
       {p.hariIni?.jenis === "angsuran" ? (

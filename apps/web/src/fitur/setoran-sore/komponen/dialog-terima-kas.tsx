@@ -54,7 +54,7 @@ export function DialogTerimaKas({ hari, tutup }: { hari: HariKas; tutup: () => v
       labelKirim="Simpan uang diterima"
       bisaKirim={tunai !== null}
     >
-      <IsianRupiah label="Uang diterima" nilai={tunai} ubah={setTunai} autoFocus />
+      <IsianRupiah label="Uang Diterima" nilai={tunai} ubah={setTunai} autoFocus />
     </DialogFormulir>
   );
 }

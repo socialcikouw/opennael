@@ -56,11 +56,11 @@ export function LayarHarian() {
         }
       >
         <TabsList>
-          <TabsTrigger value="sore">Setoran sore</TabsTrigger>
-          <TabsTrigger value="setoran">Setoran nasabah</TabsTrigger>
-          <TabsTrigger value="libur">Libur nasabah</TabsTrigger>
+          <TabsTrigger value="sore">Setoran Sore</TabsTrigger>
+          <TabsTrigger value="setoran">Setoran Nasabah</TabsTrigger>
+          <TabsTrigger value="libur">Libur Nasabah</TabsTrigger>
           <TabsTrigger value="transfer">Transfer</TabsTrigger>
-          <TabsTrigger value="biaya">Biaya tak terduga</TabsTrigger>
+          <TabsTrigger value="biaya">Biaya Tak Terduga</TabsTrigger>
         </TabsList>
         <TabsContent value="sore" className="space-y-3">
           <SetoranSore tanggal={t} hariIni={hariIni} />

@@ -137,8 +137,8 @@ export function LayarTautkan() {
           onValueChange={(v) => setAkunLama(v === "lama" ? (bisaDitautkan[0]?.id ?? "") : null)}
         >
           <TabsList className="w-full">
-            <TabsTrigger value="baru">Akun baru</TabsTrigger>
-            <TabsTrigger value="lama">Akun yang sudah ada</TabsTrigger>
+            <TabsTrigger value="baru">Akun Baru</TabsTrigger>
+            <TabsTrigger value="lama">Akun Yang Sudah Ada</TabsTrigger>
           </TabsList>
         </Tabs>
         {akunLama !== null ? (

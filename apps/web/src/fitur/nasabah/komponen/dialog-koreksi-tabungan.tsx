@@ -41,7 +41,7 @@ export function DialogKoreksiTabungan({ n, tutup }: { n: Nasabah; tutup: () => v
       bisaKirim={saldoBaru !== null && selisih !== 0 && alasan.trim() !== ""}
     >
       <IsianRupiah
-        label="Tabungan yang benar"
+        label="Tabungan Yang Benar"
         nilai={saldoBaru}
         ubah={setSaldoBaru}
         petunjuk={`Sekarang ${rupiah(saldo)} · selisih ${selisih > 0 ? "+" : ""}${rupiah(selisih)}`}

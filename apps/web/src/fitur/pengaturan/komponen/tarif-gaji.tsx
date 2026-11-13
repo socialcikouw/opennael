@@ -61,7 +61,7 @@ export function TarifGaji() {
             value={isi.kolektorId}
             onChange={(e) => setIsi({ ...isi, kolektorId: e.target.value })}
           >
-            <option value="">Seluruh kantor</option>
+            <option value="">Seluruh Kantor</option>
             {(kolektorQ.data ?? []).map((o) => (
               <option key={o.id} value={o.id}>
                 {o.nama}
@@ -78,7 +78,7 @@ export function TarifGaji() {
             onChange={(e) => setIsi({ ...isi, persen: e.target.value })}
           />
         </Medan>
-        <Medan label="Berlaku mulai">
+        <Medan label="Berlaku Mulai">
           <Input
             type="date"
             className="w-40"
@@ -101,7 +101,7 @@ export function TarifGaji() {
           {q.data.map((t) => (
             <li key={t.id} className="flex flex-wrap justify-between gap-2 py-1.5">
               <span>
-                {t.kolektor?.nama ?? "Seluruh kantor"}{" "}
+                {t.kolektor?.nama ?? "Seluruh Kantor"}{" "}
                 <span className="text-muted-foreground">
                   · mulai {formatTanggal(t.berlakuMulai, "tanpa")}
                 </span>

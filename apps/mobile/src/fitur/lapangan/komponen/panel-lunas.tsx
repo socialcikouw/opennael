@@ -29,8 +29,8 @@ export function PanelLunas({ p }: { p: KartuTagih }) {
   return (
     <Kartu>
       <Baris label="Saldo" nilai={rupiah(p.saldo)} />
-      <Baris label="Ditutup tabungan" nilai={rupiah(r.setoranPelunasan)} />
-      <Baris label="Dibayar nasabah" nilai={rupiah(r.setoranMurni)} tebal />
+      <Baris label="Ditutup Tabungan" nilai={rupiah(r.setoranPelunasan)} />
+      <Baris label="Dibayar Nasabah" nilai={rupiah(r.setoranMurni)} tebal />
       {kembalian > 0 ? (
         <Spanduk
           warna="merah"

@@ -49,7 +49,7 @@ export function DialogBatal({
       bahaya
       bisaKirim={alasan.trim() !== ""}
     >
-      <Medan label="Alasan pembatalan">
+      <Medan label="Alasan Pembatalan">
         <Textarea
           value={alasan}
           maxLength={100}

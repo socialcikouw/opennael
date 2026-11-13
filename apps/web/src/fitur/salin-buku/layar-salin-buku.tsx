@@ -152,8 +152,8 @@ export function LayarSalinBuku() {
                   }}
                 >
                   <TabsList>
-                    <TabsTrigger value="baru">Orang baru</TabsTrigger>
-                    <TabsTrigger value="lama">Nasabah yang sudah ada</TabsTrigger>
+                    <TabsTrigger value="baru">Orang Baru</TabsTrigger>
+                    <TabsTrigger value="lama">Nasabah Yang Sudah Ada</TabsTrigger>
                   </TabsList>
                 </Tabs>
                 {modus === "lama" ? (
@@ -198,7 +198,7 @@ export function LayarSalinBuku() {
                         }
                       />
                     </div>
-                    <Medan label="Kolektor pemegang">
+                    <Medan label="Kolektor Pemegang">
                       <PilihanAsli
                         value={pilihKolektor}
                         onChange={(e) => setKolektorId(e.target.value)}
@@ -248,7 +248,7 @@ export function LayarSalinBuku() {
                   </PilihanAsli>
                 </Medan>
                 <IsianRupiah label="Pokok" nilai={pokok} ubah={setPokok} />
-                <Medan label="Tanggal akad di buku">
+                <Medan label="Tanggal Akad Di Buku">
                   <Input
                     type="date"
                     max={hariIni}
@@ -256,8 +256,8 @@ export function LayarSalinBuku() {
                     onChange={(e) => setTanggalAkad(e.target.value)}
                   />
                 </Medan>
-                <IsianRupiah label="Sisa saldo di buku" nilai={saldo} ubah={setSaldo} />
-                <IsianRupiah label="Tabungan di buku" nilai={tabungan} ubah={setTabungan} />
+                <IsianRupiah label="Sisa Saldo Di Buku" nilai={saldo} ubah={setSaldo} />
+                <IsianRupiah label="Tabungan Di Buku" nilai={tabungan} ubah={setTabungan} />
                 <Isian
                   label="Pinjaman ke (opsional)"
                   inputMode="numeric"

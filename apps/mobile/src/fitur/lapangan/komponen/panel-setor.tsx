@@ -32,7 +32,7 @@ export function PanelSetor({ p }: { p: KartuTagih }) {
         />
       ) : null}
       {tambahPelunasan ? (
-        <IsianUang label="Pelunasan sebagian" nilai={pelunasan} onUbah={setPelunasan} />
+        <IsianUang label="Pelunasan Sebagian" nilai={pelunasan} onUbah={setPelunasan} />
       ) : (
         <Tombol
           judul="Pelunasan sebagian"
@@ -42,7 +42,7 @@ export function PanelSetor({ p }: { p: KartuTagih }) {
         />
       )}
       {pratinjau.hasil ? (
-        <Baris label="Sisa saldo sesudah setor" nilai={rupiah(pratinjau.hasil.sisaSaldo)} tebal />
+        <Baris label="Sisa Saldo Sesudah Setor" nilai={rupiah(pratinjau.hasil.sisaSaldo)} tebal />
       ) : (
         <PesanGalat pesan={pratinjau.galat} />
       )}

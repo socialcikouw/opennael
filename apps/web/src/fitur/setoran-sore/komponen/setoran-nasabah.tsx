@@ -48,7 +48,7 @@ export function SetoranNasabah({
       k.accessor("jenis", { header: "Jenis", cell: (c) => LABEL_JENIS_TRANSAKSI[c.getValue()] }),
       uang("setoranMurni", "Murni"),
       uang("setoranPelunasan", "Pelunasan"),
-      uang("tabunganKeluar", "Tabungan keluar"),
+      uang("tabunganKeluar", "Tabungan Keluar"),
       uang("storting", "Storting"),
       k.accessor((t) => t.transfer?.nominal ?? 0, {
         id: "transfer",
@@ -87,7 +87,7 @@ export function SetoranNasabah({
         value={kolektorId}
         onChange={(e) => setKolektorId(e.target.value)}
       >
-        <option value="">Semua kolektor</option>
+        <option value="">Semua Kolektor</option>
         {kolektor.map((o) => (
           <option key={o.id} value={o.id}>
             {o.nama}

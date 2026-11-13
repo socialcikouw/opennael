@@ -56,14 +56,14 @@ export function DialogUbahHariIni({ hari, tutup }: { hari: HariKas; tutup: () =>
       bisaKirim={Object.keys(ubah).length > 0 && kasSah && jalanSah}
     >
       <IsianRupiah
-        label="Kas lapangan"
+        label="Kas Lapangan"
         nilai={kas}
         ubah={setKas}
         autoFocus
         petunjuk={<Petunjuk sah={kasSah} />}
       />
       <IsianRupiah
-        label="Uang jalan"
+        label="Uang Jalan"
         nilai={jalan}
         ubah={setJalan}
         petunjuk={<Petunjuk sah={jalanSah} />}

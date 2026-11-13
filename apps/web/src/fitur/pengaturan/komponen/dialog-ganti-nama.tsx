@@ -43,7 +43,7 @@ export function DialogGantiNama({
       bisaKirim={rapi !== "" && rapi !== w.nama}
     >
       <Isian
-        label="Nama baru"
+        label="Nama Baru"
         value={nama}
         maxLength={50}
         autoFocus

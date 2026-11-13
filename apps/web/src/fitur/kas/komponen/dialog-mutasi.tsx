@@ -67,7 +67,7 @@ export function DialogMutasi({ tutup }: { tutup: () => void }) {
         </PilihanAsli>
       </Medan>
       <Medan
-        label={arah === "masuk" ? "Masuk ke" : arah === "keluar" ? "Keluar dari" : "Dari"}
+        label={arah === "masuk" ? "Masuk Ke" : arah === "keluar" ? "Keluar Dari" : "Dari"}
         petunjuk={arah === "pindah" ? `Ke ${lain}` : undefined}
       >
         <PilihanAsli value={akun} onChange={(e) => setAkun(e.target.value as Akun)}>

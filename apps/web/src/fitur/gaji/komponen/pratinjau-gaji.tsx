@@ -37,7 +37,7 @@ const KOLOM_HARI = [
   }),
   kh.accessor((h) => Math.round((h.storting * h.tarifBp) / 10_000), {
     id: "gaji",
-    header: "Gaji hari itu",
+    header: "Gaji Hari Itu",
     meta: { kanan: true },
     cell: (c) => rupiah(c.getValue()),
   }),
@@ -67,13 +67,13 @@ export function PratinjauGaji({
   return (
     <div className="space-y-4">
       <section className="grid grid-cols-3 gap-3">
-        <KartuAngka label="Gaji kotor" nilai={rupiah(p.gajiKotor)} />
+        <KartuAngka label="Gaji Kotor" nilai={rupiah(p.gajiKotor)} />
         <KartuAngka
-          label="Potongan tekor"
+          label="Potongan Tekor"
           nilai={rupiah(p.potonganTekor)}
           nada={p.potonganTekor > 0 ? "buruk" : undefined}
         />
-        <KartuAngka label="Gaji bersih" nilai={rupiah(p.gajiBersih)} />
+        <KartuAngka label="Gaji Bersih" nilai={rupiah(p.gajiBersih)} />
       </section>
       <TabelData
         kolom={KOLOM_HARI}

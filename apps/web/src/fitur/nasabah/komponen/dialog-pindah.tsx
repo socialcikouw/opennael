@@ -43,7 +43,7 @@ export function DialogPindah({
       labelKirim="Pindahkan"
       bisaKirim={ke !== ""}
     >
-      <Medan label="Kolektor baru">
+      <Medan label="Kolektor Baru">
         <PilihanAsli value={ke} onChange={(e) => setKe(e.target.value)}>
           {pilihan.length === 0 ? <option value="">Tidak ada kolektor lain</option> : null}
           {pilihan.map((k) => (

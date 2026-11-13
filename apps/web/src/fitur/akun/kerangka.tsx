@@ -29,7 +29,7 @@ const MENU = [
   { ke: "/harian", label: "Harian", ikon: CalendarCheck },
   { ke: "/nasabah", label: "Nasabah", ikon: Users, persis: true },
   { ke: "/pinjaman", label: "Pinjaman", ikon: HandCoins },
-  { ke: "/nasabah/salin", label: "Salin dari buku", ikon: BookCopy },
+  { ke: "/nasabah/salin", label: "Salin Dari Buku", ikon: BookCopy },
   { ke: "/kas", label: "Kas", ikon: Wallet },
   { ke: "/gaji", label: "Gaji", ikon: Banknote },
   { ke: "/karyawan", label: "Karyawan", ikon: UserCog },

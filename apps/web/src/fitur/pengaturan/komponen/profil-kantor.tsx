@@ -68,12 +68,12 @@ export function ProfilKantor() {
         }}
       >
         <Isian
-          label="Nama kantor"
+          label="Nama Kantor"
           value={isi.nama}
           maxLength={100}
           onChange={(e) => setIsi({ ...isi, nama: e.target.value })}
         />
-        <Medan label="Zona waktu">
+        <Medan label="Zona Waktu">
           <PilihanAsli
             value={isi.zonaWaktu}
             onChange={(e) => setIsi({ ...isi, zonaWaktu: e.target.value as typeof isi.zonaWaktu })}
@@ -85,14 +85,14 @@ export function ProfilKantor() {
         </Medan>
         <div className="grid grid-cols-2 gap-3">
           <Isian
-            label="Jam buka"
+            label="Jam Buka"
             placeholder="07:00"
             pattern="^([01][0-9]|2[0-3]):[0-5][0-9]$"
             value={isi.jamBuka}
             onChange={(e) => setIsi({ ...isi, jamBuka: e.target.value })}
           />
           <Isian
-            label="Jam tutup"
+            label="Jam Tutup"
             placeholder="24:00"
             pattern="^([01][0-9]|2[0-3]):[0-5][0-9]$|^24:00$"
             petunjuk="24:00 = tengah malam"

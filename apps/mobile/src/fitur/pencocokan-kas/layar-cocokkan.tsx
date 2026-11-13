@@ -102,7 +102,7 @@ export function LayarCocokkan() {
           }}
         />
         <IsianUang
-          label={akun === "tunai" ? "Uang di brankas" : "Saldo rekening"}
+          label={akun === "tunai" ? "Uang Di Brankas" : "Saldo Rekening"}
           nilai={nyata}
           onUbah={setNyata}
         />
@@ -134,7 +134,7 @@ export function LayarCocokkan() {
               {tanggalPendek(p.tanggal)} · {LABEL_AKUN[p.akun]}
             </Text>
             {p.dibatalkanAt ? (
-              <Lencana teks="Dibatalkan bos" warna="abu" />
+              <Lencana teks="Dibatalkan Bos" warna="abu" />
             ) : (
               <Lencana
                 teks={p.selisih === 0 ? "Cocok" : p.selisih < 0 ? "Kurang" : "Lebih"}

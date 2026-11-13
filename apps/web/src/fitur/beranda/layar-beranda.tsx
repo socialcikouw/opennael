@@ -51,13 +51,13 @@ const KOLOM: Kolom<PerKolektor>[] = [
   }),
   k.accessor((r) => r.kasLapangan.tunaiDiterima, {
     id: "diterima",
-    header: "Tunai diterima",
+    header: "Tunai Diterima",
     cell: (c) => rupiah(c.getValue()),
     meta: { kanan: true },
   }),
   k.accessor((r) => r.kasLapangan.lebihSetor - r.kasLapangan.tekor, {
     id: "selisih",
-    header: "Selisih setor",
+    header: "Selisih Setor",
     cell: (c) => {
       const n = c.getValue();
       return (
@@ -110,12 +110,12 @@ export function LayarBeranda() {
             catatan={`${angka(r.akad.jumlahAkad)} akad · cair ${rupiah(r.akad.pencairan)}`}
           />
           <KartuAngka
-            label="Tunai diterima"
+            label="Tunai Diterima"
             nilai={rupiah(r.kasLapangan.tunaiDiterima)}
             catatan={`${angka(r.kasLapangan.hariKerja)} kolektor masuk · transfer ${rupiah(r.kasLapangan.transfer)}`}
           />
           <KartuAngka
-            label="Selisih setor"
+            label="Selisih Setor"
             nilai={selisih === 0 ? "—" : rupiah(selisih)}
             nada={selisih < 0 ? "buruk" : selisih > 0 ? "baik" : undefined}
             catatan={`tekor ${rupiah(r.kasLapangan.tekor)} · lebih ${rupiah(r.kasLapangan.lebihSetor)}`}

@@ -1,5 +1,6 @@
 import type { KartuTagih } from "@opennael/contracts";
 import type { JenisPinjaman } from "@opennael/domain";
+import { judul } from "@opennael/format";
 
 /**
  * TAB DROPING (mode Semua) — pokok pinjaman yang keluar hari ini dari ketiga
@@ -49,7 +50,7 @@ export interface BarisDroping {
   jenis: JenisPinjaman;
   nama: string;
   kampung: string;
-  /** "Akad baru" / "Gulung naik" / "Gulung tetap" / "Gulung turun". */
+  /** "Akad Baru" / "Gulung Naik" / "Gulung Tetap" / "Gulung Turun". */
   asal: string;
   gulung: boolean;
   pokok: number;
@@ -65,7 +66,7 @@ export function barisDroping(p: KartuTagih): BarisDroping {
     jenis: p.jenis,
     nama: p.nasabah.nama,
     kampung: p.nasabah.kampung,
-    asal: gulung ? `Gulung ${p.jenisGulung ?? ""}`.trim() : "Akad baru",
+    asal: judul(gulung ? `gulung ${p.jenisGulung ?? ""}`.trim() : "akad baru"),
     gulung,
     pokok: p.pokok,
     pencairan: p.pencairan,

@@ -71,9 +71,9 @@ const KOLOM = [
     header: "Rem",
     cell: (c) =>
       c.getValue() === 2 ? (
-        <Badge variant="outline">Gulung dikunci</Badge>
+        <Badge variant="outline">Gulung Dikunci</Badge>
       ) : c.getValue() === 1 ? (
-        <Badge variant="outline">Naik dikunci</Badge>
+        <Badge variant="outline">Naik Dikunci</Badge>
       ) : null,
   }),
 ] as Kolom<KartuPinjaman>[];
@@ -109,10 +109,10 @@ export function LayarPinjaman() {
       />
       {saring === "aktif" && q.data ? (
         <div className="grid gap-3 sm:grid-cols-3">
-          <KartuAngka label="Pinjaman aktif" nilai={q.data.length} />
-          <KartuAngka label="Total saldo" nilai={rupiah(q.data.reduce((s, p) => s + p.saldo, 0))} />
+          <KartuAngka label="Pinjaman Aktif" nilai={q.data.length} />
+          <KartuAngka label="Total Saldo" nilai={rupiah(q.data.reduce((s, p) => s + p.saldo, 0))} />
           <KartuAngka
-            label="Total tunggakan"
+            label="Total Tunggakan"
             nilai={rupiah(menunggak.reduce((s, p) => s + (p.tagih?.tunggakan ?? 0), 0))}
             catatan={`${menunggak.length} pinjaman menunggak`}
             nada={menunggak.length > 0 ? "buruk" : undefined}
@@ -126,7 +126,7 @@ export function LayarPinjaman() {
           value={kolektor ?? ""}
           onChange={(e) => ubah({ kolektor: e.target.value || undefined })}
         >
-          <option value="">Semua kolektor</option>
+          <option value="">Semua Kolektor</option>
           {(kolektorQ.data ?? []).map((o) => (
             <option key={o.id} value={o.id}>
               {o.nama}

@@ -24,11 +24,11 @@ export function RincianKas({ hari }: { hari: HariKas }) {
         </div>
       ))}
       <div className="flex justify-between gap-4 border-t pt-1 font-medium">
-        <span>Tunai seharusnya</span>
+        <span>Tunai Seharusnya</span>
         <span className="tabular-nums">{rupiah(st.tunaiSeharusnya)}</span>
       </div>
       <div className="flex justify-between gap-4 font-medium">
-        <span>Tunai diterima</span>
+        <span>Tunai Diterima</span>
         <span className="tabular-nums">{rupiah(st.tunaiDiterima)}</span>
       </div>
       <div
@@ -38,7 +38,7 @@ export function RincianKas({ hari }: { hari: HariKas }) {
           st.selisihSetor > 0 && "text-emerald-700",
         )}
       >
-        <span>{st.selisihSetor < 0 ? "Tekor" : st.selisihSetor > 0 ? "Lebih setor" : "Pas"}</span>
+        <span>{st.selisihSetor < 0 ? "Tekor" : st.selisihSetor > 0 ? "Lebih Setor" : "Pas"}</span>
         <span className="tabular-nums">{rupiah(st.selisihSetor)}</span>
       </div>
     </div>

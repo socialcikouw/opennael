@@ -9,10 +9,10 @@ export type JenisMutasi =
   | "lain_keluar";
 
 export const LABEL_MUTASI: Record<JenisMutasi, string> = {
-  setor_modal: "Setor modal",
-  tarik_modal: "Tarik modal",
-  biaya_kantor: "Biaya kantor",
-  pindah_akun: "Pindah akun",
-  lain_masuk: "Pemasukan lain",
-  lain_keluar: "Pengeluaran lain",
+  setor_modal: "Setor Modal",
+  tarik_modal: "Tarik Modal",
+  biaya_kantor: "Biaya Kantor",
+  pindah_akun: "Pindah Akun",
+  lain_masuk: "Pemasukan Lain",
+  lain_keluar: "Pengeluaran Lain",
 };

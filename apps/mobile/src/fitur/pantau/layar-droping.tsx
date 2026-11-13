@@ -115,8 +115,8 @@ export function LayarDroping() {
             nilai={ringkas.total}
             keterangan={`${ringkas.jumlah} akad · nasabah menerima ${rupiah(ringkas.pencairan)}`}
             rincian={[
-              { label: "Drop baru", nilai: ringkas.baru },
-              { label: "Drop gulung", nilai: ringkas.gulung, tanda: "+" },
+              { label: "Drop Baru", nilai: ringkas.baru },
+              { label: "Drop Gulung", nilai: ringkas.gulung, tanda: "+" },
             ]}
           />
           <PilJenis nilai={saring} jumlah={jumlah} onPilih={setSaring} />

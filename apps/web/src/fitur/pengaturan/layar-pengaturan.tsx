@@ -17,8 +17,8 @@ const TAB = [
   { nilai: "kantor", label: "Kantor" },
   { nilai: "rem", label: "Rem" },
   { nilai: "libur", label: "Libur" },
-  { nilai: "tarif", label: "Tarif gaji" },
-  { nilai: "rute", label: "Rute kolektor" },
+  { nilai: "tarif", label: "Tarif Gaji" },
+  { nilai: "rute", label: "Rute Kolektor" },
   { nilai: "kampung", label: "Kampung" },
 ] as const;
 

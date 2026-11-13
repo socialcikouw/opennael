@@ -25,11 +25,11 @@ const rute = getRouteApi("/_bos/kas");
 
 const LABEL_SUMBER = {
   mutasi: "Mutasi",
-  serah_terima: "Setoran sore",
-  transfer_setoran: "Transfer setoran",
+  serah_terima: "Setoran Sore",
+  transfer_setoran: "Transfer Setoran",
   transfer_lama: "Transfer (sistem lama)",
-  penarikan_tabungan: "Penarikan tabungan",
-  pembayaran_gaji: "Gaji kolektor",
+  penarikan_tabungan: "Penarikan Tabungan",
+  pembayaran_gaji: "Gaji Kolektor",
 } as const;
 
 type Rentang = "hari" | "pekan" | "bulan";
@@ -191,22 +191,22 @@ export function LayarKas() {
 
       <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <KartuAngka
-          label="Saldo tunai akhir"
+          label="Saldo Tunai Akhir"
           nilai={rupiah(r.tunai.saldoAkhir)}
           catatan={`awal ${rupiah(r.tunai.saldoAwal)} · +${rupiah(r.tunai.masuk)} · −${rupiah(r.tunai.keluar)}`}
         />
         <KartuAngka
-          label="Saldo bank akhir"
+          label="Saldo Bank Akhir"
           nilai={rupiah(r.bank.saldoAkhir)}
           catatan={`awal ${rupiah(r.bank.saldoAwal)} · +${rupiah(r.bank.masuk)} · −${rupiah(r.bank.keluar)}`}
         />
         <KartuAngka
-          label="Kas di lapangan (kini)"
+          label="Kas Di Lapangan (kini)"
           nilai={rupiah(r.kasDiLapangan)}
           catatan="dibawa kolektor, belum diserahkan"
         />
         <KartuAngka
-          label="Brankas seharusnya (kini)"
+          label="Brankas Seharusnya (kini)"
           nilai={rupiah(r.brankasSeharusnya)}
           catatan="saldo tunai − kas di lapangan"
         />
@@ -220,7 +220,7 @@ export function LayarKas() {
           }
         >
           <TabsList>
-            <TabsTrigger value="buku">Buku kas</TabsTrigger>
+            <TabsTrigger value="buku">Buku Kas</TabsTrigger>
             <TabsTrigger value="cocok">Pencocokan</TabsTrigger>
           </TabsList>
           <TabsContent value="buku">

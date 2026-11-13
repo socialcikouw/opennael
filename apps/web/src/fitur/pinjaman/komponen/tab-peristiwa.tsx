@@ -47,7 +47,7 @@ export function TabPeristiwa({ nasabahId }: { nasabahId: string }) {
         cell: (c) => (c.row.original.kategori === "libur" ? "—" : rupiah(c.getValue())),
       }),
       k.accessor("saldoSesudah", {
-        header: "Saldo sesudah",
+        header: "Saldo Sesudah",
         meta: { kanan: true },
         cell: (c) => {
           const n = c.getValue();

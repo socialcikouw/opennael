@@ -44,7 +44,7 @@ export function LayarTunggakan() {
         <>
           <View style={g.baris3}>
             <KotakAngka label="Menunggak" ikon="users" nilai={String(tampil.length)} />
-            <KotakAngka label="Total tunggakan" ikon="banknote" nilai={rupiah(total)} />
+            <KotakAngka label="Total Tunggakan" ikon="banknote" nilai={rupiah(total)} />
           </View>
           {kolektor.length > 1 ? (
             <Pilihan
@@ -73,7 +73,7 @@ export function LayarTunggakan() {
                 <Lencana
                   teks={
                     p.jenis === "tempoan"
-                      ? "Lewat jatuh tempo"
+                      ? "Lewat Jatuh Tempo"
                       : `Tertinggal ${p.tagih?.tertinggal ?? 0}× angsuran`
                   }
                   warna="kuning"

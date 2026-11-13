@@ -21,7 +21,7 @@ import { GarisStatus } from "./garis-status";
 import { LencanaStatus } from "./lencana-status";
 import { LencanaTagih } from "./lencana-tagih";
 
-const LABEL_ASAL = { baru: "Akad baru", gulung: "Gulung", migrasi: "Salinan buku lama" } as const;
+const LABEL_ASAL = { baru: "Akad Baru", gulung: "Gulung", migrasi: "Salinan Buku Lama" } as const;
 
 export function DialogPinjaman({
   id,
@@ -73,34 +73,34 @@ export function DialogPinjaman({
               <AturanMacet p={p} />
               <div className="grid gap-x-8 sm:grid-cols-2">
                 <div className="divide-y">
-                  <BarisNilai label="Tanggal akad">{formatTanggal(p.tanggalAkad)}</BarisNilai>
+                  <BarisNilai label="Tanggal Akad">{formatTanggal(p.tanggalAkad)}</BarisNilai>
                   {p.tanggalDisalin ? (
                     <BarisNilai label="Disalin">{formatTanggal(p.tanggalDisalin)}</BarisNilai>
                   ) : null}
                   {p.jatuhTempo ? (
-                    <BarisNilai label="Jatuh tempo">{formatTanggal(p.jatuhTempo)}</BarisNilai>
+                    <BarisNilai label="Jatuh Tempo">{formatTanggal(p.jatuhTempo)}</BarisNilai>
                   ) : null}
                   <BarisNilai label="Pokok">{rupiah(p.pokok)}</BarisNilai>
-                  <BarisNilai label="Potongan admin">{rupiah(p.potonganAdmin)}</BarisNilai>
-                  <BarisNilai label="Masuk tabungan">{rupiah(p.tabunganMasuk)}</BarisNilai>
+                  <BarisNilai label="Potongan Admin">{rupiah(p.potonganAdmin)}</BarisNilai>
+                  <BarisNilai label="Masuk Tabungan">{rupiah(p.tabunganMasuk)}</BarisNilai>
                   {p.saldoLama > 0 ? (
-                    <BarisNilai label="Saldo lama ditutup">{rupiah(p.saldoLama)}</BarisNilai>
+                    <BarisNilai label="Saldo Lama Ditutup">{rupiah(p.saldoLama)}</BarisNilai>
                   ) : null}
-                  <BarisNilai label="Tunai ke nasabah">{rupiah(p.pencairan)}</BarisNilai>
+                  <BarisNilai label="Tunai Ke Nasabah">{rupiah(p.pencairan)}</BarisNilai>
                 </div>
                 <div className="divide-y">
-                  <BarisNilai label="Total kembali">{rupiah(p.totalKembali)}</BarisNilai>
-                  <BarisNilai label={p.jenis === "tempoan" ? "Dibayar sekali" : "Angsuran"}>
+                  <BarisNilai label="Total Kembali">{rupiah(p.totalKembali)}</BarisNilai>
+                  <BarisNilai label={p.jenis === "tempoan" ? "Dibayar Sekali" : "Angsuran"}>
                     {rupiah(p.angsuran)}
                   </BarisNilai>
                   <BarisNilai label="Saldo">{rupiah(p.saldo)}</BarisNilai>
                   {p.jenis !== "tempoan" ? (
-                    <BarisNilai label="Angsuran lunas">
+                    <BarisNilai label="Angsuran Lunas">
                       {p.angsuranKe} dari {p.tenor}
                     </BarisNilai>
                   ) : null}
                   {p.tanggalMacet ? (
-                    <BarisNilai label="Macet sejak">{formatTanggal(p.tanggalMacet)}</BarisNilai>
+                    <BarisNilai label="Macet Sejak">{formatTanggal(p.tanggalMacet)}</BarisNilai>
                   ) : null}
                   {p.tanggalSelesai ? (
                     <BarisNilai label="Selesai">{formatTanggal(p.tanggalSelesai)}</BarisNilai>
@@ -119,7 +119,7 @@ export function DialogPinjaman({
                 </div>
               </div>
               <div className="space-y-2">
-                <p className="text-sm font-medium">Perjalanan status</p>
+                <p className="text-sm font-medium">Perjalanan Status</p>
                 <GarisStatus id={p.id} />
               </div>
             </div>

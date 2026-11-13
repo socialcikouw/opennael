@@ -42,7 +42,7 @@ export function DialogBayar({ p, tutup }: { p: Pratinjau; tutup: () => void }) {
       galat={m.error?.message}
       labelKirim={`Bayar ${rupiah(p.gajiBersih)}`}
     >
-      <Medan label="Dari akun">
+      <Medan label="Dari Akun">
         <PilihanAsli
           value={dariAkun}
           onChange={(e) => setDariAkun(e.target.value as "tunai" | "bank")}

@@ -142,7 +142,10 @@ interface Impor {
   spec: string;
   baris: number;
 }
-/** Isi satu berkas TS/TSX: impor, penulisan tabel, dan kunci kueri berupa array literal. */
+/**
+ * Isi satu berkas TS/TSX: impor, penulisan tabel, kunci kueri berupa array
+ * literal, dan judul kolom (`header: "…"`) yang masih kalimat biasa.
+ */
 export function bacaTeks(
   jalur: string,
   teks: string,
@@ -150,6 +153,7 @@ export function bacaTeks(
   impor: Impor[];
   tulis: { tabelId: string; baris: number }[];
   kunciLiteral: number[];
+  headerKalimat: { baris: number; teks: string }[];
 } {
   const sf = ts.createSourceFile(
     jalur,
@@ -161,6 +165,7 @@ export function bacaTeks(
   const impor: Impor[] = [];
   const tulis: { tabelId: string; baris: number }[] = [];
   const kunciLiteral: number[] = [];
+  const headerKalimat: { baris: number; teks: string }[] = [];
   const baris = (n: { getStart(): number }) =>
     sf.getLineAndCharacterOfPosition(n.getStart()).line + 1;
   // biome-ignore lint/suspicious/noExplicitAny: simpul AST tanpa tipe
@@ -196,10 +201,19 @@ export function bacaTeks(
     ) {
       kunciLiteral.push(baris(n));
     }
+    if (
+      ts.isPropertyAssignment(n) &&
+      (ts.isIdentifier(n.name) || ts.isStringLiteral(n.name)) &&
+      n.name.text === "header" &&
+      ts.isStringLiteral(n.initializer) &&
+      /\s\p{Ll}/u.test(n.initializer.text)
+    ) {
+      headerKalimat.push({ baris: baris(n), teks: n.initializer.text });
+    }
     ts.forEachChild(n, kunjungi);
   };
   kunjungi(sf);
-  return { impor, tulis, kunciLiteral };
+  return { impor, tulis, kunciLiteral, headerKalimat };
 }
 
 function bacaBerkas(jalur: string) {
@@ -361,6 +375,17 @@ export function periksaSemua(): Pelanggaran[] {
           "queryKey berupa array literal — pakai kueri.* atau kunci.* dari @opennael/api-client",
         );
       }
+    }
+  }
+  // 8. judul kolom tabel web: Kapital Tiap Kata (docs/tampilan.md)
+  for (const f of semuaBerkas(join(akar, "apps/web/src"))) {
+    for (const h of bacaBerkas(f).headerKalimat) {
+      catat(
+        "huruf-judul-kolom",
+        f,
+        h.baris,
+        `judul kolom "${h.teks}" masih kalimat biasa — tulis Kapital Tiap Kata (docs/tampilan.md)`,
+      );
     }
   }
   return salah;

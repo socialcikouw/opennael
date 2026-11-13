@@ -33,7 +33,7 @@ export function TerimaKas({ hari }: { hari: HariKolektor }) {
         Catat transfer & biaya lebih dulu. Hitung uang fisiknya, lalu ketik jumlahnya — angka
         seharusnya baru tampil sesudah disimpan.
       </Keterangan>
-      <IsianUang label="Uang diterima" nilai={tunai} onUbah={setTunai} />
+      <IsianUang label="Uang Diterima" nilai={tunai} onUbah={setTunai} />
       <PesanGalat pesan={terima.error?.message} />
       <Tombol
         judul="Simpan uang diterima"

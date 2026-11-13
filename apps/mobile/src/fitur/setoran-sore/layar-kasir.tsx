@@ -55,9 +55,9 @@ export function LayarKasir() {
       {hari.data ? (
         <>
           <View style={g.baris3}>
-            <KotakAngka label="Siap diterima" ikon="clock" nilai={String(siap)} />
+            <KotakAngka label="Siap Diterima" ikon="clock" nilai={String(siap)} />
             <KotakAngka
-              label="Kas diterima"
+              label="Kas Diterima"
               ikon="check-check"
               nilai={`${diterima} / ${masukKerja.length}`}
             />

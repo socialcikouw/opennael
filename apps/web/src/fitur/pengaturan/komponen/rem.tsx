@@ -86,7 +86,7 @@ export function Rem() {
             >
               <span className="flex items-center gap-2">
                 <Badge variant="secondary">{LABEL_LAPIS[r.lapis]}</Badge>
-                {r.sasaran?.nama ?? "Seluruh kantor"}
+                {r.sasaran?.nama ?? "Seluruh Kantor"}
               </span>
               <span className="text-muted-foreground">
                 {[

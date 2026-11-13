@@ -46,7 +46,7 @@ export function DialogTarikTabungan({ n, tutup }: { n: Nasabah; tutup: () => voi
         ubah={setNominal}
         petunjuk={nominal && nominal > saldo ? "Melebihi tabungan" : undefined}
       />
-      <Medan label="Dari akun">
+      <Medan label="Dari Akun">
         <PilihanAsli
           value={dariAkun}
           onChange={(e) => setDariAkun(e.target.value as "tunai" | "bank")}

@@ -13,9 +13,9 @@ export function LencanaTagih({ p }: { p: KartuPinjaman }) {
         </Badge>
       ) : null}
       {p.kunciGulung?.gulung ? (
-        <Badge variant="outline">Gulung dikunci</Badge>
+        <Badge variant="outline">Gulung Dikunci</Badge>
       ) : p.kunciGulung?.naik ? (
-        <Badge variant="outline">Naik dikunci</Badge>
+        <Badge variant="outline">Naik Dikunci</Badge>
       ) : null}
     </>
   );

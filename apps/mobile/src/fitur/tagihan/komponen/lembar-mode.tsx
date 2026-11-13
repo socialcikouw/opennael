@@ -44,7 +44,7 @@ export function LembarMode({ terbuka, onTutup }: { terbuka: boolean; onTutup: ()
   };
 
   return (
-    <LembarBawah terbuka={terbuka} onTutup={onTutup} judul="Ganti mode">
+    <LembarBawah terbuka={terbuka} onTutup={onTutup} judul="Ganti Mode">
       {URUTAN_MODE.map((m) => (
         <BarisMode key={m} mode={m} aktif={m === mode} ringkas={ringkas?.[m]} onPilih={pilih} />
       ))}

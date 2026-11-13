@@ -39,8 +39,8 @@ export function DialogKasAwal({
       galat={m.error?.message}
       bisaKirim={tunai !== awal.tunai || bank !== awal.bank}
     >
-      <IsianRupiah label="Kas awal tunai" nilai={tunai} ubah={setTunai} />
-      <IsianRupiah label="Kas awal bank" nilai={bank} ubah={setBank} />
+      <IsianRupiah label="Kas Awal Tunai" nilai={tunai} ubah={setTunai} />
+      <IsianRupiah label="Kas Awal Bank" nilai={bank} ubah={setBank} />
     </DialogFormulir>
   );
 }

@@ -444,7 +444,7 @@ Patokan ≤ 0 → persentase kosong (pembagian tak bermakna).
 > harian hari ini 1.710.000 → **90%**.
 
 **N3. Mingguan & tempoan** *(ditambahkan 1 Nov 2026 atas permintaan pemilik,
-untuk Dasbor HP per mode).* Patokan dihitung dari pinjaman yang **jatuh tagih
+untuk Dasbor HP per mode; syarat (b) dan (c) dikonfirmasi pemilik 14 Nov 2026).* Patokan dihitung dari pinjaman yang **jatuh tagih
 pada D**: mingguan bila D = tanggal akad + 7k hari dengan 1 ≤ k ≤ tenor (B3);
 tempoan bila D = jatuh tempo (akad + tenor bila tak tersimpan).
 

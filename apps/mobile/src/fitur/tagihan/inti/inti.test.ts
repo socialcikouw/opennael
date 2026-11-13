@@ -147,7 +147,7 @@ describe("kartu nasabah", () => {
       ZONA,
     );
     expect(drop.ember).toBe("droping");
-    expect(drop.lencana?.teks).toBe("Gulung naik");
+    expect(drop.lencana?.teks).toBe("Gulung Naik");
     expect(drop.aksi).toBe(false);
     const sudah = kartuVM(
       kartu({ hariIni: { jenis: "angsuran", storting: 50_000 } }),

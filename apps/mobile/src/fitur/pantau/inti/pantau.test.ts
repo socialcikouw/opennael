@@ -153,9 +153,9 @@ describe("droping", () => {
   });
 
   test("label asal: akad baru atau gulung naik/tetap/turun", () => {
-    expect(barisDroping(kartu()).asal).toBe("Akad baru");
+    expect(barisDroping(kartu()).asal).toBe("Akad Baru");
     const g = barisDroping(kartu({ asal: "gulung", jenisGulung: "turun" }));
-    expect(g).toMatchObject({ asal: "Gulung turun", gulung: true });
+    expect(g).toMatchObject({ asal: "Gulung Turun", gulung: true });
   });
 });
 

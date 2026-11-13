@@ -45,7 +45,7 @@ export function LayarMasuk() {
           required
         />
         <Isian
-          label="Kata sandi"
+          label="Kata Sandi"
           type="password"
           autoComplete="current-password"
           value={sandi}

@@ -38,8 +38,8 @@ export function FormulirAbsen() {
       <Pilihan
         segmen
         pilihan={[
-          { nilai: "masuk_kerja", teks: "Masuk kerja" },
-          { nilai: "tidak_kerja", teks: "Tidak kerja" },
+          { nilai: "masuk_kerja", teks: "Masuk Kerja" },
+          { nilai: "tidak_kerja", teks: "Tidak Kerja" },
         ]}
         nilai={absensi}
         onPilih={setAbsensi}
@@ -47,13 +47,13 @@ export function FormulirAbsen() {
       {masuk ? (
         <>
           <IsianUang
-            label="Kas lapangan (modal dari bos)"
+            label="Kas Lapangan (modal dari bos)"
             nilai={kasLapangan}
             onUbah={setKasLapangan}
             galat={galatKas(kasLapangan)}
           />
           <IsianUang
-            label="Uang jalan"
+            label="Uang Jalan"
             nilai={uangJalan}
             onUbah={setUangJalan}
             galat={galatKas(uangJalan)}

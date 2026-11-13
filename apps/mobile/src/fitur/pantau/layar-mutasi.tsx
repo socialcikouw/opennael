@@ -20,11 +20,11 @@ import { barisArusKas, type KeadaanKas, keadaanKas } from "./inti/arus-kas";
 import { KartuTotal } from "./komponen/kartu-total";
 
 const LABEL_KEADAAN: Record<KeadaanKas, string> = {
-  "belum-absen": "Belum absen",
-  "tidak-kerja": "Tidak kerja",
-  lapangan: "Di lapangan",
-  laporan: "Laporan dibuka",
-  diterima: "Kas diterima",
+  "belum-absen": "Belum Absen",
+  "tidak-kerja": "Tidak Kerja",
+  lapangan: "Di Lapangan",
+  laporan: "Laporan Dibuka",
+  diterima: "Kas Diterima",
 };
 
 const TANDA = { awal: undefined, masuk: "+", keluar: "−" } as const;
@@ -172,10 +172,10 @@ export function LayarMutasi() {
             kaki={
               st ? (
                 <View style={gaya.serah}>
-                  <Baris label="Tunai diterima kasir" nilai={rupiah(st.tunaiDiterima)} tebal />
+                  <Baris label="Tunai Diterima Kasir" nilai={rupiah(st.tunaiDiterima)} tebal />
                   <Baris
                     label={
-                      st.selisihSetor < 0 ? "Tekor" : st.selisihSetor > 0 ? "Lebih setor" : "Pas"
+                      st.selisihSetor < 0 ? "Tekor" : st.selisihSetor > 0 ? "Lebih Setor" : "Pas"
                     }
                     nilai={rupiah(st.selisihSetor)}
                     tebal

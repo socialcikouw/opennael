@@ -19,7 +19,7 @@ export function KartuJatuhTempo(props: {
       warna: props.r.lewat > 0 ? WARNA.bahayaTeks : WARNA.teks,
     },
     {
-      label: "Hari ini",
+      label: "Hari Ini",
       angka: props.r.hariIni,
       warna: props.r.hariIni > 0 ? props.aksen.teks : WARNA.teks,
     },

@@ -33,7 +33,7 @@ export function LayarAktivitas() {
                 void navigasi({ search: (s) => ({ ...s, pelaku: e.target.value || undefined }) })
               }
             >
-              <option value="">Semua orang</option>
+              <option value="">Semua Orang</option>
               {orang.data?.map((o) => (
                 <option key={o.id} value={o.id}>
                   {o.nama} ({LABEL_PERAN[o.peran]})

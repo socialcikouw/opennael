@@ -6,9 +6,9 @@ export function SaklarRem({ isi, ubah }: { isi: IsiRem; ubah: (r: IsiRem) => voi
     <div className="space-y-2">
       {(
         [
-          ["baru", "Kunci pinjaman baru (orang baru & pinjam lagi)"],
-          ["naik", "Kunci naik pinjaman"],
-          ["gulung", "Kunci gulung"],
+          ["baru", "Kunci Pinjaman Baru (orang baru & pinjam lagi)"],
+          ["naik", "Kunci Naik Pinjaman"],
+          ["gulung", "Kunci Gulung"],
         ] as const
       ).map(([k, label]) => (
         <label key={k} className="flex items-center gap-2 text-sm">

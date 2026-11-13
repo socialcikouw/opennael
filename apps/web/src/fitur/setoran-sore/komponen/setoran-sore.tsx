@@ -36,7 +36,7 @@ export function SetoranSore({ tanggal, hariIni }: { tanggal: string; hariIni: st
         cell: (c) => <span className="font-medium">{c.getValue()}</span>,
       }),
       k.accessor("absensi", {
-        header: "Hari ini",
+        header: "Hari Ini",
         cell: (c) => {
           const h = c.row.original;
           if (h.absensi === "tidak_kerja")
@@ -45,21 +45,21 @@ export function SetoranSore({ tanggal, hariIni }: { tanggal: string; hariIni: st
                 Tidak kerja{h.alasanTidakKerja ? ` · ${h.alasanTidakKerja}` : ""}
               </span>
             );
-          if (h.serahTerima) return <Badge variant="success">Kas diterima</Badge>;
+          if (h.serahTerima) return <Badge variant="success">Kas Diterima</Badge>;
           if (h.laporanDibukaAt)
             return (
               <Badge variant="warning">Laporan {jam(h.laporanDibukaAt, kantor.zonaWaktu)}</Badge>
             );
-          return <Badge variant="secondary">Di lapangan</Badge>;
+          return <Badge variant="secondary">Di Lapangan</Badge>;
         },
       }),
       k.accessor("kasLapangan", {
-        header: "Kas lapangan",
+        header: "Kas Lapangan",
         meta: { kanan: true },
         cell: (c) => rupiah(c.getValue()),
       }),
       k.accessor("uangJalan", {
-        header: "Uang jalan",
+        header: "Uang Jalan",
         meta: { kanan: true },
         cell: (c) => rupiah(c.getValue()),
       }),

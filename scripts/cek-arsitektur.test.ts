@@ -135,3 +135,20 @@ describe("bacaTeks: kunci kueri literal", () => {
     expect(baris(teks)).toEqual([]);
   });
 });
+
+describe("bacaTeks: judul kolom kalimat biasa", () => {
+  const hasil = (teks: string) => bacaTeks("x.tsx", teks).headerKalimat;
+  test("judul kolom dua kata berhuruf kecil dilaporkan beserta teks dan barisnya", () => {
+    const teks = ['k.accessor("x", {', '  header: "Tunai diterima",', "});"].join("\n");
+    expect(hasil(teks)).toEqual([{ baris: 2, teks: "Tunai diterima" }]);
+  });
+  test("Kapital Tiap Kata, satu kata, singkatan, dan kosong tidak dilaporkan", () => {
+    const teks = [
+      'k.accessor("a", { header: "Tunai Diterima" });',
+      'k.accessor("b", { header: "Nama" });',
+      'k.accessor("c", { header: "Nomor HP" });',
+      'k.display({ id: "d", header: "" });',
+    ].join("\n");
+    expect(hasil(teks)).toEqual([]);
+  });
+});

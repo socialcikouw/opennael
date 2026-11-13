@@ -109,10 +109,10 @@ function lencana(p: KartuTagih, e: Ember): KartuVM["lencana"] {
   if (p.status === "macet") return { teks: "Macet", nada: "merah", ikon: "triangle-alert" };
   if (e !== "droping") return null;
   if (p.asal !== "gulung") return { teks: "Baru", nada: "hijau", ikon: "user-plus" };
-  if (p.jenisGulung === "naik") return { teks: "Gulung naik", nada: "hijau", ikon: "trending-up" };
+  if (p.jenisGulung === "naik") return { teks: "Gulung Naik", nada: "hijau", ikon: "trending-up" };
   if (p.jenisGulung === "turun")
-    return { teks: "Gulung turun", nada: "kuning", ikon: "trending-down" };
-  return { teks: "Gulung tetap", nada: "abu", ikon: "repeat" };
+    return { teks: "Gulung Turun", nada: "kuning", ikon: "trending-down" };
+  return { teks: "Gulung Tetap", nada: "abu", ikon: "repeat" };
 }
 
 const PETUNJUK: Record<StatusGulung, (ambang: number) => string> = {

@@ -70,8 +70,8 @@ export function KartuDroping({ baru, gulung }: { baru: number; gulung: number })
       <Text style={gaya.judulDroping}>TOTAL DROPING HARI INI</Text>
       <View style={gaya.barisDroping}>
         {[
-          { ikon: "user-plus" as const, label: "Drop baru", nilai: baru },
-          { ikon: "repeat" as const, label: "Drop gulung", nilai: gulung },
+          { ikon: "user-plus" as const, label: "Drop Baru", nilai: baru },
+          { ikon: "repeat" as const, label: "Drop Gulung", nilai: gulung },
         ].map((k) => (
           <View key={k.label} style={gaya.kolomDroping}>
             <View style={gaya.ikonDroping}>

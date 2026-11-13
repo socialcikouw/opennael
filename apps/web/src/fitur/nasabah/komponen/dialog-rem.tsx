@@ -46,8 +46,8 @@ export function DialogRem({ n, tutup }: { n: Nasabah; tutup: () => void }) {
     >
       {(
         [
-          ["naik", "Kunci naik pinjaman (gulung dengan pokok lebih besar)"],
-          ["gulung", "Kunci gulung"],
+          ["naik", "Kunci Naik Pinjaman (gulung dengan pokok lebih besar)"],
+          ["gulung", "Kunci Gulung"],
         ] as const
       ).map(([kunci, label]) => (
         <label key={kunci} className="flex items-center gap-2 text-sm">

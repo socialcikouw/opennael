@@ -49,7 +49,7 @@ export function PilihNasabahLama(props: {
   return (
     <View style={g.tumpuk2}>
       <Isian
-        label="Cari nasabah lama"
+        label="Cari Nasabah Lama"
         ikon="search"
         value={cari}
         onChangeText={setCari}

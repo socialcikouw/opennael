@@ -61,7 +61,7 @@ export function LayarKaryawan() {
       k.accessor("nomorHp", { header: "Nomor HP", cell: (c) => c.getValue() ?? "—" }),
       k.accessor("resort", { header: "Resort", cell: (c) => c.getValue() ?? "—" }),
       k.accessor("perangkatAktif", {
-        header: "HP tertaut",
+        header: "HP Tertaut",
         meta: { kanan: true },
         cell: (c) => (
           <Button

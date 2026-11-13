@@ -23,14 +23,14 @@ export function PosisiModal({ tanggal }: { tanggal: string }) {
           <GalatMuat galat={q.error} ulangi={() => void q.refetch()} />
         ) : (
           <div className="divide-y">
-            <Baris label="Saldo tunai">{rp(q.data.saldoTunai)}</Baris>
+            <Baris label="Saldo Tunai">{rp(q.data.saldoTunai)}</Baris>
             <Baris label="· dibawa kolektor">{rp(q.data.kasDiLapangan)}</Baris>
             <Baris label="· di brankas">{rp(q.data.diBrankas)}</Baris>
-            <Baris label="Saldo bank">{rp(q.data.saldoBank)}</Baris>
-            <Baris label="Piutang berjalan">{rp(q.data.piutangBerjalan)}</Baris>
-            <Baris label="Piutang macet">{rp(q.data.piutangMacet)}</Baris>
+            <Baris label="Saldo Bank">{rp(q.data.saldoBank)}</Baris>
+            <Baris label="Piutang Berjalan">{rp(q.data.piutangBerjalan)}</Baris>
+            <Baris label="Piutang Macet">{rp(q.data.piutangMacet)}</Baris>
             <Baris label="− Tabungan nasabah">{rupiah(q.data.tabunganNasabah)}</Baris>
-            <Baris label="Posisi modal" tebal>
+            <Baris label="Posisi Modal" tebal>
               {rp(q.data.posisiModal)}
             </Baris>
           </div>

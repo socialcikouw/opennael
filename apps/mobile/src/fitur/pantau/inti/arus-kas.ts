@@ -20,21 +20,21 @@ export function barisArusKas(r: RincianKasJawaban): BarisArus[] {
   return [
     {
       kunci: "kasLapangan",
-      label: "Kas lapangan (dibawa pagi)",
+      label: "Kas Lapangan (dibawa pagi)",
       tanda: "awal",
       nilai: r.kasLapangan,
     },
     { kunci: "storting", label: "Storting", tanda: "masuk", nilai: r.storting },
     {
       kunci: "tabunganMasuk",
-      label: "Tabungan masuk akad",
+      label: "Tabungan Masuk Akad",
       tanda: "masuk",
       nilai: r.tabunganMasuk,
     },
-    { kunci: "potonganAdmin", label: "Potongan admin", tanda: "masuk", nilai: r.potonganAdmin },
+    { kunci: "potonganAdmin", label: "Potongan Admin", tanda: "masuk", nilai: r.potonganAdmin },
     { kunci: "droping", label: "Droping", tanda: "keluar", nilai: r.droping },
-    { kunci: "transfer", label: "Transfer setoran", tanda: "keluar", nilai: r.transfer },
-    { kunci: "biaya", label: "Biaya tak terduga", tanda: "keluar", nilai: r.biaya },
+    { kunci: "transfer", label: "Transfer Setoran", tanda: "keluar", nilai: r.transfer },
+    { kunci: "biaya", label: "Biaya Tak Terduga", tanda: "keluar", nilai: r.biaya },
   ];
 }
 

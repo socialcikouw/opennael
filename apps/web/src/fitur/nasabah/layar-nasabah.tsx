@@ -30,7 +30,7 @@ const KOLOM = [
   k.accessor((n) => n.kolektor?.nama ?? "—", { id: "pemegang", header: "Pemegang" }),
   k.accessor((n) => n.pinjamanAktif?.saldo ?? 0, {
     id: "pinjaman",
-    header: "Pinjaman aktif",
+    header: "Pinjaman Aktif",
     meta: { kanan: true },
     cell: (c) => {
       const p = c.row.original.pinjamanAktif;
@@ -118,7 +118,7 @@ export function LayarNasabah() {
             void navigasi({ search: (s) => ({ ...s, kolektor: e.target.value || undefined }) })
           }
         >
-          <option value="">Semua kolektor</option>
+          <option value="">Semua Kolektor</option>
           {semuaKolektor.map((o) => (
             <option key={o.id} value={o.id}>
               {o.nama}

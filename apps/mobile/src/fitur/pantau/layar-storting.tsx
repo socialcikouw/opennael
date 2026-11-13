@@ -121,9 +121,9 @@ export function LayarStorting() {
             nilai={ringkas.total}
             keterangan={`${ringkas.jumlah} setoran${ringkas.transfer > 0 ? ` · ${rupiah(ringkas.transfer)} lewat transfer` : ""}`}
             rincian={[
-              { label: "Setoran murni", nilai: ringkas.murni },
-              { label: "Setoran pelunasan", nilai: ringkas.pelunasan, tanda: "+" },
-              { label: "Tabungan keluar", nilai: ringkas.tabunganKeluar, tanda: "−" },
+              { label: "Setoran Murni", nilai: ringkas.murni },
+              { label: "Setoran Pelunasan", nilai: ringkas.pelunasan, tanda: "+" },
+              { label: "Tabungan Keluar", nilai: ringkas.tabunganKeluar, tanda: "−" },
             ]}
           />
           <PilJenis nilai={saring} jumlah={jumlah} onPilih={setSaring} />

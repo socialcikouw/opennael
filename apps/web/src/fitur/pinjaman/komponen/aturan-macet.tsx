@@ -10,7 +10,7 @@ export function AturanMacet({ p }: { p: RincianPinjaman }) {
   if (!m) return null;
   return (
     <div className="space-y-1 rounded-lg bg-muted/50 px-3 py-2 text-sm">
-      <p className="font-medium">Aturan macet</p>
+      <p className="font-medium">Aturan Macet</p>
       {p.jenis === "tempoan" ? (
         <p>
           Macet bila belum lunas sesudah {m.batasTempoan ? formatTanggal(m.batasTempoan) : "—"}.

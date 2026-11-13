@@ -77,7 +77,7 @@ export function DialogPerangkat({ orang, tutup }: { orang: Karyawan; tutup: () =
                     {p.platform ? (
                       <Badge variant="secondary">{LABEL_PLATFORM[p.platform]}</Badge>
                     ) : null}
-                    {p.sedangDipakai ? <Badge variant="success">Perangkat ini</Badge> : null}
+                    {p.sedangDipakai ? <Badge variant="success">Perangkat Ini</Badge> : null}
                   </span>
                   <span className="block text-xs text-muted-foreground">
                     {p.diputus

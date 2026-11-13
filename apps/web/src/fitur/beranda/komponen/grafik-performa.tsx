@@ -56,7 +56,7 @@ export function GrafikPerforma({ sampai }: { sampai: string }) {
             formatter={(nilai, nama) =>
               nama === "persentase"
                 ? [nilai == null ? "—" : persen(Number(nilai)), "Performa"]
-                : [rupiah(Number(nilai)), "Setoran murni"]
+                : [rupiah(Number(nilai)), "Setoran Murni"]
             }
           />
           <Bar
