@@ -1,6 +1,6 @@
 import type { BottomTabBarProps } from "expo-router/js-tabs";
 import { type ReactNode, useEffect } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
@@ -21,6 +21,12 @@ const TINGGI = 64;
 const TOMBOL = 56;
 /** Jarak pil dari tepi bawah area aman. */
 const JARAK_BAWAH = RUANG[3];
+/**
+ * Bayangan benda mengambang hanya di iOS. Di Android `boxShadow` tampil sebagai
+ * kotak di sekeliling tiap benda (pil, tombol mode, tombol +) — dibuang atas
+ * permintaan pemilik 14 Nov 2026; di sana tepinya cukup dari garis pil.
+ */
+const BAYANGAN_TAB = Platform.OS === "ios" ? BAYANGAN.mengambang : undefined;
 
 /**
  * Ruang kosong di bawah isi layar ber-tab, supaya butir terakhir tidak
@@ -173,7 +179,7 @@ const buatGaya = (WARNA: Warna) =>
       borderColor: WARNA.garis,
       backgroundColor: WARNA.permukaan,
       paddingHorizontal: RUANG[1],
-      boxShadow: BAYANGAN.mengambang,
+      boxShadow: BAYANGAN_TAB,
     },
     tab: {
       flex: 1,
@@ -216,7 +222,7 @@ const buatGaya = (WARNA: Warna) =>
       borderRadius: SUDUT.bulat,
       alignItems: "center",
       justifyContent: "center",
-      boxShadow: BAYANGAN.mengambang,
+      boxShadow: BAYANGAN_TAB,
     },
     kiri: { borderWidth: 1, borderColor: WARNA.garis, backgroundColor: WARNA.permukaan },
   });
