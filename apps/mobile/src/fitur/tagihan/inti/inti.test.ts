@@ -115,7 +115,7 @@ describe("kartu nasabah", () => {
     expect(vm.angsuranKeTeks).toBe("11");
     expect(vm.pinjamanKeTeks).toBe("Pinjaman Ke-2");
     expect(vm.namaTampil).toBe("sari");
-    expect(vm.akadTeks).toBe("1 Okt 26 • 15.00");
+    expect(vm.akadTeks).toBe("1 Okt • 15.00");
     expect([vm.pokokRp, vm.saldoRp, vm.angsuranRp, vm.tabunganRp]).toEqual([
       "Rp 1.000.000",
       "Rp 600.000",
@@ -184,7 +184,8 @@ describe("kartu nasabah", () => {
     );
     expect(m.hariTagih).toBe("Kamis");
     expect(m.subjudul).toBe("PULE BARAT · mingguan 8×");
-    expect(m.pinjamanKeTeks).toBe("Pinjaman Ke-1 · mingguan 8×");
+    // Jenis & tenor tak diulang di baris pinjaman-ke (mode + kotak mingguan menjelaskannya).
+    expect(m.pinjamanKeTeks).toBe("Pinjaman Ke-1");
   });
 
   test("VM dipakai ulang selama data, bahan, dan zona sama", () => {
@@ -195,16 +196,32 @@ describe("kartu nasabah", () => {
 
   test("jam akad mengikuti zona kantor; salinan migrasi tanpa jam", () => {
     const p = kartu({ waktuAkad: "2026-10-01T08:00:00.000Z" });
-    expect(kartuVM(p, KAMIS, bahan, "WIB").akadTeks).toBe("1 Okt 26 • 15.00");
-    expect(kartuVM(p, KAMIS, bahan, "WITA").akadTeks).toBe("1 Okt 26 • 16.00");
-    expect(kartuVM(p, KAMIS, bahan, "WIT").akadTeks).toBe("1 Okt 26 • 17.00");
+    expect(kartuVM(p, KAMIS, bahan, "WIB").akadTeks).toBe("1 Okt • 15.00");
+    expect(kartuVM(p, KAMIS, bahan, "WITA").akadTeks).toBe("1 Okt • 16.00");
+    expect(kartuVM(p, KAMIS, bahan, "WIT").akadTeks).toBe("1 Okt • 17.00");
     // Lewat tengah malam kantor: jam tetap dua angka.
     expect(
       kartuVM(kartu({ waktuAkad: "2026-10-01T17:05:00.000Z" }), KAMIS, bahan, "WIB").akadTeks,
-    ).toBe("1 Okt 26 • 00.05");
+    ).toBe("1 Okt • 00.05");
     expect(kartuVM(kartu({ asal: "migrasi", waktuAkad: null }), KAMIS, bahan, ZONA).akadTeks).toBe(
-      "1 Okt 26",
+      "1 Okt",
     );
+  });
+
+  test("tahun akad hanya ditulis bila bukan tahun ini", () => {
+    const lama = kartu({ tanggalAkad: "2025-12-30", waktuAkad: "2025-12-30T01:00:00.000Z" });
+    expect(kartuVM(lama, KAMIS, bahan, "WIB").akadTeks).toBe("30 Des 25 • 08.00");
+    expect(
+      kartuVM(
+        kartu({ asal: "migrasi", tanggalAkad: "2025-12-30", waktuAkad: null }),
+        KAMIS,
+        bahan,
+        ZONA,
+      ).akadTeks,
+    ).toBe("30 Des 25");
+    // Tahun ini: tanpa tahun, juga di awal Januari.
+    const awalTahun = kartu({ tanggalAkad: "2026-01-02", waktuAkad: "2026-01-02T01:00:00.000Z" });
+    expect(kartuVM(awalTahun, KAMIS, bahan, "WIB").akadTeks).toBe("2 Jan • 08.00");
   });
 });
 

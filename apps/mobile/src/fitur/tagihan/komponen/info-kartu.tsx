@@ -17,9 +17,9 @@ export const CABANG_INFO = 1 + ISIAN_KOTAK + TINGGI_LINGKARAN / 2;
 /**
  * Bagian atas kotak kartu:
  *   (12) Budi Santoso                                ›
- *   Pinjaman Ke-3 · 1 Sep 26 • 14.00 [Macet] [Rabu]    ••••
+ *   Pinjaman Ke-3 · 1 Sep • 14.00 [Rabu]               ••••
  * Tanggal & jam akad sebaris di kanan "Pinjaman Ke-" (bila sempit, akad yang
- * terpotong lebih dulu). Lingkaran = angsuran yang sudah lunas: pekat berwarna mode dan besar supaya
+ * terpotong lebih dulu; tahun hanya bila bukan tahun ini; jenis & tenor tak diulang). Lingkaran = angsuran yang sudah lunas: pekat berwarna mode dan besar supaya
  * paling mencolok (beda dari lencana jumlah nasabah di judul kelompok yang
  * abu). Tabungan tanpa label — "••••" sampai diketuk, lalu nominalnya.
  * Baris nama bisa diketuk: membuka detail nasabah (`onBuka`); `onSiap` dipanggil

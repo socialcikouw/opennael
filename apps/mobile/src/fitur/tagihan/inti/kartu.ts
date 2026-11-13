@@ -10,7 +10,7 @@ import {
   waktuKantor,
   type ZonaWaktu,
 } from "@opennael/domain";
-import { tampilKampung, tampilNama, tanggalBertahun } from "@opennael/format";
+import { tampilKampung, tampilNama, tanggalBertahun, tanggalPendek } from "@opennael/format";
 import type { NamaIkon } from "../../../komponen/ui/daftar-ikon";
 import { type BahanGrid, type BarisPekan, nominalK, susunGrid } from "./grid";
 import { type MingguanVM, susunMingguan, susunTempo, type TempoVM } from "./khusus";
@@ -46,10 +46,10 @@ export interface KartuVM {
   subjudul: string;
   /** "12" — angsuran yang sudah lunas, isi lingkaran di depan nama. */
   angsuranKeTeks: string;
-  /** "Pinjaman Ke-3" atau "Pinjaman Ke-1 · mingguan 8×". */
+  /** "Pinjaman Ke-3". Jenis & tenor tak diulang: mode, kotak mingguan/tempoan, dan lencana hari sudah menjelaskannya. */
   pinjamanKeTeks: string;
   lencana: { teks: string; nada: Nada; ikon: NamaIkon } | null;
-  /** "1 Sep 26 • 15.00"; hanya tanggal bila jam akad tak diketahui (salinan migrasi). */
+  /** "1 Sep • 15.00" (tahun hanya bila bukan tahun ini: "1 Sep 25 • 15.00"); tanpa jam bila tak diketahui (salinan migrasi). */
   akadTeks: string;
   /** Mingguan: hari tagihnya ("Rabu"); selain itu null. */
   hariTagih: string | null;
@@ -140,6 +140,13 @@ function progres(p: KartuTagih, status: StatusGulung): NonNullable<KartuVM["prog
   };
 }
 
+/** "1 Sep" bila akad di tahun yang sama dengan hari ini; selain itu "1 Sep 25". */
+function tanggalAkadTeks(tanggalAkad: string, hariIni: string): string {
+  return tanggalAkad.slice(0, 4) === hariIni.slice(0, 4)
+    ? tanggalPendek(tanggalAkad)
+    : tanggalBertahun(tanggalAkad);
+}
+
 function judulSudah(p: KartuTagih): string | null {
   if (p.hariIni?.jenis === "libur") return "LIBUR HARI INI";
   if (p.hariIni?.jenis === "angsuran")
@@ -167,11 +174,11 @@ function susun(p: KartuTagih, hariIni: string, bahan: BahanGrid, zona: ZonaWaktu
     namaTampil: tampilNama(p.nasabah.nama),
     subjudul: `${tampilKampung(p.nasabah.kampung)}${ekor}`,
     angsuranKeTeks: String(p.angsuranKe),
-    pinjamanKeTeks: `Pinjaman Ke-${p.pinjamanKe}${ekor}`,
+    pinjamanKeTeks: `Pinjaman Ke-${p.pinjamanKe}`,
     lencana: lencana(p, e),
     akadTeks: p.waktuAkad
-      ? `${tanggalBertahun(p.tanggalAkad)} • ${jamDinding(p.waktuAkad, zona)}`
-      : tanggalBertahun(p.tanggalAkad),
+      ? `${tanggalAkadTeks(p.tanggalAkad, hariIni)} • ${jamDinding(p.waktuAkad, zona)}`
+      : tanggalAkadTeks(p.tanggalAkad, hariIni),
     hariTagih: p.jenis === "mingguan" ? (NAMA_HARI[hariPekanDari(p.tanggalAkad)] ?? null) : null,
     progres: e === "belum" && !tempoan ? progres(p, status) : null,
     grid: e === "belum" && p.jenis === "harian" ? susunGrid(bahan, p) : null,
