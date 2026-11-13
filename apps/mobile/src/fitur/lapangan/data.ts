@@ -3,6 +3,8 @@ import type { Peristiwa } from "@opennael/contracts";
 import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useMemo } from "react";
 import { api, kueri, panggil } from "@/lib/api";
+import { bacaPosisi } from "@/platform/lokasi";
+import { titikRumahDari } from "./inti/titik-rumah";
 
 /**
  * DATA LAPANGAN KOLEKTOR — kueri bersama layar kerja harian, kartu pinjaman,
@@ -35,6 +37,18 @@ export function useNasabah(id: string) {
 /** Semua pinjaman satu nasabah pegangan (aktif dan selesai) — detail nasabah. */
 export function usePinjamanNasabah(id: string) {
   return useQuery(kueri.lapangan.pinjamanNasabah(id));
+}
+
+/**
+ * Rekam titik rumah dari GPS HP sekarang (pegangan kolektor ini): baca posisi, periksa
+ * akurasi & wilayah, kirim, lalu segarkan bacaan lapangan supaya detail nasabah memuatnya.
+ */
+export function useRekamTitikRumah(id: string) {
+  const klien = useQueryClient();
+  return useMutation({
+    mutationFn: async () => tulis.lokasiRumah(id, titikRumahDari(await bacaPosisi())),
+    onSuccess: () => klien.invalidateQueries({ queryKey: kunci.lapangan }),
+  });
 }
 
 /**
@@ -126,4 +140,12 @@ export const tulis = {
     (await panggil(() => api.pembiayaan.lapangan.gulung.$post({ json }))).json(),
   libur: async (json: Parameters<typeof api.pembiayaan.lapangan.libur.$post>[0]["json"]) =>
     (await panggil(() => api.pembiayaan.lapangan.libur.$post({ json }))).json(),
+  /** Rekam titik rumah nasabah pegangan (menimpa yang lama; yang lama tercatat di riwayat server). */
+  lokasiRumah: async (
+    id: string,
+    json: Parameters<(typeof api.pembiayaan.nasabah)[":id"]["lokasi"]["$put"]>[0]["json"],
+  ) =>
+    (
+      await panggil(() => api.pembiayaan.nasabah[":id"].lokasi.$put({ param: { id }, json }))
+    ).json(),
 };

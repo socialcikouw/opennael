@@ -35,6 +35,12 @@
           "recordAudioAndroid": false
         }
       ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "OpenNael memakai lokasi untuk merekam titik rumah nasabah."
+        }
+      ],
       "expo-secure-store"
     ],
     "scheme": "opennael",

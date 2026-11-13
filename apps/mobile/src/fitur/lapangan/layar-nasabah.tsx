@@ -10,7 +10,13 @@ import { Lencana } from "@/komponen/ui/lencana";
 import { useWarna } from "@/komponen/ui/tampilan";
 import { Keterangan } from "@/komponen/ui/teks";
 import { Tombol } from "@/komponen/ui/tombol";
-import { useNasabah, usePinjamanNasabah, useSegarkanLapangan, useTagihan } from "./data";
+import {
+  useNasabah,
+  usePinjamanNasabah,
+  useRekamTitikRumah,
+  useSegarkanLapangan,
+  useTagihan,
+} from "./data";
 import { fotoTerbaru, tautanPeta, tautanTelepon, urutPinjaman } from "./inti/nasabah";
 import { BarisPinjaman } from "./komponen/baris-pinjaman";
 import { FotoSerahTerima } from "./komponen/foto-nasabah";
@@ -36,6 +42,7 @@ export function LayarNasabah({ id }: { id: string }) {
   const nasabah = useNasabah(id);
   const pinjaman = usePinjamanNasabah(id);
   const segarkan = useSegarkanLapangan();
+  const rekam = useRekamTitikRumah(id);
 
   // Cadangan cepat: kartu tagih nasabah ini yang sudah ada di memori.
   const kartu = tagih.data?.find((p) => p.nasabah.id === id);
@@ -57,6 +64,23 @@ export function LayarNasabah({ id }: { id: string }) {
   }
 
   const namaTampil = tampilNama(nama);
+  const rekamTitik = () => {
+    const ada = !!n?.lokasi;
+    Alert.alert(
+      ada ? "Perbarui Titik Rumah?" : "Rekam Titik Rumah?",
+      `Pastikan Anda sedang berada di depan rumah ${namaTampil}.${ada ? " Titik lama diganti (tetap tercatat di riwayat)." : ""}`,
+      [
+        { text: "Batal", style: "cancel" },
+        {
+          text: "Rekam",
+          onPress: () =>
+            rekam.mutate(undefined, {
+              onError: (e) => Alert.alert("Gagal Merekam Titik Rumah", e.message),
+            }),
+        },
+      ],
+    );
+  };
   return (
     <Gulir onSegarkan={segarkan}>
       <Stack.Screen options={{ title: namaTampil }} />
@@ -114,6 +138,15 @@ export function LayarNasabah({ id }: { id: string }) {
         ) : (
           <Keterangan>{nasabah.isPending ? "Memuat…" : "Titik rumah belum direkam."}</Keterangan>
         )}
+        {n ? (
+          <Tombol
+            judul={n.lokasi ? "Perbarui titik rumah" : "Rekam titik rumah di sini"}
+            ikon="map-pin"
+            jenis={n.lokasi ? "kedua" : "utama"}
+            memuat={rekam.isPending}
+            onPress={rekamTitik}
+          />
+        ) : null}
       </Kartu>
 
       <Text style={g.subjudul}>Pinjaman</Text>

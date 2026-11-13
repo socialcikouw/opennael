@@ -94,7 +94,10 @@ TS (tanpa migrasi, termasuk uji), web 8.244, HP 9.468, packages 3.513.
 
 Sidik jari runtime `preview` Android saat dokumen ini ditulis:
 `654c5ebcdac265c382ca036e6f1474b2e3968650` (`@expo/fingerprint` 0.21.6);
-`apps/mobile/.gitignore` termasuk sumbernya.
+`apps/mobile/.gitignore` termasuk sumbernya. *Berganti sengaja menjadi
+`24a9629fb5495dd5859492d69aec96df1ed945a7` pada 14 Nov 2026 karena paket native
+`expo-location` + plugin-nya (titik rumah dari HP); penataan struktur sudah selesai,
+jadi pembanding baru itulah yang dipakai.*
 
 ### 2.5 Duplikasi web ↔ HP
 
