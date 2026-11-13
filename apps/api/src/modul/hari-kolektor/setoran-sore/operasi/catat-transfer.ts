@@ -10,8 +10,9 @@ import {
   tidakDitemukan,
 } from "../../../../platform/http/galat";
 import { wajibPeran } from "../../../../platform/http/peran";
-import { type Konteks, keTransfer, pilihTransfer } from "../data";
+import type { Konteks } from "../data";
 import { kasSudahDiterima } from "../kunci-hari";
+import { keTransfer, pilihTransfer } from "../transfer-biaya";
 
 export function buatCatatTransfer(k: Konteks) {
   /** Catat transfer (kasir/bos): setoran hari ini, dalam batas I3, kas belum diterima. */

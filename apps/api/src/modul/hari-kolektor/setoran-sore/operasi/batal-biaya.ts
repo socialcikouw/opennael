@@ -9,8 +9,9 @@ import {
   tidakDitemukan,
 } from "../../../../platform/http/galat";
 import { wajibPeran } from "../../../../platform/http/peran";
-import { type Konteks, keBiaya, pilihBiaya } from "../data";
+import type { Konteks } from "../data";
 import { kasSudahDiterima } from "../kunci-hari";
+import { keBiaya, pilihBiaya } from "../transfer-biaya";
 
 export function buatBatalBiaya(k: Konteks) {
   /** Batal biaya (bos): hari yang sama, kas belum diterima. */

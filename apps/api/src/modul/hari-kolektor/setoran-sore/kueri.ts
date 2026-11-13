@@ -9,16 +9,8 @@ import {
   wilayah,
 } from "../../../platform/db/skema";
 import type { Aktor } from "../../../platform/http/aktor";
-import {
-  bacaHari,
-  type Konteks,
-  keBiaya,
-  keHariKas,
-  keTransfer,
-  kolektorYangDibaca,
-  pilihBiaya,
-  pilihTransfer,
-} from "./data";
+import { bacaHari, type Konteks, keHariKas, kolektorYangDibaca } from "./data";
+import { keBiaya, keTransfer, pilihBiaya, pilihTransfer } from "./transfer-biaya";
 
 /** Bacaan SETORAN SORE: hari kolektor, setoran, transfer, dan biaya. */
 export function buatKueriSetoranSore(k: Konteks) {

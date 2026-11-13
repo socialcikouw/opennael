@@ -4,8 +4,9 @@ import { biayaTakTerduga, hariKolektor } from "../../../../platform/db/skema";
 import type { Aktor } from "../../../../platform/http/aktor";
 import { kasSudahDiterimaGalat, melanggar } from "../../../../platform/http/galat";
 import { wajibPeran } from "../../../../platform/http/peran";
-import { type Konteks, keBiaya, namaKolektor, pilihBiaya } from "../data";
+import { type Konteks, namaKolektor } from "../data";
 import { kasSudahDiterima } from "../kunci-hari";
+import { keBiaya, pilihBiaya } from "../transfer-biaya";
 
 export function buatCatatBiaya(k: Konteks) {
   /** Catat biaya (kasir/bos): hari ini, kolektor masuk kerja, kas belum diterima. */
