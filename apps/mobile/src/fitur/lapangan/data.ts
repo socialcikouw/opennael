@@ -1,7 +1,7 @@
 import { kunci } from "@opennael/api-client";
 import type { Peristiwa } from "@opennael/contracts";
 import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { api, kueri, panggil } from "@/lib/api";
 
 /**
@@ -16,6 +16,33 @@ export function useHariIni() {
 
 export function useTagihan() {
   return useQuery(kueri.lapangan.tagihan());
+}
+
+/** Satu nasabah pegangan (kampung, HP, tabungan, titik rumah) — detail nasabah. */
+export function useNasabah(id: string) {
+  return useQuery(kueri.lapangan.nasabah(id));
+}
+
+/** Semua pinjaman satu nasabah pegangan (aktif dan selesai) — detail nasabah. */
+export function usePinjamanNasabah(id: string) {
+  return useQuery(kueri.lapangan.pinjamanNasabah(id));
+}
+
+/**
+ * Mulai mengambil detail nasabah (data dan pinjamannya) sebelum layarnya dibuka —
+ * dipanggil saat jari menekan nama di kartu, jadi sudah di jalan ketika dilepas.
+ * Yang masih segar di memori tak diambil ulang; galat diabaikan (layar detail
+ * mengambil sendiri).
+ */
+export function useSiapkanNasabah() {
+  const klien = useQueryClient();
+  return useCallback(
+    (id: string) => {
+      void klien.prefetchQuery(kueri.lapangan.nasabah(id));
+      void klien.prefetchQuery(kueri.lapangan.pinjamanNasabah(id));
+    },
+    [klien],
+  );
 }
 
 /** Kalender kantor sebulan (`YYYY-MM`): hari tagih & libur kantor — bahan grid kartu. */

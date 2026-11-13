@@ -5,7 +5,14 @@ import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Alert, LayoutAnimation } from "react-native";
-import { bacaGerbang, kabarTercatat, type Stempel, tulis, type useHariIni } from "@/fitur/lapangan";
+import {
+  bacaGerbang,
+  kabarTercatat,
+  type Stempel,
+  tulis,
+  type useHariIni,
+  useSiapkanNasabah,
+} from "@/fitur/lapangan";
 import type { KartuVM } from "./inti/kartu";
 import type { AksiKartu } from "./komponen/kartu-nasabah";
 
@@ -19,6 +26,7 @@ const LAMA_STEMPEL_MS = 900;
  */
 export function useAksiKartu(hariIni: ReturnType<typeof useHariIni>) {
   const klien = useQueryClient();
+  const siapkanNasabah = useSiapkanNasabah();
 
   // ---- transaksi ----------------------------------------------------------
   const [stempel, setStempel] = useState<ReadonlyMap<string, Stempel>>(new Map());
@@ -103,6 +111,9 @@ export function useAksiKartu(hariIni: ReturnType<typeof useHariIni>) {
 
   const aksi: AksiKartu = useMemo(
     () => ({
+      nasabah: (vm) =>
+        router.push({ pathname: "/kolektor/nasabah/[id]", params: { id: vm.p.nasabah.id } }),
+      siapNasabah: (vm) => siapkanNasabah(vm.p.nasabah.id),
       bayar: (vm) => {
         if (gerbangTutup()) return;
         router.push({ pathname: "/kolektor/bayar/[id]", params: { id: vm.id } });
@@ -166,7 +177,7 @@ export function useAksiKartu(hariIni: ReturnType<typeof useHariIni>) {
         );
       },
     }),
-    [gerbangTutup, catat],
+    [gerbangTutup, catat, siapkanNasabah],
   );
 
   return { stempel, sibuk, aksi, gerbang, lembarLibur };

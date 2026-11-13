@@ -34,6 +34,7 @@ import LogOut from "lucide-react-native/icons/log-out";
 import MapPin from "lucide-react-native/icons/map-pin";
 import Maximize2 from "lucide-react-native/icons/maximize-2";
 import Moon from "lucide-react-native/icons/moon";
+import Phone from "lucide-react-native/icons/phone";
 import Plus from "lucide-react-native/icons/plus";
 import RefreshCw from "lucide-react-native/icons/refresh-cw";
 import Repeat from "lucide-react-native/icons/repeat";
@@ -97,6 +98,7 @@ export const IKON = {
   "map-pin": MapPin,
   "maximize-2": Maximize2,
   moon: Moon,
+  phone: Phone,
   plus: Plus,
   "refresh-cw": RefreshCw,
   repeat: Repeat,

@@ -1,11 +1,14 @@
-import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { useGaya } from "@/komponen/ui/tampilan";
+import { TabunganRahasia } from "@/fitur/lapangan";
+import { Ikon } from "@/komponen/ui/ikon";
+import { useGaya, useWarna } from "@/komponen/ui/tampilan";
 import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/komponen/ui/tema";
 import type { KartuVM } from "../inti/kartu";
 import { LencanaHari, LencanaStatus } from "./lencana-kartu";
 
 const TINGGI_LINGKARAN = 36;
+/** Lama kartu ditahan sebelum Lunasi (konfirmasinya tetap ditanyakan layar). */
+export const TAHAN_LUNASI_MS = 600;
 /** Isian kotak kartu (pt) — kartu-nasabah memakai angka yang sama. */
 export const ISIAN_KOTAK = RUANG[3];
 /** Jarak dari atas kotak ke garis tengah baris nama — tempat cabang rel masuk. */
@@ -13,29 +16,42 @@ export const CABANG_INFO = 1 + ISIAN_KOTAK + TINGGI_LINGKARAN / 2;
 
 /**
  * Bagian atas kotak kartu:
- *   (12) Budi Santoso                 1 Sep 26 • 14.00
- *   Pinjaman Ke-3 [Macet] [Rabu]                  ••••
- * Lingkaran = angsuran yang sudah lunas: pekat berwarna mode dan besar supaya
+ *   (12) Budi Santoso                                ›
+ *   Pinjaman Ke-3 · 1 Sep 26 • 14.00 [Macet] [Rabu]    ••••
+ * Tanggal & jam akad sebaris di kanan "Pinjaman Ke-" (bila sempit, akad yang
+ * terpotong lebih dulu). Lingkaran = angsuran yang sudah lunas: pekat berwarna mode dan besar supaya
  * paling mencolok (beda dari lencana jumlah nasabah di judul kelompok yang
  * abu). Tabungan tanpa label — "••••" sampai diketuk, lalu nominalnya.
- * `onLunasi` (tahan lama kartu) juga ditawarkan sebagai aksi aksesibilitas
- * pada baris nama.
+ * Baris nama bisa diketuk: membuka detail nasabah (`onBuka`); `onSiap` dipanggil
+ * saat jari menekan, supaya datanya sudah mulai diambil. Tahan lama di baris itu
+ * tetap Lunasi (`onLunasi`), juga ditawarkan sebagai aksi aksesibilitas.
  */
 export function InfoKartu({
   vm,
   aksen,
   onLunasi,
+  onBuka,
+  onSiap,
 }: {
   vm: KartuVM;
   aksen: WarnaMode;
   onLunasi: (() => void) | null;
+  onBuka: () => void;
+  onSiap: () => void;
 }) {
   const gaya = useGaya(buatGaya);
+  const WARNA = useWarna();
   return (
     <View style={gaya.info}>
-      <View
-        style={gaya.baris}
-        accessible
+      <Pressable
+        style={({ pressed }) => [gaya.baris, pressed ? gaya.ditekan : null]}
+        onPress={onBuka}
+        onPressIn={onSiap}
+        onLongPress={onLunasi ?? undefined}
+        delayLongPress={TAHAN_LUNASI_MS}
+        hitSlop={{ top: 4, bottom: 4 }}
+        accessibilityRole="button"
+        accessibilityHint="Buka detail nasabah"
         accessibilityLabel={`${vm.namaTampil}, angsuran ke-${vm.p.angsuranKe}, akad ${vm.akadTeks}`}
         accessibilityActions={onLunasi ? [{ name: "lunasi", label: "Lunasi pinjaman" }] : []}
         onAccessibilityAction={(e) => {
@@ -55,12 +71,13 @@ export function InfoKartu({
         <Text style={gaya.nama} numberOfLines={1}>
           {vm.namaTampil}
         </Text>
-        <Text style={gaya.akad}>{vm.akadTeks}</Text>
-      </View>
+        <Ikon nama="chevron-right" ukuran={16} warna={WARNA.redup} />
+      </Pressable>
       <View style={gaya.barisKecil}>
         <View style={gaya.kiri}>
           <Text style={gaya.pinjamanKe} numberOfLines={1}>
             {vm.pinjamanKeTeks}
+            <Text style={gaya.akad}> · {vm.akadTeks}</Text>
           </Text>
           {vm.hariTagih ? <LencanaHari hari={vm.hariTagih} aksen={aksen} /> : null}
           {vm.lencana ? <LencanaStatus lencana={vm.lencana} /> : null}
@@ -71,29 +88,10 @@ export function InfoKartu({
   );
 }
 
-/** Tabungan nasabah tak dipampang: "••••" sampai diketuk (kartu sering terbuka di depan orang lain). */
-function TabunganRahasia({ nilai }: { nilai: string }) {
-  const gaya = useGaya(buatGaya);
-  const [buka, setBuka] = useState(false);
-  return (
-    <Pressable
-      onPress={() => setBuka((b) => !b)}
-      hitSlop={8}
-      accessibilityRole="button"
-      accessibilityLabel={
-        buka
-          ? `Tabungan ${nilai}. Ketuk untuk menyembunyikan`
-          : "Tabungan tersembunyi. Ketuk untuk menampilkan"
-      }
-    >
-      <Text style={gaya.tabungan}>{buka ? nilai : "••••"}</Text>
-    </Pressable>
-  );
-}
-
 const buatGaya = (WARNA: Warna) =>
   StyleSheet.create({
     info: { gap: RUANG[1] },
+    ditekan: { opacity: 0.6 },
     baris: {
       minHeight: TINGGI_LINGKARAN,
       flexDirection: "row",
@@ -114,5 +112,4 @@ const buatGaya = (WARNA: Warna) =>
     barisKecil: { minHeight: 20, flexDirection: "row", alignItems: "center", gap: RUANG[2] },
     kiri: { flex: 1, minWidth: 0, flexDirection: "row", alignItems: "center", gap: RUANG[2] },
     pinjamanKe: { ...HURUF.xs, flexShrink: 1, color: WARNA.redup },
-    tabungan: { ...HURUF.xs, fontWeight: TEBAL.semi, color: WARNA.teksKedua },
   });

@@ -45,6 +45,15 @@ const serupa = createRoute({
   request: { query: saringNasabahSerupaSchema },
   responses: { 200: { description: "Kandidat", ...json(z.array(nasabahSerupaSchema)) }, ...galat },
 });
+const satu = createRoute({
+  method: "get",
+  path: "/nasabah/{id}",
+  tags: tag,
+  summary: "Satu nasabah — bos, pengawas; kolektor: pegangannya (detail nasabah di HP)",
+  security: aman,
+  request: { params: idParamSchema },
+  responses: berhasil,
+});
 const neraca = createRoute({
   method: "get",
   path: "/nasabah/{id}/neraca",
@@ -100,32 +109,41 @@ export function ruteNasabah(layanan: LayananNasabah, periksa: PeriksaTokenAkses)
   router.use("/lapangan/*", masuk);
   router.use("/nasabah", masuk);
   router.use("/nasabah/*", masuk);
-  return router
-    .openapi(daftar, async (c) =>
-      c.json(await layanan.daftar(c.get("aktor"), c.req.valid("query")), 200),
-    )
-    .openapi(serupa, async (c) =>
-      c.json(await layanan.serupa(c.get("aktor"), c.req.valid("query")), 200),
-    )
-    .openapi(neraca, async (c) =>
-      c.json(await layanan.neraca(c.get("aktor"), c.req.valid("param").id), 200),
-    )
-    .openapi(ubah, async (c) =>
-      c.json(await layanan.ubah(c.get("aktor"), c.req.valid("param").id, c.req.valid("json")), 200),
-    )
-    .openapi(pindah, async (c) =>
-      c.json(
-        await layanan.pindah(c.get("aktor"), c.req.valid("param").id, c.req.valid("json")),
-        200,
-      ),
-    )
-    .openapi(lokasi, async (c) =>
-      c.json(
-        await layanan.rekamLokasi(c.get("aktor"), c.req.valid("param").id, c.req.valid("json")),
-        200,
-      ),
-    )
-    .openapi(nasabahLama, async (c) =>
-      c.json(await layanan.daftarNasabahLama(c.get("aktor")), 200),
-    );
+  return (
+    router
+      .openapi(daftar, async (c) =>
+        c.json(await layanan.daftar(c.get("aktor"), c.req.valid("query")), 200),
+      )
+      .openapi(serupa, async (c) =>
+        c.json(await layanan.serupa(c.get("aktor"), c.req.valid("query")), 200),
+      )
+      // Sesudah `serupa`: "/nasabah/serupa" harus terpasang lebih dulu dari "/nasabah/{id}".
+      .openapi(satu, async (c) =>
+        c.json(await layanan.baca(c.get("aktor"), c.req.valid("param").id), 200),
+      )
+      .openapi(neraca, async (c) =>
+        c.json(await layanan.neraca(c.get("aktor"), c.req.valid("param").id), 200),
+      )
+      .openapi(ubah, async (c) =>
+        c.json(
+          await layanan.ubah(c.get("aktor"), c.req.valid("param").id, c.req.valid("json")),
+          200,
+        ),
+      )
+      .openapi(pindah, async (c) =>
+        c.json(
+          await layanan.pindah(c.get("aktor"), c.req.valid("param").id, c.req.valid("json")),
+          200,
+        ),
+      )
+      .openapi(lokasi, async (c) =>
+        c.json(
+          await layanan.rekamLokasi(c.get("aktor"), c.req.valid("param").id, c.req.valid("json")),
+          200,
+        ),
+      )
+      .openapi(nasabahLama, async (c) =>
+        c.json(await layanan.daftarNasabahLama(c.get("aktor")), 200),
+      )
+  );
 }

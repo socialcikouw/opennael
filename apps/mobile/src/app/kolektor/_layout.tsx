@@ -8,6 +8,7 @@ export default function TataLetakKolektor() {
   return (
     <Stack screenOptions={opsi}>
       <Stack.Screen name="(tab)" options={{ headerShown: false }} />
+      <Stack.Screen name="nasabah/[id]" options={{ title: "Nasabah" }} />
       <Stack.Screen name="pinjaman/[id]" options={{ title: "Pinjaman" }} />
       <Stack.Screen name="gulung/[id]" options={{ title: "Gulung" }} />
       <Stack.Screen name="bayar/[id]" options={{ title: "Bayar" }} />

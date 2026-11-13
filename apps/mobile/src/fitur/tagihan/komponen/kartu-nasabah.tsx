@@ -7,7 +7,7 @@ import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/kompon
 import type { KartuVM } from "../inti/kartu";
 import { AngkaKartu } from "./angka-kartu";
 import { GridBulan } from "./grid-bulan";
-import { CABANG_INFO, InfoKartu, ISIAN_KOTAK } from "./info-kartu";
+import { CABANG_INFO, InfoKartu, ISIAN_KOTAK, TAHAN_LUNASI_MS } from "./info-kartu";
 import { KakiKartu } from "./kaki-kartu";
 import { BarisRel, JARAK_KARTU } from "./rel-kartu";
 import { BlokMinggu, BlokTempo } from "./slot-khusus";
@@ -18,10 +18,11 @@ export interface AksiKartu {
   gulung: (vm: KartuVM) => void;
   libur: (vm: KartuVM) => void;
   lunas: (vm: KartuVM) => void;
+  /** Buka detail nasabah (ketuk baris nama). */
+  nasabah: (vm: KartuVM) => void;
+  /** Mulai mengambil detail nasabah sebelum layarnya dibuka (jari menekan baris nama). */
+  siapNasabah: (vm: KartuVM) => void;
 }
-
-/** Lama kartu ditahan sebelum Lunasi (konfirmasinya tetap ditanyakan layar). */
-const TAHAN_LUNASI_MS = 600;
 
 /**
  * KARTU NASABAH — anak dari rel pohon kelompoknya (judul kampung di atas),
@@ -52,7 +53,13 @@ export const KartuNasabah = memo(function KartuNasabah(props: {
 
   const kotak = (
     <View style={gaya.kotak}>
-      <InfoKartu vm={vm} aksen={props.aksen} onLunasi={lunasi} />
+      <InfoKartu
+        vm={vm}
+        aksen={props.aksen}
+        onLunasi={lunasi}
+        onBuka={() => props.aksi.nasabah(vm)}
+        onSiap={() => props.aksi.siapNasabah(vm)}
+      />
       {vm.grid ? (
         <GridBulan pekan={vm.grid} kolomHariIni={props.kolomHariIni} aksen={props.aksen} />
       ) : vm.mingguan ? (

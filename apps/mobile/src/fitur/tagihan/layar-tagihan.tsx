@@ -118,7 +118,7 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
       if (item.jenis === "judul") {
         return <JudulKelompok baris={item} onLipat={ubahLipat} />;
       }
-      if (item.jenis === "sudah") return <KartuSudah vm={item.vm} aksen={aksen} />;
+      if (item.jenis === "sudah") return <KartuSudah vm={item.vm} aksen={aksen} aksi={aksi} />;
       return (
         <KartuNasabah
           vm={item.vm}

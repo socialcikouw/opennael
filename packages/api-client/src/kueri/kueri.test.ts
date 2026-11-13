@@ -386,6 +386,20 @@ const KASUS: [string, unknown, readonly unknown[], string, unknown[]][] = [
     [],
   ],
   [
+    "lapangan.nasabah",
+    kueri.lapangan.nasabah("n1"),
+    ["lapangan", "nasabah", "n1"],
+    "pembiayaan.nasabah.:id.$get",
+    [{ param: { id: "n1" } }],
+  ],
+  [
+    "lapangan.pinjamanNasabah",
+    kueri.lapangan.pinjamanNasabah("n1"),
+    ["lapangan", "pinjaman-nasabah", "n1"],
+    "pembiayaan.pinjaman.$get",
+    [{ query: { status: "semua", nasabahId: "n1" } }],
+  ],
+  [
     "lapangan.nasabahLama",
     kueri.lapangan.nasabahLama(),
     ["lapangan", "nasabah-lama"],

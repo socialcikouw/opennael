@@ -22,4 +22,31 @@ describe.skipIf(!URL_DB)("nasabah", () => {
       ]);
     });
   }, 120_000);
+
+  test("GET /nasabah/{id}: kolektor membaca pegangannya, bos juga; id asing 404; /serupa tak tertukar", async () => {
+    await dalamTransaksi(async (tx) => {
+      const { kirim, k, bos, absen, akadBaru } = await siapkanLapangan(tx);
+      await absen();
+      const budi = await akadBaru("budi");
+      const id = budi.isi.nasabah.id as string;
+
+      const milikSendiri = await kirim(`/nasabah/${id}`, undefined, k);
+      expect(milikSendiri.status).toBe(200);
+      expect(milikSendiri.isi).toMatchObject({
+        id,
+        nama: "budi",
+        kampung: { nama: "pule barat" },
+        kolektor: { nama: "andi" },
+        saldoTabungan: expect.any(Number),
+        diblokir: false,
+        pinjamanAktif: { id: budi.isi.id, status: "berjalan" },
+        lokasi: null,
+      });
+
+      expect((await kirim(`/nasabah/${id}`, undefined, bos.tokenAkses)).status).toBe(200);
+      expect((await kirim(`/nasabah/${crypto.randomUUID()}`, undefined, k)).status).toBe(404);
+      // "serupa" tetap rute sendiri, bukan id.
+      expect((await kirim("/nasabah/serupa?nama=bu", undefined, k)).status).toBe(200);
+    });
+  }, 120_000);
 });

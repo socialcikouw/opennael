@@ -1,9 +1,10 @@
 import { memo } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Ikon } from "@/komponen/ui/ikon";
 import { useGaya, useWarna } from "@/komponen/ui/tampilan";
 import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/komponen/ui/tema";
 import type { KartuVM } from "../inti/kartu";
+import type { AksiKartu } from "./kartu-nasabah";
 import { LencanaHari } from "./lencana-kartu";
 
 /**
@@ -14,9 +15,11 @@ import { LencanaHari } from "./lencana-kartu";
 export const KartuSudah = memo(function KartuSudah({
   vm,
   aksen,
+  aksi,
 }: {
   vm: KartuVM;
   aksen: WarnaMode;
+  aksi: AksiKartu;
 }) {
   const WARNA = useWarna();
   const gaya = useGaya(buatGaya);
@@ -39,14 +42,21 @@ export const KartuSudah = memo(function KartuSudah({
       >
         <Text style={[gaya.lingkaranTeks, { color: warna }]}>{vm.p.angsuranKe}</Text>
       </View>
-      <View style={gaya.identitas}>
+      <Pressable
+        style={({ pressed }) => [gaya.identitas, pressed ? gaya.ditekan : null]}
+        onPress={() => aksi.nasabah(vm)}
+        onPressIn={() => aksi.siapNasabah(vm)}
+        hitSlop={{ top: 4, bottom: 4 }}
+        accessibilityRole="button"
+        accessibilityHint="Buka detail nasabah"
+      >
         <Text style={gaya.nama} numberOfLines={1}>
           {vm.nama}
         </Text>
         <Text style={gaya.alamat} numberOfLines={1}>
           {vm.subjudul}
         </Text>
-      </View>
+      </Pressable>
       <View style={gaya.angka}>
         <View>
           <Text style={gaya.label}>Angsuran</Text>
@@ -123,6 +133,7 @@ const buatGaya = (WARNA: Warna) =>
     },
     lingkaranTeks: { ...HURUF["2xl"], fontWeight: TEBAL.ekstra, fontVariant: ["tabular-nums"] },
     identitas: { alignItems: "center", gap: RUANG[0.5] },
+    ditekan: { opacity: 0.6 },
     nama: { ...HURUF.base, fontWeight: TEBAL.tebal, textTransform: "uppercase", color: WARNA.teks },
     alamat: { ...HURUF.xs, color: WARNA.redup },
     angka: { flexDirection: "row", justifyContent: "space-between", alignSelf: "stretch" },

@@ -111,6 +111,25 @@ export function kueriLapangan({ api, ambil }: Bahan) {
           queryKey: [...kunci.lapangan, "kampung"],
           queryFn: () => ambil(() => api.kantor.lapangan.kampung.$get()),
         }),
+      /**
+       * Satu nasabah pegangan — detail nasabah di HP (kampung, HP, tabungan, titik rumah).
+       * Segar 30 dtk: ambil-dini saat jari menekan nama (berulang sambil menggulir) tak
+       * mengambil ulang yang baru saja diambil; tulisan lapangan tetap menyegarkannya.
+       */
+      nasabah: (id: string) =>
+        queryOptions({
+          queryKey: [...kunci.lapangan, "nasabah", id],
+          queryFn: () => ambil(() => api.pembiayaan.nasabah[":id"].$get({ param: { id } })),
+          staleTime: 30_000,
+        }),
+      /** Semua pinjaman satu nasabah pegangan (aktif dan selesai) — detail nasabah; segar 30 dtk. */
+      pinjamanNasabah: (nasabahId: string) =>
+        queryOptions({
+          queryKey: [...kunci.lapangan, "pinjaman-nasabah", nasabahId],
+          queryFn: () =>
+            ambil(() => api.pembiayaan.pinjaman.$get({ query: { status: "semua", nasabahId } })),
+          staleTime: 30_000,
+        }),
       nasabahLama: () =>
         queryOptions({
           queryKey: [...kunci.lapangan, "nasabah-lama"],
