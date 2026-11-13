@@ -194,17 +194,19 @@ describe.skipIf(!URL_DB)("kalender kantor", () => {
       ).isi as Sesi;
       const kantorId = bos.pengguna.kantor.id;
       // Pekan kerja bawaan kantor baru: Senin–Sabtu (B2). Libur kantor Kamis 5 Nov.
+      // Tahun 2099 sengaja: libur tak bisa dideklarasikan untuk tanggal yang sudah lewat,
+      // jadi bulan uji harus selalu di depan hari ini.
       await tx.execute(sql`
         insert into libur_kantor (kantor_id, tanggal, alasan_libur, dibuat_oleh)
-        values (${kantorId}, '2026-11-05', 'rapat', ${bos.pengguna.id})`);
-      const r = await kirim("/lapangan/kalender?bulan=2026-11", undefined, bos.tokenAkses);
+        values (${kantorId}, '2099-11-05', 'rapat', ${bos.pengguna.id})`);
+      const r = await kirim("/lapangan/kalender?bulan=2099-11", undefined, bos.tokenAkses);
       expect(r.status).toBe(200);
-      // November 2026: 30 hari, 5 Minggu → 25 hari kerja, dikurangi 1 libur kantor.
+      // November 2099: 30 hari, 1 Nov = Minggu → 5 Minggu → 25 hari kerja, dikurangi 1 libur kantor.
       expect(r.isi.hariTagih).toHaveLength(24);
-      expect(r.isi.hariTagih).not.toContain("2026-11-01"); // Minggu
-      expect(r.isi.hariTagih).not.toContain("2026-11-05"); // libur kantor
-      expect(r.isi.hariTagih).toContain("2026-11-30");
-      expect(r.isi.liburKantor).toEqual([{ tanggal: "2026-11-05", alasan: "rapat" }]);
+      expect(r.isi.hariTagih).not.toContain("2099-11-01"); // Minggu
+      expect(r.isi.hariTagih).not.toContain("2099-11-05"); // libur kantor
+      expect(r.isi.hariTagih).toContain("2099-11-30");
+      expect(r.isi.liburKantor).toEqual([{ tanggal: "2099-11-05", alasan: "rapat" }]);
       expect(
         (await kirim("/lapangan/kalender?bulan=2026-13", undefined, bos.tokenAkses)).status,
       ).toBe(400);
