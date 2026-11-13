@@ -1,16 +1,9 @@
 import { Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { tepiPanelBawah } from "@/komponen/ui/bayangan";
 import { Ikon } from "@/komponen/ui/ikon";
 import { useGaya, useWarna } from "@/komponen/ui/tampilan";
-import {
-  BAYANGAN,
-  HURUF,
-  RUANG,
-  SUDUT,
-  TEBAL,
-  type Warna,
-  type WarnaMode,
-} from "@/komponen/ui/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/komponen/ui/tema";
 import { PAPAN_POKOK } from "../inti/papan";
 import { PapanTombol, tinggiTombolPapan } from "./papan-tombol";
 
@@ -75,7 +68,7 @@ const buatGaya = (WARNA: Warna) =>
       borderTopLeftRadius: SUDUT.lebar,
       borderTopRightRadius: SUDUT.lebar,
       backgroundColor: WARNA.permukaan,
-      boxShadow: BAYANGAN.panelBawah,
+      ...tepiPanelBawah(WARNA.garis),
     },
     konfirmasi: {
       height: 56,

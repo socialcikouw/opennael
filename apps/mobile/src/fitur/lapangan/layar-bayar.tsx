@@ -5,11 +5,12 @@ import { router, Stack } from "expo-router";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { tepiPanelBawah } from "@/komponen/ui/bayangan";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Gulir } from "@/komponen/ui/layar";
 import { useGaya, useWarna, useWarnaMode } from "@/komponen/ui/tampilan";
 import { Keterangan } from "@/komponen/ui/teks";
-import { BAYANGAN, HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
 import { Tombol } from "@/komponen/ui/tombol";
 import { cobaAturan } from "@/lib/aturan";
 import { tulis, useTagihan } from "./data";
@@ -273,7 +274,7 @@ const buatGaya = (WARNA: Warna) =>
       borderTopLeftRadius: SUDUT.lebar,
       borderTopRightRadius: SUDUT.lebar,
       backgroundColor: WARNA.permukaan,
-      boxShadow: BAYANGAN.panelBawah,
+      ...tepiPanelBawah(WARNA.garis),
     },
     konfirmasi: {
       height: 56,

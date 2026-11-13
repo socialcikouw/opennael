@@ -250,7 +250,10 @@ export const TEBAL = {
 /** Tinggi sentuhan minimal (pedoman iOS 44 pt). */
 export const SENTUH = { kecil: 40, sedang: 44, besar: 52, isianUang: 56 } as const;
 
-/** Bayangan tipis kartu — `boxShadow` berlaku di iOS & Android (arsitektur baru). */
+/**
+ * Nilai bayangan mentah. Layar TIDAK memakainya langsung: lewat `bayangan` /
+ * `tepiPanelBawah` di `bayangan.ts` (hanya iOS; di Android tampil sebagai kotak).
+ */
 export const BAYANGAN = {
   kecil: "0px 1px 2px rgba(15, 23, 42, 0.06)",
   sedang: "0px 1px 3px rgba(15, 23, 42, 0.10)",

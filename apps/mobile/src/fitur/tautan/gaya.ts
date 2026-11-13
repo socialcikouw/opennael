@@ -1,5 +1,6 @@
 import { Platform, StyleSheet } from "react-native";
-import { BAYANGAN, HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
+import { bayangan } from "@/komponen/ui/bayangan";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
 
 export const buatGaya = (WARNA: Warna) =>
   StyleSheet.create({
@@ -28,7 +29,7 @@ export const buatGaya = (WARNA: Warna) =>
       borderColor: WARNA.garis,
       backgroundColor: WARNA.permukaan,
       padding: RUANG[6],
-      boxShadow: BAYANGAN.kecil,
+      boxShadow: bayangan.kecil,
     },
     qr: { borderRadius: SUDUT.besar, backgroundColor: WARNA.putih, padding: RUANG[3] },
     tengah: { alignItems: "center", gap: RUANG[1] },

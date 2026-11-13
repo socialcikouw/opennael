@@ -1,10 +1,11 @@
 import { rupiah } from "@opennael/format";
 import type { ReactNode } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { bayangan } from "@/komponen/ui/bayangan";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
 import { useGaya, useWarna, useWarnaMode } from "@/komponen/ui/tampilan";
-import { BAYANGAN, HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
 
 export interface RincianTotal {
   label: string;
@@ -72,7 +73,7 @@ const buatGaya = (WARNA: Warna) =>
       borderColor: WARNA.garis,
       backgroundColor: WARNA.permukaan,
       padding: RUANG[5],
-      boxShadow: BAYANGAN.kecil,
+      boxShadow: bayangan.kecil,
     },
     kepala: { flexDirection: "row", alignItems: "center", gap: RUANG[2] },
     ikon: {

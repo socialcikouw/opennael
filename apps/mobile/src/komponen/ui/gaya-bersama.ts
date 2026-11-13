@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
+import { bayangan } from "@/komponen/ui/bayangan";
 import { useGaya } from "@/komponen/ui/tampilan";
-import { BAYANGAN, HURUF, RUANG, SENTUH, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
+import { HURUF, RUANG, SENTUH, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
 
 /**
  * Gaya bersama: dipakai komponen di atas, dan oleh layar untuk tata letak
@@ -142,7 +143,7 @@ export const buatG = (WARNA: Warna) =>
       borderColor: WARNA.garis,
       backgroundColor: WARNA.permukaan,
       padding: RUANG[4],
-      boxShadow: BAYANGAN.kecil,
+      boxShadow: bayangan.kecil,
     },
 
     barisNilai: {
@@ -190,7 +191,7 @@ export const buatG = (WARNA: Warna) =>
       justifyContent: "center",
       borderRadius: SUDUT.sedang,
     },
-    segmenAktif: { backgroundColor: WARNA.permukaan, boxShadow: BAYANGAN.sedang },
+    segmenAktif: { backgroundColor: WARNA.permukaan, boxShadow: bayangan.sedang },
     pilihanTeks: { ...HURUF.sm, fontWeight: TEBAL.semi },
     /** Butir pilihan bulat — juga dipakai layar (mis. saran kampung). */
     chip: {
