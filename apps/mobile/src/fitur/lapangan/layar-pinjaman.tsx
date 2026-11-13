@@ -10,7 +10,7 @@ import { Pilihan } from "@/komponen/ui/pilihan";
 import { Spanduk } from "@/komponen/ui/spanduk";
 import { Keterangan } from "@/komponen/ui/teks";
 import { Tombol } from "@/komponen/ui/tombol";
-import { useHariIni, useTagihan } from "./data";
+import { useHariIni, useSegarkanLapangan, useTagihan } from "./data";
 import { bacaGerbang } from "./gerbang";
 import { FotoSerahTerima } from "./komponen/foto-nasabah";
 import { PanelLibur } from "./komponen/panel-libur";
@@ -25,6 +25,7 @@ export function LayarPinjaman({ id, lihat }: { id: string; lihat?: string }) {
   // lihat=1: dibuka dari mode Semua — rincian saja, tanpa transaksi.
   const tagihan = useTagihan();
   const hariIni = useHariIni();
+  const segarkan = useSegarkanLapangan();
   const p = tagihan.data?.find((x) => x.id === id);
   const tempoan = p?.jenis === "tempoan";
   const [aksi, setAksi] = useState<Aksi | null>(null);
@@ -33,7 +34,7 @@ export function LayarPinjaman({ id, lihat }: { id: string; lihat?: string }) {
   if (tagihan.isPending || hariIni.isPending) return <Memuat />;
   if (!p) {
     return (
-      <Gulir>
+      <Gulir onSegarkan={segarkan}>
         <Keterangan>Pinjaman ini sudah tidak ada di daftar tagih (lunas atau digulung).</Keterangan>
         <Tombol judul="Kembali" ikon="arrow-left" jenis="kedua" onPress={() => router.back()} />
       </Gulir>
@@ -57,7 +58,7 @@ export function LayarPinjaman({ id, lihat }: { id: string; lihat?: string }) {
       ];
 
   return (
-    <Gulir>
+    <Gulir onSegarkan={segarkan}>
       <Stack.Screen options={{ title: p.nasabah.nama }} />
       {p.fotoSerahTerimaId ? (
         <FotoSerahTerima fotoId={p.fotoSerahTerimaId} nama={p.nasabah.nama} />

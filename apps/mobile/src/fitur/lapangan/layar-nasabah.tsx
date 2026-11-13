@@ -9,7 +9,7 @@ import { Lencana } from "@/komponen/ui/lencana";
 import { useWarna } from "@/komponen/ui/tampilan";
 import { Keterangan } from "@/komponen/ui/teks";
 import { Tombol } from "@/komponen/ui/tombol";
-import { useNasabah, usePinjamanNasabah, useTagihan } from "./data";
+import { useNasabah, usePinjamanNasabah, useSegarkanLapangan, useTagihan } from "./data";
 import { fotoTerbaru, tautanPeta, tautanTelepon, urutPinjaman } from "./inti/nasabah";
 import { BarisPinjaman } from "./komponen/baris-pinjaman";
 import { FotoSerahTerima } from "./komponen/foto-nasabah";
@@ -34,6 +34,7 @@ export function LayarNasabah({ id }: { id: string }) {
   const tagih = useTagihan();
   const nasabah = useNasabah(id);
   const pinjaman = usePinjamanNasabah(id);
+  const segarkan = useSegarkanLapangan();
 
   // Cadangan cepat: kartu tagih nasabah ini yang sudah ada di memori.
   const kartu = tagih.data?.find((p) => p.nasabah.id === id);
@@ -46,7 +47,7 @@ export function LayarNasabah({ id }: { id: string }) {
   if (!nama) {
     if (nasabah.isPending) return <Memuat />;
     return (
-      <Gulir>
+      <Gulir onSegarkan={segarkan}>
         <Keterangan>{nasabah.error?.message ?? "Nasabah ini tidak bisa dimuat."}</Keterangan>
         <Tombol judul="Coba lagi" ikon="refresh-cw" onPress={() => void nasabah.refetch()} />
         <Tombol judul="Kembali" ikon="arrow-left" jenis="kedua" onPress={() => router.back()} />
@@ -56,7 +57,7 @@ export function LayarNasabah({ id }: { id: string }) {
 
   const namaTampil = tampilNama(nama);
   return (
-    <Gulir>
+    <Gulir onSegarkan={segarkan}>
       <Stack.Screen options={{ title: namaTampil }} />
       {fotoId ? <FotoSerahTerima fotoId={fotoId} nama={namaTampil} /> : null}
 

@@ -18,6 +18,15 @@ export function useTagihan() {
   return useQuery(kueri.lapangan.tagihan());
 }
 
+/**
+ * Menyegarkan semua bacaan lapangan (kunci berawalan `lapangan`) — untuk tarik-untuk-
+ * menyegarkan di layar rincian; janjinya selesai saat bacaan yang tampil sudah baru.
+ */
+export function useSegarkanLapangan() {
+  const klien = useQueryClient();
+  return useCallback(() => klien.invalidateQueries({ queryKey: kunci.lapangan }), [klien]);
+}
+
 /** Satu nasabah pegangan (kampung, HP, tabungan, titik rumah) — detail nasabah. */
 export function useNasabah(id: string) {
   return useQuery(kueri.lapangan.nasabah(id));
