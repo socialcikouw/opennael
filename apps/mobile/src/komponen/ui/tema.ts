@@ -226,10 +226,10 @@ export const SUDUT = {
 
 /** Ukuran huruf + tinggi baris (skala Tailwind dalam pt). */
 export const HURUF = {
-  /** Judul kolom grid setoran — di luar skala Tailwind. */
-  "3xs": { fontSize: 9, lineHeight: 12 },
-  /** Label terkecil (judul tab bawah, isi grid) — di luar skala Tailwind. */
-  "2xs": { fontSize: 10, lineHeight: 14 },
+  /** Judul kolom grid setoran — di luar skala Tailwind (14 Nov 2026: 9 → 10 pt, terlalu kecil di lapangan). */
+  "3xs": { fontSize: 10, lineHeight: 13 },
+  /** Label terkecil (judul tab bawah, isi grid) — di luar skala Tailwind (14 Nov 2026: 10 → 11 pt). */
+  "2xs": { fontSize: 11, lineHeight: 15 },
   xs: { fontSize: 12, lineHeight: 16 },
   sm: { fontSize: 14, lineHeight: 20 },
   base: { fontSize: 16, lineHeight: 24 },
