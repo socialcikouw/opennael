@@ -1,14 +1,12 @@
 import { useState } from "react";
 import { Pressable, StyleSheet, Text } from "react-native";
-import { useGaya } from "@/komponen/ui/tampilan";
-import { HURUF, TEBAL, type Warna } from "@/tema";
+import { HURUF, TEBAL, WARNA } from "@/tema";
 
 /**
  * Tabungan nasabah tak dipampang: "••••" sampai diketuk (layar sering terbuka
  * di depan orang lain). `besar` = ukuran nilai di baris detail nasabah.
  */
 export function TabunganRahasia({ nilai, besar }: { nilai: string; besar?: boolean }) {
-  const gaya = useGaya(buatGaya);
   const [buka, setBuka] = useState(false);
   return (
     <Pressable
@@ -26,13 +24,12 @@ export function TabunganRahasia({ nilai, besar }: { nilai: string; besar?: boole
   );
 }
 
-const buatGaya = (WARNA: Warna) =>
-  StyleSheet.create({
-    kecil: { ...HURUF.xs, fontWeight: TEBAL.semi, color: WARNA.teksKedua },
-    besar: {
-      ...HURUF.base,
-      fontWeight: TEBAL.semi,
-      color: WARNA.teks,
-      fontVariant: ["tabular-nums"],
-    },
-  });
+const gaya = StyleSheet.create({
+  kecil: { ...HURUF.xs, fontWeight: TEBAL.semi, color: WARNA.teksKedua },
+  besar: {
+    ...HURUF.base,
+    fontWeight: TEBAL.semi,
+    color: WARNA.teks,
+    fontVariant: ["tabular-nums"],
+  },
+});

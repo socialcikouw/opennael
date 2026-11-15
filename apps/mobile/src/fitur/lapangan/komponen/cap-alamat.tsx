@@ -1,7 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Ikon } from "@/komponen/ui/ikon";
-import { useGaya, useWarna } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, TEBAL, type Warna } from "@/tema";
+import { HURUF, RUANG, TEBAL, WARNA } from "@/tema";
 
 /**
  * CAP ALAMAT — alamat titik rumah yang menempel di dasar foto, seperti cap kamera
@@ -12,8 +11,6 @@ import { HURUF, RUANG, TEBAL, type Warna } from "@/tema";
  * tambahan isian dasar (layar penuh: tepi aman).
  */
 export function CapAlamat({ baris, bawah = 0 }: { baris: readonly string[]; bawah?: number }) {
-  const WARNA = useWarna();
-  const gaya = useGaya(buatGaya);
   return (
     <View
       pointerEvents="none"
@@ -35,22 +32,21 @@ export function CapAlamat({ baris, bawah = 0 }: { baris: readonly string[]; bawa
   );
 }
 
-const buatGaya = (WARNA: Warna) =>
-  StyleSheet.create({
-    pita: {
-      position: "absolute",
-      left: 0,
-      right: 0,
-      bottom: 0,
-      flexDirection: "row",
-      alignItems: "flex-start",
-      gap: RUANG[1.5],
-      paddingTop: RUANG[1.5],
-      paddingHorizontal: RUANG[2.5],
-      backgroundColor: WARNA.tiraiGelap,
-    },
-    pin: { paddingTop: 1 },
-    baris: { flex: 1, minWidth: 0 },
-    utama: { ...HURUF["3xs"], fontWeight: TEBAL.tebal, color: WARNA.diAtasFoto },
-    lain: { ...HURUF["3xs"], fontWeight: TEBAL.sedang, color: WARNA.diAtasFoto, opacity: 0.9 },
-  });
+const gaya = StyleSheet.create({
+  pita: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: RUANG[1.5],
+    paddingTop: RUANG[1.5],
+    paddingHorizontal: RUANG[2.5],
+    backgroundColor: WARNA.tiraiGelap,
+  },
+  pin: { paddingTop: 1 },
+  baris: { flex: 1, minWidth: 0 },
+  utama: { ...HURUF["3xs"], fontWeight: TEBAL.tebal, color: WARNA.diAtasFoto },
+  lain: { ...HURUF["3xs"], fontWeight: TEBAL.sedang, color: WARNA.diAtasFoto, opacity: 0.9 },
+});

@@ -2,7 +2,7 @@ import { LABEL_JENIS, namaTenor, rupiah, tampilKampung, tanggalPendek } from "@o
 import { router, Stack } from "expo-router";
 import { useState } from "react";
 import { Text, View } from "react-native";
-import { useG } from "@/komponen/ui/gaya-bersama";
+import { g } from "@/komponen/ui/gaya-bersama";
 import { Baris, Kartu } from "@/komponen/ui/kartu";
 import { Kerangka } from "@/komponen/ui/kerangka";
 import { Gulir } from "@/komponen/ui/layar";
@@ -22,7 +22,6 @@ type Aksi = "setor" | "lunas" | "libur" | "gulung";
 
 /** KARTU PINJAMAN — rincian lalu satu catatan hari ini: setor, lunas, libur, atau gulung. */
 export function LayarPinjaman({ id, lihat }: { id: string; lihat?: string }) {
-  const g = useG();
   // lihat=1: dibuka dari mode Semua — rincian saja, tanpa transaksi.
   const tagihan = useTagihan();
   const hariIni = useHariIni();

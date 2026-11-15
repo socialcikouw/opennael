@@ -1,7 +1,7 @@
 import { rupiah, tampilKampung, tampilNama } from "@opennael/format";
 import { router, Stack } from "expo-router";
 import { Alert, Linking, Text, View } from "react-native";
-import { useG } from "@/komponen/ui/gaya-bersama";
+import { g } from "@/komponen/ui/gaya-bersama";
 import { Kerangka } from "@/komponen/ui/kerangka";
 import { Gulir } from "@/komponen/ui/layar";
 import { Lencana } from "@/komponen/ui/lencana";
@@ -58,7 +58,6 @@ function bukaWhatsApp(nomorLengkap: string) {
  * sejak jari menekan nama.
  */
 export function LayarNasabah({ id }: { id: string }) {
-  const g = useG();
   const tagih = useTagihan();
   const nasabah = useNasabah(id);
   const pinjaman = usePinjamanNasabah(id);
@@ -166,7 +165,7 @@ export function LayarNasabah({ id }: { id: string }) {
       ) : null}
 
       <View style={g.baris2}>
-        <Text style={g.subjudul}>Pinjaman</Text>
+        <Text style={g.judulBagian}>PINJAMAN</Text>
         {pinjaman.data ? <Lencana teks={String(pinjaman.data.length)} /> : null}
       </View>
       {pinjaman.isPending ? (

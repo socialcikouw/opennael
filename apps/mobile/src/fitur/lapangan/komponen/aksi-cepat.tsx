@@ -1,8 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
-import { useGaya, useWarna } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 
 /**
  * AKSI CEPAT — kotak ketuk berikon di satu deret (Telepon · WhatsApp · Peta): satu ketukan
@@ -15,8 +14,6 @@ export function AksiCepat(props: {
   petunjuk?: string;
   onPress: () => void;
 }) {
-  const WARNA = useWarna();
-  const gaya = useGaya(buatGaya);
   return (
     <Pressable
       onPress={props.onPress}
@@ -32,26 +29,25 @@ export function AksiCepat(props: {
   );
 }
 
-const buatGaya = (WARNA: Warna) =>
-  StyleSheet.create({
-    kotak: {
-      flex: 1,
-      alignItems: "center",
-      gap: RUANG[2],
-      paddingVertical: RUANG[3],
-      borderRadius: SUDUT.besar,
-      borderWidth: 1,
-      borderColor: WARNA.garis,
-      backgroundColor: WARNA.permukaan,
-    },
-    ditekan: { opacity: 0.7 },
-    lingkar: {
-      width: 40,
-      height: 40,
-      alignItems: "center",
-      justifyContent: "center",
-      borderRadius: SUDUT.bulat,
-      backgroundColor: WARNA.utamaLembut,
-    },
-    label: { ...HURUF.sm, fontWeight: TEBAL.semi, color: WARNA.teksTombol },
-  });
+const gaya = StyleSheet.create({
+  kotak: {
+    flex: 1,
+    alignItems: "center",
+    gap: RUANG[2],
+    paddingVertical: RUANG[3],
+    borderRadius: SUDUT.besar,
+    borderWidth: 1,
+    borderColor: WARNA.garis,
+    backgroundColor: WARNA.permukaan,
+  },
+  ditekan: { opacity: 0.7 },
+  lingkar: {
+    width: 40,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: SUDUT.bulat,
+    backgroundColor: WARNA.utamaLembut,
+  },
+  label: { ...HURUF.sm, fontWeight: TEBAL.semi, color: WARNA.teksTombol },
+});

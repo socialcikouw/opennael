@@ -3,10 +3,9 @@ import { useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ikon } from "@/komponen/ui/ikon";
-import { useGaya, useWarna } from "@/komponen/ui/tampilan";
 import { ALAMAT_API } from "@/lib/api";
 import { sesi } from "@/lib/sesi";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 import { CapAlamat } from "./cap-alamat";
 
 /**
@@ -33,8 +32,6 @@ export function AvatarNasabah(props: {
   ukuran: number;
   tanda?: boolean;
 }) {
-  const WARNA = useWarna();
-  const gaya = useGaya(buatGaya);
   const [gagal, setGagal] = useState(false);
   const bulat = { width: props.ukuran, height: props.ukuran, borderRadius: props.ukuran / 2 };
   return (
@@ -78,8 +75,6 @@ export function FotoSerahTerima({
   nama: string;
   alamat?: readonly string[] | null;
 }) {
-  const WARNA = useWarna();
-  const gaya = useGaya(buatGaya);
   const [penuh, setPenuh] = useState(false);
   const [gagal, setGagal] = useState(false);
   const { top: atas, bottom: bawah } = useSafeAreaInsets();
@@ -138,51 +133,50 @@ export function FotoSerahTerima({
   );
 }
 
-const buatGaya = (WARNA: Warna) =>
-  StyleSheet.create({
-    latarFoto: { backgroundColor: WARNA.isiNetralTegas },
-    inisial: { alignItems: "center", justifyContent: "center", backgroundColor: WARNA.isiNetral },
-    inisialHuruf: { ...HURUF.base, fontWeight: TEBAL.tebal, color: WARNA.teksKedua },
-    tanda: {
-      position: "absolute",
-      right: -2,
-      bottom: -2,
-      width: 20,
-      height: 20,
-      borderRadius: SUDUT.bulat,
-      borderWidth: 2,
-      borderColor: WARNA.permukaan,
-      alignItems: "center",
-      justifyContent: "center",
-      backgroundColor: WARNA.utamaIsi,
-    },
-    // Bingkai memangkas cap alamat mengikuti sudut membulat foto.
-    bingkai: { overflow: "hidden", borderRadius: SUDUT.besar },
-    besar: { width: "100%", aspectRatio: 4 / 3, borderRadius: SUDUT.besar },
-    petunjuk: {
-      position: "absolute",
-      top: RUANG[2],
-      right: RUANG[2],
-      padding: RUANG[1.5],
-      borderRadius: SUDUT.bulat,
-      backgroundColor: WARNA.tiraiGelap,
-    },
-    gagal: {
-      alignItems: "center",
-      justifyContent: "center",
-      gap: RUANG[2],
-      borderWidth: 1,
-      borderStyle: "dashed",
-      borderColor: WARNA.garisTegas,
-    },
-    gagalTeks: { ...HURUF.sm, color: WARNA.redup },
-    layarPenuh: { flex: 1, backgroundColor: WARNA.latarMedia },
-    isiPenuh: { flex: 1 },
-    tutup: {
-      position: "absolute",
-      right: RUANG[4],
-      padding: RUANG[2],
-      borderRadius: SUDUT.bulat,
-      backgroundColor: WARNA.tiraiTerang,
-    },
-  });
+const gaya = StyleSheet.create({
+  latarFoto: { backgroundColor: WARNA.isiNetralTegas },
+  inisial: { alignItems: "center", justifyContent: "center", backgroundColor: WARNA.isiNetral },
+  inisialHuruf: { ...HURUF.base, fontWeight: TEBAL.tebal, color: WARNA.teksKedua },
+  tanda: {
+    position: "absolute",
+    right: -2,
+    bottom: -2,
+    width: 20,
+    height: 20,
+    borderRadius: SUDUT.bulat,
+    borderWidth: 2,
+    borderColor: WARNA.permukaan,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: WARNA.utamaIsi,
+  },
+  // Bingkai memangkas cap alamat mengikuti sudut membulat foto.
+  bingkai: { overflow: "hidden", borderRadius: SUDUT.besar },
+  besar: { width: "100%", aspectRatio: 4 / 3, borderRadius: SUDUT.besar },
+  petunjuk: {
+    position: "absolute",
+    top: RUANG[2],
+    right: RUANG[2],
+    padding: RUANG[1.5],
+    borderRadius: SUDUT.bulat,
+    backgroundColor: WARNA.tiraiGelap,
+  },
+  gagal: {
+    alignItems: "center",
+    justifyContent: "center",
+    gap: RUANG[2],
+    borderWidth: 1,
+    borderStyle: "dashed",
+    borderColor: WARNA.garisTegas,
+  },
+  gagalTeks: { ...HURUF.sm, color: WARNA.redup },
+  layarPenuh: { flex: 1, backgroundColor: WARNA.latarMedia },
+  isiPenuh: { flex: 1 },
+  tutup: {
+    position: "absolute",
+    right: RUANG[4],
+    padding: RUANG[2],
+    borderRadius: SUDUT.bulat,
+    backgroundColor: WARNA.tiraiTerang,
+  },
+});

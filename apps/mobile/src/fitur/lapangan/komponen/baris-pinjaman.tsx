@@ -9,9 +9,8 @@ import {
 import { StyleSheet, Text, View } from "react-native";
 import { Kartu } from "@/komponen/ui/kartu";
 import { Lencana } from "@/komponen/ui/lencana";
-import { useGaya, useWarna } from "@/komponen/ui/tampilan";
 import { useZonaKantor } from "@/lib/kantor";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 import { pinjamanAktif, teksAkad } from "../inti/nasabah";
 
 const WARNA_STATUS = {
@@ -33,8 +32,6 @@ const WARNA_STATUS = {
  * masuk tabungan.
  */
 export function BarisPinjaman({ p }: { p: KartuPinjaman }) {
-  const WARNA = useWarna();
-  const gaya = useGaya(buatGaya);
   const zona = useZonaKantor();
   const aktif = pinjamanAktif(p);
   const tempoan = p.jenis === "tempoan";
@@ -117,44 +114,43 @@ export function BarisPinjaman({ p }: { p: KartuPinjaman }) {
   );
 }
 
-const buatGaya = (WARNA: Warna) =>
-  StyleSheet.create({
-    judul: { gap: RUANG[1] },
-    // Kiri & kanan selebar baris: nomor | status, lalu jenis & tenor | waktu akad.
-    deret: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      gap: RUANG[2],
-    },
-    nomor: { ...HURUF.lg, flexShrink: 1, fontWeight: TEBAL.tebal, color: WARNA.teks },
-    sub: { ...HURUF.sm, fontWeight: TEBAL.semi, color: WARNA.teksKedua },
-    akad: { ...HURUF.sm, color: WARNA.redup, fontVariant: ["tabular-nums"] },
-    label: { ...HURUF.xs, fontWeight: TEBAL.sedang, color: WARNA.redup },
-    saldo: { gap: RUANG[0.5] },
-    saldoNilai: {
-      ...HURUF["2xl"],
-      fontWeight: TEBAL.ekstra,
-      letterSpacing: -0.4,
-      color: WARNA.teks,
-      fontVariant: ["tabular-nums"],
-    },
-    kemajuan: { gap: RUANG[1.5] },
-    kemajuanTeks: { flexDirection: "row", justifyContent: "space-between" },
-    jalur: {
-      height: 6,
-      overflow: "hidden",
-      borderRadius: SUDUT.bulat,
-      backgroundColor: WARNA.isiNetralTegas,
-    },
-    isiJalur: { height: 6, borderRadius: SUDUT.bulat },
-    garis: { height: 1, backgroundColor: WARNA.garis },
-    fakta: { flexDirection: "row", flexWrap: "wrap", rowGap: RUANG[3], columnGap: RUANG[4] },
-    faktaButir: { flexGrow: 1, flexBasis: "40%", gap: RUANG[0.5] },
-    faktaNilai: {
-      ...HURUF.sm,
-      fontWeight: TEBAL.semi,
-      color: WARNA.teks,
-      fontVariant: ["tabular-nums"],
-    },
-  });
+const gaya = StyleSheet.create({
+  judul: { gap: RUANG[1] },
+  // Kiri & kanan selebar baris: nomor | status, lalu jenis & tenor | waktu akad.
+  deret: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: RUANG[2],
+  },
+  nomor: { ...HURUF.lg, flexShrink: 1, fontWeight: TEBAL.tebal, color: WARNA.teks },
+  sub: { ...HURUF.sm, fontWeight: TEBAL.semi, color: WARNA.teksKedua },
+  akad: { ...HURUF.sm, color: WARNA.redup, fontVariant: ["tabular-nums"] },
+  label: { ...HURUF.xs, fontWeight: TEBAL.sedang, color: WARNA.redup },
+  saldo: { gap: RUANG[0.5] },
+  saldoNilai: {
+    ...HURUF["2xl"],
+    fontWeight: TEBAL.ekstra,
+    letterSpacing: -0.4,
+    color: WARNA.teks,
+    fontVariant: ["tabular-nums"],
+  },
+  kemajuan: { gap: RUANG[1.5] },
+  kemajuanTeks: { flexDirection: "row", justifyContent: "space-between" },
+  jalur: {
+    height: 6,
+    overflow: "hidden",
+    borderRadius: SUDUT.bulat,
+    backgroundColor: WARNA.isiNetralTegas,
+  },
+  isiJalur: { height: 6, borderRadius: SUDUT.bulat },
+  garis: { height: 1, backgroundColor: WARNA.garis },
+  fakta: { flexDirection: "row", flexWrap: "wrap", rowGap: RUANG[3], columnGap: RUANG[4] },
+  faktaButir: { flexGrow: 1, flexBasis: "40%", gap: RUANG[0.5] },
+  faktaNilai: {
+    ...HURUF.sm,
+    fontWeight: TEBAL.semi,
+    color: WARNA.teks,
+    fontVariant: ["tabular-nums"],
+  },
+});
