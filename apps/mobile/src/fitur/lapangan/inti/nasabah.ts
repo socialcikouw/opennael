@@ -1,3 +1,6 @@
+import type { ZonaWaktu } from "@opennael/domain";
+import { jam, tanggalBertahun } from "@opennael/format";
+
 /**
  * LOGIKA MURNI detail nasabah di HP kolektor — urutan pinjaman, foto utama,
  * dan tautan telepon/peta. Tanpa React & I/O (diuji `bun test`).
@@ -78,4 +81,13 @@ export function saldoAktif(daftar: readonly { status: string; saldo: number }[])
  */
 export function hutangNasabah(sisaSaldo: number, tabungan: number): number {
   return Math.max(0, sisaSaldo - tabungan);
+}
+
+/**
+ * Waktu akad untuk kartu pinjaman: "Akad: 27 Okt 26 14.00" (jam dinding kantor). Salinan
+ * buku lama tak punya jam akad (`waktuAkad` null) — hanya tanggalnya.
+ */
+export function teksAkad(tanggalAkad: string, waktuAkad: string | null, zona: ZonaWaktu): string {
+  const tanggal = tanggalBertahun(tanggalAkad);
+  return waktuAkad ? `Akad: ${tanggal} ${jam(waktuAkad, zona)}` : `Akad: ${tanggal}`;
 }

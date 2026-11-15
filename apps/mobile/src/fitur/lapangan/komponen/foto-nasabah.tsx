@@ -7,6 +7,7 @@ import { useGaya, useWarna } from "@/komponen/ui/tampilan";
 import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
 import { ALAMAT_API } from "@/lib/api";
 import { sesi } from "@/lib/sesi";
+import { CapAlamat } from "./cap-alamat";
 
 /**
  * Berkas `GET /foto/:id` bertoken. Disimpan di disk HP per id foto — tiap foto
@@ -64,23 +65,24 @@ export function AvatarNasabah(props: {
 }
 
 /**
- * FOTO SERAH TERIMA besar; ketuk = layar penuh. `keterangan` (opsional) = tempat foto,
- * mis. nama desa dari titik rumah — pil di pojok kiri bawah foto (kanan bawah: petunjuk layar penuh).
+ * FOTO SERAH TERIMA besar; ketuk = layar penuh. `alamat` (opsional) = baris alamat titik
+ * rumah, ditempel di dasar foto (`CapAlamat`) — juga di layar penuh. Petunjuk layar penuh
+ * di pojok kanan atas.
  */
 export function FotoSerahTerima({
   fotoId,
   nama,
-  keterangan,
+  alamat,
 }: {
   fotoId: string;
   nama: string;
-  keterangan?: string | null;
+  alamat?: readonly string[] | null;
 }) {
   const WARNA = useWarna();
   const gaya = useGaya(buatGaya);
   const [penuh, setPenuh] = useState(false);
   const [gagal, setGagal] = useState(false);
-  const atas = useSafeAreaInsets().top;
+  const { top: atas, bottom: bawah } = useSafeAreaInsets();
 
   if (gagal) {
     return (
@@ -98,24 +100,19 @@ export function FotoSerahTerima({
         accessibilityRole="imagebutton"
         accessibilityLabel={`Foto serah terima ${nama} — ketuk untuk layar penuh`}
       >
-        <Image
-          source={sumberFoto(fotoId)}
-          cachePolicy="disk"
-          contentFit="cover"
-          transition={150}
-          onError={() => setGagal(true)}
-          style={[gaya.besar, gaya.latarFoto]}
-        />
-        {keterangan ? (
-          <View style={gaya.keterangan} pointerEvents="none">
-            <Ikon nama="map-pin" ukuran={12} warna={WARNA.putih} />
-            <Text style={gaya.keteranganTeks} numberOfLines={1}>
-              {keterangan}
-            </Text>
+        <View style={gaya.bingkai}>
+          <Image
+            source={sumberFoto(fotoId)}
+            cachePolicy="disk"
+            contentFit="cover"
+            transition={150}
+            onError={() => setGagal(true)}
+            style={[gaya.besar, gaya.latarFoto]}
+          />
+          {alamat ? <CapAlamat baris={alamat} /> : null}
+          <View style={gaya.petunjuk}>
+            <Ikon nama="maximize-2" ukuran={14} warna={WARNA.putih} />
           </View>
-        ) : null}
-        <View style={gaya.petunjuk}>
-          <Ikon nama="maximize-2" ukuran={14} warna={WARNA.putih} />
         </View>
       </Pressable>
       <Modal
@@ -131,6 +128,7 @@ export function FotoSerahTerima({
             contentFit="contain"
             style={gaya.isiPenuh}
           />
+          {alamat ? <CapAlamat baris={alamat} bawah={bawah} /> : null}
           <View style={[gaya.tutup, { top: atas + RUANG[3] }]}>
             <Ikon nama="x" ukuran={24} warna={WARNA.putih} />
           </View>
@@ -158,34 +156,16 @@ const buatGaya = (WARNA: Warna) =>
       justifyContent: "center",
       backgroundColor: WARNA.utamaIsi,
     },
+    // Bingkai memangkas cap alamat mengikuti sudut membulat foto.
+    bingkai: { overflow: "hidden", borderRadius: SUDUT.besar },
     besar: { width: "100%", aspectRatio: 4 / 3, borderRadius: SUDUT.besar },
     petunjuk: {
       position: "absolute",
+      top: RUANG[2],
       right: RUANG[2],
-      bottom: RUANG[2],
       padding: RUANG[1.5],
       borderRadius: SUDUT.bulat,
       backgroundColor: WARNA.tiraiGelap,
-    },
-    keterangan: {
-      position: "absolute",
-      left: RUANG[2],
-      bottom: RUANG[2],
-      maxWidth: "72%",
-      flexDirection: "row",
-      alignItems: "center",
-      gap: RUANG[1],
-      paddingVertical: RUANG[1],
-      paddingHorizontal: RUANG[2.5],
-      borderRadius: SUDUT.bulat,
-      backgroundColor: WARNA.tiraiGelap,
-    },
-    keteranganTeks: {
-      ...HURUF.xs,
-      flexShrink: 1,
-      fontWeight: TEBAL.tebal,
-      letterSpacing: 0.4,
-      color: WARNA.putih,
     },
     gagal: {
       alignItems: "center",

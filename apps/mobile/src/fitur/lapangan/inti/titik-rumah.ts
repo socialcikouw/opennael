@@ -16,9 +16,6 @@ export const AKURASI_MAKS_METER = 100;
 /** Titik sudah sebaik yang dibutuhkan (meter) — pemantau GPS latar berhenti di sini (hemat baterai). */
 export const AKURASI_CUKUP_METER = 20;
 
-/** Sampai sini (meter) titik masih cukup untuk menemukan rumah; lebih dari ini hanya perkiraan kasar. */
-export const AKURASI_SEDANG_METER = 50;
-
 export function titikRumahDari(posisi: {
   latitude: number;
   longitude: number;
@@ -72,30 +69,6 @@ export interface AlamatGeokode {
   postalCode?: string | null;
 }
 
-/**
- * Nama desa/kelurahan untuk titik GPS dari hasil geokode terbalik HP. Urutan pilihan:
- * `district` (desa/kelurahan), lalu `city` (kecamatan/kota), lalu `subregion`
- * (kabupaten); `null` bila tak satu pun terisi. Teks dikembalikan apa adanya
- * (dirapikan spasinya) — huruf besar-kecil diatur tampilan.
- */
-export function pilihNamaDesa(alamat: readonly AlamatGeokode[]): string | null {
-  for (const bagian of ["district", "city", "subregion"] as const) {
-    for (const a of alamat) {
-      const nama = a[bagian]?.replace(/\s+/g, " ").trim();
-      if (nama) return nama;
-    }
-  }
-  return null;
-}
-
-/** Rincian alamat titik rumah: nama pendek untuk foto + baris alamat untuk kartu. */
-export interface RincianAlamat {
-  /** Desa/kelurahan (cadangan: kecamatan/kota, kabupaten) — keterangan di foto. */
-  desa: string;
-  /** Alamat dari yang terkecil: jalan (+ nomor) · desa, kecamatan · kabupaten, provinsi kode pos. */
-  baris: string[];
-}
-
 /** Plus Code Google ("7C6F+XX") dan nama jalan kosong yang kadang dikirim geokoder sebagai nama jalan. */
 const KODE_PLUS = /^[0-9A-Z]{4,8}\+[0-9A-Z]{2,3}/i;
 const TANPA_NAMA = /^(unnamed road|jalan tanpa nama)$/i;
@@ -106,14 +79,13 @@ function bersih(teks: string | null | undefined): string | null {
 }
 
 /**
- * Susun alamat bertingkat dari hasil geokode terbalik. Satu baris per tingkat, dari yang
- * terkecil; tingkat kosong dan nama yang berulang (kota = kabupaten, dsb.) dibuang —
- * di pedesaan jalan sering tak diketahui, jadi alamat tetap berguna tanpa baris jalan.
- * `null` bila tak satu pun nama wilayah terisi.
+ * Susun alamat bertingkat dari hasil geokode terbalik — baris yang ditempel di foto:
+ * jalan (+ nomor) · desa, kecamatan · kabupaten, provinsi kode pos. Tingkat kosong dan
+ * nama yang berulang (kota = kabupaten, dsb.) dibuang; di pedesaan jalan sering tak
+ * diketahui, jadi alamat tetap berguna tanpa baris jalan. `null` bila tak ada satu
+ * baris pun.
  */
-export function susunAlamat(alamat: readonly AlamatGeokode[]): RincianAlamat | null {
-  const desa = pilihNamaDesa(alamat);
-  if (!desa) return null;
+export function susunAlamat(alamat: readonly AlamatGeokode[]): string[] | null {
   const ambil = (bagian: keyof AlamatGeokode) =>
     alamat.map((a) => bersih(a[bagian])).find((t) => t !== null) ?? null;
 
@@ -141,12 +113,5 @@ export function susunAlamat(alamat: readonly AlamatGeokode[]): RincianAlamat | n
     wilayah.join(", "),
     [daerah.join(", "), daerah.length > 0 ? kodePos : null].filter(Boolean).join(" "),
   ].filter((b): b is string => !!b);
-  return { desa, baris: baris.length > 0 ? baris : [desa] };
-}
-
-/** Seberapa dapat dipercaya titiknya, dari akurasi GPS saat direkam (meter). */
-export function tingkatAkurasi(meter: number): { teks: string; warna: "hijau" | "kuning" | "abu" } {
-  if (meter <= AKURASI_CUKUP_METER) return { teks: "Akurat", warna: "hijau" };
-  if (meter <= AKURASI_SEDANG_METER) return { teks: "Cukup Akurat", warna: "kuning" };
-  return { teks: "Kasar", warna: "abu" };
+  return baris.length > 0 ? baris : null;
 }

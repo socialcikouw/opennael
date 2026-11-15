@@ -7,12 +7,12 @@ import {
   tanggalPendek,
 } from "@opennael/format";
 import { StyleSheet, Text, View } from "react-native";
-import { Ikon } from "@/komponen/ui/ikon";
 import { Kartu } from "@/komponen/ui/kartu";
 import { Lencana } from "@/komponen/ui/lencana";
 import { useGaya, useWarna } from "@/komponen/ui/tampilan";
 import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
-import { pinjamanAktif } from "../inti/nasabah";
+import { useZonaKantor } from "@/lib/kantor";
+import { pinjamanAktif, teksAkad } from "../inti/nasabah";
 
 const WARNA_STATUS = {
   berjalan: "hijau",
@@ -25,17 +25,20 @@ const WARNA_STATUS = {
 
 /**
  * Satu pinjaman di Detail Nasabah — rinciannya LENGKAP di sini (tak ada layar rincian
- * lagi dari daftar ini): nomor, status, jenis & tenor, akad; pinjaman aktif memuat sisa
- * saldo besar, kemajuan angsuran, dan tunggakan; semuanya memuat pokok, total kembali,
- * angsuran, jatuh tempo (atau tanggal selesai), tunai yang diterima, dan masuk tabungan.
+ * lagi dari daftar ini). Kepala dua baris:
+ *   Pinjaman Ke-3                       [Berjalan]
+ *   Harian 24×            Akad: 27 Okt 26 14.00
+ * Pinjaman aktif memuat sisa saldo besar dan kemajuan angsuran; semuanya memuat pokok,
+ * total kembali, angsuran, jatuh tempo (atau tanggal selesai), tunai yang diterima, dan
+ * masuk tabungan.
  */
 export function BarisPinjaman({ p }: { p: KartuPinjaman }) {
   const WARNA = useWarna();
   const gaya = useGaya(buatGaya);
+  const zona = useZonaKantor();
   const aktif = pinjamanAktif(p);
   const tempoan = p.jenis === "tempoan";
   const macet = p.status === "macet";
-  const tunggakan = p.tagih && p.tagih.tunggakan > 0 ? p.tagih : null;
   const kemajuan = p.tenor > 0 ? Math.min(1, Math.max(0, p.angsuranKe / p.tenor)) : 0;
 
   const fakta: { label: string; nilai: string }[] = [
@@ -56,14 +59,16 @@ export function BarisPinjaman({ p }: { p: KartuPinjaman }) {
   return (
     <Kartu>
       <View style={gaya.judul}>
-        <View style={gaya.judulIsi}>
+        <View style={gaya.deret}>
           <Text style={gaya.nomor}>Pinjaman Ke-{p.pinjamanKe}</Text>
-          <Text style={gaya.sub}>
-            {LABEL_JENIS[p.jenis]} · {namaTenor(p.jenis, p.tenor)} · akad{" "}
-            {tanggalPendek(p.tanggalAkad)}
-          </Text>
+          <Lencana teks={LABEL_STATUS_PINJAMAN[p.status]} warna={WARNA_STATUS[p.status]} />
         </View>
-        <Lencana teks={LABEL_STATUS_PINJAMAN[p.status]} warna={WARNA_STATUS[p.status]} />
+        <View style={gaya.deret}>
+          <Text style={gaya.sub}>
+            {LABEL_JENIS[p.jenis]} {namaTenor(p.jenis, p.tenor)}
+          </Text>
+          <Text style={gaya.akad}>{teksAkad(p.tanggalAkad, p.waktuAkad, zona)}</Text>
+        </View>
       </View>
 
       {aktif ? (
@@ -96,17 +101,6 @@ export function BarisPinjaman({ p }: { p: KartuPinjaman }) {
               </View>
             </View>
           )}
-
-          {tunggakan ? (
-            <View style={gaya.tunggakan}>
-              <Ikon nama="triangle-alert" ukuran={14} warna={WARNA.bahayaTeks} />
-              <Text style={gaya.tunggakanTeks}>
-                {tempoan
-                  ? `Lewat jatuh tempo · tunggakan ${rupiah(tunggakan.tunggakan)}`
-                  : `Tertinggal ${tunggakan.tertinggal} angsuran · tunggakan ${rupiah(tunggakan.tunggakan)}`}
-              </Text>
-            </View>
-          ) : null}
         </>
       ) : null}
 
@@ -125,10 +119,17 @@ export function BarisPinjaman({ p }: { p: KartuPinjaman }) {
 
 const buatGaya = (WARNA: Warna) =>
   StyleSheet.create({
-    judul: { flexDirection: "row", alignItems: "flex-start", gap: RUANG[2] },
-    judulIsi: { flex: 1, gap: RUANG[0.5] },
-    nomor: { ...HURUF.lg, fontWeight: TEBAL.tebal, color: WARNA.teks },
-    sub: { ...HURUF.sm, color: WARNA.teksKedua },
+    judul: { gap: RUANG[1] },
+    // Kiri & kanan selebar baris: nomor | status, lalu jenis & tenor | waktu akad.
+    deret: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: RUANG[2],
+    },
+    nomor: { ...HURUF.lg, flexShrink: 1, fontWeight: TEBAL.tebal, color: WARNA.teks },
+    sub: { ...HURUF.sm, fontWeight: TEBAL.semi, color: WARNA.teksKedua },
+    akad: { ...HURUF.sm, color: WARNA.redup, fontVariant: ["tabular-nums"] },
     label: { ...HURUF.xs, fontWeight: TEBAL.sedang, color: WARNA.redup },
     saldo: { gap: RUANG[0.5] },
     saldoNilai: {
@@ -147,18 +148,6 @@ const buatGaya = (WARNA: Warna) =>
       backgroundColor: WARNA.abuTua,
     },
     isiJalur: { height: 6, borderRadius: SUDUT.bulat },
-    tunggakan: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: RUANG[2],
-      paddingVertical: RUANG[2],
-      paddingHorizontal: RUANG[3],
-      borderRadius: SUDUT.sedang,
-      borderWidth: 1,
-      borderColor: WARNA.bahayaGaris,
-      backgroundColor: WARNA.bahayaLembut,
-    },
-    tunggakanTeks: { ...HURUF.sm, flex: 1, fontWeight: TEBAL.semi, color: WARNA.bahayaTeks },
     garis: { height: 1, backgroundColor: WARNA.garis },
     fakta: { flexDirection: "row", flexWrap: "wrap", rowGap: RUANG[3], columnGap: RUANG[4] },
     faktaButir: { flexGrow: 1, flexBasis: "40%", gap: RUANG[0.5] },

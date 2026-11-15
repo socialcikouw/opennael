@@ -9,6 +9,7 @@ import {
   tautanTelepon,
   tautanWhatsApp,
   tautanWhatsAppWeb,
+  teksAkad,
   urutPinjaman,
 } from "./nasabah";
 
@@ -133,5 +134,21 @@ describe("hutangNasabah", () => {
     expect(hutangNasabah(100_000, 100_000)).toBe(0);
     expect(hutangNasabah(100_000, 250_000)).toBe(0);
     expect(hutangNasabah(0, 50_000)).toBe(0);
+  });
+});
+
+describe("teksAkad", () => {
+  test("tanggal bertahun dua digit + jam dinding kantor (WIB = UTC+7)", () => {
+    expect(teksAkad("2026-10-27", "2026-10-27T07:00:00.000Z", "WIB")).toBe("Akad: 27 Okt 26 14.00");
+  });
+
+  test("zona kantor menggeser jam (WITA = UTC+8)", () => {
+    expect(teksAkad("2026-10-27", "2026-10-27T07:05:00.000Z", "WITA")).toBe(
+      "Akad: 27 Okt 26 15.05",
+    );
+  });
+
+  test("salinan buku lama tanpa jam akad: hanya tanggal", () => {
+    expect(teksAkad("2026-09-03", null, "WIB")).toBe("Akad: 3 Sep 26");
   });
 });

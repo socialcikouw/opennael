@@ -29,7 +29,6 @@ import {
 import { AksiCepat } from "./komponen/aksi-cepat";
 import { BarisPinjaman } from "./komponen/baris-pinjaman";
 import { FotoSerahTerima } from "./komponen/foto-nasabah";
-import { KartuTitikRumah } from "./komponen/kartu-titik-rumah";
 import { KepalaNasabah } from "./komponen/kepala-nasabah";
 
 /** Buka tautan luar (telepon, peta); gagal → pemberitahuan, bukan crash. */
@@ -46,9 +45,8 @@ function bukaWhatsApp(nomorLengkap: string) {
 
 /**
  * DETAIL NASABAH (diketuk dari nama di kartu tagih), dari atas ke bawah:
- *   1. foto serah terima terbaru, dengan nama desa titik rumah di pojok kiri bawah;
- *      alamat lengkapnya (jalan, desa, kecamatan, kabupaten, provinsi) dan akurasi
- *      GPS ada di kartu Titik Rumah;
+ *   1. foto serah terima terbaru, dengan alamat titik rumah (jalan, desa, kecamatan,
+ *      kabupaten, provinsi) menempel di dasarnya — juga saat foto dibuka layar penuh;
  *   2. kartu identitas — nama, kampung, Sisa Saldo, Tabungan & Hutang (tersembunyi sampai
  *      ikon mata diketuk; hutang = sisa saldo − tabungan), nomor HP, NIK;
  *   3. aksi cepat — Telepon, WhatsApp (bila nomor HP tercatat), Peta (bila titik rumah ada);
@@ -115,13 +113,7 @@ export function LayarNasabah({ id }: { id: string }) {
   return (
     <Gulir onSegarkan={segarkan}>
       <Stack.Screen options={{ title: namaTampil }} />
-      {fotoId ? (
-        <FotoSerahTerima
-          fotoId={fotoId}
-          nama={namaTampil}
-          keterangan={alamat.alamat ? tampilKampung(alamat.alamat.desa) : null}
-        />
-      ) : null}
+      {fotoId ? <FotoSerahTerima fotoId={fotoId} nama={namaTampil} alamat={alamat} /> : null}
 
       <KepalaNasabah
         nama={namaTampil}
@@ -163,13 +155,13 @@ export function LayarNasabah({ id }: { id: string }) {
         </View>
       ) : null}
 
-      {n ? (
-        <KartuTitikRumah
-          lokasi={lokasi}
-          alamat={alamat}
-          merekam={rekam.isPending}
-          onBuka={() => lokasi && buka(tautanPeta(lokasi), "Aplikasi peta tidak tersedia.")}
-          onRekam={rekamTitik}
+      {n && !lokasi ? (
+        <Tombol
+          judul="Rekam titik rumah di sini"
+          ikon="map-pin"
+          jenis="kedua"
+          memuat={rekam.isPending}
+          onPress={rekamTitik}
         />
       ) : null}
 

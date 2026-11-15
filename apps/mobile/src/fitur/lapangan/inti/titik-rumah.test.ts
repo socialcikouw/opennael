@@ -1,12 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import {
-  AKURASI_MAKS_METER,
-  pilihNamaDesa,
-  pilihTitikTerbaik,
-  susunAlamat,
-  tingkatAkurasi,
-  titikRumahDari,
-} from "./titik-rumah";
+import { AKURASI_MAKS_METER, pilihTitikTerbaik, susunAlamat, titikRumahDari } from "./titik-rumah";
 
 const JAKARTA = { latitude: -6.2, longitude: 106.8166 };
 
@@ -81,34 +74,6 @@ describe("pilihTitikTerbaik", () => {
   });
 });
 
-describe("pilihNamaDesa", () => {
-  const alamat = (district: string | null, city: string | null, subregion: string | null) => ({
-    district,
-    city,
-    subregion,
-  });
-
-  test("desa/kelurahan (district) didahulukan, lalu kota/kecamatan, lalu kabupaten", () => {
-    expect(pilihNamaDesa([alamat("Pule", "Kedungwaru", "Tulungagung")])).toBe("Pule");
-    expect(pilihNamaDesa([alamat(null, "Kedungwaru", "Tulungagung")])).toBe("Kedungwaru");
-    expect(pilihNamaDesa([alamat(null, null, "Tulungagung")])).toBe("Tulungagung");
-  });
-
-  test("isian kosong atau spasi dilewati; spasi ganda dirapikan", () => {
-    expect(pilihNamaDesa([alamat("  ", "Kedungwaru", null)])).toBe("Kedungwaru");
-    expect(pilihNamaDesa([alamat("  Desa   Pule ", null, null)])).toBe("Desa Pule");
-  });
-
-  test("tak ada yang terisi → null", () => {
-    expect(pilihNamaDesa([])).toBeNull();
-    expect(pilihNamaDesa([alamat(null, null, null)])).toBeNull();
-  });
-
-  test("beberapa alamat: district pertama yang terisi menang atas city alamat sebelumnya", () => {
-    expect(pilihNamaDesa([alamat(null, "Kota", null), alamat("Pule", null, null)])).toBe("Pule");
-  });
-});
-
 describe("susunAlamat", () => {
   const penuh = {
     street: "Jl. Mawar",
@@ -119,54 +84,69 @@ describe("susunAlamat", () => {
     region: "Jawa Timur",
     postalCode: "66229",
   };
+  const tanpaJalan = { ...penuh, street: null, streetNumber: null };
 
   test("alamat lengkap: jalan + nomor, desa & kecamatan, kabupaten & provinsi & kode pos", () => {
-    expect(susunAlamat([penuh])).toEqual({
-      desa: "Pule",
-      baris: ["Jl. Mawar No. 5", "Pule, Kedungwaru", "Tulungagung, Jawa Timur 66229"],
-    });
+    expect(susunAlamat([penuh])).toEqual([
+      "Jl. Mawar No. 5",
+      "Pule, Kedungwaru",
+      "Tulungagung, Jawa Timur 66229",
+    ]);
   });
 
   test("tanpa jalan (umum di desa): hanya dua baris wilayah", () => {
-    const { street, streetNumber, ...tanpaJalan } = penuh;
-    expect(susunAlamat([tanpaJalan])?.baris).toEqual([
+    expect(susunAlamat([tanpaJalan])).toEqual([
       "Pule, Kedungwaru",
       "Tulungagung, Jawa Timur 66229",
     ]);
   });
 
   test("nama yang berulang dibuang (kota sama dengan kabupaten) tanpa memedulikan huruf besar", () => {
-    const hasil = susunAlamat([
-      { ...penuh, city: "TULUNGAGUNG", street: null, streetNumber: null },
+    expect(susunAlamat([{ ...tanpaJalan, city: "TULUNGAGUNG" }])).toEqual([
+      "Pule, TULUNGAGUNG",
+      "Jawa Timur 66229",
     ]);
-    expect(hasil?.baris).toEqual(["Pule, TULUNGAGUNG", "Jawa Timur 66229"]);
   });
 
   test("Plus Code dan 'Unnamed Road' bukan nama jalan", () => {
-    expect(susunAlamat([{ ...penuh, street: "7C6F+XX9" }])?.baris[0]).toBe("Pule, Kedungwaru");
-    expect(susunAlamat([{ ...penuh, street: "Unnamed Road" }])?.baris[0]).toBe("Pule, Kedungwaru");
+    expect(susunAlamat([{ ...penuh, street: "7C6F+XX9" }])?.[0]).toBe("Pule, Kedungwaru");
+    expect(susunAlamat([{ ...penuh, street: "Unnamed Road" }])?.[0]).toBe("Pule, Kedungwaru");
   });
 
   test("nomor yang sudah ada di nama jalan tak diulang; nomor tanpa jalan diabaikan", () => {
-    expect(susunAlamat([{ ...penuh, street: "Jl. Mawar 5" }])?.baris[0]).toBe("Jl. Mawar 5");
-    expect(susunAlamat([{ ...penuh, street: null }])?.baris[0]).toBe("Pule, Kedungwaru");
+    expect(susunAlamat([{ ...penuh, street: "Jl. Mawar 5" }])?.[0]).toBe("Jl. Mawar 5");
+    expect(susunAlamat([{ ...penuh, street: null }])?.[0]).toBe("Pule, Kedungwaru");
   });
 
-  test("kode pos tanpa daerah tak ditampilkan sendirian; tak ada nama wilayah → null", () => {
+  test("isian kosong atau spasi dilewati; spasi ganda dirapikan", () => {
+    expect(susunAlamat([{ district: "  ", city: "Kedungwaru", subregion: null }])).toEqual([
+      "Kedungwaru",
+    ]);
+    expect(susunAlamat([{ district: "  Desa   Pule ", city: null, subregion: null }])).toEqual([
+      "Desa Pule",
+    ]);
+  });
+
+  test("kabupaten saja (desa & kecamatan tak diketahui) tetap menjadi satu baris", () => {
+    expect(susunAlamat([{ district: null, city: null, subregion: "Tulungagung" }])).toEqual([
+      "Tulungagung",
+    ]);
+  });
+
+  test("kode pos tanpa daerah tak tampil sendirian; tak ada isian sama sekali → null", () => {
     expect(
-      susunAlamat([{ district: "Pule", city: null, subregion: null, postalCode: "66229" }])?.baris,
+      susunAlamat([{ district: "Pule", city: null, subregion: null, postalCode: "66229" }]),
     ).toEqual(["Pule"]);
     expect(susunAlamat([{ district: null, city: null, subregion: null }])).toBeNull();
     expect(susunAlamat([])).toBeNull();
   });
-});
 
-describe("tingkatAkurasi", () => {
-  test("≤ 20 m akurat, ≤ 50 m cukup, di atasnya kasar", () => {
-    expect(tingkatAkurasi(5)).toEqual({ teks: "Akurat", warna: "hijau" });
-    expect(tingkatAkurasi(20).warna).toBe("hijau");
-    expect(tingkatAkurasi(21)).toEqual({ teks: "Cukup Akurat", warna: "kuning" });
-    expect(tingkatAkurasi(50).warna).toBe("kuning");
-    expect(tingkatAkurasi(51)).toEqual({ teks: "Kasar", warna: "abu" });
+  test("beberapa alamat: tiap tingkat diambil dari alamat pertama yang mengisinya", () => {
+    expect(
+      susunAlamat([
+        { district: null, city: "Kota", subregion: null },
+        { district: "Pule", city: null, subregion: "Tulungagung" },
+      ]),
+    ).toEqual(["Pule, Kota", "Tulungagung"]);
   });
 });
