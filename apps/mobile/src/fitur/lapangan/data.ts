@@ -1,10 +1,16 @@
 import { kunci } from "@opennael/api-client";
 import type { Peristiwa } from "@opennael/contracts";
-import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  type QueryClient,
+  useMutation,
+  useQueries,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useCallback, useMemo } from "react";
 import { api, kueri, panggil } from "@/lib/api";
 import { bacaPosisi } from "@/platform/lokasi";
-import { titikRumahDari } from "./inti/titik-rumah";
+import { type TitikRumah, titikRumahDari } from "./inti/titik-rumah";
 
 /**
  * DATA LAPANGAN KOLEKTOR — kueri bersama layar kerja harian, kartu pinjaman,
@@ -49,6 +55,48 @@ export function useRekamTitikRumah(id: string) {
     mutationFn: async () => tulis.lokasiRumah(id, titikRumahDari(await bacaPosisi())),
     onSuccess: () => klien.invalidateQueries({ queryKey: kunci.lapangan }),
   });
+}
+
+/**
+ * Akad baru + titik rumah dari GPS latar. Titik dikirim SESUDAH akad berhasil, tanpa
+ * ditunggu layar: orang baru selalu belum punya titik; nasabah lama hanya bila titiknya
+ * masih kosong (yang sudah direkam tak ditimpa diam-diam). GPS hanya tambahan — gagal
+ * merekam tak menggagalkan akad (titiknya masih bisa direkam dari Detail Nasabah).
+ */
+export function useAkad() {
+  const klien = useQueryClient();
+  return useMutation({
+    mutationFn: async (masuk: {
+      akad: Parameters<typeof tulis.akad>[0];
+      titik: TitikRumah | null;
+    }) => {
+      const pinjaman = await tulis.akad(masuk.akad);
+      if (masuk.titik) {
+        const nasabahLama = "nasabahId" in masuk.akad.nasabah;
+        void rekamTitikSesudahAkad(klien, pinjaman.nasabah.id, masuk.titik, nasabahLama);
+      }
+      return pinjaman;
+    },
+    onSettled: () => klien.invalidateQueries({ queryKey: kunci.lapangan }),
+  });
+}
+
+async function rekamTitikSesudahAkad(
+  klien: QueryClient,
+  nasabahId: string,
+  titik: TitikRumah,
+  nasabahLama: boolean,
+) {
+  try {
+    if (nasabahLama) {
+      const nasabah = await klien.fetchQuery(kueri.lapangan.nasabah(nasabahId));
+      if (nasabah.lokasi) return;
+    }
+    await tulis.lokasiRumah(nasabahId, titik);
+    await klien.invalidateQueries({ queryKey: kunci.lapangan });
+  } catch {
+    // Sengaja diam: akadnya sudah tercatat; titik rumah bisa direkam ulang dari Detail Nasabah.
+  }
 }
 
 /**

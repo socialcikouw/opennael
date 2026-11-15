@@ -11,21 +11,29 @@ import { Pilihan } from "@/komponen/ui/pilihan";
 import { useWarna } from "@/komponen/ui/tampilan";
 import { Tombol } from "@/komponen/ui/tombol";
 import { cobaAturan } from "@/lib/aturan";
-import { tulis, useTulis } from "./data";
+import { useAkad } from "./data";
 import {
   type FotoSerahTerima,
   fotoMasihBerlaku,
   IsianFotoSerahTerima,
+  KameraSerahTerima,
 } from "./komponen/kamera-serah-terima";
 import { PilihKampung } from "./komponen/pilih-kampung";
 import { PilihNasabahLama } from "./komponen/pilih-nasabah-lama";
+import { StatusTitikRumah } from "./komponen/status-titik-rumah";
+import { useTitikRumahLatar } from "./titik-rumah-latar";
 
 const POKOK_CEPAT = [500_000, 1_000_000, 1_500_000, 2_000_000];
 
 /**
  * AKAD BARU (A) — orang baru, atau nasabah lama pegangan sendiri yang pinjam
- * lagi. Angka pratinjau = rumus server (`syaratAkad`). Foto diambil terakhir,
- * saat uang diserahkan.
+ * lagi. Angka pratinjau = rumus server (`syaratAkad`).
+ *
+ * Dua tahap (keputusan pemilik, 15 Nov 2026): (+) langsung membuka KAMERA
+ * serah terima — batal = kembali tanpa mengisi apa pun — baru sesudah foto
+ * terpakai formulir tampil (foto berlaku 1 jam, A7). Sejak layar terbuka GPS
+ * dipantau di latar (`useTitikRumahLatar`); titik terbaiknya direkam sebagai
+ * titik rumah begitu akad tersimpan, tanpa langkah tambahan kolektor.
  */
 export function LayarAkad({ jenis: param }: { jenis?: string }) {
   const WARNA = useWarna();
@@ -42,7 +50,8 @@ export function LayarAkad({ jenis: param }: { jenis?: string }) {
   const [tenor, setTenor] = useState<number>(TENOR_PINJAMAN[jenisTetap ?? "harian"][0] ?? 0);
   const [pokok, setPokok] = useState(1_000_000);
   const [foto, setFoto] = useState<FotoSerahTerima | null>(null);
-  const akad = useTulis(tulis.akad);
+  const akad = useAkad();
+  const titikLatar = useTitikRumahLatar();
 
   const pilihJenis = (j: JenisPinjaman) => {
     setJenis(j);
@@ -60,6 +69,17 @@ export function LayarAkad({ jenis: param }: { jenis?: string }) {
   const namaNasabah = siapa === "lama" ? lama?.nama : nama.trim();
   const nasabahLengkap = siapa === "lama" ? !!lama : !!nama.trim() && !!kampungTeks.trim();
   const fotoSah = fotoMasihBerlaku(foto);
+
+  // Tahap 1: kamera dulu, tanpa formulir. Batal = kembali ke layar asal.
+  if (!foto) {
+    return (
+      <KameraSerahTerima
+        terbuka
+        onTutup={() => router.back()}
+        onSelesai={(id, uri) => setFoto({ id, uri, diambilAt: Date.now() })}
+      />
+    );
+  }
 
   const simpan = () => {
     if (!syarat.hasil || !fotoMasihBerlaku(foto)) return;
@@ -81,7 +101,10 @@ export function LayarAkad({ jenis: param }: { jenis?: string }) {
           text: "Simpan",
           onPress: () =>
             akad.mutate(
-              { nasabah, jenis, pokok, tenor, fotoSerahTerimaId: foto.id },
+              {
+                akad: { nasabah, jenis, pokok, tenor, fotoSerahTerimaId: foto.id },
+                titik: titikLatar.status === "siap" ? titikLatar.titik : null,
+              },
               { onSuccess: () => router.back() },
             ),
         },
@@ -91,6 +114,9 @@ export function LayarAkad({ jenis: param }: { jenis?: string }) {
 
   return (
     <Gulir>
+      <IsianFotoSerahTerima nilai={foto} onUbah={setFoto} />
+      <StatusTitikRumah titik={titikLatar} lama={siapa === "lama"} />
+
       <Pilihan
         segmen
         pilihan={[
@@ -186,7 +212,6 @@ export function LayarAkad({ jenis: param }: { jenis?: string }) {
         <PesanGalat pesan={syarat.galat} />
       )}
 
-      <IsianFotoSerahTerima nilai={foto} onUbah={setFoto} />
       <PesanGalat pesan={akad.error?.message} />
       <Tombol
         judul="Simpan akad"
