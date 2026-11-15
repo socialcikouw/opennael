@@ -1,4 +1,5 @@
 import { Image, type ImageSource } from "expo-image";
+import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -121,6 +122,8 @@ export function FotoSerahTerima({
         onRequestClose={() => setPenuh(false)}
         statusBarTranslucent
       >
+        {/* Layar penuh berlatar hitam: ikon status bar harus terang di tema terang juga. */}
+        <StatusBar style="light" />
         <Pressable style={gaya.layarPenuh} onPress={() => setPenuh(false)}>
           <Image
             source={sumberFoto(fotoId)}

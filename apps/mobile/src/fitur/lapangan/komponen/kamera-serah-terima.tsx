@@ -1,4 +1,5 @@
 import { CameraView, useCameraPermissions } from "expo-camera";
+import { StatusBar } from "expo-status-bar";
 import { useRef, useState } from "react";
 import { Image, Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -69,6 +70,8 @@ export function KameraSerahTerima(props: {
 
   return (
     <Modal visible={props.terbuka} animationType="slide" onRequestClose={tutup}>
+      {/* Area status bar di sini selalu hitam: ikonnya harus terang di tema terang juga. */}
+      <StatusBar style="light" />
       <SafeAreaView style={gaya.latar}>
         {!izin ? null : !izin.granted ? (
           <View style={gaya.izin}>
