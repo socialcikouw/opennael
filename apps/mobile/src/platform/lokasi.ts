@@ -40,19 +40,31 @@ export async function bacaPosisi(): Promise<PosisiGps> {
 
 /** Bagian alamat dari geokode terbalik HP (tanpa kunci API: pakai layanan bawaan Android / iOS). */
 export interface AlamatTitik {
+  street: string | null;
+  streetNumber: string | null;
   district: string | null;
   city: string | null;
   subregion: string | null;
+  region: string | null;
+  postalCode: string | null;
 }
 
 /**
- * Alamat (desa, kota, kabupaten) dari titik GPS — geokode terbalik bawaan HP, butuh
- * internet. Tanpa izin lokasi. Gagal (tanpa sinyal, layanan tak ada) → galat; pemanggil
- * memutuskan diam atau tidak.
+ * Alamat (jalan, desa, kota, kabupaten, provinsi, kode pos) dari titik GPS — geokode
+ * terbalik bawaan HP, butuh internet. Tanpa izin lokasi. Gagal (tanpa sinyal, layanan
+ * tak ada) → galat; pemanggil memutuskan diam atau tidak.
  */
 export async function cariAlamat(latitude: number, longitude: number): Promise<AlamatTitik[]> {
   const hasil = await Location.reverseGeocodeAsync({ latitude, longitude });
-  return hasil.map((a) => ({ district: a.district, city: a.city, subregion: a.subregion }));
+  return hasil.map((a) => ({
+    street: a.street,
+    streetNumber: a.streetNumber,
+    district: a.district,
+    city: a.city,
+    subregion: a.subregion,
+    region: a.region,
+    postalCode: a.postalCode,
+  }));
 }
 
 /**

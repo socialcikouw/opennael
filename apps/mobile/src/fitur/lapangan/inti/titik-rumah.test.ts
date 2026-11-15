@@ -3,6 +3,8 @@ import {
   AKURASI_MAKS_METER,
   pilihNamaDesa,
   pilihTitikTerbaik,
+  susunAlamat,
+  tingkatAkurasi,
   titikRumahDari,
 } from "./titik-rumah";
 
@@ -104,5 +106,67 @@ describe("pilihNamaDesa", () => {
 
   test("beberapa alamat: district pertama yang terisi menang atas city alamat sebelumnya", () => {
     expect(pilihNamaDesa([alamat(null, "Kota", null), alamat("Pule", null, null)])).toBe("Pule");
+  });
+});
+
+describe("susunAlamat", () => {
+  const penuh = {
+    street: "Jl. Mawar",
+    streetNumber: "5",
+    district: "Pule",
+    city: "Kedungwaru",
+    subregion: "Tulungagung",
+    region: "Jawa Timur",
+    postalCode: "66229",
+  };
+
+  test("alamat lengkap: jalan + nomor, desa & kecamatan, kabupaten & provinsi & kode pos", () => {
+    expect(susunAlamat([penuh])).toEqual({
+      desa: "Pule",
+      baris: ["Jl. Mawar No. 5", "Pule, Kedungwaru", "Tulungagung, Jawa Timur 66229"],
+    });
+  });
+
+  test("tanpa jalan (umum di desa): hanya dua baris wilayah", () => {
+    const { street, streetNumber, ...tanpaJalan } = penuh;
+    expect(susunAlamat([tanpaJalan])?.baris).toEqual([
+      "Pule, Kedungwaru",
+      "Tulungagung, Jawa Timur 66229",
+    ]);
+  });
+
+  test("nama yang berulang dibuang (kota sama dengan kabupaten) tanpa memedulikan huruf besar", () => {
+    const hasil = susunAlamat([
+      { ...penuh, city: "TULUNGAGUNG", street: null, streetNumber: null },
+    ]);
+    expect(hasil?.baris).toEqual(["Pule, TULUNGAGUNG", "Jawa Timur 66229"]);
+  });
+
+  test("Plus Code dan 'Unnamed Road' bukan nama jalan", () => {
+    expect(susunAlamat([{ ...penuh, street: "7C6F+XX9" }])?.baris[0]).toBe("Pule, Kedungwaru");
+    expect(susunAlamat([{ ...penuh, street: "Unnamed Road" }])?.baris[0]).toBe("Pule, Kedungwaru");
+  });
+
+  test("nomor yang sudah ada di nama jalan tak diulang; nomor tanpa jalan diabaikan", () => {
+    expect(susunAlamat([{ ...penuh, street: "Jl. Mawar 5" }])?.baris[0]).toBe("Jl. Mawar 5");
+    expect(susunAlamat([{ ...penuh, street: null }])?.baris[0]).toBe("Pule, Kedungwaru");
+  });
+
+  test("kode pos tanpa daerah tak ditampilkan sendirian; tak ada nama wilayah → null", () => {
+    expect(
+      susunAlamat([{ district: "Pule", city: null, subregion: null, postalCode: "66229" }])?.baris,
+    ).toEqual(["Pule"]);
+    expect(susunAlamat([{ district: null, city: null, subregion: null }])).toBeNull();
+    expect(susunAlamat([])).toBeNull();
+  });
+});
+
+describe("tingkatAkurasi", () => {
+  test("≤ 20 m akurat, ≤ 50 m cukup, di atasnya kasar", () => {
+    expect(tingkatAkurasi(5)).toEqual({ teks: "Akurat", warna: "hijau" });
+    expect(tingkatAkurasi(20).warna).toBe("hijau");
+    expect(tingkatAkurasi(21)).toEqual({ teks: "Cukup Akurat", warna: "kuning" });
+    expect(tingkatAkurasi(50).warna).toBe("kuning");
+    expect(tingkatAkurasi(51)).toEqual({ teks: "Kasar", warna: "abu" });
   });
 });

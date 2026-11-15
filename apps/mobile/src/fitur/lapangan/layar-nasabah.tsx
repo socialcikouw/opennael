@@ -2,12 +2,12 @@ import { rupiah, tampilKampung, tampilNama } from "@opennael/format";
 import { router, Stack } from "expo-router";
 import { Alert, Linking, Text, View } from "react-native";
 import { useG } from "@/komponen/ui/gaya-bersama";
-import { Kartu } from "@/komponen/ui/kartu";
 import { Kerangka } from "@/komponen/ui/kerangka";
 import { Gulir } from "@/komponen/ui/layar";
 import { Lencana } from "@/komponen/ui/lencana";
 import { Keterangan } from "@/komponen/ui/teks";
 import { Tombol } from "@/komponen/ui/tombol";
+import { useAlamatTitik } from "./alamat-titik";
 import {
   useNasabah,
   usePinjamanNasabah,
@@ -29,8 +29,8 @@ import {
 import { AksiCepat } from "./komponen/aksi-cepat";
 import { BarisPinjaman } from "./komponen/baris-pinjaman";
 import { FotoSerahTerima } from "./komponen/foto-nasabah";
+import { KartuTitikRumah } from "./komponen/kartu-titik-rumah";
 import { KepalaNasabah } from "./komponen/kepala-nasabah";
-import { useNamaDesa } from "./nama-desa";
 
 /** Buka tautan luar (telepon, peta); gagal → pemberitahuan, bukan crash. */
 function buka(url: string, gagal: string) {
@@ -47,6 +47,8 @@ function bukaWhatsApp(nomorLengkap: string) {
 /**
  * DETAIL NASABAH (diketuk dari nama di kartu tagih), dari atas ke bawah:
  *   1. foto serah terima terbaru, dengan nama desa titik rumah di pojok kiri bawah;
+ *      alamat lengkapnya (jalan, desa, kecamatan, kabupaten, provinsi) dan akurasi
+ *      GPS ada di kartu Titik Rumah;
  *   2. kartu identitas — nama, kampung, Sisa Saldo, Tabungan & Hutang (tersembunyi sampai
  *      ikon mata diketuk; hutang = sisa saldo − tabungan), nomor HP, NIK;
  *   3. aksi cepat — Telepon, WhatsApp (bila nomor HP tercatat), Peta (bila titik rumah ada);
@@ -68,7 +70,7 @@ export function LayarNasabah({ id }: { id: string }) {
   // Cadangan cepat: kartu tagih nasabah ini yang sudah ada di memori.
   const kartu = tagih.data?.find((p) => p.nasabah.id === id);
   const n = nasabah.data;
-  const desa = useNamaDesa(n?.lokasi ?? null);
+  const alamat = useAlamatTitik(n?.lokasi ?? null);
   const nama = n?.nama ?? kartu?.nasabah.nama;
   const kampung = n?.kampung.nama ?? kartu?.nasabah.kampung;
   const tabungan = n?.saldoTabungan ?? kartu?.tabungan ?? null;
@@ -117,7 +119,7 @@ export function LayarNasabah({ id }: { id: string }) {
         <FotoSerahTerima
           fotoId={fotoId}
           nama={namaTampil}
-          keterangan={desa ? tampilKampung(desa) : null}
+          keterangan={alamat.alamat ? tampilKampung(alamat.alamat.desa) : null}
         />
       ) : null}
 
@@ -161,19 +163,14 @@ export function LayarNasabah({ id }: { id: string }) {
         </View>
       ) : null}
 
-      {n && !lokasi ? (
-        <Kartu>
-          <Keterangan>
-            Titik rumah belum direkam. Biasanya terekam otomatis saat akad; rekam sekarang bila Anda
-            sedang di depan rumahnya.
-          </Keterangan>
-          <Tombol
-            judul="Rekam titik rumah di sini"
-            ikon="map-pin"
-            memuat={rekam.isPending}
-            onPress={rekamTitik}
-          />
-        </Kartu>
+      {n ? (
+        <KartuTitikRumah
+          lokasi={lokasi}
+          alamat={alamat}
+          merekam={rekam.isPending}
+          onBuka={() => lokasi && buka(tautanPeta(lokasi), "Aplikasi peta tidak tersedia.")}
+          onRekam={rekamTitik}
+        />
       ) : null}
 
       <View style={g.baris2}>
