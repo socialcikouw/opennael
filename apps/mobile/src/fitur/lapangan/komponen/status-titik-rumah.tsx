@@ -1,7 +1,7 @@
 import { Text, View } from "react-native";
-import { useG } from "@/komponen/ui/gaya-bersama";
+import { g } from "@/komponen/ui/gaya-bersama";
 import { Ikon } from "@/komponen/ui/ikon";
-import { useWarna } from "@/komponen/ui/tampilan";
+import { WARNA } from "@/tema";
 import type { TitikLatar } from "../titik-rumah-latar";
 
 /**
@@ -10,8 +10,6 @@ import type { TitikLatar } from "../titik-rumah-latar";
  * menghalangi akad. `lama` = nasabah lama: titik hanya direkam bila ia belum punya.
  */
 export function StatusTitikRumah({ titik, lama }: { titik: TitikLatar; lama: boolean }) {
-  const g = useG();
-  const WARNA = useWarna();
   const siap = titik.status === "siap";
   const teks =
     titik.status === "siap"

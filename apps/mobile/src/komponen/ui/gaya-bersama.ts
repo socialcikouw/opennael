@@ -142,6 +142,15 @@ export const g = StyleSheet.create({
     padding: RUANG[4],
   },
 
+  /** Bagian layar: judul kecil HURUF BESAR di atas satu kartu. */
+  bagian: { gap: RUANG[2] },
+  judulBagian: {
+    ...HURUF["2xs"],
+    fontWeight: TEBAL.ekstra,
+    letterSpacing: 0.8,
+    color: WARNA.redup,
+  },
+
   barisNilai: {
     flexDirection: "row",
     alignItems: "center",

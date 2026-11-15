@@ -2,13 +2,13 @@ import { CameraView, useCameraPermissions } from "expo-camera";
 import { useRef, useState } from "react";
 import { Image, Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useG } from "@/komponen/ui/gaya-bersama";
+import { g } from "@/komponen/ui/gaya-bersama";
+import { Ikon } from "@/komponen/ui/ikon";
 import { PesanGalat } from "@/komponen/ui/isian";
-import { useGaya } from "@/komponen/ui/tampilan";
 import { Keterangan } from "@/komponen/ui/teks";
 import { Tombol } from "@/komponen/ui/tombol";
 import { unggahFotoSerahTerima } from "@/platform/foto";
-import { HURUF, RUANG, SUDUT, type Warna } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 
 interface Potret {
   uri: string;
@@ -26,8 +26,6 @@ export function KameraSerahTerima(props: {
   onTutup: () => void;
   onSelesai: (fotoId: string, pratinjauUri: string) => void;
 }) {
-  const gaya = useGaya(buatGaya);
-  const g = useG();
   const [izin, mintaIzin] = useCameraPermissions();
   const kamera = useRef<CameraView>(null);
   const [potret, setPotret] = useState<Potret | null>(null);
@@ -147,18 +145,19 @@ export function IsianFotoSerahTerima(props: {
   nilai: FotoSerahTerima | null;
   onUbah: (f: FotoSerahTerima | null) => void;
 }) {
-  const gaya = useGaya(buatGaya);
-  const g = useG();
   const [terbuka, setTerbuka] = useState(false);
   const berlaku = fotoMasihBerlaku(props.nilai);
 
   return (
     <View style={g.tumpuk2}>
-      <Text style={g.label}>Foto serah terima</Text>
       {props.nilai && berlaku ? (
         <View style={g.baris3}>
           <Image source={{ uri: props.nilai.uri }} style={gaya.pratinjau} />
           <View style={[g.isi, gaya.keteranganFoto]}>
+            <View style={g.baris1}>
+              <Ikon nama="circle-check" ukuran={16} warna={WARNA.utama} />
+              <Text style={gaya.siap}>Foto siap dipakai</Text>
+            </View>
             <Text style={gaya.diambil}>
               Diambil{" "}
               {new Date(props.nilai.diambilAt).toLocaleTimeString("id-ID", {
@@ -192,49 +191,49 @@ export function IsianFotoSerahTerima(props: {
   );
 }
 
-const buatGaya = (WARNA: Warna) =>
-  StyleSheet.create({
-    latar: { flex: 1, backgroundColor: WARNA.latarMedia },
-    izin: {
-      flex: 1,
-      justifyContent: "center",
-      gap: RUANG[4],
-      backgroundColor: WARNA.permukaan,
-      paddingHorizontal: RUANG[5],
-    },
-    panel: {
-      gap: RUANG[3],
-      backgroundColor: WARNA.latarMedia,
-      paddingHorizontal: RUANG[5],
-      paddingVertical: RUANG[4],
-    },
-    panelTerang: { backgroundColor: WARNA.permukaan },
-    petunjuk: { ...HURUF.sm, textAlign: "center", color: WARNA.diAtasFoto },
-    kendali: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-    sisi: { width: 80, paddingVertical: RUANG[3] },
-    batal: { ...HURUF.base, color: WARNA.diAtasFoto },
-    rana: {
-      width: 80,
-      height: 80,
-      alignItems: "center",
-      justifyContent: "center",
-      borderRadius: SUDUT.bulat,
-      borderWidth: 4,
-      borderColor: WARNA.diAtasFoto,
-    },
-    ranaMati: { opacity: 0.4 },
-    ranaIsi: {
-      width: 64,
-      height: 64,
-      borderRadius: SUDUT.bulat,
-      backgroundColor: WARNA.diAtasFoto,
-    },
-    pratinjau: {
-      width: 64,
-      height: 80,
-      borderRadius: SUDUT.kecil,
-      backgroundColor: WARNA.isiNetral,
-    },
-    keteranganFoto: { gap: RUANG[1] },
-    diambil: { ...HURUF.sm, color: WARNA.teksLabel },
-  });
+const gaya = StyleSheet.create({
+  latar: { flex: 1, backgroundColor: WARNA.latarMedia },
+  izin: {
+    flex: 1,
+    justifyContent: "center",
+    gap: RUANG[4],
+    backgroundColor: WARNA.permukaan,
+    paddingHorizontal: RUANG[5],
+  },
+  panel: {
+    gap: RUANG[3],
+    backgroundColor: WARNA.latarMedia,
+    paddingHorizontal: RUANG[5],
+    paddingVertical: RUANG[4],
+  },
+  panelTerang: { backgroundColor: WARNA.permukaan },
+  petunjuk: { ...HURUF.sm, textAlign: "center", color: WARNA.diAtasFoto },
+  kendali: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  sisi: { width: 80, paddingVertical: RUANG[3] },
+  batal: { ...HURUF.base, color: WARNA.diAtasFoto },
+  rana: {
+    width: 80,
+    height: 80,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: SUDUT.bulat,
+    borderWidth: 4,
+    borderColor: WARNA.diAtasFoto,
+  },
+  ranaMati: { opacity: 0.4 },
+  ranaIsi: {
+    width: 64,
+    height: 64,
+    borderRadius: SUDUT.bulat,
+    backgroundColor: WARNA.diAtasFoto,
+  },
+  pratinjau: {
+    width: 64,
+    height: 80,
+    borderRadius: SUDUT.kecil,
+    backgroundColor: WARNA.isiNetral,
+  },
+  keteranganFoto: { gap: RUANG[1] },
+  siap: { ...HURUF.sm, fontWeight: TEBAL.semi, color: WARNA.utama },
+  diambil: { ...HURUF.sm, color: WARNA.teksLabel },
+});

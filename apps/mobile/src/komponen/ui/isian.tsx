@@ -2,32 +2,28 @@ import { bacaUang, tulisUang } from "@opennael/format";
 import { useState } from "react";
 import { Text, TextInput, type TextInputProps, View } from "react-native";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
-import { useWarna } from "@/komponen/ui/tampilan";
-import type { Warna } from "@/tema";
-import { useG } from "./gaya-bersama";
+import { WARNA } from "@/tema";
+import { g } from "./gaya-bersama";
 import { Ikon } from "./ikon";
 
 export function Label({ teks }: { teks?: string | undefined }) {
-  const g = useG();
   return teks ? <Text style={g.label}>{teks}</Text> : null;
 }
 
 /** Bingkai isian: menyala hijau saat aktif, merah saat galat. */
-function bingkai(WARNA: Warna, fokus: boolean, galat: unknown) {
+function bingkai(fokus: boolean, galat: unknown) {
   return { borderColor: galat ? WARNA.bahayaBingkai : fokus ? WARNA.utamaFokus : WARNA.garisTegas };
 }
 
 export function Isian(
   props: TextInputProps & { label?: string; galat?: string | undefined; ikon?: NamaIkon },
 ) {
-  const WARNA = useWarna();
-  const g = useG();
   const { label, galat, ikon, onFocus, onBlur, ...input } = props;
   const [fokus, setFokus] = useState(false);
   return (
     <View style={g.tumpuk1}>
       <Label teks={label} />
-      <View style={[g.bingkaiIsian, bingkai(WARNA, fokus, galat)]}>
+      <View style={[g.bingkaiIsian, bingkai(fokus, galat)]}>
         {ikon ? <Ikon nama={ikon} warna={WARNA.redup} /> : null}
         <TextInput
           style={g.isian}
@@ -57,13 +53,11 @@ export function IsianUang(props: {
   galat?: string | null | undefined;
   autoFocus?: boolean;
 }) {
-  const WARNA = useWarna();
-  const g = useG();
   const [fokus, setFokus] = useState(false);
   return (
     <View style={g.tumpuk1}>
       <Label teks={props.label} />
-      <View style={[g.bingkaiIsian, g.bingkaiUang, bingkai(WARNA, fokus, props.galat)]}>
+      <View style={[g.bingkaiIsian, g.bingkaiUang, bingkai(fokus, props.galat)]}>
         <Text style={g.awalanRp}>Rp</Text>
         <TextInput
           style={g.isianUang}
@@ -84,8 +78,6 @@ export function IsianUang(props: {
 }
 
 export function PesanGalat({ pesan }: { pesan: string | null | undefined }) {
-  const WARNA = useWarna();
-  const g = useG();
   if (!pesan) return null;
   return (
     <View style={[g.kotakPesan, g.kotakGalat]}>

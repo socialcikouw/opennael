@@ -5,14 +5,12 @@ import {
   type KeyboardAwareScrollViewProps,
 } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useWarna } from "@/komponen/ui/tampilan";
 import { useTarikSegarkan } from "@/lib/tarik-segarkan";
-import { RUANG } from "@/tema";
-import { useG } from "./gaya-bersama";
+import { RUANG, WARNA } from "@/tema";
+import { g } from "./gaya-bersama";
 
 /** Kerangka layar tanpa header: aman dari poni & bilah navigasi. */
 export function Layar({ children }: { children: ReactNode }) {
-  const g = useG();
   return (
     <SafeAreaView style={g.layar}>
       <View style={g.layarIsi}>{children}</View>
@@ -52,7 +50,6 @@ export function Gulir({
   children: ReactNode;
   onSegarkan?: () => Promise<unknown>;
 }) {
-  const g = useG();
   const { aktif, tarik } = useTarikSegarkan(onSegarkan ?? TANPA_SEGAR);
   return (
     <GulirKeyboard
@@ -70,8 +67,6 @@ export function Gulir({
 
 /** Pemuat penuh layar. */
 export function Memuat({ teks }: { teks?: string }) {
-  const WARNA = useWarna();
-  const g = useG();
   return (
     <View style={g.memuat}>
       <ActivityIndicator color={WARNA.utama} />

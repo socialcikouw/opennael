@@ -1,6 +1,6 @@
 import { Pressable, Text, View } from "react-native";
-import { useWarna } from "@/komponen/ui/tampilan";
-import { useG } from "./gaya-bersama";
+import { WARNA } from "@/tema";
+import { g } from "./gaya-bersama";
 import { Label } from "./isian";
 
 /**
@@ -14,8 +14,6 @@ export function Pilihan<T extends string | number>(props: {
   onPilih: (nilai: T) => void;
   segmen?: boolean;
 }) {
-  const WARNA = useWarna();
-  const g = useG();
   if (props.segmen) {
     return (
       <View style={g.tumpuk1}>

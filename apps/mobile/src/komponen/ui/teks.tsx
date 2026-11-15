@@ -1,11 +1,10 @@
 import type { ReactNode } from "react";
 import { Text, View } from "react-native";
 import { HURUF } from "@/tema";
-import { useG } from "./gaya-bersama";
+import { g } from "./gaya-bersama";
 
 /** Tanda merek: kotak hijau ber-"N" + nama aplikasi. */
 export function Merek({ besar }: { besar?: boolean }) {
-  const g = useG();
   return (
     <View style={g.baris3}>
       <View style={[g.merekKotak, besar ? g.merekKotakBesar : null]}>
@@ -20,11 +19,9 @@ export function Merek({ besar }: { besar?: boolean }) {
 }
 
 export function Judul({ children }: { children: ReactNode }) {
-  const g = useG();
   return <Text style={g.judul}>{children}</Text>;
 }
 
 export function Keterangan({ children }: { children: ReactNode }) {
-  const g = useG();
   return <Text style={g.keterangan}>{children}</Text>;
 }

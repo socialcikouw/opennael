@@ -1,19 +1,26 @@
 import type { ReactNode } from "react";
 import { Text, View } from "react-native";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
-import { useWarna } from "@/komponen/ui/tampilan";
-import { useG } from "./gaya-bersama";
+import { WARNA } from "@/tema";
+import { g } from "./gaya-bersama";
 import { Ikon } from "./ikon";
 
 export function Kartu({ children }: { children: ReactNode }) {
-  const g = useG();
   return <View style={g.kartu}>{children}</View>;
+}
+
+/** Bagian layar: judul kecil HURUF BESAR (mis. "NASABAH") di atas satu kartu isi. */
+export function Bagian({ judul, children }: { judul: string; children: ReactNode }) {
+  return (
+    <View style={g.bagian}>
+      <Text style={g.judulBagian}>{judul}</Text>
+      <Kartu>{children}</Kartu>
+    </View>
+  );
 }
 
 /** Satu baris label — nilai (angka rata kanan). `warna` = warna teks nilai. */
 export function Baris(props: { label: string; nilai: string; tebal?: boolean; warna?: string }) {
-  const WARNA = useWarna();
-  const g = useG();
   return (
     <View style={g.barisNilai}>
       <Text style={g.barisLabel}>{props.label}</Text>
@@ -32,8 +39,6 @@ export function Baris(props: { label: string; nilai: string; tebal?: boolean; wa
 
 /** Angka ringkas berlabel — deret ringkasan di atas layar. */
 export function KotakAngka(props: { label: string; nilai: string; ikon?: NamaIkon }) {
-  const WARNA = useWarna();
-  const g = useG();
   return (
     <View style={g.kotakAngka}>
       <View style={g.baris1}>

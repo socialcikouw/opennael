@@ -1,21 +1,14 @@
 import { Text } from "react-native";
-import { useGaya } from "@/komponen/ui/tampilan";
-import type { Warna } from "@/tema";
-import { useG } from "./gaya-bersama";
+import { WARNA } from "@/tema";
+import { g } from "./gaya-bersama";
 
-const buatWarnaLencana = (WARNA: Warna) =>
-  ({
-    hijau: { backgroundColor: WARNA.utamaMuda, color: WARNA.utamaTua },
-    kuning: { backgroundColor: WARNA.waspadaMuda, color: WARNA.waspadaTua },
-    merah: { backgroundColor: WARNA.bahayaMuda, color: WARNA.bahayaTua },
-    abu: { backgroundColor: WARNA.isiNetral, color: WARNA.teksLabel },
-  }) as const;
+const WARNA_LENCANA = {
+  hijau: { backgroundColor: WARNA.utamaMuda, color: WARNA.utamaTua },
+  kuning: { backgroundColor: WARNA.waspadaMuda, color: WARNA.waspadaTua },
+  merah: { backgroundColor: WARNA.bahayaMuda, color: WARNA.bahayaTua },
+  abu: { backgroundColor: WARNA.isiNetral, color: WARNA.teksLabel },
+} as const;
 
-export function Lencana(props: {
-  teks: string;
-  warna?: keyof ReturnType<typeof buatWarnaLencana>;
-}) {
-  const g = useG();
-  const warna = useGaya(buatWarnaLencana);
-  return <Text style={[g.lencana, warna[props.warna ?? "abu"]]}>{props.teks}</Text>;
+export function Lencana(props: { teks: string; warna?: keyof typeof WARNA_LENCANA }) {
+  return <Text style={[g.lencana, WARNA_LENCANA[props.warna ?? "abu"]]}>{props.teks}</Text>;
 }

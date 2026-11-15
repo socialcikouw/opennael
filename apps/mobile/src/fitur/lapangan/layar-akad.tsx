@@ -3,14 +3,14 @@ import { type JenisPinjaman, syaratAkad, TENOR_PINJAMAN } from "@opennael/domain
 import { LABEL_JENIS, namaTenor, rupiah } from "@opennael/format";
 import { router, Stack } from "expo-router";
 import { useState } from "react";
-import { Alert } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 import { Isian, IsianUang, PesanGalat } from "@/komponen/ui/isian";
-import { Baris, Kartu } from "@/komponen/ui/kartu";
+import { Bagian } from "@/komponen/ui/kartu";
 import { Gulir } from "@/komponen/ui/layar";
 import { Pilihan } from "@/komponen/ui/pilihan";
-import { useWarna } from "@/komponen/ui/tampilan";
 import { Tombol } from "@/komponen/ui/tombol";
 import { cobaAturan } from "@/lib/aturan";
+import { WARNA } from "@/tema";
 import { useAkad } from "./data";
 import {
   type FotoSerahTerima,
@@ -20,6 +20,7 @@ import {
 } from "./komponen/kamera-serah-terima";
 import { PilihKampung } from "./komponen/pilih-kampung";
 import { PilihNasabahLama } from "./komponen/pilih-nasabah-lama";
+import { RincianAkad } from "./komponen/rincian-akad";
 import { StatusTitikRumah } from "./komponen/status-titik-rumah";
 import { useTitikRumahLatar } from "./titik-rumah-latar";
 
@@ -34,9 +35,11 @@ const POKOK_CEPAT = [500_000, 1_000_000, 1_500_000, 2_000_000];
  * terpakai formulir tampil (foto berlaku 1 jam, A7). Sejak layar terbuka GPS
  * dipantau di latar (`useTitikRumahLatar`); titik terbaiknya direkam sebagai
  * titik rumah begitu akad tersimpan, tanpa langkah tambahan kolektor.
+ *
+ * Formulir dibagi tiga bagian bernama — BUKTI SERAH TERIMA (foto + status GPS),
+ * NASABAH, PINJAMAN — lalu rincian pencairan (angka terbesar di layar) dan tombol simpan.
  */
 export function LayarAkad({ jenis: param }: { jenis?: string }) {
-  const WARNA = useWarna();
   const [siapa, setSiapa] = useState<"baru" | "lama">("baru");
   const [nama, setNama] = useState("");
   const [kampungTeks, setKampungTeks] = useState("");
@@ -110,100 +113,92 @@ export function LayarAkad({ jenis: param }: { jenis?: string }) {
 
   return (
     <Gulir>
-      <IsianFotoSerahTerima nilai={foto} onUbah={setFoto} />
-      <StatusTitikRumah titik={titikLatar} lama={siapa === "lama"} />
+      <Bagian judul="BUKTI SERAH TERIMA">
+        <IsianFotoSerahTerima nilai={foto} onUbah={setFoto} />
+        <View style={gaya.garis} />
+        <StatusTitikRumah titik={titikLatar} lama={siapa === "lama"} />
+      </Bagian>
 
-      <Pilihan
-        segmen
-        pilihan={[
-          { nilai: "baru", teks: "Orang Baru" },
-          { nilai: "lama", teks: "Nasabah Lama" },
-        ]}
-        nilai={siapa}
-        onPilih={setSiapa}
-      />
-
-      {siapa === "baru" ? (
-        <>
-          <Isian
-            label="Nama Nasabah"
-            value={nama}
-            onChangeText={setNama}
-            maxLength={50}
-            autoCapitalize="words"
-          />
-          <PilihKampung
-            teks={kampungTeks}
-            terpilih={kampungId}
-            onUbah={(teks, id) => {
-              setKampungTeks(teks);
-              setKampungId(id);
-            }}
-          />
-          <Isian
-            label="NIK (boleh kosong)"
-            value={nik}
-            onChangeText={(t) => setNik(t.replace(/\D/g, "").slice(0, 16))}
-            keyboardType="number-pad"
-            galat={nik && nik.length !== 16 ? "NIK 16 digit" : undefined}
-          />
-          <Isian
-            label="Nomor HP (boleh kosong)"
-            value={nomorHp}
-            onChangeText={setNomorHp}
-            keyboardType="phone-pad"
-            maxLength={16}
-          />
-        </>
-      ) : (
-        <PilihNasabahLama terpilih={lama} onPilih={pilihLama} />
-      )}
-
-      {jenisTetap ? (
-        <Stack.Screen options={{ title: `Akad ${LABEL_JENIS[jenisTetap]}` }} />
-      ) : (
+      <Bagian judul="NASABAH">
         <Pilihan
           segmen
-          label="Jenis Pinjaman"
-          pilihan={(["harian", "mingguan", "tempoan"] as const).map((j) => ({
-            nilai: j,
-            teks: LABEL_JENIS[j],
-          }))}
-          nilai={jenis}
-          onPilih={pilihJenis}
+          pilihan={[
+            { nilai: "baru", teks: "Orang Baru" },
+            { nilai: "lama", teks: "Nasabah Lama" },
+          ]}
+          nilai={siapa}
+          onPilih={setSiapa}
         />
-      )}
-      {TENOR_PINJAMAN[jenis].length > 1 ? (
+        {siapa === "baru" ? (
+          <>
+            <Isian
+              label="Nama Nasabah"
+              value={nama}
+              onChangeText={setNama}
+              maxLength={50}
+              autoCapitalize="words"
+            />
+            <PilihKampung
+              teks={kampungTeks}
+              terpilih={kampungId}
+              onUbah={(teks, id) => {
+                setKampungTeks(teks);
+                setKampungId(id);
+              }}
+            />
+            <Isian
+              label="NIK (boleh kosong)"
+              value={nik}
+              onChangeText={(t) => setNik(t.replace(/\D/g, "").slice(0, 16))}
+              keyboardType="number-pad"
+              galat={nik && nik.length !== 16 ? "NIK 16 digit" : undefined}
+            />
+            <Isian
+              label="Nomor HP (boleh kosong)"
+              value={nomorHp}
+              onChangeText={setNomorHp}
+              keyboardType="phone-pad"
+              maxLength={16}
+            />
+          </>
+        ) : (
+          <PilihNasabahLama terpilih={lama} onPilih={pilihLama} />
+        )}
+      </Bagian>
+
+      <Bagian judul="PINJAMAN">
+        {jenisTetap ? (
+          <Stack.Screen options={{ title: `Akad ${LABEL_JENIS[jenisTetap]}` }} />
+        ) : (
+          <Pilihan
+            segmen
+            label="Jenis Pinjaman"
+            pilihan={(["harian", "mingguan", "tempoan"] as const).map((j) => ({
+              nilai: j,
+              teks: LABEL_JENIS[j],
+            }))}
+            nilai={jenis}
+            onPilih={pilihJenis}
+          />
+        )}
+        {TENOR_PINJAMAN[jenis].length > 1 ? (
+          <Pilihan
+            label="Tenor"
+            pilihan={TENOR_PINJAMAN[jenis].map((t) => ({ nilai: t, teks: namaTenor(jenis, t) }))}
+            nilai={tenor}
+            onPilih={setTenor}
+          />
+        ) : null}
+        <IsianUang label="Pokok" nilai={pokok} onUbah={setPokok} />
         <Pilihan
-          label="Tenor"
-          pilihan={TENOR_PINJAMAN[jenis].map((t) => ({ nilai: t, teks: namaTenor(jenis, t) }))}
-          nilai={tenor}
-          onPilih={setTenor}
+          pilihan={POKOK_CEPAT.map((n) => ({ nilai: n, teks: rupiah(n) }))}
+          nilai={pokok}
+          onPilih={setPokok}
         />
-      ) : null}
-      <IsianUang label="Pokok" nilai={pokok} onUbah={setPokok} />
-      <Pilihan
-        pilihan={POKOK_CEPAT.map((n) => ({ nilai: n, teks: rupiah(n) }))}
-        nilai={pokok}
-        onPilih={setPokok}
-      />
+      </Bagian>
 
       {syarat.hasil ? (
-        <Kartu>
-          <Baris label="Potongan Admin" nilai={rupiah(syarat.hasil.potonganAdmin)} />
-          <Baris label="Masuk Tabungan" nilai={rupiah(syarat.hasil.tabunganMasuk)} />
-          <Baris
-            label="Pencairan"
-            nilai={rupiah(syarat.hasil.pencairan)}
-            tebal
-            warna={WARNA.utama}
-          />
-          <Baris label="Total Kembali" nilai={rupiah(syarat.hasil.totalKembali)} />
-          <Baris
-            label={jenis === "tempoan" ? "Dibayar Sekali" : "Angsuran"}
-            nilai={rupiah(syarat.hasil.angsuran)}
-          />
-        </Kartu>
+        <RincianAkad hasil={syarat.hasil} sekali={jenis === "tempoan"} />
       ) : (
         <PesanGalat pesan={syarat.galat} />
       )}
@@ -219,3 +214,7 @@ export function LayarAkad({ jenis: param }: { jenis?: string }) {
     </Gulir>
   );
 }
+
+const gaya = StyleSheet.create({
+  garis: { height: 1, backgroundColor: WARNA.garis },
+});

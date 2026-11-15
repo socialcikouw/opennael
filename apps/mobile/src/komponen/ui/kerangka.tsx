@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AccessibilityInfo, Animated, type DimensionValue, Easing, View } from "react-native";
-import { useWarna } from "@/komponen/ui/tampilan";
-import { RUANG, SUDUT } from "@/tema";
-import { useG } from "./gaya-bersama";
+import { RUANG, SUDUT, WARNA } from "@/tema";
+import { g } from "./gaya-bersama";
 
 /** Denyut pelan (opasitas 1 ↔ 0,55) untuk seluruh kerangka; diam bila animasi dimatikan di HP. */
 function useDenyut() {
@@ -54,7 +53,6 @@ function Balok({
   tinggi: number;
   sudut?: number;
 }) {
-  const WARNA = useWarna();
   return (
     <View
       style={{ width: lebar, height: tinggi, borderRadius: sudut, backgroundColor: WARNA.garis }}
@@ -64,7 +62,6 @@ function Balok({
 
 /** Kartu kerangka: satu judul pendek dan dua baris isi. */
 function KartuKerangka() {
-  const g = useG();
   return (
     <View style={g.kartu}>
       <Balok lebar="45%" tinggi={16} />
@@ -87,7 +84,6 @@ export function Kerangka({
   jenis?: "daftar" | "rincian";
   teks?: string;
 }) {
-  const g = useG();
   const denyut = useDenyut();
   return (
     <View

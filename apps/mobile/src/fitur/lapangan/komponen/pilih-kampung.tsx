@@ -1,7 +1,7 @@
 import { kunciWilayah } from "@opennael/domain";
 import { useMemo } from "react";
 import { Pressable, Text, View } from "react-native";
-import { useG } from "@/komponen/ui/gaya-bersama";
+import { g } from "@/komponen/ui/gaya-bersama";
 import { Isian } from "@/komponen/ui/isian";
 import { useKampung } from "../data";
 
@@ -11,7 +11,6 @@ export function PilihKampung(props: {
   terpilih: string | null;
   onUbah: (teks: string, id: string | null) => void;
 }) {
-  const g = useG();
   const kampung = useKampung();
   const saran = useMemo(() => {
     const kunci = kunciWilayah(props.teks);

@@ -2,21 +2,19 @@ import type { NasabahLama } from "@opennael/contracts";
 import { kunciWilayah } from "@opennael/domain";
 import { LABEL_JENIS, rupiah, tampilKampung } from "@opennael/format";
 import { useMemo, useState } from "react";
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
-import { useG } from "@/komponen/ui/gaya-bersama";
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
+import { g } from "@/komponen/ui/gaya-bersama";
 import { Isian, PesanGalat } from "@/komponen/ui/isian";
-import { Baris, Kartu } from "@/komponen/ui/kartu";
-import { useWarna } from "@/komponen/ui/tampilan";
+import { Baris } from "@/komponen/ui/kartu";
 import { Keterangan } from "@/komponen/ui/teks";
 import { TombolTeks } from "@/komponen/ui/tombol";
+import { RUANG, SUDUT, WARNA } from "@/tema";
 import { useNasabahLama } from "../data";
 
 export function PilihNasabahLama(props: {
   terpilih: NasabahLama | null;
   onPilih: (n: NasabahLama | null) => void;
 }) {
-  const WARNA = useWarna();
-  const g = useG();
   const daftar = useNasabahLama();
   const [cari, setCari] = useState("");
   const cocok = useMemo(() => {
@@ -31,7 +29,7 @@ export function PilihNasabahLama(props: {
   if (props.terpilih) {
     const n = props.terpilih;
     return (
-      <Kartu>
+      <View style={gaya.terpilih}>
         <Text style={g.teksTebal}>{n.nama}</Text>
         <Text style={g.teksKecil}>{tampilKampung(n.kampung)}</Text>
         {n.terakhir ? (
@@ -42,7 +40,7 @@ export function PilihNasabahLama(props: {
         ) : null}
         <Baris label="Tabungan" nilai={rupiah(n.tabungan)} />
         <TombolTeks judul="Ganti nasabah" onPress={() => props.onPilih(null)} />
-      </Kartu>
+      </View>
     );
   }
 
@@ -79,3 +77,13 @@ export function PilihNasabahLama(props: {
     </View>
   );
 }
+
+const gaya = StyleSheet.create({
+  // Nasabah terpilih: blok isi netral di dalam kartu bagian "Nasabah".
+  terpilih: {
+    gap: RUANG[2],
+    padding: RUANG[3],
+    borderRadius: SUDUT.sedang,
+    backgroundColor: WARNA.isiNetral,
+  },
+});

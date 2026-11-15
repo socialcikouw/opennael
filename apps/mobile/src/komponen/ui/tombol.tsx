@@ -1,37 +1,34 @@
 import { ActivityIndicator, Pressable, Text } from "react-native";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
-import { useGaya } from "@/komponen/ui/tampilan";
-import type { Warna } from "@/tema";
-import { useG } from "./gaya-bersama";
+import { WARNA } from "@/tema";
+import { g } from "./gaya-bersama";
 import { Ikon } from "./ikon";
 
-const buatGayaTombol = (WARNA: Warna) =>
-  ({
-    utama: { kotak: { backgroundColor: WARNA.utamaIsi }, teks: WARNA.teksAtasUtama },
-    kedua: {
-      kotak: { backgroundColor: WARNA.permukaan, borderWidth: 1, borderColor: WARNA.garisTegas },
-      teks: WARNA.teksTombol,
+const GAYA_TOMBOL = {
+  utama: { kotak: { backgroundColor: WARNA.utamaIsi }, teks: WARNA.teksAtasUtama },
+  kedua: {
+    kotak: { backgroundColor: WARNA.permukaan, borderWidth: 1, borderColor: WARNA.garisTegas },
+    teks: WARNA.teksTombol,
+  },
+  bahaya: {
+    kotak: {
+      backgroundColor: WARNA.bahayaLembut,
+      borderWidth: 1,
+      borderColor: WARNA.bahayaGaris,
     },
-    bahaya: {
-      kotak: {
-        backgroundColor: WARNA.bahayaLembut,
-        borderWidth: 1,
-        borderColor: WARNA.bahayaGaris,
-      },
-      teks: WARNA.bahaya,
-    },
-  }) as const;
+    teks: WARNA.bahaya,
+  },
+} as const;
 
 export function Tombol(props: {
   judul: string;
   onPress: () => void;
   memuat?: boolean;
-  jenis?: keyof ReturnType<typeof buatGayaTombol>;
+  jenis?: keyof typeof GAYA_TOMBOL;
   nonaktif?: boolean;
   ikon?: NamaIkon;
 }) {
-  const g = useG();
-  const gaya = useGaya(buatGayaTombol)[props.jenis ?? "utama"];
+  const gaya = GAYA_TOMBOL[props.jenis ?? "utama"];
   const mati = props.nonaktif || props.memuat;
   return (
     <Pressable
@@ -60,7 +57,6 @@ export function Tombol(props: {
 
 /** Tautan teks kecil (mis. "Ganti nasabah"). */
 export function TombolTeks(props: { judul: string; onPress: () => void }) {
-  const g = useG();
   return (
     <Pressable
       onPress={props.onPress}

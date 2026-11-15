@@ -11,8 +11,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ikon } from "@/komponen/ui/ikon";
-import { useGaya, useWarna } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 
 /**
  * LEMBAR BAWAH — naik dari bawah di atas tirai gelap; ketuk tirai, tombol X,
@@ -28,8 +27,6 @@ export function LembarBawah(props: {
   onSelesaiTutup?: () => void;
   children: ReactNode;
 }) {
-  const WARNA = useWarna();
-  const gaya = useGaya(buatGaya);
   const bawah = useSafeAreaInsets().bottom;
   return (
     <Modal
@@ -72,38 +69,37 @@ export function LembarBawah(props: {
   );
 }
 
-const buatGaya = (WARNA: Warna) =>
-  StyleSheet.create({
-    tirai: { flex: 1, backgroundColor: WARNA.tiraiGelap },
-    lembar: {
-      maxHeight: "88%",
-      paddingTop: RUANG[3],
-      borderTopLeftRadius: SUDUT.lebar,
-      borderTopRightRadius: SUDUT.lebar,
-      backgroundColor: WARNA.permukaanTinggi,
-    },
-    pegangan: {
-      alignSelf: "center",
-      width: 40,
-      height: 5,
-      borderRadius: SUDUT.bulat,
-      backgroundColor: WARNA.garisTegas,
-    },
-    kepala: {
-      flexDirection: "row",
-      alignItems: "center",
-      paddingHorizontal: RUANG[5],
-      paddingTop: RUANG[3],
-    },
-    judul: { ...HURUF.lg, flex: 1, fontWeight: TEBAL.tebal, color: WARNA.teks },
-    tutup: {
-      width: 32,
-      height: 32,
-      alignItems: "center",
-      justifyContent: "center",
-      borderRadius: SUDUT.bulat,
-      backgroundColor: WARNA.isiNetralTegas,
-    },
-    gulir: { flexGrow: 0 },
-    isi: { gap: RUANG[4], paddingHorizontal: RUANG[5], paddingTop: RUANG[4] },
-  });
+const gaya = StyleSheet.create({
+  tirai: { flex: 1, backgroundColor: WARNA.tiraiGelap },
+  lembar: {
+    maxHeight: "88%",
+    paddingTop: RUANG[3],
+    borderTopLeftRadius: SUDUT.lebar,
+    borderTopRightRadius: SUDUT.lebar,
+    backgroundColor: WARNA.permukaanTinggi,
+  },
+  pegangan: {
+    alignSelf: "center",
+    width: 40,
+    height: 5,
+    borderRadius: SUDUT.bulat,
+    backgroundColor: WARNA.garisTegas,
+  },
+  kepala: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: RUANG[5],
+    paddingTop: RUANG[3],
+  },
+  judul: { ...HURUF.lg, flex: 1, fontWeight: TEBAL.tebal, color: WARNA.teks },
+  tutup: {
+    width: 32,
+    height: 32,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: SUDUT.bulat,
+    backgroundColor: WARNA.isiNetralTegas,
+  },
+  gulir: { flexGrow: 0 },
+  isi: { gap: RUANG[4], paddingHorizontal: RUANG[5], paddingTop: RUANG[4] },
+});

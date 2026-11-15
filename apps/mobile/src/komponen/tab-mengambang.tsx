@@ -4,8 +4,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
-import { useGaya, useWarna } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
 
 /** Tinggi pil tab. */
 const TINGGI = 64;
@@ -51,8 +50,6 @@ export function TabMengambang({
   kiri?: { isi: ReactNode; label: string; onPress: () => void };
   tambah?: { label: string; onPress: () => void };
 }) {
-  const WARNA = useWarna();
-  const gaya = useGaya(buatGaya);
   const aksen = warna ?? {
     teks: WARNA.utama,
     lembut: WARNA.utamaMuda,
@@ -145,68 +142,67 @@ export function TabMengambang({
   );
 }
 
-const buatGaya = (WARNA: Warna) =>
-  StyleSheet.create({
-    wadah: {
-      position: "absolute",
-      left: RUANG[3],
-      right: RUANG[3],
-      flexDirection: "row",
-      alignItems: "center",
-      gap: RUANG[2],
-    },
-    pil: {
-      flex: 1,
-      height: TINGGI,
-      flexDirection: "row",
-      alignItems: "center",
-      borderRadius: SUDUT.bulat,
-      borderWidth: 1,
-      borderColor: WARNA.garis,
-      backgroundColor: WARNA.permukaanTinggi,
-      paddingHorizontal: RUANG[1],
-    },
-    tab: {
-      flex: 1,
-      height: "100%",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: RUANG[0.5],
-    },
-    ditekan: { opacity: 0.6 },
-    ikonTab: {
-      height: 32,
-      paddingHorizontal: RUANG[3],
-      alignItems: "center",
-      justifyContent: "center",
-      borderRadius: SUDUT.bulat,
-    },
-    ikonTabRapat: { paddingHorizontal: RUANG[2] },
-    label: { ...HURUF["2xs"], fontWeight: TEBAL.biasa },
-    lencana: {
-      position: "absolute",
-      top: -RUANG[1],
-      right: RUANG[1],
-      minWidth: 18,
-      height: 18,
-      paddingHorizontal: RUANG[1],
-      borderRadius: SUDUT.bulat,
-      alignItems: "center",
-      justifyContent: "center",
-      backgroundColor: WARNA.bahayaBingkai,
-    },
-    lencanaTeks: {
-      ...HURUF["2xs"],
-      fontWeight: TEBAL.ekstra,
-      color: WARNA.teksAtasBahaya,
-      fontVariant: ["tabular-nums"],
-    },
-    bulat: {
-      width: TOMBOL,
-      height: TOMBOL,
-      borderRadius: SUDUT.bulat,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    kiri: { borderWidth: 1, borderColor: WARNA.garis, backgroundColor: WARNA.permukaanTinggi },
-  });
+const gaya = StyleSheet.create({
+  wadah: {
+    position: "absolute",
+    left: RUANG[3],
+    right: RUANG[3],
+    flexDirection: "row",
+    alignItems: "center",
+    gap: RUANG[2],
+  },
+  pil: {
+    flex: 1,
+    height: TINGGI,
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: SUDUT.bulat,
+    borderWidth: 1,
+    borderColor: WARNA.garis,
+    backgroundColor: WARNA.permukaanTinggi,
+    paddingHorizontal: RUANG[1],
+  },
+  tab: {
+    flex: 1,
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: RUANG[0.5],
+  },
+  ditekan: { opacity: 0.6 },
+  ikonTab: {
+    height: 32,
+    paddingHorizontal: RUANG[3],
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: SUDUT.bulat,
+  },
+  ikonTabRapat: { paddingHorizontal: RUANG[2] },
+  label: { ...HURUF["2xs"], fontWeight: TEBAL.biasa },
+  lencana: {
+    position: "absolute",
+    top: -RUANG[1],
+    right: RUANG[1],
+    minWidth: 18,
+    height: 18,
+    paddingHorizontal: RUANG[1],
+    borderRadius: SUDUT.bulat,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: WARNA.bahayaBingkai,
+  },
+  lencanaTeks: {
+    ...HURUF["2xs"],
+    fontWeight: TEBAL.ekstra,
+    color: WARNA.teksAtasBahaya,
+    fontVariant: ["tabular-nums"],
+  },
+  bulat: {
+    width: TOMBOL,
+    height: TOMBOL,
+    borderRadius: SUDUT.bulat,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  kiri: { borderWidth: 1, borderColor: WARNA.garis, backgroundColor: WARNA.permukaanTinggi },
+});
