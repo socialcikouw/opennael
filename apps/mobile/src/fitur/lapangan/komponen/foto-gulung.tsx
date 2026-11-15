@@ -71,7 +71,7 @@ const buatGaya = (WARNA: Warna) =>
       overflow: "hidden",
       justifyContent: "flex-end",
       borderRadius: SUDUT.besar,
-      backgroundColor: WARNA.abu,
+      backgroundColor: WARNA.isiNetral,
     },
     fotoKaki: {
       flexDirection: "row",

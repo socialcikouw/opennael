@@ -118,7 +118,7 @@ const buatGaya = (WARNA: Warna) =>
       letterSpacing: 0.6,
       color: WARNA.redup,
     },
-    angka: { overflow: "hidden", borderRadius: SUDUT.sedang, backgroundColor: WARNA.abu },
+    angka: { overflow: "hidden", borderRadius: SUDUT.sedang, backgroundColor: WARNA.isiNetral },
     saldo: {
       alignItems: "center",
       gap: RUANG[0.5],

@@ -130,7 +130,7 @@ const buatGaya = (WARNA: Warna) =>
       justifyContent: "center",
       borderWidth: 1,
       borderColor: WARNA.garisTegas,
-      backgroundColor: WARNA.abu,
+      backgroundColor: WARNA.isiNetral,
     },
     jumlahTeks: {
       ...HURUF.xs,
@@ -171,8 +171,8 @@ const buatGaya = (WARNA: Warna) =>
       borderColor: WARNA.garis,
       backgroundColor: WARNA.permukaan,
     },
-    kerangkaBaris: { height: 10, borderRadius: SUDUT.bulat, backgroundColor: WARNA.abu },
-    kerangkaGrid: { height: 96, borderRadius: SUDUT.besar, backgroundColor: WARNA.abu },
+    kerangkaBaris: { height: 10, borderRadius: SUDUT.bulat, backgroundColor: WARNA.isiNetral },
+    kerangkaGrid: { height: 96, borderRadius: SUDUT.besar, backgroundColor: WARNA.isiNetral },
     kosong: {
       alignItems: "center",
       gap: RUANG[2],

@@ -17,8 +17,9 @@ export const NATIVE = {
   gaya: "dark",
   /** Latar jendela (tampil sebelum JS memuat & di balik keyboard) — sama dengan latar layar. */
   latar: WARNA.latar,
-  /** Latar splash & ikon adaptif — warna templat sementara (lihat `palet.ts`). */
-  splash: PALET.native.splash,
+  /** Latar splash = latar layar: tak ada kilatan warna lain sebelum aplikasi tampil (logo splash putih). */
+  splash: WARNA.latar,
+  /** Latar ikon adaptif — warna templat sementara (lihat `palet.ts`); diganti bersama ikon merek. */
   ikonAdaptif: PALET.native.ikonAdaptif,
 } as const;
 

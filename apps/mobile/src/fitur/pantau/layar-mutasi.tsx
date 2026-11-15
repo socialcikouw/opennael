@@ -256,7 +256,7 @@ const buatGaya = (WARNA: Warna) =>
       alignItems: "center",
       justifyContent: "center",
       borderRadius: SUDUT.bulat,
-      backgroundColor: WARNA.abu,
+      backgroundColor: WARNA.isiNetral,
     },
     gembokJudul: { ...HURUF.lg, fontWeight: TEBAL.tebal, textAlign: "center", color: WARNA.teks },
     gembokIsi: { ...HURUF.sm, textAlign: "center", color: WARNA.redup },

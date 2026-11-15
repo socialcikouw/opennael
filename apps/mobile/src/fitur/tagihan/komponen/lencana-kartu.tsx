@@ -10,7 +10,7 @@ function useNada(): Record<Nada, { teks: string; latar: string }> {
     merah: { teks: WARNA.bahayaTeks, latar: WARNA.bahayaLembut },
     hijau: { teks: WARNA.utama, latar: WARNA.utamaLembut },
     kuning: { teks: WARNA.waspada, latar: WARNA.waspadaLembut },
-    abu: { teks: WARNA.teksKedua, latar: WARNA.abu },
+    abu: { teks: WARNA.teksKedua, latar: WARNA.isiNetral },
   };
 }
 

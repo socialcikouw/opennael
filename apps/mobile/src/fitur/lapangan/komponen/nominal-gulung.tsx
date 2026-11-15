@@ -45,7 +45,7 @@ export function NominalGulung({
   // Naik = hijau merek, tetap = abu, turun = merah (pokok berkurang).
   const rupaGulung = {
     naik: { teks: WARNA.utama, latar: WARNA.utamaLembut },
-    tetap: { teks: WARNA.teksKedua, latar: WARNA.abu },
+    tetap: { teks: WARNA.teksKedua, latar: WARNA.isiNetral },
     turun: { teks: WARNA.bahayaTeks, latar: WARNA.bahayaLembut },
   };
 

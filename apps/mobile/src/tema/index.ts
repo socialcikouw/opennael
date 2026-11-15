@@ -4,7 +4,6 @@
  */
 export {
   AKSEN_MODE,
-  BAYANGAN,
   HURUF,
   type NamaMode,
   RUANG,

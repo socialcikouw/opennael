@@ -80,7 +80,7 @@ const buatGaya = (WARNA: Warna) =>
       paddingTop: RUANG[3],
       borderTopLeftRadius: SUDUT.lebar,
       borderTopRightRadius: SUDUT.lebar,
-      backgroundColor: WARNA.permukaan,
+      backgroundColor: WARNA.permukaanTinggi,
     },
     pegangan: {
       alignSelf: "center",
@@ -102,7 +102,7 @@ const buatGaya = (WARNA: Warna) =>
       alignItems: "center",
       justifyContent: "center",
       borderRadius: SUDUT.bulat,
-      backgroundColor: WARNA.abu,
+      backgroundColor: WARNA.isiNetralTegas,
     },
     gulir: { flexGrow: 0 },
     isi: { gap: RUANG[4], paddingHorizontal: RUANG[5], paddingTop: RUANG[4] },

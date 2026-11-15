@@ -1,5 +1,4 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { bayangan } from "@/komponen/ui/bayangan";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
 import { useGaya, useWarna } from "@/komponen/ui/tampilan";
@@ -44,7 +43,6 @@ const buatGaya = (WARNA: Warna) =>
       borderWidth: 1,
       borderColor: WARNA.garis,
       backgroundColor: WARNA.permukaan,
-      boxShadow: bayangan.kecil,
     },
     ditekan: { opacity: 0.7 },
     lingkar: {

@@ -75,9 +75,9 @@ const buatGaya = (WARNA: Warna) =>
       justifyContent: "center",
       paddingHorizontal: RUANG[2],
       borderRadius: SUDUT.bulat,
-      backgroundColor: WARNA.abu,
+      backgroundColor: WARNA.isiNetral,
     },
-    ditekan: { backgroundColor: WARNA.abuTua, transform: [{ scale: 0.96 }] },
+    ditekan: { backgroundColor: WARNA.isiNetralTegas, transform: [{ scale: 0.96 }] },
     label: {
       ...HURUF["2xl"],
       fontWeight: TEBAL.semi,
@@ -86,5 +86,5 @@ const buatGaya = (WARNA: Warna) =>
     },
     kosongkan: { backgroundColor: WARNA.bahayaLembut },
     kosongkanTeks: { ...HURUF.xl, fontWeight: TEBAL.tebal, color: WARNA.bahayaTeks },
-    mundur: { backgroundColor: WARNA.abuTua },
+    mundur: { backgroundColor: WARNA.isiNetralTegas },
   });

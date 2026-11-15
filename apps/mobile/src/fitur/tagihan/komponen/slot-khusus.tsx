@@ -63,7 +63,7 @@ export const BlokTempo = memo(function BlokTempo({ t, aksen }: { t: TempoVM; aks
   const WARNA = useWarna();
   const gaya = useGaya(buatGaya);
   const rupa: Record<KeadaanTempo, { teks: string; latar: string }> = {
-    nanti: { teks: WARNA.teksKedua, latar: WARNA.abu },
+    nanti: { teks: WARNA.teksKedua, latar: WARNA.isiNetral },
     segera: { teks: WARNA.waspada, latar: WARNA.waspadaLembut },
     hariini: { teks: aksen.teksIsi, latar: aksen.isi },
     lewat: { teks: WARNA.bahayaTeks, latar: WARNA.bahayaLembut },
@@ -112,7 +112,7 @@ const buatGaya = (WARNA: Warna) =>
       gap: RUANG[1.5],
       padding: RUANG[2],
       borderRadius: SUDUT.besar,
-      backgroundColor: WARNA.abu,
+      backgroundColor: WARNA.isiNetral,
     },
     sel: { width: "15%", alignItems: "center", gap: 2 },
     tanggal: { ...HURUF["3xs"], color: WARNA.samar, fontVariant: ["tabular-nums"] },

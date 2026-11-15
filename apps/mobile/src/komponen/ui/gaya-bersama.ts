@@ -1,5 +1,4 @@
 import { StyleSheet } from "react-native";
-import { bayangan } from "@/komponen/ui/bayangan";
 import { useGaya } from "@/komponen/ui/tampilan";
 import { HURUF, RUANG, SENTUH, SUDUT, TEBAL, type Warna } from "@/tema";
 
@@ -143,7 +142,6 @@ export const buatG = (WARNA: Warna) =>
       borderColor: WARNA.garis,
       backgroundColor: WARNA.permukaan,
       padding: RUANG[4],
-      boxShadow: bayangan.kecil,
     },
 
     barisNilai: {
@@ -181,7 +179,7 @@ export const buatG = (WARNA: Warna) =>
     segmen: {
       flexDirection: "row",
       borderRadius: SUDUT.besar,
-      backgroundColor: WARNA.abuTua,
+      backgroundColor: WARNA.isiNetral,
       padding: RUANG[1],
     },
     segmenButir: {
@@ -191,7 +189,7 @@ export const buatG = (WARNA: Warna) =>
       justifyContent: "center",
       borderRadius: SUDUT.sedang,
     },
-    segmenAktif: { backgroundColor: WARNA.permukaan, boxShadow: bayangan.sedang },
+    segmenAktif: { backgroundColor: WARNA.isiNetralTegas },
     pilihanTeks: { ...HURUF.sm, fontWeight: TEBAL.semi },
     /** Butir pilihan bulat — juga dipakai layar (mis. saran kampung). */
     chip: {
@@ -213,7 +211,7 @@ export const buatG = (WARNA: Warna) =>
       paddingHorizontal: RUANG[4],
       paddingVertical: RUANG[3],
     },
-    butirDitekan: { backgroundColor: WARNA.abu },
+    butirDitekan: { backgroundColor: WARNA.isiNetral },
   });
 
 /** Gaya bersama `g` untuk mode tampilan yang sedang berlaku. */

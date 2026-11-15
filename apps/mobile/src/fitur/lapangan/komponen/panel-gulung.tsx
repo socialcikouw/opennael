@@ -1,6 +1,5 @@
 import { Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { tepiPanelBawah } from "@/komponen/ui/bayangan";
 import { Ikon } from "@/komponen/ui/ikon";
 import { useGaya, useWarna } from "@/komponen/ui/tampilan";
 import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/tema";
@@ -68,7 +67,8 @@ const buatGaya = (WARNA: Warna) =>
       borderTopLeftRadius: SUDUT.lebar,
       borderTopRightRadius: SUDUT.lebar,
       backgroundColor: WARNA.permukaan,
-      ...tepiPanelBawah(WARNA.garis),
+      borderTopWidth: 1,
+      borderTopColor: WARNA.garis,
     },
     konfirmasi: {
       height: 56,
@@ -78,7 +78,7 @@ const buatGaya = (WARNA: Warna) =>
       gap: RUANG[2],
       borderRadius: SUDUT.bulat,
     },
-    konfirmasiMati: { backgroundColor: WARNA.abu },
+    konfirmasiMati: { backgroundColor: WARNA.isiNetral },
     konfirmasiDitekan: { opacity: 0.88, transform: [{ scale: 0.98 }] },
     konfirmasiTeks: { ...HURUF.base, fontWeight: TEBAL.ekstra, letterSpacing: 1.5 },
   });

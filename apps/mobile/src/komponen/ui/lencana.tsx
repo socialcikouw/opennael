@@ -8,7 +8,7 @@ const buatWarnaLencana = (WARNA: Warna) =>
     hijau: { backgroundColor: WARNA.utamaMuda, color: WARNA.utamaTua },
     kuning: { backgroundColor: WARNA.waspadaMuda, color: WARNA.waspadaTua },
     merah: { backgroundColor: WARNA.bahayaMuda, color: WARNA.bahayaTua },
-    abu: { backgroundColor: WARNA.abu, color: WARNA.teksLabel },
+    abu: { backgroundColor: WARNA.isiNetral, color: WARNA.teksLabel },
   }) as const;
 
 export function Lencana(props: {

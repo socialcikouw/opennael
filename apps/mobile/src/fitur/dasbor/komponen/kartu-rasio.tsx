@@ -103,7 +103,7 @@ const buatGaya = (WARNA: Warna) =>
     utama: { flexDirection: "row", alignItems: "center", gap: RUANG[4] },
     angka: { ...HURUF["3xl"], fontWeight: TEBAL.ekstra, fontVariant: ["tabular-nums"] },
     kanan: { flex: 1, gap: RUANG[1.5] },
-    rel: { height: 10, borderRadius: SUDUT.bulat, backgroundColor: WARNA.abu },
+    rel: { height: 10, borderRadius: SUDUT.bulat, backgroundColor: WARNA.isiNetral },
     isiRel: { height: 10, borderRadius: SUDUT.bulat },
     rincian: {
       flexDirection: "row",

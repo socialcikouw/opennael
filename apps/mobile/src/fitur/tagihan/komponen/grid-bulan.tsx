@@ -81,7 +81,7 @@ function SelGrid({ sel, aksen }: { sel: Sel; aksen: { teks: string; lembut: stri
 
 const buatGaya = (WARNA: Warna) =>
   StyleSheet.create({
-    nampan: { padding: RUANG[1.5], borderRadius: SUDUT.besar, backgroundColor: WARNA.abu },
+    nampan: { padding: RUANG[1.5], borderRadius: SUDUT.besar, backgroundColor: WARNA.isiNetral },
     baris: {
       flexDirection: "row",
       alignItems: "center",

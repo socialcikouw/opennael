@@ -2,7 +2,6 @@ import type { BottomTabBarProps } from "expo-router/js-tabs";
 import { type ReactNode, useEffect } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { bayangan } from "@/komponen/ui/bayangan";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
 import { useGaya, useWarna } from "@/komponen/ui/tampilan";
@@ -164,9 +163,8 @@ const buatGaya = (WARNA: Warna) =>
       borderRadius: SUDUT.bulat,
       borderWidth: 1,
       borderColor: WARNA.garis,
-      backgroundColor: WARNA.permukaan,
+      backgroundColor: WARNA.permukaanTinggi,
       paddingHorizontal: RUANG[1],
-      boxShadow: bayangan.mengambang,
     },
     tab: {
       flex: 1,
@@ -209,7 +207,6 @@ const buatGaya = (WARNA: Warna) =>
       borderRadius: SUDUT.bulat,
       alignItems: "center",
       justifyContent: "center",
-      boxShadow: bayangan.mengambang,
     },
-    kiri: { borderWidth: 1, borderColor: WARNA.garis, backgroundColor: WARNA.permukaan },
+    kiri: { borderWidth: 1, borderColor: WARNA.garis, backgroundColor: WARNA.permukaanTinggi },
   });

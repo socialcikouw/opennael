@@ -229,7 +229,12 @@ const buatGaya = (WARNA: Warna) =>
       borderRadius: SUDUT.bulat,
       backgroundColor: WARNA.diAtasFoto,
     },
-    pratinjau: { width: 64, height: 80, borderRadius: SUDUT.kecil, backgroundColor: WARNA.abu },
+    pratinjau: {
+      width: 64,
+      height: 80,
+      borderRadius: SUDUT.kecil,
+      backgroundColor: WARNA.isiNetral,
+    },
     keteranganFoto: { gap: RUANG[1] },
     diambil: { ...HURUF.sm, color: WARNA.teksLabel },
   });

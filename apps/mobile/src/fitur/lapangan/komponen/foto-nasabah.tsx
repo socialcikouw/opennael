@@ -140,8 +140,8 @@ export function FotoSerahTerima({
 
 const buatGaya = (WARNA: Warna) =>
   StyleSheet.create({
-    latarFoto: { backgroundColor: WARNA.abuTua },
-    inisial: { alignItems: "center", justifyContent: "center", backgroundColor: WARNA.abu },
+    latarFoto: { backgroundColor: WARNA.isiNetralTegas },
+    inisial: { alignItems: "center", justifyContent: "center", backgroundColor: WARNA.isiNetral },
     inisialHuruf: { ...HURUF.base, fontWeight: TEBAL.tebal, color: WARNA.teksKedua },
     tanda: {
       position: "absolute",

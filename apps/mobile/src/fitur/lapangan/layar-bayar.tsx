@@ -5,7 +5,6 @@ import { router, Stack } from "expo-router";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { tepiPanelBawah } from "@/komponen/ui/bayangan";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Gulir } from "@/komponen/ui/layar";
 import { useGaya, useWarna, useWarnaMode } from "@/komponen/ui/tampilan";
@@ -212,7 +211,7 @@ const buatGaya = (WARNA: Warna) =>
       justifyContent: "center",
       paddingHorizontal: RUANG[1],
       borderRadius: SUDUT.bulat,
-      backgroundColor: WARNA.abu,
+      backgroundColor: WARNA.isiNetral,
     },
     angsuranKeTeks: {
       ...HURUF.lg,
@@ -226,7 +225,7 @@ const buatGaya = (WARNA: Warna) =>
     kampung: { ...HURUF.sm, flex: 1, color: WARNA.redup },
     chip: { paddingHorizontal: RUANG[2], paddingVertical: 2, borderRadius: SUDUT.bulat },
     chipTeks: { ...HURUF.xs, fontWeight: TEBAL.tebal, fontVariant: ["tabular-nums"] },
-    chipWaktu: { backgroundColor: WARNA.abu },
+    chipWaktu: { backgroundColor: WARNA.isiNetral },
     waktuTeks: { fontWeight: TEBAL.semi, color: WARNA.teksKedua },
     tengah: { flex: 1, justifyContent: "center", alignItems: "center", gap: RUANG[3] },
     patokan: {
@@ -274,7 +273,8 @@ const buatGaya = (WARNA: Warna) =>
       borderTopLeftRadius: SUDUT.lebar,
       borderTopRightRadius: SUDUT.lebar,
       backgroundColor: WARNA.permukaan,
-      ...tepiPanelBawah(WARNA.garis),
+      borderTopWidth: 1,
+      borderTopColor: WARNA.garis,
     },
     konfirmasi: {
       height: 56,
@@ -284,7 +284,7 @@ const buatGaya = (WARNA: Warna) =>
       gap: RUANG[2],
       borderRadius: SUDUT.bulat,
     },
-    konfirmasiMati: { backgroundColor: WARNA.abu },
+    konfirmasiMati: { backgroundColor: WARNA.isiNetral },
     konfirmasiDitekan: { opacity: 0.88, transform: [{ scale: 0.98 }] },
     konfirmasiTeks: { ...HURUF.base, fontWeight: TEBAL.ekstra, letterSpacing: 1.5 },
   });

@@ -161,6 +161,6 @@ const buatGaya = (WARNA: Warna) =>
       alignItems: "center",
       justifyContent: "center",
       borderRadius: SUDUT.bulat,
-      backgroundColor: WARNA.abu,
+      backgroundColor: WARNA.isiNetral,
     },
   });

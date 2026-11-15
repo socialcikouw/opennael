@@ -206,7 +206,7 @@ const buatGaya = (WARNA: Warna) =>
       gap: RUANG[2],
       paddingHorizontal: RUANG[3],
       borderRadius: SUDUT.bulat,
-      backgroundColor: WARNA.abu,
+      backgroundColor: WARNA.isiNetral,
     },
     teksCari: { ...HURUF.base, flex: 1, paddingVertical: 0, color: WARNA.teks },
     tombolBulat: {
@@ -225,7 +225,7 @@ const buatGaya = (WARNA: Warna) =>
       flexDirection: "row",
       padding: 3,
       borderRadius: SUDUT.sedang,
-      backgroundColor: WARNA.abuTua,
+      backgroundColor: WARNA.isiNetral,
     },
     keping: {
       flex: 1,
@@ -236,14 +236,14 @@ const buatGaya = (WARNA: Warna) =>
       gap: RUANG[1.5],
       borderRadius: SUDUT.kecil + 1,
     },
-    kepingAktif: { backgroundColor: WARNA.permukaan },
+    kepingAktif: { backgroundColor: WARNA.isiNetralTegas },
     kepingTeks: { ...HURUF.sm, fontWeight: TEBAL.sedang, color: WARNA.teksKedua },
     kepingTeksAktif: { fontWeight: TEBAL.tebal, color: WARNA.teks },
     lencanaAngka: {
       minWidth: 20,
       paddingHorizontal: RUANG[1.5],
       borderRadius: SUDUT.bulat,
-      backgroundColor: WARNA.garisTegas,
+      backgroundColor: WARNA.isiNetralTegas,
     },
     lencanaAngkaAktif: { backgroundColor: WARNA.teks },
     angkaTeks: {

@@ -1,5 +1,4 @@
 import { Platform, StyleSheet } from "react-native";
-import { bayangan } from "@/komponen/ui/bayangan";
 import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/tema";
 
 export const buatGaya = (WARNA: Warna) =>
@@ -29,7 +28,6 @@ export const buatGaya = (WARNA: Warna) =>
       borderColor: WARNA.garis,
       backgroundColor: WARNA.permukaan,
       padding: RUANG[6],
-      boxShadow: bayangan.kecil,
     },
     qr: { borderRadius: SUDUT.besar, backgroundColor: WARNA.latarQr, padding: RUANG[3] },
     tengah: { alignItems: "center", gap: RUANG[1] },
@@ -57,7 +55,7 @@ export const buatGaya = (WARNA: Warna) =>
       borderRadius: SUDUT.bulat,
       alignItems: "center",
       justifyContent: "center",
-      backgroundColor: WARNA.abu,
+      backgroundColor: WARNA.isiNetral,
     },
     rataTengah: { textAlign: "center" },
     penuh: { width: "100%" },

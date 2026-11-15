@@ -145,7 +145,7 @@ const buatGaya = (WARNA: Warna) =>
       height: 6,
       overflow: "hidden",
       borderRadius: SUDUT.bulat,
-      backgroundColor: WARNA.abuTua,
+      backgroundColor: WARNA.isiNetralTegas,
     },
     isiJalur: { height: 6, borderRadius: SUDUT.bulat },
     garis: { height: 1, backgroundColor: WARNA.garis },
