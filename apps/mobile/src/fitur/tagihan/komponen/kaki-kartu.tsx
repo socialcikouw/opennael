@@ -1,15 +1,14 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
-import { useGaya, useWarna } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
 import type { KartuVM } from "../inti/kartu";
 import type { AksiKartu } from "./kartu-nasabah";
 
 /**
- * Kaki kartu:
- *             Bisa Digulung            ← sinyal (hijau · merah belum · abu macet)
- *   [ LIBUR ]                [ GULUNG ]
+ * Kaki kartu — dua baris (sinyal gulung kini di DALAM tombol Gulung, bukan baris sendiri):
+ *   [ LIBUR ]   [ GULUNG            ]
+ *               [ Bisa Digulung     ]   ← hijau bisa · merah belum · abu macet
  *   [ BAYAR                  Rp 15.000 ]
  * Libur & Gulung tonal; mati beserta alasannya bila belum boleh (tetap bisa
  * diketuk untuk membacanya). Bayar — satu-satunya bidang berwarna pekat,
@@ -17,11 +16,9 @@ import type { AksiKartu } from "./kartu-nasabah";
  * hanya sejak jatuh tempo, beralasan — G1). Lunasi nasabah lain: tahan lama kartunya.
  */
 export function KakiKartu({ vm, aksi, aksen }: { vm: KartuVM; aksi: AksiKartu; aksen: WarnaMode }) {
-  const gaya = useGaya(buatGaya);
   const status = vm.progres?.status ?? (vm.sekaliBayar ? "boleh" : "terkunci");
   return (
     <View style={gaya.kaki}>
-      {vm.progres ? <Sinyal progres={vm.progres} /> : null}
       <View style={gaya.barisTonal}>
         {vm.tampilkanLibur ? (
           <TombolTonal
@@ -30,6 +27,7 @@ export function KakiKartu({ vm, aksi, aksen }: { vm: KartuVM; aksi: AksiKartu; a
             sorot={false}
             mati={vm.alasanLibur ? "merah" : null}
             alasan={vm.alasanLibur}
+            sinyal={null}
             onPress={() => aksi.libur(vm)}
           />
         ) : null}
@@ -39,6 +37,7 @@ export function KakiKartu({ vm, aksi, aksen }: { vm: KartuVM; aksi: AksiKartu; a
           sorot={status === "boleh"}
           mati={status === "belum" ? "merah" : status === "terkunci" ? "abu" : null}
           alasan={vm.progres?.petunjuk ?? null}
+          sinyal={vm.progres?.sinyal ?? null}
           onPress={() => aksi.gulung(vm)}
         />
       </View>
@@ -57,7 +56,7 @@ export function KakiKartu({ vm, aksi, aksen }: { vm: KartuVM; aksi: AksiKartu; a
         <View style={gaya.bayarKiri}>
           <Ikon
             nama={vm.sekaliBayar ? "circle-check" : "hand-coins"}
-            ukuran={18}
+            ukuran={20}
             warna={aksen.teksIsi}
           />
           <Text style={[gaya.bayarLabel, { color: aksen.teksIsi }]}>
@@ -72,24 +71,12 @@ export function KakiKartu({ vm, aksi, aksen }: { vm: KartuVM; aksi: AksiKartu; a
   );
 }
 
-/** Sinyal gulung di tengah: hijau bisa, merah belum waktunya, abu terkunci (macet). */
-function Sinyal({ progres }: { progres: NonNullable<KartuVM["progres"]> }) {
-  const WARNA = useWarna();
-  const gaya = useGaya(buatGaya);
-  const warna =
-    progres.status === "boleh"
-      ? WARNA.utama
-      : progres.status === "belum"
-        ? WARNA.bahaya
-        : WARNA.samar;
-  return <Text style={[gaya.sinyal, { color: warna }]}>{progres.sinyal}</Text>;
-}
-
 /**
- * Tombol tonal kaki kartu: abu biasa · `sorot` hijau (mis. Gulung yang sudah
- * boleh) · mati merah (belum waktunya — terbuka sendiri nanti) · mati abu
+ * Tombol tonal kaki kartu: netral biasa · `sorot` hijau (mis. Gulung yang sudah
+ * boleh) · mati merah (belum waktunya — terbuka sendiri nanti) · mati netral
  * (tak mungkin, mis. gulung pinjaman macet). Yang mati tetap bisa diketuk
- * untuk membaca alasannya.
+ * untuk membaca alasannya. `sinyal` (opsional) = keterangan keadaan di bawah
+ * label, berwarna sesuai keadaan.
  */
 function TombolTonal(props: {
   label: string;
@@ -97,15 +84,14 @@ function TombolTonal(props: {
   sorot: boolean;
   mati: "merah" | "abu" | null;
   alasan: string | null;
+  sinyal: string | null;
   onPress: () => void;
 }) {
-  const WARNA = useWarna();
-  const gaya = useGaya(buatGaya);
   const warna =
     props.mati === "merah"
       ? WARNA.bahayaTeks
       : props.mati === "abu"
-        ? WARNA.samar
+        ? WARNA.redup
         : props.sorot
           ? WARNA.utama
           : WARNA.teksTombol;
@@ -116,50 +102,61 @@ function TombolTonal(props: {
       accessibilityRole="button"
       accessibilityState={{ disabled: props.mati !== null }}
       accessibilityLabel={
-        props.mati ? `${props.label}, tidak tersedia. ${props.alasan ?? ""}` : props.label
+        props.mati
+          ? `${props.label}, tidak tersedia. ${props.alasan ?? ""}`
+          : `${props.label}${props.sinyal ? `, ${props.sinyal}` : ""}`
       }
       onPress={props.onPress}
       style={({ pressed }) => [
         gaya.tonal,
         { backgroundColor: latar },
-        props.mati ? gaya.tonalMati : null,
         pressed ? gaya.ditekan : null,
       ]}
     >
-      <Ikon nama={props.ikon} ukuran={15} warna={warna} />
-      <Text style={[gaya.tonalTeks, { color: warna }]} numberOfLines={1}>
-        {props.label}
-      </Text>
+      <View style={gaya.tonalBaris}>
+        <Ikon nama={props.ikon} ukuran={15} warna={warna} />
+        <Text style={[gaya.tonalTeks, { color: warna }]} numberOfLines={1}>
+          {props.label}
+        </Text>
+      </View>
+      {props.sinyal ? (
+        <Text
+          style={[gaya.sinyal, { color: warna }]}
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          minimumFontScale={0.85}
+        >
+          {props.sinyal}
+        </Text>
+      ) : null}
     </Pressable>
   );
 }
 
-const buatGaya = (_WARNA: Warna) =>
-  StyleSheet.create({
-    ditekan: { opacity: 0.8 },
-    kaki: { gap: RUANG[2] },
-    sinyal: { ...HURUF.sm, fontWeight: TEBAL.semi, textAlign: "center" },
-    barisTonal: { flexDirection: "row", gap: RUANG[2] },
-    tonal: {
-      flex: 1,
-      height: 40,
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: RUANG[1.5],
-      borderRadius: SUDUT.sedang,
-    },
-    tonalMati: { opacity: 0.75 },
-    tonalTeks: { ...HURUF.sm, fontWeight: TEBAL.semi, letterSpacing: 0.5 },
-    bayar: {
-      height: 48,
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      paddingHorizontal: RUANG[4],
-      borderRadius: SUDUT.sedang,
-    },
-    bayarKiri: { flexDirection: "row", alignItems: "center", gap: RUANG[2] },
-    bayarLabel: { ...HURUF.base, fontWeight: TEBAL.tebal, letterSpacing: 0.5 },
-    bayarNominal: { ...HURUF.sm, fontWeight: TEBAL.semi, fontVariant: ["tabular-nums"] },
-  });
+const gaya = StyleSheet.create({
+  ditekan: { opacity: 0.8 },
+  kaki: { gap: RUANG[2] },
+  barisTonal: { flexDirection: "row", gap: RUANG[2] },
+  tonal: {
+    flex: 1,
+    height: 44,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: RUANG[2],
+    borderRadius: SUDUT.sedang,
+  },
+  tonalBaris: { flexDirection: "row", alignItems: "center", gap: RUANG[1.5] },
+  tonalTeks: { ...HURUF.sm, fontWeight: TEBAL.semi, letterSpacing: 0.5 },
+  sinyal: { ...HURUF["2xs"], fontWeight: TEBAL.sedang },
+  bayar: {
+    height: 52,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: RUANG[4],
+    borderRadius: SUDUT.sedang,
+  },
+  bayarKiri: { flexDirection: "row", alignItems: "center", gap: RUANG[2] },
+  bayarLabel: { ...HURUF.base, fontWeight: TEBAL.ekstra, letterSpacing: 0.5 },
+  bayarNominal: { ...HURUF.base, fontWeight: TEBAL.tebal, fontVariant: ["tabular-nums"] },
+});

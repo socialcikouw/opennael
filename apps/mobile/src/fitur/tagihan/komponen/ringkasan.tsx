@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import { useGaya, useWarna } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
 
 /**
  * Kartu JATUH TEMPO di kepala mode Tempoan — jumlah nasabah saja. (Rasio bayar hari
@@ -10,8 +9,6 @@ export function KartuJatuhTempo(props: {
   r: { lewat: number; hariIni: number; pekan: number; berjalan: number };
   aksen: WarnaMode;
 }) {
-  const WARNA = useWarna();
-  const gaya = useGaya(buatGaya);
   const sel = [
     {
       label: "Lewat",
@@ -50,20 +47,19 @@ export function KartuJatuhTempo(props: {
   );
 }
 
-const buatGaya = (WARNA: Warna) =>
-  StyleSheet.create({
-    kartu: {
-      gap: RUANG[2],
-      padding: RUANG[3],
-      borderRadius: SUDUT.besar,
-      borderWidth: 1,
-      borderColor: WARNA.garis,
-      backgroundColor: WARNA.permukaan,
-    },
-    barisLabel: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-    label: { ...HURUF["2xs"], fontWeight: TEBAL.ekstra, letterSpacing: 0.8, color: WARNA.redup },
-    ket: { ...HURUF.xs, color: WARNA.redup },
-    barisSel: { flexDirection: "row" },
-    sel: { flex: 1, alignItems: "center", gap: 2 },
-    angkaSel: { ...HURUF["2xl"], fontWeight: TEBAL.ekstra, fontVariant: ["tabular-nums"] },
-  });
+const gaya = StyleSheet.create({
+  kartu: {
+    gap: RUANG[2],
+    padding: RUANG[3],
+    borderRadius: SUDUT.besar,
+    borderWidth: 1,
+    borderColor: WARNA.garis,
+    backgroundColor: WARNA.permukaan,
+  },
+  barisLabel: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  label: { ...HURUF["2xs"], fontWeight: TEBAL.ekstra, letterSpacing: 0.8, color: WARNA.redup },
+  ket: { ...HURUF.xs, color: WARNA.redup },
+  barisSel: { flexDirection: "row" },
+  sel: { flex: 1, alignItems: "center", gap: 2 },
+  angkaSel: { ...HURUF["2xl"], fontWeight: TEBAL.ekstra, fontVariant: ["tabular-nums"] },
+});

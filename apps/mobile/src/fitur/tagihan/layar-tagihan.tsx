@@ -8,10 +8,9 @@ import Animated, { FadeIn } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRuangTab } from "@/komponen/tab-mengambang";
 import { PesanGalat } from "@/komponen/ui/isian";
-import { useGaya, useWarnaMode } from "@/komponen/ui/tampilan";
 import { Tombol } from "@/komponen/ui/tombol";
 import { useTarikSegarkan } from "@/lib/tarik-segarkan";
-import { RUANG, type Warna } from "@/tema";
+import { AKSEN_MODE, RUANG, WARNA } from "@/tema";
 import { useAksiKartu } from "./aksi-kartu";
 import { useDaftarTagihan, useDataTagihan } from "./data-tagihan";
 import { type Baris, jumlahSegmen, type TabKerja } from "./inti/daftar";
@@ -48,12 +47,11 @@ export function LayarTagihan({ segmen }: { segmen?: string }) {
 }
 
 function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
-  const gaya = useGaya(buatGaya);
   const insets = useSafeAreaInsets();
   const ruangTab = useRuangTab();
   const mode = useMode();
   const jenis = jenisDariMode(mode);
-  const aksen = useWarnaMode(mode);
+  const aksen = AKSEN_MODE[mode];
 
   const { hariIni, tanggal, tagihan, kalender, peristiwa, riwayat } = useDataTagihan(jenis);
 
@@ -242,8 +240,7 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
   );
 }
 
-const buatGaya = (WARNA: Warna) =>
-  StyleSheet.create({
-    layar: { flex: 1, backgroundColor: WARNA.latar },
-    galat: { gap: RUANG[4], paddingHorizontal: RUANG[5] },
-  });
+const gaya = StyleSheet.create({
+  layar: { flex: 1, backgroundColor: WARNA.latar },
+  galat: { gap: RUANG[4], paddingHorizontal: RUANG[5] },
+});

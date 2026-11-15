@@ -1,6 +1,6 @@
 # Tema aplikasi HP
 
-**Status:** Tahap 1–3 selesai (16 Nov 2026). Tahap 4 (layar per layar) menunggu arahan desain.
+**Status:** Tahap 1–3 selesai (16 Nov 2026). Tahap 4 (layar per layar) berjalan: Tagihan selesai; layar lain menunggu giliran.
 
 Aplikasi HP (`apps/mobile`) **hanya bertema gelap** — keputusan pemilik, 16 Nov 2026
 (menggantikan mode terang & gelap 27 Okt). Tidak ada tombol Terang / Gelap / Ikuti HP, tidak
@@ -105,7 +105,7 @@ garis atas di semua platform.
 | 1. Fondasi | `src/tema/`, nilai gelap yang sama persis dengan sebelumnya, hapus tema terang & pilihannya, konfigurasi native dari token | ✅ 16 Nov 2026 |
 | 2. Pagar | Aturan `cek:arsitektur`, uji kontras, dokumen ini | ✅ 16 Nov 2026 |
 | 3. Palet baru | Netral hampir hitam + hijau merek, `permukaanTinggi`, tanpa bayangan, `abu`→`isiNetral`, `abuTua`→`isiNetralTegas`, garis terlihat, lencana merah terbaca, latar splash = latar | ✅ 16 Nov 2026 |
-| 4. Layar per layar | Desain ulang tiap layar; hook lama diganti `StyleSheet.create` statis | menunggu arahan desain |
+| 4. Layar per layar | Desain ulang tiap layar; hook lama diganti token statis + `StyleSheet.create` tingkat modul | **Tagihan ✅ (16 Nov 2026)**; layar lain menunggu |
 
 ### Yang masih tersisa
 

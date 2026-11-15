@@ -1,8 +1,7 @@
 import { memo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Ikon } from "@/komponen/ui/ikon";
-import { useGaya, useWarna } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
 import type { KeadaanTempo, MingguanVM, StatusKotak, TempoVM } from "../inti/khusus";
 
 /** Slot grid kartu MINGGUAN: kabar (minggu terlewat / tagih berikutnya) + kotak per minggu. */
@@ -11,8 +10,6 @@ export const BlokMinggu = memo(function BlokMinggu(props: {
   hariTagih: string | null;
   aksen: WarnaMode;
 }) {
-  const WARNA = useWarna();
-  const gaya = useGaya(buatGaya);
   const warna: Record<StatusKotak, string> = {
     bayar: WARNA.teks,
     libur: WARNA.bahaya,
@@ -60,8 +57,6 @@ export const BlokMinggu = memo(function BlokMinggu(props: {
 
 /** Slot grid kartu TEMPOAN: jatuh tempo + hitung mundur berwarna, lalu garis waktu akad → jatuh tempo. */
 export const BlokTempo = memo(function BlokTempo({ t, aksen }: { t: TempoVM; aksen: WarnaMode }) {
-  const WARNA = useWarna();
-  const gaya = useGaya(buatGaya);
   const rupa: Record<KeadaanTempo, { teks: string; latar: string }> = {
     nanti: { teks: WARNA.teksKedua, latar: WARNA.isiNetral },
     segera: { teks: WARNA.waspada, latar: WARNA.waspadaLembut },
@@ -101,39 +96,38 @@ export const BlokTempo = memo(function BlokTempo({ t, aksen }: { t: TempoVM; aks
   );
 });
 
-const buatGaya = (WARNA: Warna) =>
-  StyleSheet.create({
-    blok: { gap: RUANG[2] },
-    kabar: { ...HURUF.xs, fontWeight: TEBAL.semi },
-    redup: { fontWeight: TEBAL.biasa, color: WARNA.redup },
-    nampan: {
-      flexDirection: "row",
-      flexWrap: "wrap",
-      gap: RUANG[1.5],
-      padding: RUANG[2],
-      borderRadius: SUDUT.besar,
-      backgroundColor: WARNA.isiNetral,
-    },
-    sel: { width: "15%", alignItems: "center", gap: 2 },
-    tanggal: { ...HURUF["3xs"], color: WARNA.samar, fontVariant: ["tabular-nums"] },
-    nilai: {
-      ...HURUF["2xs"],
-      fontWeight: TEBAL.semi,
-      textAlign: "center",
-      fontVariant: ["tabular-nums"],
-    },
-    pil: {
-      minWidth: 34,
-      paddingHorizontal: RUANG[1.5],
-      borderRadius: SUDUT.bulat,
-      overflow: "hidden",
-    },
-    barisTempo: { width: "100%", flexDirection: "row", alignItems: "center", gap: RUANG[1.5] },
-    jatuhTempo: { ...HURUF.xs, flex: 1, color: WARNA.teksKedua },
-    tegas: { fontWeight: TEBAL.tebal, color: WARNA.teks },
-    mundur: { paddingHorizontal: RUANG[2], paddingVertical: 2, borderRadius: SUDUT.bulat },
-    mundurTeks: { ...HURUF["2xs"], fontWeight: TEBAL.ekstra },
-    lini: { width: "100%", flexDirection: "row", alignItems: "center", gap: RUANG[2] },
-    rel: { flex: 1, height: 6, borderRadius: SUDUT.bulat, backgroundColor: WARNA.permukaan },
-    isiRel: { height: 6, borderRadius: SUDUT.bulat },
-  });
+const gaya = StyleSheet.create({
+  blok: { gap: RUANG[2] },
+  kabar: { ...HURUF.xs, fontWeight: TEBAL.semi },
+  redup: { fontWeight: TEBAL.biasa, color: WARNA.redup },
+  nampan: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: RUANG[1.5],
+    padding: RUANG[2],
+    borderRadius: SUDUT.besar,
+    backgroundColor: WARNA.isiNetral,
+  },
+  sel: { width: "15%", alignItems: "center", gap: 2 },
+  tanggal: { ...HURUF["3xs"], color: WARNA.samar, fontVariant: ["tabular-nums"] },
+  nilai: {
+    ...HURUF["2xs"],
+    fontWeight: TEBAL.semi,
+    textAlign: "center",
+    fontVariant: ["tabular-nums"],
+  },
+  pil: {
+    minWidth: 34,
+    paddingHorizontal: RUANG[1.5],
+    borderRadius: SUDUT.bulat,
+    overflow: "hidden",
+  },
+  barisTempo: { width: "100%", flexDirection: "row", alignItems: "center", gap: RUANG[1.5] },
+  jatuhTempo: { ...HURUF.xs, flex: 1, color: WARNA.teksKedua },
+  tegas: { fontWeight: TEBAL.tebal, color: WARNA.teks },
+  mundur: { paddingHorizontal: RUANG[2], paddingVertical: 2, borderRadius: SUDUT.bulat },
+  mundurTeks: { ...HURUF["2xs"], fontWeight: TEBAL.ekstra },
+  lini: { width: "100%", flexDirection: "row", alignItems: "center", gap: RUANG[2] },
+  rel: { flex: 1, height: 6, borderRadius: SUDUT.bulat, backgroundColor: WARNA.permukaan },
+  isiRel: { height: 6, borderRadius: SUDUT.bulat },
+});

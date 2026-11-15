@@ -1,7 +1,6 @@
 import { memo } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { useGaya, useWarna } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 import { type BarisPekan, type KategoriSel, LABEL_HARI, type Sel } from "../inti/grid";
 
 /**
@@ -17,7 +16,6 @@ export const GridBulan = memo(function GridBulan(props: {
   /** Warna mode — judul & pil hari ini, sel gulung/lunas. */
   aksen: { teks: string; lembut: string };
 }) {
-  const gaya = useGaya(buatGaya);
   return (
     <View style={gaya.nampan}>
       <View style={gaya.baris}>
@@ -51,8 +49,6 @@ export const GridBulan = memo(function GridBulan(props: {
 });
 
 function SelGrid({ sel, aksen }: { sel: Sel; aksen: { teks: string; lembut: string } }) {
-  const WARNA = useWarna();
-  const gaya = useGaya(buatGaya);
   if (sel.teks === "" && !sel.hariIni) return <View style={gaya.kolom} />;
   const warna: Record<KategoriSel, string> = {
     bayar: WARNA.teks,
@@ -79,46 +75,45 @@ function SelGrid({ sel, aksen }: { sel: Sel; aksen: { teks: string; lembut: stri
   );
 }
 
-const buatGaya = (WARNA: Warna) =>
-  StyleSheet.create({
-    nampan: { padding: RUANG[1.5], borderRadius: SUDUT.besar, backgroundColor: WARNA.isiNetral },
-    baris: {
-      flexDirection: "row",
-      alignItems: "center",
-      height: 24,
-      paddingHorizontal: RUANG[1],
-      borderRadius: SUDUT.kecil,
-    },
-    barisBerjalan: { backgroundColor: WARNA.permukaan },
-    judul: {
-      ...HURUF["3xs"],
-      fontWeight: TEBAL.tebal,
-      letterSpacing: 0.4,
-      textTransform: "uppercase",
-      textAlign: "center",
-      color: WARNA.samar,
-    },
-    nomor: {
-      ...HURUF["2xs"],
-      width: 18,
-      fontWeight: TEBAL.semi,
-      textAlign: "center",
-      color: WARNA.samar,
-      fontVariant: ["tabular-nums"],
-    },
-    nomorBerjalan: { color: WARNA.teksKedua },
-    kolom: { flex: 1, alignItems: "center" },
-    nilai: {
-      ...HURUF["2xs"],
-      fontWeight: TEBAL.semi,
-      textAlign: "center",
-      fontVariant: ["tabular-nums"],
-    },
-    pil: {
-      minWidth: 34,
-      paddingHorizontal: RUANG[1.5],
-      paddingVertical: 1,
-      borderRadius: SUDUT.bulat,
-      overflow: "hidden",
-    },
-  });
+const gaya = StyleSheet.create({
+  nampan: { padding: RUANG[1.5], borderRadius: SUDUT.besar, backgroundColor: WARNA.isiNetral },
+  baris: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: 20,
+    paddingHorizontal: RUANG[1],
+    borderRadius: SUDUT.kecil,
+  },
+  barisBerjalan: { backgroundColor: WARNA.permukaan },
+  judul: {
+    ...HURUF["3xs"],
+    fontWeight: TEBAL.tebal,
+    letterSpacing: 0.4,
+    textTransform: "uppercase",
+    textAlign: "center",
+    color: WARNA.samar,
+  },
+  nomor: {
+    ...HURUF["2xs"],
+    width: 18,
+    fontWeight: TEBAL.semi,
+    textAlign: "center",
+    color: WARNA.samar,
+    fontVariant: ["tabular-nums"],
+  },
+  nomorBerjalan: { color: WARNA.teksKedua },
+  kolom: { flex: 1, alignItems: "center" },
+  nilai: {
+    ...HURUF["2xs"],
+    fontWeight: TEBAL.semi,
+    textAlign: "center",
+    fontVariant: ["tabular-nums"],
+  },
+  pil: {
+    minWidth: 34,
+    paddingHorizontal: RUANG[1.5],
+    paddingVertical: 1,
+    borderRadius: SUDUT.bulat,
+    overflow: "hidden",
+  },
+});

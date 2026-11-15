@@ -2,9 +2,8 @@ import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { LembarBawah } from "@/komponen/lembar-bawah";
 import { Isian } from "@/komponen/ui/isian";
-import { useGaya } from "@/komponen/ui/tampilan";
 import { Tombol } from "@/komponen/ui/tombol";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 import type { KartuVM } from "../inti/kartu";
 
 /** Alasan yang paling sering — sekali ketuk mengisi kolom alasan. */
@@ -20,7 +19,6 @@ export function LembarAlasanLibur(props: {
   onTutup: () => void;
   onKirim: (alasan: string) => void;
 }) {
-  const gaya = useGaya(buatGaya);
   const [alasan, setAlasan] = useState("");
   const id = props.vm?.id;
   // Kartu lain = kolom alasan kosong lagi.
@@ -74,21 +72,20 @@ export function LembarAlasanLibur(props: {
   );
 }
 
-const buatGaya = (WARNA: Warna) =>
-  StyleSheet.create({
-    isi: { gap: RUANG[4] },
-    keterangan: { ...HURUF.sm, color: WARNA.teksKedua },
-    cepat: { flexDirection: "row", flexWrap: "wrap", gap: RUANG[2] },
-    keping: {
-      height: 34,
-      justifyContent: "center",
-      paddingHorizontal: RUANG[3],
-      borderRadius: SUDUT.bulat,
-      borderWidth: 1,
-      borderColor: WARNA.garis,
-      backgroundColor: WARNA.permukaan,
-    },
-    kepingPilih: { borderColor: WARNA.utama, backgroundColor: WARNA.utamaLembut },
-    kepingTeks: { ...HURUF.sm, fontWeight: TEBAL.semi, color: WARNA.teksKedua },
-    kepingTeksPilih: { color: WARNA.utama },
-  });
+const gaya = StyleSheet.create({
+  isi: { gap: RUANG[4] },
+  keterangan: { ...HURUF.sm, color: WARNA.teksKedua },
+  cepat: { flexDirection: "row", flexWrap: "wrap", gap: RUANG[2] },
+  keping: {
+    height: 34,
+    justifyContent: "center",
+    paddingHorizontal: RUANG[3],
+    borderRadius: SUDUT.bulat,
+    borderWidth: 1,
+    borderColor: WARNA.garis,
+    backgroundColor: WARNA.permukaan,
+  },
+  kepingPilih: { borderColor: WARNA.utama, backgroundColor: WARNA.utamaLembut },
+  kepingTeks: { ...HURUF.sm, fontWeight: TEBAL.semi, color: WARNA.teksKedua },
+  kepingTeksPilih: { color: WARNA.utama },
+});

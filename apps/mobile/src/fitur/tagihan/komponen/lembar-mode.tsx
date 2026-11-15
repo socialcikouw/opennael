@@ -3,14 +3,12 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useHariIni, useTagihan } from "@/fitur/lapangan";
 import { LembarBawah } from "@/komponen/lembar-bawah";
 import { Ikon } from "@/komponen/ui/ikon";
-import { useGaya, useWarna, useWarnaMode } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/tema";
+import { AKSEN_MODE, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 import { MODE, type ModeApp, modeAktif, ringkasPerMode, URUTAN_MODE, useMode } from "../mode";
 
 /** Huruf mode di lingkaran berwarna mode — (H) (M) (T) (S). Isi tombol kiri batang tab. */
 export function HurufMode({ mode, ukuran = 36 }: { mode: ModeApp; ukuran?: number }) {
-  const w = useWarnaMode(mode);
-  const gaya = useGaya(buatGaya);
+  const w = AKSEN_MODE[mode];
   return (
     <View
       style={[
@@ -28,7 +26,6 @@ export function HurufMode({ mode, ukuran = 36 }: { mode: ModeApp; ukuran?: numbe
  * huruf, nama, keterangan, dan "n nasabah · m perlu ditagih hari ini".
  */
 export function LembarMode({ terbuka, onTutup }: { terbuka: boolean; onTutup: () => void }) {
-  const gaya = useGaya(buatGaya);
   const mode = useMode();
   const tagihan = useTagihan();
   const hariIni = useHariIni();
@@ -62,9 +59,7 @@ function BarisMode(props: {
   ringkas: { aktif: number; tagih: number } | undefined;
   onPilih: (m: ModeApp) => void;
 }) {
-  const WARNA = useWarna();
-  const gaya = useGaya(buatGaya);
-  const w = useWarnaMode(props.mode);
+  const w = AKSEN_MODE[props.mode];
   return (
     <Pressable
       onPress={() => props.onPilih(props.mode)}
@@ -95,23 +90,22 @@ function BarisMode(props: {
   );
 }
 
-const buatGaya = (WARNA: Warna) =>
-  StyleSheet.create({
-    lingkaran: { alignItems: "center", justifyContent: "center" },
-    huruf: { ...HURUF.lg, fontWeight: TEBAL.ekstra, includeFontPadding: false },
-    baris: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: RUANG[3],
-      padding: RUANG[3],
-      borderRadius: SUDUT.besar,
-      borderWidth: 1.5,
-      borderColor: WARNA.garis,
-    },
-    ditekan: { opacity: 0.7 },
-    tengah: { flex: 1, gap: RUANG[0.5] },
-    judul: { ...HURUF.base, fontWeight: TEBAL.tebal, color: WARNA.teks },
-    keterangan: { ...HURUF.xs, color: WARNA.redup },
-    angka: { ...HURUF.xs, fontWeight: TEBAL.semi },
-    catatan: { ...HURUF.xs, color: WARNA.redup, textAlign: "center" },
-  });
+const gaya = StyleSheet.create({
+  lingkaran: { alignItems: "center", justifyContent: "center" },
+  huruf: { ...HURUF.lg, fontWeight: TEBAL.ekstra, includeFontPadding: false },
+  baris: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: RUANG[3],
+    padding: RUANG[3],
+    borderRadius: SUDUT.besar,
+    borderWidth: 1.5,
+    borderColor: WARNA.garis,
+  },
+  ditekan: { opacity: 0.7 },
+  tengah: { flex: 1, gap: RUANG[0.5] },
+  judul: { ...HURUF.base, fontWeight: TEBAL.tebal, color: WARNA.teks },
+  keterangan: { ...HURUF.xs, color: WARNA.redup },
+  angka: { ...HURUF.xs, fontWeight: TEBAL.semi },
+  catatan: { ...HURUF.xs, color: WARNA.redup, textAlign: "center" },
+});

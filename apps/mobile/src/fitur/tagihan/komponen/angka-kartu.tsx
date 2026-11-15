@@ -1,14 +1,13 @@
 import { StyleSheet, Text, View } from "react-native";
-import { useGaya } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, TEBAL, type Warna } from "@/tema";
+import { HURUF, RUANG, TEBAL, WARNA } from "@/tema";
 import type { KartuVM } from "../inti/kartu";
 
 /**
- * Pokok Pinjaman (kiri) dan Sisa Saldo (kanan). Angsuran hanya dicetak bila tak ada
- * tombol Bayar — tombol itu sudah mencetak nominalnya.
+ * Pokok Pinjaman (kiri, tenang) dan Sisa Saldo (kanan, besar dan tebal — angka yang
+ * paling dicari kolektor). Angsuran hanya dicetak bila tak ada tombol Bayar — tombol
+ * itu sudah mencetak nominalnya.
  */
 export function AngkaKartu({ vm, tanpaAngsuran }: { vm: KartuVM; tanpaAngsuran: boolean }) {
-  const gaya = useGaya(buatGaya);
   return (
     <View style={gaya.baris}>
       <Angka label="Pokok Pinjaman" nilai={vm.pokokRp} rata={gaya.kiri} />
@@ -24,7 +23,6 @@ function Angka(props: {
   rata: { textAlign: "left" | "center" | "right" };
   tegas?: boolean;
 }) {
-  const gaya = useGaya(buatGaya);
   return (
     <View style={gaya.angka}>
       <Text style={[gaya.label, props.rata]}>{props.label}</Text>
@@ -40,19 +38,19 @@ function Angka(props: {
   );
 }
 
-const buatGaya = (WARNA: Warna) =>
-  StyleSheet.create({
-    baris: { flexDirection: "row", gap: RUANG[2] },
-    angka: { flex: 1, gap: 2 },
-    label: { ...HURUF.xs, color: WARNA.redup },
-    nilai: {
-      ...HURUF.base,
-      fontWeight: TEBAL.semi,
-      color: WARNA.teks,
-      fontVariant: ["tabular-nums"],
-    },
-    tegas: { fontWeight: TEBAL.ekstra },
-    kiri: { textAlign: "left" },
-    tengah: { textAlign: "center" },
-    kanan: { textAlign: "right" },
-  });
+const gaya = StyleSheet.create({
+  baris: { flexDirection: "row", alignItems: "flex-end", gap: RUANG[2] },
+  angka: { flex: 1, gap: 2 },
+  label: { ...HURUF.xs, color: WARNA.redup },
+  nilai: {
+    ...HURUF.base,
+    fontWeight: TEBAL.semi,
+    color: WARNA.teksKedua,
+    fontVariant: ["tabular-nums"],
+  },
+  // Sisa saldo: satu tingkat lebih besar dan paling terang di kartu.
+  tegas: { ...HURUF.lg, fontWeight: TEBAL.ekstra, color: WARNA.teks },
+  kiri: { textAlign: "left" },
+  tengah: { textAlign: "center" },
+  kanan: { textAlign: "right" },
+});

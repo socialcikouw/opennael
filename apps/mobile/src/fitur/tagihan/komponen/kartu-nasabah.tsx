@@ -2,8 +2,7 @@ import { memo } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
 import Animated, { ZoomIn } from "react-native-reanimated";
 import type { Stempel } from "@/fitur/lapangan";
-import { useGaya, useWarna } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
 import type { KartuVM } from "../inti/kartu";
 import { AngkaKartu } from "./angka-kartu";
 import { GridBulan } from "./grid-bulan";
@@ -44,7 +43,6 @@ export const KartuNasabah = memo(function KartuNasabah(props: {
   /** Libur/Lunasi kartu ini masih berjalan: selubung "Mencatat…", tanpa tahan-lama. */
   sibuk: boolean;
 }) {
-  const gaya = useGaya(buatGaya);
   const { vm } = props;
   // `bisaAksi` menentukan susunan kartu (kaki tombol ada/tidak) — tetap saat sibuk supaya
   // kartu tak melompat; sibuk hanya mematikan tahan-lama dan menutup tombol dengan selubung.
@@ -97,8 +95,6 @@ export const KartuNasabah = memo(function KartuNasabah(props: {
 const TEKS_STEMPEL: Record<Stempel, string> = { bayar: "DIBAYAR", libur: "LIBUR", lunas: "LUNAS" };
 
 function StempelKartu({ jenis, aksen }: { jenis: Stempel; aksen: WarnaMode }) {
-  const WARNA = useWarna();
-  const gaya = useGaya(buatGaya);
   const warna = jenis === "libur" ? WARNA.bahaya : aksen.teks;
   return (
     <View pointerEvents="none" style={gaya.selubung}>
@@ -114,7 +110,6 @@ function StempelKartu({ jenis, aksen }: { jenis: Stempel; aksen: WarnaMode }) {
 
 /** Selama tulisan berjalan: menutup kartu (tombol tak terjangkau sentuhan) dengan penanda tunggu. */
 function SelubungSibuk({ aksen }: { aksen: WarnaMode }) {
-  const gaya = useGaya(buatGaya);
   return (
     <View style={gaya.selubung} accessibilityLiveRegion="polite">
       <ActivityIndicator color={aksen.teks} />
@@ -123,34 +118,33 @@ function SelubungSibuk({ aksen }: { aksen: WarnaMode }) {
   );
 }
 
-const buatGaya = (WARNA: Warna) =>
-  StyleSheet.create({
-    wadah: { marginHorizontal: RUANG[4] },
-    kotak: {
-      gap: RUANG[3],
-      padding: ISIAN_KOTAK,
-      borderRadius: SUDUT.besar,
-      borderWidth: 1,
-      borderColor: WARNA.garis,
-      backgroundColor: WARNA.permukaan,
-    },
-    // Menutup seluruh kotak (rel di kiri tetap terlihat).
-    selubung: {
-      ...StyleSheet.absoluteFill,
-      alignItems: "center",
-      justifyContent: "center",
-      gap: RUANG[2],
-      borderRadius: SUDUT.besar,
-      backgroundColor: WARNA.tiraiTerang,
-    },
-    sibukTeks: { ...HURUF.sm, fontWeight: TEBAL.semi },
-    stempel: {
-      paddingHorizontal: RUANG[5],
-      paddingVertical: RUANG[2],
-      borderWidth: 3,
-      borderRadius: SUDUT.sedang,
-      transform: [{ rotate: "-8deg" }],
-      backgroundColor: WARNA.permukaan,
-    },
-    stempelTeks: { ...HURUF["2xl"], fontWeight: TEBAL.ekstra, letterSpacing: 2 },
-  });
+const gaya = StyleSheet.create({
+  wadah: { marginHorizontal: RUANG[4] },
+  kotak: {
+    gap: RUANG[2],
+    padding: ISIAN_KOTAK,
+    borderRadius: SUDUT.besar,
+    borderWidth: 1,
+    borderColor: WARNA.garis,
+    backgroundColor: WARNA.permukaan,
+  },
+  // Menutup seluruh kotak (rel di kiri tetap terlihat).
+  selubung: {
+    ...StyleSheet.absoluteFill,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: RUANG[2],
+    borderRadius: SUDUT.besar,
+    backgroundColor: WARNA.tiraiTerang,
+  },
+  sibukTeks: { ...HURUF.sm, fontWeight: TEBAL.semi },
+  stempel: {
+    paddingHorizontal: RUANG[5],
+    paddingVertical: RUANG[2],
+    borderWidth: 3,
+    borderRadius: SUDUT.sedang,
+    transform: [{ rotate: "-8deg" }],
+    backgroundColor: WARNA.permukaan,
+  },
+  stempelTeks: { ...HURUF["2xl"], fontWeight: TEBAL.ekstra, letterSpacing: 2 },
+});

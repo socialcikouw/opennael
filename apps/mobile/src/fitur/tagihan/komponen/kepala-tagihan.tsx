@@ -3,8 +3,7 @@ import { type LayoutChangeEvent, Pressable, StyleSheet, Text, TextInput, View } 
 import Animated, { interpolate, type SharedValue, useAnimatedStyle } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ikon } from "@/komponen/ui/ikon";
-import { useGaya, useWarna } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
 import { TAB_KERJA, type TabKerja } from "../inti/daftar";
 
 /**
@@ -32,8 +31,6 @@ export function KepalaTagihan(props: {
   onCariTerbuka: (buka: boolean) => void;
   tutup: { judul: string; isi?: string | undefined } | null;
 }) {
-  const WARNA = useWarna();
-  const gaya = useGaya(buatGaya);
   const atas = useSafeAreaInsets().top;
   const [tinggiLipat, setTinggiLipat] = useState(0);
 
@@ -128,8 +125,6 @@ function TombolBulat(props: {
   warna?: string;
   onPress: () => void;
 }) {
-  const WARNA = useWarna();
-  const gaya = useGaya(buatGaya);
   return (
     <Pressable
       accessibilityRole="button"
@@ -152,7 +147,6 @@ function SegmenTab(props: {
   jumlah: Record<TabKerja, number>;
   onGanti: (tab: TabKerja) => void;
 }) {
-  const gaya = useGaya(buatGaya);
   return (
     <View style={gaya.segmen}>
       {TAB_KERJA.map((t) => {
@@ -182,88 +176,87 @@ function SegmenTab(props: {
   );
 }
 
-const buatGaya = (WARNA: Warna) =>
-  StyleSheet.create({
-    wadah: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 1 },
-    kaca: { backgroundColor: WARNA.latar, borderBottomWidth: 1, borderBottomColor: WARNA.garis },
-    lipat: {
-      gap: RUANG[3],
-      paddingHorizontal: RUANG[4],
-      paddingTop: RUANG[2],
-      paddingBottom: RUANG[3],
-    },
-    barisJudul: { flexDirection: "row", alignItems: "center", gap: RUANG[3], minHeight: 40 },
-    merek: { flex: 1, flexDirection: "row", alignItems: "center", gap: RUANG[2] },
-    merekTeks: { ...HURUF["2xl"], fontWeight: TEBAL.ekstra, color: WARNA.teks },
-    lencanaMode: { paddingHorizontal: RUANG[2.5], paddingVertical: 2, borderRadius: SUDUT.bulat },
-    lencanaModeTeks: { ...HURUF.xs, fontWeight: TEBAL.tebal },
-    barisCari: { flexDirection: "row", alignItems: "center", gap: RUANG[2], minHeight: 40 },
-    kolomCari: {
-      flex: 1,
-      height: 40,
-      flexDirection: "row",
-      alignItems: "center",
-      gap: RUANG[2],
-      paddingHorizontal: RUANG[3],
-      borderRadius: SUDUT.bulat,
-      backgroundColor: WARNA.isiNetral,
-    },
-    teksCari: { ...HURUF.base, flex: 1, paddingVertical: 0, color: WARNA.teks },
-    tombolBulat: {
-      width: 40,
-      height: 40,
-      alignItems: "center",
-      justifyContent: "center",
-      borderRadius: SUDUT.bulat,
-      borderWidth: 1,
-      borderColor: WARNA.garis,
-      backgroundColor: WARNA.permukaan,
-    },
-    ditekan: { opacity: 0.7 },
-    menempel: { gap: RUANG[2], paddingHorizontal: RUANG[4], paddingBottom: RUANG[2] },
-    segmen: {
-      flexDirection: "row",
-      padding: 3,
-      borderRadius: SUDUT.sedang,
-      backgroundColor: WARNA.isiNetral,
-    },
-    keping: {
-      flex: 1,
-      height: 34,
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: RUANG[1.5],
-      borderRadius: SUDUT.kecil + 1,
-    },
-    kepingAktif: { backgroundColor: WARNA.isiNetralTegas },
-    kepingTeks: { ...HURUF.sm, fontWeight: TEBAL.sedang, color: WARNA.teksKedua },
-    kepingTeksAktif: { fontWeight: TEBAL.tebal, color: WARNA.teks },
-    lencanaAngka: {
-      minWidth: 20,
-      paddingHorizontal: RUANG[1.5],
-      borderRadius: SUDUT.bulat,
-      backgroundColor: WARNA.isiNetralTegas,
-    },
-    lencanaAngkaAktif: { backgroundColor: WARNA.teks },
-    angkaTeks: {
-      ...HURUF["2xs"],
-      fontWeight: TEBAL.tebal,
-      textAlign: "center",
-      color: WARNA.teksKedua,
-      fontVariant: ["tabular-nums"],
-    },
-    angkaTeksAktif: { color: WARNA.permukaan },
-    tutup: {
-      flexDirection: "row",
-      gap: RUANG[2],
-      padding: RUANG[2.5],
-      borderRadius: SUDUT.sedang,
-      borderWidth: 1,
-      borderColor: WARNA.waspadaGaris,
-      backgroundColor: WARNA.waspadaLembut,
-    },
-    isi: { flex: 1 },
-    tutupJudul: { ...HURUF.xs, fontWeight: TEBAL.tebal, color: WARNA.waspadaTua },
-    tutupIsi: { ...HURUF.xs, color: WARNA.waspada },
-  });
+const gaya = StyleSheet.create({
+  wadah: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 1 },
+  kaca: { backgroundColor: WARNA.latar, borderBottomWidth: 1, borderBottomColor: WARNA.garis },
+  lipat: {
+    gap: RUANG[3],
+    paddingHorizontal: RUANG[4],
+    paddingTop: RUANG[2],
+    paddingBottom: RUANG[3],
+  },
+  barisJudul: { flexDirection: "row", alignItems: "center", gap: RUANG[3], minHeight: 40 },
+  merek: { flex: 1, flexDirection: "row", alignItems: "center", gap: RUANG[2] },
+  merekTeks: { ...HURUF["2xl"], fontWeight: TEBAL.ekstra, color: WARNA.teks },
+  lencanaMode: { paddingHorizontal: RUANG[2.5], paddingVertical: 2, borderRadius: SUDUT.bulat },
+  lencanaModeTeks: { ...HURUF.xs, fontWeight: TEBAL.tebal },
+  barisCari: { flexDirection: "row", alignItems: "center", gap: RUANG[2], minHeight: 40 },
+  kolomCari: {
+    flex: 1,
+    height: 40,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: RUANG[2],
+    paddingHorizontal: RUANG[3],
+    borderRadius: SUDUT.bulat,
+    backgroundColor: WARNA.isiNetral,
+  },
+  teksCari: { ...HURUF.base, flex: 1, paddingVertical: 0, color: WARNA.teks },
+  tombolBulat: {
+    width: 40,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: SUDUT.bulat,
+    borderWidth: 1,
+    borderColor: WARNA.garis,
+    backgroundColor: WARNA.permukaan,
+  },
+  ditekan: { opacity: 0.7 },
+  menempel: { gap: RUANG[2], paddingHorizontal: RUANG[4], paddingBottom: RUANG[2] },
+  segmen: {
+    flexDirection: "row",
+    padding: 3,
+    borderRadius: SUDUT.sedang,
+    backgroundColor: WARNA.isiNetral,
+  },
+  keping: {
+    flex: 1,
+    height: 34,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: RUANG[1.5],
+    borderRadius: SUDUT.kecil + 1,
+  },
+  kepingAktif: { backgroundColor: WARNA.isiNetralTegas },
+  kepingTeks: { ...HURUF.sm, fontWeight: TEBAL.sedang, color: WARNA.teksKedua },
+  kepingTeksAktif: { fontWeight: TEBAL.tebal, color: WARNA.teks },
+  lencanaAngka: {
+    minWidth: 20,
+    paddingHorizontal: RUANG[1.5],
+    borderRadius: SUDUT.bulat,
+    backgroundColor: WARNA.isiNetralTegas,
+  },
+  lencanaAngkaAktif: { backgroundColor: WARNA.teks },
+  angkaTeks: {
+    ...HURUF["2xs"],
+    fontWeight: TEBAL.tebal,
+    textAlign: "center",
+    color: WARNA.teksKedua,
+    fontVariant: ["tabular-nums"],
+  },
+  angkaTeksAktif: { color: WARNA.permukaan },
+  tutup: {
+    flexDirection: "row",
+    gap: RUANG[2],
+    padding: RUANG[2.5],
+    borderRadius: SUDUT.sedang,
+    borderWidth: 1,
+    borderColor: WARNA.waspadaGaris,
+    backgroundColor: WARNA.waspadaLembut,
+  },
+  isi: { flex: 1 },
+  tutupJudul: { ...HURUF.xs, fontWeight: TEBAL.tebal, color: WARNA.waspadaTua },
+  tutupIsi: { ...HURUF.xs, color: WARNA.waspada },
+});

@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
-import { useGaya } from "@/komponen/ui/tampilan";
-import { RUANG, type Warna } from "@/tema";
+import { RUANG, WARNA } from "@/tema";
 
 /**
  * REL POHON — garis tegak di kiri yang menyambungkan judul kelompok dengan
@@ -33,7 +32,6 @@ export function BarisRel(props: {
   jarak: number;
   children: ReactNode;
 }) {
-  const gaya = useGaya(buatGaya);
   const { cabang, akhir, jarak } = props;
   return (
     <View style={gaya.baris}>
@@ -64,35 +62,34 @@ export function BarisRel(props: {
   );
 }
 
-const buatGaya = (WARNA: Warna) =>
-  StyleSheet.create({
-    baris: { flexDirection: "row" },
-    lajur: { width: LEBAR_REL },
-    isi: { flex: 1, minWidth: 0 },
-    rel: {
-      position: "absolute",
-      top: 0,
-      bottom: 0,
-      left: TENGAH_REL - TEBAL_REL / 2,
-      width: TEBAL_REL,
-      backgroundColor: WARNA.garisTegas,
-    },
-    // Tikungan kartu terakhir: dari atas baris, sepanjang rel, melengkung, lalu sampai tepi kiri kotak.
-    siku: {
-      position: "absolute",
-      top: 0,
-      left: TENGAH_REL - TEBAL_REL / 2,
-      width: LEBAR_REL - TENGAH_REL + TEBAL_REL / 2,
-      borderLeftWidth: TEBAL_REL,
-      borderBottomWidth: TEBAL_REL,
-      borderColor: WARNA.garisTegas,
-    },
-    // Dari garis tengah rel sampai tepi kiri kotak.
-    cabang: {
-      position: "absolute",
-      left: TENGAH_REL,
-      width: LEBAR_REL - TENGAH_REL,
-      height: TEBAL_REL,
-      backgroundColor: WARNA.garisTegas,
-    },
-  });
+const gaya = StyleSheet.create({
+  baris: { flexDirection: "row" },
+  lajur: { width: LEBAR_REL },
+  isi: { flex: 1, minWidth: 0 },
+  rel: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: TENGAH_REL - TEBAL_REL / 2,
+    width: TEBAL_REL,
+    backgroundColor: WARNA.garisTegas,
+  },
+  // Tikungan kartu terakhir: dari atas baris, sepanjang rel, melengkung, lalu sampai tepi kiri kotak.
+  siku: {
+    position: "absolute",
+    top: 0,
+    left: TENGAH_REL - TEBAL_REL / 2,
+    width: LEBAR_REL - TENGAH_REL + TEBAL_REL / 2,
+    borderLeftWidth: TEBAL_REL,
+    borderBottomWidth: TEBAL_REL,
+    borderColor: WARNA.garisTegas,
+  },
+  // Dari garis tengah rel sampai tepi kiri kotak.
+  cabang: {
+    position: "absolute",
+    left: TENGAH_REL,
+    width: LEBAR_REL - TENGAH_REL,
+    height: TEBAL_REL,
+    backgroundColor: WARNA.garisTegas,
+  },
+});
