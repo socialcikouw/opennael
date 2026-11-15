@@ -38,6 +38,23 @@ export async function bacaPosisi(): Promise<PosisiGps> {
   }
 }
 
+/** Bagian alamat dari geokode terbalik HP (tanpa kunci API: pakai layanan bawaan Android / iOS). */
+export interface AlamatTitik {
+  district: string | null;
+  city: string | null;
+  subregion: string | null;
+}
+
+/**
+ * Alamat (desa, kota, kabupaten) dari titik GPS — geokode terbalik bawaan HP, butuh
+ * internet. Tanpa izin lokasi. Gagal (tanpa sinyal, layanan tak ada) → galat; pemanggil
+ * memutuskan diam atau tidak.
+ */
+export async function cariAlamat(latitude: number, longitude: number): Promise<AlamatTitik[]> {
+  const hasil = await Location.reverseGeocodeAsync({ latitude, longitude });
+  return hasil.map((a) => ({ district: a.district, city: a.city, subregion: a.subregion }));
+}
+
 /**
  * Pantau posisi GPS terus-menerus (latar layar yang sedang dibuka): `onPosisi`
  * dipanggil tiap ada titik baru — GPS yang baru menyala biasanya kasar dulu,

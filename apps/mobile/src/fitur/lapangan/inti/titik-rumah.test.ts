@@ -1,5 +1,10 @@
 import { describe, expect, test } from "bun:test";
-import { AKURASI_MAKS_METER, pilihTitikTerbaik, titikRumahDari } from "./titik-rumah";
+import {
+  AKURASI_MAKS_METER,
+  pilihNamaDesa,
+  pilihTitikTerbaik,
+  titikRumahDari,
+} from "./titik-rumah";
 
 const JAKARTA = { latitude: -6.2, longitude: 106.8166 };
 
@@ -71,5 +76,33 @@ describe("pilihTitikTerbaik", () => {
     expect(pilihTitikTerbaik(lama, { ...JAKARTA, accuracy: null })).toBe(lama);
     expect(pilihTitikTerbaik(lama, { latitude: 0, longitude: 0, accuracy: 5 })).toBe(lama);
     expect(pilihTitikTerbaik(null, { ...JAKARTA, accuracy: AKURASI_MAKS_METER + 1 })).toBeNull();
+  });
+});
+
+describe("pilihNamaDesa", () => {
+  const alamat = (district: string | null, city: string | null, subregion: string | null) => ({
+    district,
+    city,
+    subregion,
+  });
+
+  test("desa/kelurahan (district) didahulukan, lalu kota/kecamatan, lalu kabupaten", () => {
+    expect(pilihNamaDesa([alamat("Pule", "Kedungwaru", "Tulungagung")])).toBe("Pule");
+    expect(pilihNamaDesa([alamat(null, "Kedungwaru", "Tulungagung")])).toBe("Kedungwaru");
+    expect(pilihNamaDesa([alamat(null, null, "Tulungagung")])).toBe("Tulungagung");
+  });
+
+  test("isian kosong atau spasi dilewati; spasi ganda dirapikan", () => {
+    expect(pilihNamaDesa([alamat("  ", "Kedungwaru", null)])).toBe("Kedungwaru");
+    expect(pilihNamaDesa([alamat("  Desa   Pule ", null, null)])).toBe("Desa Pule");
+  });
+
+  test("tak ada yang terisi → null", () => {
+    expect(pilihNamaDesa([])).toBeNull();
+    expect(pilihNamaDesa([alamat(null, null, null)])).toBeNull();
+  });
+
+  test("beberapa alamat: district pertama yang terisi menang atas city alamat sebelumnya", () => {
+    expect(pilihNamaDesa([alamat(null, "Kota", null), alamat("Pule", null, null)])).toBe("Pule");
   });
 });

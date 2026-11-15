@@ -33,8 +33,10 @@ import Lock from "lucide-react-native/icons/lock";
 import LogOut from "lucide-react-native/icons/log-out";
 import MapPin from "lucide-react-native/icons/map-pin";
 import Maximize2 from "lucide-react-native/icons/maximize-2";
+import MessageCircle from "lucide-react-native/icons/message-circle";
 import Moon from "lucide-react-native/icons/moon";
 import Phone from "lucide-react-native/icons/phone";
+import PiggyBank from "lucide-react-native/icons/piggy-bank";
 import Plus from "lucide-react-native/icons/plus";
 import RefreshCw from "lucide-react-native/icons/refresh-cw";
 import Repeat from "lucide-react-native/icons/repeat";
@@ -97,8 +99,10 @@ export const IKON = {
   "log-out": LogOut,
   "map-pin": MapPin,
   "maximize-2": Maximize2,
+  "message-circle": MessageCircle,
   moon: Moon,
   phone: Phone,
+  "piggy-bank": PiggyBank,
   plus: Plus,
   "refresh-cw": RefreshCw,
   repeat: Repeat,

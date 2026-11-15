@@ -57,3 +57,26 @@ export function pilihTitikTerbaik(
   }
   return terbaik && terbaik.akurasiMeter <= calon.akurasiMeter ? terbaik : calon;
 }
+
+/** Bagian alamat hasil geokode terbalik yang dipakai untuk menamai tempat. */
+export interface AlamatGeokode {
+  district: string | null;
+  city: string | null;
+  subregion: string | null;
+}
+
+/**
+ * Nama desa/kelurahan untuk titik GPS dari hasil geokode terbalik HP. Urutan pilihan:
+ * `district` (desa/kelurahan), lalu `city` (kecamatan/kota), lalu `subregion`
+ * (kabupaten); `null` bila tak satu pun terisi. Teks dikembalikan apa adanya
+ * (dirapikan spasinya) — huruf besar-kecil diatur tampilan.
+ */
+export function pilihNamaDesa(alamat: readonly AlamatGeokode[]): string | null {
+  for (const bagian of ["district", "city", "subregion"] as const) {
+    for (const a of alamat) {
+      const nama = a[bagian]?.replace(/\s+/g, " ").trim();
+      if (nama) return nama;
+    }
+  }
+  return null;
+}

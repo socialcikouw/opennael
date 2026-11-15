@@ -63,8 +63,19 @@ export function AvatarNasabah(props: {
   );
 }
 
-/** FOTO SERAH TERIMA besar di rincian pinjaman; ketuk = layar penuh. */
-export function FotoSerahTerima({ fotoId, nama }: { fotoId: string; nama: string }) {
+/**
+ * FOTO SERAH TERIMA besar; ketuk = layar penuh. `keterangan` (opsional) = tempat foto,
+ * mis. nama desa dari titik rumah — pil di pojok kiri bawah foto (kanan bawah: petunjuk layar penuh).
+ */
+export function FotoSerahTerima({
+  fotoId,
+  nama,
+  keterangan,
+}: {
+  fotoId: string;
+  nama: string;
+  keterangan?: string | null;
+}) {
   const WARNA = useWarna();
   const gaya = useGaya(buatGaya);
   const [penuh, setPenuh] = useState(false);
@@ -95,6 +106,14 @@ export function FotoSerahTerima({ fotoId, nama }: { fotoId: string; nama: string
           onError={() => setGagal(true)}
           style={[gaya.besar, gaya.latarFoto]}
         />
+        {keterangan ? (
+          <View style={gaya.keterangan} pointerEvents="none">
+            <Ikon nama="map-pin" ukuran={12} warna={WARNA.putih} />
+            <Text style={gaya.keteranganTeks} numberOfLines={1}>
+              {keterangan}
+            </Text>
+          </View>
+        ) : null}
         <View style={gaya.petunjuk}>
           <Ikon nama="maximize-2" ukuran={14} warna={WARNA.putih} />
         </View>
@@ -147,6 +166,26 @@ const buatGaya = (WARNA: Warna) =>
       padding: RUANG[1.5],
       borderRadius: SUDUT.bulat,
       backgroundColor: WARNA.tiraiGelap,
+    },
+    keterangan: {
+      position: "absolute",
+      left: RUANG[2],
+      bottom: RUANG[2],
+      maxWidth: "72%",
+      flexDirection: "row",
+      alignItems: "center",
+      gap: RUANG[1],
+      paddingVertical: RUANG[1],
+      paddingHorizontal: RUANG[2.5],
+      borderRadius: SUDUT.bulat,
+      backgroundColor: WARNA.tiraiGelap,
+    },
+    keteranganTeks: {
+      ...HURUF.xs,
+      flexShrink: 1,
+      fontWeight: TEBAL.tebal,
+      letterSpacing: 0.4,
+      color: WARNA.putih,
     },
     gagal: {
       alignItems: "center",

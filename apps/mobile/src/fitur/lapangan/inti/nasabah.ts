@@ -46,3 +46,28 @@ export function tautanPeta(lokasi: { latitude: number; longitude: number }): str
 export function tautanTelepon(nomor: string): string {
   return `tel:${nomor.replace(/[^\d+]/g, "")}`;
 }
+
+/**
+ * Nomor untuk WhatsApp: hanya angka dengan kode negara ("+62 812-3456" → `628123456`,
+ * "0812…" → `62812…`). `null` bila tak masuk akal sebagai nomor (8–15 digit, aturan E.164).
+ */
+export function nomorWhatsApp(nomor: string): string | null {
+  const angka = nomor.replace(/\D/g, "");
+  const lengkap = angka.startsWith("0") ? `62${angka.slice(1)}` : angka;
+  return lengkap.length >= 8 && lengkap.length <= 15 ? lengkap : null;
+}
+
+/** Tautan yang langsung membuka aplikasi WhatsApp ke percakapan dengan nomor itu. */
+export function tautanWhatsApp(nomorLengkap: string): string {
+  return `whatsapp://send?phone=${nomorLengkap}`;
+}
+
+/** Cadangan bila aplikasi WhatsApp tak terpasang: tautan web (membuka peramban / toko aplikasi). */
+export function tautanWhatsAppWeb(nomorLengkap: string): string {
+  return `https://wa.me/${nomorLengkap}`;
+}
+
+/** Jumlah sisa saldo pinjaman yang masih aktif (berjalan, macet) — "Sisa Pinjaman" di detail nasabah. */
+export function saldoAktif(daftar: readonly { status: string; saldo: number }[]): number {
+  return daftar.filter(pinjamanAktif).reduce((jumlah, p) => jumlah + p.saldo, 0);
+}

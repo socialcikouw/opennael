@@ -1,5 +1,15 @@
 import { describe, expect, test } from "bun:test";
-import { fotoTerbaru, pinjamanAktif, tautanPeta, tautanTelepon, urutPinjaman } from "./nasabah";
+import {
+  fotoTerbaru,
+  nomorWhatsApp,
+  pinjamanAktif,
+  saldoAktif,
+  tautanPeta,
+  tautanTelepon,
+  tautanWhatsApp,
+  tautanWhatsAppWeb,
+  urutPinjaman,
+} from "./nasabah";
 
 const p = (status: string, pinjamanKe: number, fotoSerahTerimaId: string | null = null) => ({
   status,
@@ -72,5 +82,42 @@ describe("tautan", () => {
   test("telepon membuang spasi dan tanda hubung, mempertahankan +", () => {
     expect(tautanTelepon("0812-3456 789")).toBe("tel:08123456789");
     expect(tautanTelepon("+62 812 3456")).toBe("tel:+628123456");
+  });
+});
+
+describe("nomorWhatsApp & tautan WhatsApp", () => {
+  test("E.164, awalan 0, dan tanda baca menjadi satu bentuk: kode negara + angka", () => {
+    expect(nomorWhatsApp("+6281234567890")).toBe("6281234567890");
+    expect(nomorWhatsApp("0812-3456 7890")).toBe("6281234567890");
+    expect(nomorWhatsApp("+62 812 3456 7890")).toBe("6281234567890");
+  });
+
+  test("nomor yang tak masuk akal ditolak (terlalu pendek / terlalu panjang / kosong)", () => {
+    expect(nomorWhatsApp("")).toBeNull();
+    expect(nomorWhatsApp("0812")).toBeNull();
+    expect(nomorWhatsApp("+62812345678901234")).toBeNull();
+  });
+
+  test("tautan langsung ke aplikasi dan cadangan web", () => {
+    expect(tautanWhatsApp("6281234567890")).toBe("whatsapp://send?phone=6281234567890");
+    expect(tautanWhatsAppWeb("6281234567890")).toBe("https://wa.me/6281234567890");
+  });
+});
+
+describe("saldoAktif", () => {
+  test("menjumlah saldo pinjaman berjalan dan macet saja", () => {
+    expect(
+      saldoAktif([
+        { status: "berjalan", saldo: 700_000 },
+        { status: "macet", saldo: 300_000 },
+        { status: "lunas", saldo: 0 },
+        { status: "diputihkan", saldo: 500_000 },
+      ]),
+    ).toBe(1_000_000);
+  });
+
+  test("tanpa pinjaman aktif = 0", () => {
+    expect(saldoAktif([])).toBe(0);
+    expect(saldoAktif([{ status: "digulung", saldo: 100_000 }])).toBe(0);
   });
 });
