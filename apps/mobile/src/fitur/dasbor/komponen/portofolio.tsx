@@ -3,8 +3,7 @@ import { rupiah } from "@opennael/format";
 import { StyleSheet, Text, View } from "react-native";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
-import { useGaya, useWarna } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 
 type Nada = "netral" | "bahaya" | "redup";
 
@@ -68,7 +67,6 @@ function susunUbin(data: DataPortofolio | undefined, gagal: boolean): Ubin[] {
  * diputihkan sudah dihapus bos, jadi diredupkan.
  */
 export function Portofolio(props: { data: DataPortofolio | undefined; gagal: boolean }) {
-  const gaya = useGaya(buatGaya);
   const ubin = susunUbin(props.data, props.gagal);
   return (
     <View style={gaya.grid}>
@@ -87,8 +85,6 @@ export function Portofolio(props: { data: DataPortofolio | undefined; gagal: boo
 }
 
 function UbinPortofolio({ u }: { u: Ubin }) {
-  const WARNA = useWarna();
-  const gaya = useGaya(buatGaya);
   const warnaNilai =
     u.nada === "bahaya" ? WARNA.bahayaTeks : u.nada === "redup" ? WARNA.teksKedua : WARNA.teks;
   return (
@@ -120,22 +116,21 @@ function UbinPortofolio({ u }: { u: Ubin }) {
   );
 }
 
-const buatGaya = (WARNA: Warna) =>
-  StyleSheet.create({
-    grid: { gap: RUANG[3] },
-    baris: { flexDirection: "row", gap: RUANG[3] },
-    ubin: {
-      flex: 1,
-      gap: RUANG[1],
-      padding: RUANG[3],
-      borderRadius: SUDUT.besar,
-      borderWidth: 1,
-      borderColor: WARNA.garis,
-      backgroundColor: WARNA.permukaan,
-    },
-    ubinBahaya: { borderColor: WARNA.bahayaGaris, backgroundColor: WARNA.bahayaLembut },
-    baris1: { flexDirection: "row", alignItems: "center", gap: RUANG[1.5] },
-    label: { ...HURUF.xs, fontWeight: TEBAL.semi, color: WARNA.redup },
-    nilai: { ...HURUF.lg, fontWeight: TEBAL.ekstra, fontVariant: ["tabular-nums"] },
-    sub: { ...HURUF.xs, color: WARNA.redup },
-  });
+const gaya = StyleSheet.create({
+  grid: { gap: RUANG[3] },
+  baris: { flexDirection: "row", gap: RUANG[3] },
+  ubin: {
+    flex: 1,
+    gap: RUANG[1],
+    padding: RUANG[3],
+    borderRadius: SUDUT.besar,
+    borderWidth: 1,
+    borderColor: WARNA.garis,
+    backgroundColor: WARNA.permukaan,
+  },
+  ubinBahaya: { borderColor: WARNA.bahayaGaris, backgroundColor: WARNA.bahayaLembut },
+  baris1: { flexDirection: "row", alignItems: "center", gap: RUANG[1.5] },
+  label: { ...HURUF.xs, fontWeight: TEBAL.semi, color: WARNA.redup },
+  nilai: { ...HURUF.lg, fontWeight: TEBAL.ekstra, fontVariant: ["tabular-nums"] },
+  sub: { ...HURUF.xs, color: WARNA.redup },
+});

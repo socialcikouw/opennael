@@ -6,16 +6,15 @@ import { useCallback } from "react";
 import { RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
 import { KartuJatuhTempo, MODE } from "@/fitur/tagihan";
 import { useRuangTab } from "@/komponen/tab-mengambang";
-import { useG } from "@/komponen/ui/gaya-bersama";
+import { g } from "@/komponen/ui/gaya-bersama";
 import { PesanGalat } from "@/komponen/ui/isian";
 import { KotakAngka } from "@/komponen/ui/kartu";
 import { Kerangka } from "@/komponen/ui/kerangka";
 import { Spanduk } from "@/komponen/ui/spanduk";
-import { useGaya, useWarnaMode } from "@/komponen/ui/tampilan";
 import { Tombol } from "@/komponen/ui/tombol";
 import { useSesi } from "@/lib/sesi";
 import { useTarikSegarkan } from "@/lib/tarik-segarkan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/tema";
+import { AKSEN_MODE, HURUF, RUANG, SUDUT, TEBAL } from "@/tema";
 import { useDataDasbor } from "./data";
 import { KartuPerforma } from "./komponen/kartu-performa";
 import { KartuRasio } from "./komponen/kartu-rasio";
@@ -33,8 +32,6 @@ import { Portofolio } from "./komponen/portofolio";
  * tab Setelan (mode Semua).
  */
 export function LayarDasbor() {
-  const gaya = useGaya(buatGaya);
-  const g = useG();
   const s = useSesi();
   const ruangTab = useRuangTab();
   const klien = useQueryClient();
@@ -49,7 +46,7 @@ export function LayarDasbor() {
     jatuhTempo,
     performa,
   } = useDataDasbor();
-  const aksen = useWarnaMode(mode);
+  const aksen = AKSEN_MODE[mode];
   const namaMode = MODE[mode].label;
 
   // Semua bacaan Dasbor berawalan `lapangan`: satu invalidasi menyegarkan semuanya, dan
@@ -129,14 +126,14 @@ export function LayarDasbor() {
         aksen={aksen}
       />
 
-      <View style={gaya.bagian}>
-        <Text style={gaya.judulBagian}>PORTOFOLIO · {namaMode.toUpperCase()}</Text>
+      <View style={g.bagian}>
+        <Text style={g.judulBagian}>PORTOFOLIO · {namaMode.toUpperCase()}</Text>
         <Portofolio data={portofolio} gagal={portofolioSemua.isError && !portofolioSemua.data} />
       </View>
 
       {keadaan.hari?.absensi === "masuk_kerja" && rasio ? (
-        <View style={gaya.bagian}>
-          <Text style={gaya.judulBagian}>HARI INI · {namaMode.toUpperCase()}</Text>
+        <View style={g.bagian}>
+          <Text style={g.judulBagian}>HARI INI · {namaMode.toUpperCase()}</Text>
           <View style={g.baris3}>
             <KotakAngka
               label="Dicatat"
@@ -151,19 +148,11 @@ export function LayarDasbor() {
   );
 }
 
-const buatGaya = (WARNA: Warna) =>
-  StyleSheet.create({
-    galat: { gap: RUANG[4], paddingHorizontal: RUANG[5], paddingVertical: RUANG[6] },
-    isi: { gap: RUANG[4], paddingHorizontal: RUANG[5], paddingTop: RUANG[2] },
-    barisTanggal: { flexDirection: "row", alignItems: "center", gap: RUANG[2] },
-    tanggal: { ...HURUF.sm, fontWeight: TEBAL.sedang },
-    lencanaMode: { paddingHorizontal: RUANG[2.5], paddingVertical: 2, borderRadius: SUDUT.bulat },
-    lencanaModeTeks: { ...HURUF.xs, fontWeight: TEBAL.tebal },
-    bagian: { gap: RUANG[2] },
-    judulBagian: {
-      ...HURUF["2xs"],
-      fontWeight: TEBAL.ekstra,
-      letterSpacing: 0.8,
-      color: WARNA.redup,
-    },
-  });
+const gaya = StyleSheet.create({
+  galat: { gap: RUANG[4], paddingHorizontal: RUANG[5], paddingVertical: RUANG[6] },
+  isi: { gap: RUANG[4], paddingHorizontal: RUANG[5], paddingTop: RUANG[2] },
+  barisTanggal: { flexDirection: "row", alignItems: "center", gap: RUANG[2] },
+  tanggal: { ...HURUF.sm, fontWeight: TEBAL.sedang },
+  lencanaMode: { paddingHorizontal: RUANG[2.5], paddingVertical: 2, borderRadius: SUDUT.bulat },
+  lencanaModeTeks: { ...HURUF.xs, fontWeight: TEBAL.tebal },
+});

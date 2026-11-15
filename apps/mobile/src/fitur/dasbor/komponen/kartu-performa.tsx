@@ -1,7 +1,7 @@
 import { rupiah } from "@opennael/format";
 import { StyleSheet, Text, View } from "react-native";
-import { useGaya } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/tema";
+import { g } from "@/komponen/ui/gaya-bersama";
+import { HURUF, RUANG, TEBAL, WARNA, type WarnaMode } from "@/tema";
 import type { RingkasPerforma } from "../inti/performa";
 
 /** Tinggi bidang batang (pt) — 100% persentase. */
@@ -23,14 +23,13 @@ export function KartuPerforma(props: {
   jenis: string;
   aksen: WarnaMode;
 }) {
-  const gaya = useGaya(buatGaya);
   const { p, aksen } = props;
   const hariIni = p?.hariIni ?? null;
   const persen = hariIni?.persentase ?? null;
   return (
-    <View style={gaya.kartu}>
+    <View style={g.kartu}>
       <View style={gaya.barisLabel}>
-        <Text style={gaya.label}>PERFORMA TAGIHAN MURNI</Text>
+        <Text style={g.judulBagian}>PERFORMA TAGIHAN MURNI</Text>
         <Text style={gaya.ket}>{props.jenis}</Text>
       </View>
       <View style={gaya.utama}>
@@ -86,28 +85,18 @@ function penjelasHariIni(p: RingkasPerforma | null, gagal: boolean): string {
   return `Setoran murni ${rupiah(h.setoranMurni)} dari patokan ${rupiah(h.patokan)}`;
 }
 
-const buatGaya = (WARNA: Warna) =>
-  StyleSheet.create({
-    kartu: {
-      gap: RUANG[3],
-      padding: RUANG[4],
-      borderRadius: SUDUT.besar,
-      borderWidth: 1,
-      borderColor: WARNA.garis,
-      backgroundColor: WARNA.permukaan,
-    },
-    barisLabel: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-    label: { ...HURUF["2xs"], fontWeight: TEBAL.ekstra, letterSpacing: 0.8, color: WARNA.redup },
-    ket: { ...HURUF.xs, color: WARNA.redup, fontVariant: ["tabular-nums"] },
-    utama: { flexDirection: "row", alignItems: "center", gap: RUANG[4] },
-    angka: { ...HURUF["3xl"], fontWeight: TEBAL.ekstra, fontVariant: ["tabular-nums"] },
-    penjelas: { ...HURUF.xs, flex: 1, color: WARNA.teksKedua },
-    batangWadah: {
-      height: TINGGI_BATANG,
-      flexDirection: "row",
-      alignItems: "flex-end",
-      gap: 3,
-    },
-    lajurBatang: { flex: 1, height: "100%", justifyContent: "flex-end" },
-    batang: { width: "100%", borderRadius: 2 },
-  });
+const gaya = StyleSheet.create({
+  barisLabel: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  ket: { ...HURUF.xs, color: WARNA.redup, fontVariant: ["tabular-nums"] },
+  utama: { flexDirection: "row", alignItems: "center", gap: RUANG[4] },
+  angka: { ...HURUF["3xl"], fontWeight: TEBAL.ekstra, fontVariant: ["tabular-nums"] },
+  penjelas: { ...HURUF.xs, flex: 1, color: WARNA.teksKedua },
+  batangWadah: {
+    height: TINGGI_BATANG,
+    flexDirection: "row",
+    alignItems: "flex-end",
+    gap: 3,
+  },
+  lajurBatang: { flex: 1, height: "100%", justifyContent: "flex-end" },
+  batang: { width: "100%", borderRadius: 2 },
+});

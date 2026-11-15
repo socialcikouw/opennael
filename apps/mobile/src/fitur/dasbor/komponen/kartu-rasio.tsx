@@ -1,8 +1,8 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import type { RasioHariIni } from "@/fitur/lapangan";
+import { g } from "@/komponen/ui/gaya-bersama";
 import { Ikon } from "@/komponen/ui/ikon";
-import { useGaya, useWarna } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
 
 /**
  * RASIO BAYAR hari ini atas seluruh pegangan: bayar ÷ (bayar + libur), bilah,
@@ -16,15 +16,13 @@ export function KartuRasio(props: {
   aksen: WarnaMode;
   onLaporan: () => void;
 }) {
-  const WARNA = useWarna();
-  const gaya = useGaya(buatGaya);
   const { r, aksen } = props;
   const total = r ? r.bayar + r.libur + r.sisa : 0;
   const beres = !!r && total > 0 && r.sisa === 0;
   return (
-    <View style={gaya.kartu}>
+    <View style={g.kartu}>
       <View style={gaya.barisLabel}>
-        <Text style={gaya.label}>RASIO BAYAR</Text>
+        <Text style={g.judulBagian}>RASIO BAYAR</Text>
         {beres ? (
           <Pressable onPress={props.onLaporan} style={gaya.selesai} accessibilityRole="button">
             <Ikon nama="circle-check" ukuran={12} warna={WARNA.utama} />
@@ -72,7 +70,6 @@ export function KartuRasio(props: {
 
 /** Satu butir rincian: titik warna, label, dan angkanya. */
 function Butir(props: { warna: string; label: string; nilai: number | undefined }) {
-  const gaya = useGaya(buatGaya);
   return (
     <View
       style={gaya.butir}
@@ -86,38 +83,28 @@ function Butir(props: { warna: string; label: string; nilai: number | undefined 
   );
 }
 
-const buatGaya = (WARNA: Warna) =>
-  StyleSheet.create({
-    kartu: {
-      gap: RUANG[3],
-      padding: RUANG[4],
-      borderRadius: SUDUT.besar,
-      borderWidth: 1,
-      borderColor: WARNA.garis,
-      backgroundColor: WARNA.permukaan,
-    },
-    barisLabel: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-    label: { ...HURUF["2xs"], fontWeight: TEBAL.ekstra, letterSpacing: 0.8, color: WARNA.redup },
-    ket: { ...HURUF.xs, color: WARNA.redup },
-    selesai: { flexDirection: "row", alignItems: "center", gap: RUANG[1] },
-    utama: { flexDirection: "row", alignItems: "center", gap: RUANG[4] },
-    angka: { ...HURUF["3xl"], fontWeight: TEBAL.ekstra, fontVariant: ["tabular-nums"] },
-    kanan: { flex: 1, gap: RUANG[1.5] },
-    rel: { height: 10, borderRadius: SUDUT.bulat, backgroundColor: WARNA.isiNetral },
-    isiRel: { height: 10, borderRadius: SUDUT.bulat },
-    rincian: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      paddingTop: RUANG[3],
-      borderTopWidth: 1,
-      borderTopColor: WARNA.garis,
-    },
-    butir: { flexDirection: "row", alignItems: "center", gap: RUANG[1.5] },
-    titik: { width: 8, height: 8, borderRadius: SUDUT.bulat },
-    butirAngka: {
-      ...HURUF.sm,
-      fontWeight: TEBAL.tebal,
-      color: WARNA.teks,
-      fontVariant: ["tabular-nums"],
-    },
-  });
+const gaya = StyleSheet.create({
+  barisLabel: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  ket: { ...HURUF.xs, color: WARNA.redup },
+  selesai: { flexDirection: "row", alignItems: "center", gap: RUANG[1] },
+  utama: { flexDirection: "row", alignItems: "center", gap: RUANG[4] },
+  angka: { ...HURUF["3xl"], fontWeight: TEBAL.ekstra, fontVariant: ["tabular-nums"] },
+  kanan: { flex: 1, gap: RUANG[1.5] },
+  rel: { height: 10, borderRadius: SUDUT.bulat, backgroundColor: WARNA.isiNetral },
+  isiRel: { height: 10, borderRadius: SUDUT.bulat },
+  rincian: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingTop: RUANG[3],
+    borderTopWidth: 1,
+    borderTopColor: WARNA.garis,
+  },
+  butir: { flexDirection: "row", alignItems: "center", gap: RUANG[1.5] },
+  titik: { width: 8, height: 8, borderRadius: SUDUT.bulat },
+  butirAngka: {
+    ...HURUF.sm,
+    fontWeight: TEBAL.tebal,
+    color: WARNA.teks,
+    fontVariant: ["tabular-nums"],
+  },
+});
