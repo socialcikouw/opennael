@@ -1,15 +1,15 @@
 import { useCallback } from "react";
-import { RefreshControl, StyleSheet, Text, View } from "react-native";
+import { RefreshControl, StyleSheet, View } from "react-native";
 import { useRuangTab } from "@/komponen/tab-mengambang";
 import { g } from "@/komponen/ui/gaya-bersama";
-import { Ikon } from "@/komponen/ui/ikon";
 import { PesanGalat } from "@/komponen/ui/isian";
 import { Kerangka } from "@/komponen/ui/kerangka";
+import { KotakKosong } from "@/komponen/ui/kotak-kosong";
 import { GulirKeyboard } from "@/komponen/ui/layar";
 import { Spanduk } from "@/komponen/ui/spanduk";
 import { Tombol } from "@/komponen/ui/tombol";
 import { useTarikSegarkan } from "@/lib/tarik-segarkan";
-import { HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
+import { RUANG } from "@/tema";
 import { usePengingat } from "./data";
 import { ItemPengingat } from "./komponen/item-pengingat";
 
@@ -63,13 +63,11 @@ export function LayarNotifikasi() {
         <ItemPengingat key={p.kunci} p={p} />
       ))}
       {pengingat.length === 0 ? (
-        <View style={gaya.kosong}>
-          <View style={gaya.lingkaranKosong}>
-            <Ikon nama="bell" ukuran={24} warna={WARNA.redup} />
-          </View>
-          <Text style={gaya.kosongJudul}>Tidak ada pengingat</Text>
-          <Text style={gaya.kosongIsi}>Semua yang perlu dikerjakan hari ini sudah beres.</Text>
-        </View>
+        <KotakKosong
+          ikon="bell"
+          judul="Tidak ada pengingat"
+          isi="Semua yang perlu dikerjakan hari ini sudah beres."
+        />
       ) : null}
     </GulirKeyboard>
   );
@@ -78,24 +76,4 @@ export function LayarNotifikasi() {
 const gaya = StyleSheet.create({
   galat: { gap: RUANG[4], paddingHorizontal: RUANG[5], paddingVertical: RUANG[6] },
   isi: { gap: RUANG[4], paddingHorizontal: RUANG[5], paddingTop: RUANG[2] },
-  kosong: {
-    alignItems: "center",
-    gap: RUANG[2],
-    borderRadius: SUDUT.besar,
-    borderWidth: 1,
-    borderStyle: "dashed",
-    borderColor: WARNA.garisTegas,
-    paddingHorizontal: RUANG[4],
-    paddingVertical: RUANG[8],
-  },
-  lingkaranKosong: {
-    width: 56,
-    height: 56,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: SUDUT.bulat,
-    backgroundColor: WARNA.isiNetral,
-  },
-  kosongJudul: { ...HURUF.base, fontWeight: TEBAL.tebal, color: WARNA.teks },
-  kosongIsi: { ...HURUF.sm, textAlign: "center", color: WARNA.redup },
 });

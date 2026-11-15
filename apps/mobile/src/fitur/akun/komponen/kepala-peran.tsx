@@ -1,15 +1,12 @@
 import { tanggal as formatTanggal } from "@opennael/format";
 import { StyleSheet, Text, View } from "react-native";
-import { useG } from "@/komponen/ui/gaya-bersama";
-import { useGaya } from "@/komponen/ui/tampilan";
+import { g } from "@/komponen/ui/gaya-bersama";
 import { hariIniKantor } from "@/lib/kantor";
 import { useSesi } from "@/lib/sesi";
-import { HURUF, TEBAL, type Warna } from "@/tema";
+import { HURUF, TEBAL, WARNA } from "@/tema";
 
 /** Kepala layar kerja kasir / pengawas: tanggal kantor, sapaan, nama kantor. */
 export function KepalaPeran() {
-  const gaya = useGaya(buatGaya);
-  const g = useG();
   const s = useSesi();
   if (!s) return null;
   const { pengguna } = s;
@@ -24,7 +21,6 @@ export function KepalaPeran() {
   );
 }
 
-const buatGaya = (WARNA: Warna) =>
-  StyleSheet.create({
-    tanggal: { ...HURUF.sm, fontWeight: TEBAL.sedang, color: WARNA.utama },
-  });
+const gaya = StyleSheet.create({
+  tanggal: { ...HURUF.sm, fontWeight: TEBAL.sedang, color: WARNA.utama },
+});

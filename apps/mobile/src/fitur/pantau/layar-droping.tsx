@@ -5,20 +5,19 @@ import { useCallback, useMemo, useState } from "react";
 import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
 import { useHariIni, useTagihan } from "@/fitur/lapangan";
 import { useRuangTab } from "@/komponen/tab-mengambang";
-import { useG } from "@/komponen/ui/gaya-bersama";
+import { g } from "@/komponen/ui/gaya-bersama";
 import { PesanGalat } from "@/komponen/ui/isian";
 import { Kerangka } from "@/komponen/ui/kerangka";
+import { KotakKosong } from "@/komponen/ui/kotak-kosong";
 import { Spanduk } from "@/komponen/ui/spanduk";
-import { useWarnaMode } from "@/komponen/ui/tampilan";
 import { Tombol } from "@/komponen/ui/tombol";
 import { useZonaKantor } from "@/lib/kantor";
 import { useTarikSegarkan } from "@/lib/tarik-segarkan";
-import { RUANG } from "@/tema";
+import { AKSEN_MODE, RUANG } from "@/tema";
 import { type BarisDroping, barisDroping, dropingHariIni, ringkasDroping } from "./inti/droping";
 import { hitungPerJenis, type SaringJenis, saringJenis } from "./inti/jenis";
 import { BarisJenis } from "./komponen/baris-jenis";
 import { KartuTotal } from "./komponen/kartu-total";
-import { KotakKosong } from "./komponen/kosong";
 import { PilJenis } from "./komponen/pil-jenis";
 
 const jenisDari = (p: KartuTagih) => p.jenis;
@@ -30,8 +29,7 @@ const jenisDari = (p: KartuTagih) => p.jenis;
  * pinjaman hanya-baca. Potongan admin & tabungan masuk ada di arus kas (Mutasi).
  */
 export function LayarDroping() {
-  const g = useG();
-  const aksen = useWarnaMode("semua");
+  const aksen = AKSEN_MODE.semua;
   const ruangTab = useRuangTab();
   const zona = useZonaKantor();
   const hariIni = useHariIni();

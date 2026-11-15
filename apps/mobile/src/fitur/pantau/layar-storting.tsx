@@ -5,20 +5,19 @@ import { useCallback, useMemo, useState } from "react";
 import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
 import { useTagihan } from "@/fitur/lapangan";
 import { useRuangTab } from "@/komponen/tab-mengambang";
-import { useG } from "@/komponen/ui/gaya-bersama";
+import { g } from "@/komponen/ui/gaya-bersama";
 import { PesanGalat } from "@/komponen/ui/isian";
 import { Kerangka } from "@/komponen/ui/kerangka";
+import { KotakKosong } from "@/komponen/ui/kotak-kosong";
 import { Spanduk } from "@/komponen/ui/spanduk";
-import { useWarnaMode } from "@/komponen/ui/tampilan";
 import { Tombol } from "@/komponen/ui/tombol";
 import { useTarikSegarkan } from "@/lib/tarik-segarkan";
-import { RUANG } from "@/tema";
+import { AKSEN_MODE, RUANG } from "@/tema";
 import { useSetoranHariIni } from "./data";
 import { hitungPerJenis, type SaringJenis, saringJenis } from "./inti/jenis";
 import { type BarisStorting, barisStorting, ringkasStorting } from "./inti/storting";
 import { BarisJenis } from "./komponen/baris-jenis";
 import { KartuTotal } from "./komponen/kartu-total";
-import { KotakKosong } from "./komponen/kosong";
 import { PilJenis } from "./komponen/pil-jenis";
 
 const jenisDari = (t: TransaksiHari) => t.jenisPinjaman;
@@ -30,8 +29,7 @@ const jenisDari = (t: TransaksiHari) => t.jenisPinjaman;
  * dan daftar. Hanya-baca; menagih dari mode jenisnya.
  */
 export function LayarStorting() {
-  const g = useG();
-  const aksen = useWarnaMode("semua");
+  const aksen = AKSEN_MODE.semua;
   const ruangTab = useRuangTab();
   const setoran = useSetoranHariIni();
   const tagihan = useTagihan();

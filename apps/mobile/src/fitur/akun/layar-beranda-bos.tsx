@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { useG } from "@/komponen/ui/gaya-bersama";
+import { g } from "@/komponen/ui/gaya-bersama";
 import { Layar } from "@/komponen/ui/layar";
 import { Spanduk } from "@/komponen/ui/spanduk";
 import { Judul, Keterangan, Merek } from "@/komponen/ui/teks";
@@ -11,7 +11,6 @@ import { TombolKeluar } from "./komponen/tombol-keluar";
  * Peran lain tidak sampai sini — penjaga di `app/_layout.tsx` mengarahkannya.
  */
 export function LayarBerandaBos() {
-  const g = useG();
   const s = useSesi();
   if (!s) return null;
 

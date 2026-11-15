@@ -4,18 +4,17 @@ import { RefreshControl, StyleSheet, Text, View } from "react-native";
 import { type GerbangMutasi, useGerbangMutasi, useKasHariIni } from "@/fitur/lapangan";
 import { AksiLaporan, ItemPengingat, usePengingat } from "@/fitur/notifikasi";
 import { useRuangTab } from "@/komponen/tab-mengambang";
-import { useG } from "@/komponen/ui/gaya-bersama";
-import { Ikon } from "@/komponen/ui/ikon";
+import { g } from "@/komponen/ui/gaya-bersama";
 import { PesanGalat } from "@/komponen/ui/isian";
 import { Baris, Kartu } from "@/komponen/ui/kartu";
 import { Kerangka } from "@/komponen/ui/kerangka";
+import { KotakKosong } from "@/komponen/ui/kotak-kosong";
 import { GulirKeyboard } from "@/komponen/ui/layar";
 import { Spanduk } from "@/komponen/ui/spanduk";
-import { useGaya, useWarna, useWarnaMode } from "@/komponen/ui/tampilan";
 import { Tombol } from "@/komponen/ui/tombol";
 import { useZonaKantor } from "@/lib/kantor";
 import { useTarikSegarkan } from "@/lib/tarik-segarkan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/tema";
+import { AKSEN_MODE, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 import { useBiayaHariIni } from "./data";
 import { barisArusKas, type KeadaanKas, keadaanKas } from "./inti/arus-kas";
 import { KartuTotal } from "./komponen/kartu-total";
@@ -53,10 +52,7 @@ const ALASAN_GEMBOK: Record<Exclude<GerbangMutasi, "siap">, string> = {
  * ini). Sesudah kasir menerima kas: tekor / lebih setor.
  */
 export function LayarMutasi() {
-  const gaya = useGaya(buatGaya);
-  const g = useG();
-  const WARNA = useWarna();
-  const aksen = useWarnaMode("semua");
+  const aksen = AKSEN_MODE.semua;
   const ruangTab = useRuangTab();
   const zona = useZonaKantor();
   const { hariIni, tagihan, pengingat } = usePengingat();
@@ -131,21 +127,20 @@ export function LayarMutasi() {
 
       {terbuka ? null : (
         <>
-          <View style={gaya.gembok}>
-            <View style={gaya.gembokIkon}>
-              <Ikon nama="lock" ukuran={30} warna={WARNA.redup} />
-            </View>
-            <Text style={gaya.gembokJudul}>
-              {gerbang === "masih-menagih"
+          <KotakKosong
+            besar
+            ikon="lock"
+            judul={
+              gerbang === "masih-menagih"
                 ? `Mutasi Kas Terkunci · ${belum.length} Belum Ditagih`
-                : "Mutasi Kas Terkunci"}
-            </Text>
-            <Text style={gaya.gembokIsi}>
-              {gerbang === "tidak-kerja" && hari?.alasanTidakKerja
+                : "Mutasi Kas Terkunci"
+            }
+            isi={
+              gerbang === "tidak-kerja" && hari?.alasanTidakKerja
                 ? `Anda tidak kerja hari ini: ${hari.alasanTidakKerja}.`
-                : ALASAN_GEMBOK[gerbang]}
-            </Text>
-          </View>
+                : ALASAN_GEMBOK[gerbang]
+            }
+          />
           {penahan.map((p) => (
             <ItemPengingat key={p.kunci} p={p} tanpaMutasi />
           ))}
@@ -195,7 +190,7 @@ export function LayarMutasi() {
           />
 
           {keadaan === "lapangan" ? (
-            <View style={gaya.bagian}>
+            <View style={g.bagian}>
               <Text style={g.teksRedup}>
                 Semua nasabah hari ini sudah ditagih. Periksa angkanya, lalu buka laporan dan
                 serahkan tunai ke kasir.
@@ -204,8 +199,8 @@ export function LayarMutasi() {
             </View>
           ) : null}
 
-          <View style={gaya.bagian}>
-            <Text style={gaya.judulBagian}>BIAYA TAK TERDUGA</Text>
+          <View style={g.bagian}>
+            <Text style={g.judulBagian}>BIAYA TAK TERDUGA</Text>
             {daftarBiaya.length > 0 ? (
               <Kartu>
                 {daftarBiaya.map((b) => (
@@ -224,46 +219,18 @@ export function LayarMutasi() {
   );
 }
 
-const buatGaya = (WARNA: Warna) =>
-  StyleSheet.create({
-    galat: { gap: RUANG[4], paddingHorizontal: RUANG[5], paddingVertical: RUANG[6] },
-    isi: { gap: RUANG[4], paddingHorizontal: RUANG[5], paddingTop: RUANG[2] },
-    barisTanggal: { flexDirection: "row", alignItems: "center", gap: RUANG[2] },
-    tanggal: { ...HURUF.sm, flex: 1, fontWeight: TEBAL.sedang },
-    lencana: { paddingHorizontal: RUANG[2.5], paddingVertical: 2, borderRadius: SUDUT.bulat },
-    lencanaTeks: { ...HURUF.xs, fontWeight: TEBAL.tebal },
-    serah: {
-      gap: RUANG[1.5],
-      marginTop: RUANG[1],
-      paddingTop: RUANG[3],
-      borderTopWidth: 1,
-      borderTopColor: WARNA.garis,
-    },
-    bagian: { gap: RUANG[2] },
-    gembok: {
-      alignItems: "center",
-      gap: RUANG[2],
-      borderRadius: SUDUT.besar,
-      borderWidth: 1,
-      borderStyle: "dashed",
-      borderColor: WARNA.garisTegas,
-      paddingHorizontal: RUANG[5],
-      paddingVertical: RUANG[6],
-    },
-    gembokIkon: {
-      width: 64,
-      height: 64,
-      alignItems: "center",
-      justifyContent: "center",
-      borderRadius: SUDUT.bulat,
-      backgroundColor: WARNA.isiNetral,
-    },
-    gembokJudul: { ...HURUF.lg, fontWeight: TEBAL.tebal, textAlign: "center", color: WARNA.teks },
-    gembokIsi: { ...HURUF.sm, textAlign: "center", color: WARNA.redup },
-    judulBagian: {
-      ...HURUF["2xs"],
-      fontWeight: TEBAL.ekstra,
-      letterSpacing: 0.8,
-      color: WARNA.redup,
-    },
-  });
+const gaya = StyleSheet.create({
+  galat: { gap: RUANG[4], paddingHorizontal: RUANG[5], paddingVertical: RUANG[6] },
+  isi: { gap: RUANG[4], paddingHorizontal: RUANG[5], paddingTop: RUANG[2] },
+  barisTanggal: { flexDirection: "row", alignItems: "center", gap: RUANG[2] },
+  tanggal: { ...HURUF.sm, flex: 1, fontWeight: TEBAL.sedang },
+  lencana: { paddingHorizontal: RUANG[2.5], paddingVertical: 2, borderRadius: SUDUT.bulat },
+  lencanaTeks: { ...HURUF.xs, fontWeight: TEBAL.tebal },
+  serah: {
+    gap: RUANG[1.5],
+    marginTop: RUANG[1],
+    paddingTop: RUANG[3],
+    borderTopWidth: 1,
+    borderTopColor: WARNA.garis,
+  },
+});
