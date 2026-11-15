@@ -1,6 +1,6 @@
 # Tema aplikasi HP
 
-**Status:** Tahap 1–3 selesai (16 Nov 2026). Tahap 4 (layar per layar) berjalan: Tagihan, Notifikasi, Akad, Bayar, Gulung, Detail Nasabah, Dasbor/Analitik & mode Semua selesai (seluruh `fitur/lapangan` tanpa hook tema), komponen bersama sudah statis; layar lain menunggu giliran.
+**Status:** Tahap 1–3 selesai (16 Nov 2026). Tahap 4 (layar per layar) berjalan: Tagihan, Notifikasi, Akad, Bayar, Gulung, Detail Nasabah, Dasbor/Analitik, mode Semua, Kasir & Pengawas selesai (seluruh `fitur/lapangan` dan `fitur/setoran-sore` tanpa hook tema), komponen bersama sudah statis; layar lain menunggu giliran.
 
 Aplikasi HP (`apps/mobile`) **hanya bertema gelap** — keputusan pemilik, 16 Nov 2026
 (menggantikan mode terang & gelap 27 Okt). Tidak ada tombol Terang / Gelap / Ikuti HP, tidak
@@ -105,7 +105,7 @@ garis atas di semua platform.
 | 1. Fondasi | `src/tema/`, nilai gelap yang sama persis dengan sebelumnya, hapus tema terang & pilihannya, konfigurasi native dari token | ✅ 16 Nov 2026 |
 | 2. Pagar | Aturan `cek:arsitektur`, uji kontras, dokumen ini | ✅ 16 Nov 2026 |
 | 3. Palet baru | Netral hampir hitam + hijau merek, `permukaanTinggi`, tanpa bayangan, `abu`→`isiNetral`, `abuTua`→`isiNetralTegas`, garis terlihat, lencana merah terbaca, latar splash = latar | ✅ 16 Nov 2026 |
-| 4. Layar per layar | Desain ulang tiap layar; hook lama diganti token statis + `StyleSheet.create` tingkat modul | **Tagihan ✅ · Notifikasi ✅ · Akad ✅ · Bayar ✅ · Gulung ✅ · Detail Nasabah ✅ · Dasbor/Analitik ✅ · Mode Semua (Mutasi, Storting, Droping, Setelan) ✅ (16 Nov 2026)**; komponen bersama (`komponen/ui`, tab bar, lembar bawah) ✅ token statis; layar lain menunggu |
+| 4. Layar per layar | Desain ulang tiap layar; hook lama diganti token statis + `StyleSheet.create` tingkat modul | **Tagihan ✅ · Notifikasi ✅ · Akad ✅ · Bayar ✅ · Gulung ✅ · Detail Nasabah ✅ · Dasbor/Analitik ✅ · Mode Semua (Mutasi, Storting, Droping, Setelan) ✅ · Kasir ✅ · Pengawas ✅ (16 Nov 2026)**; komponen bersama (`komponen/ui`, tab bar, lembar bawah) ✅ token statis; layar lain menunggu |
 
 ### Yang masih tersisa
 

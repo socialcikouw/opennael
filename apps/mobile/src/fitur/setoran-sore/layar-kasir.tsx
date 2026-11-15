@@ -1,15 +1,17 @@
-import { rupiah } from "@opennael/format";
+import { rupiah, tampilKeterangan, tampilNama } from "@opennael/format";
 import { router } from "expo-router";
+import { useCallback } from "react";
 import { ActivityIndicator, Pressable, RefreshControl, ScrollView, Text, View } from "react-native";
 import { KepalaPeran, TombolKeluar } from "@/fitur/akun";
-import { useG } from "@/komponen/ui/gaya-bersama";
+import { g } from "@/komponen/ui/gaya-bersama";
 import { Ikon } from "@/komponen/ui/ikon";
 import { PesanGalat } from "@/komponen/ui/isian";
 import { KotakAngka } from "@/komponen/ui/kartu";
+import { KotakKosong } from "@/komponen/ui/kotak-kosong";
 import { Lencana } from "@/komponen/ui/lencana";
-import { useWarna } from "@/komponen/ui/tampilan";
-import { Keterangan } from "@/komponen/ui/teks";
 import { Tombol } from "@/komponen/ui/tombol";
+import { useTarikSegarkan } from "@/lib/tarik-segarkan";
+import { WARNA } from "@/tema";
 import { type HariKolektor, useHariKolektor } from "./data";
 import { keadaanHari } from "./inti";
 
@@ -25,9 +27,11 @@ function urutan(h: HariKolektor): number {
  * biaya tak terduga, dan menerima kas (hitung buta).
  */
 export function LayarKasir() {
-  const WARNA = useWarna();
-  const g = useG();
   const hari = useHariKolektor();
+  const { refetch } = hari;
+  const segarkan = useCallback(() => refetch(), [refetch]);
+  const { aktif: menarik, tarik } = useTarikSegarkan(segarkan);
+
   const daftar = [...(hari.data ?? [])].sort(
     (a, b) => urutan(a) - urutan(b) || a.kolektor.nama.localeCompare(b.kolektor.nama),
   );
@@ -39,9 +43,7 @@ export function LayarKasir() {
     <ScrollView
       style={g.layar}
       contentContainerStyle={g.gulirIsi}
-      refreshControl={
-        <RefreshControl refreshing={hari.isRefetching} onRefresh={() => void hari.refetch()} />
-      }
+      refreshControl={<RefreshControl refreshing={menarik} onRefresh={tarik} />}
     >
       <KepalaPeran />
       {hari.isPending ? <ActivityIndicator color={WARNA.utama} /> : null}
@@ -62,7 +64,11 @@ export function LayarKasir() {
             />
           </View>
           {daftar.length === 0 ? (
-            <Keterangan>Belum ada kolektor yang absen hari ini.</Keterangan>
+            <KotakKosong
+              ikon="users"
+              judul="Belum ada yang absen"
+              isi="Kolektor yang sudah absen hari ini akan muncul di sini."
+            />
           ) : null}
           {daftar.map((h) => (
             <BarisKolektor key={h.id} h={h} />
@@ -75,8 +81,6 @@ export function LayarKasir() {
 }
 
 function BarisKolektor({ h }: { h: HariKolektor }) {
-  const WARNA = useWarna();
-  const g = useG();
   const k = keadaanHari(h);
   const bisaDibuka = h.absensi === "masuk_kerja";
   return (
@@ -91,10 +95,10 @@ function BarisKolektor({ h }: { h: HariKolektor }) {
         <Text style={g.avatarHuruf}>{h.kolektor.nama.charAt(0).toUpperCase()}</Text>
       </View>
       <View style={[g.isi, g.tumpuk1]}>
-        <Text style={g.teksTebal}>{h.kolektor.nama}</Text>
+        <Text style={g.teksTebal}>{tampilNama(h.kolektor.nama)}</Text>
         <Lencana teks={k.teks} warna={k.warna} />
         {h.absensi === "tidak_kerja" && h.alasanTidakKerja ? (
-          <Text style={g.teksKecil}>{h.alasanTidakKerja}</Text>
+          <Text style={g.teksKecil}>{tampilKeterangan(h.alasanTidakKerja)}</Text>
         ) : null}
       </View>
       {h.serahTerima ? (

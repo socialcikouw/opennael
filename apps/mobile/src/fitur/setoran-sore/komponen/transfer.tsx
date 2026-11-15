@@ -1,26 +1,23 @@
-import { LABEL_JENIS_TRANSAKSI, rupiah } from "@opennael/format";
+import { LABEL_JENIS_TRANSAKSI, rupiah, tampilNama } from "@opennael/format";
 import { useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
-import { useG } from "@/komponen/ui/gaya-bersama";
+import { g } from "@/komponen/ui/gaya-bersama";
 import { IsianUang, PesanGalat } from "@/komponen/ui/isian";
-import { Kartu } from "@/komponen/ui/kartu";
+import { Bagian } from "@/komponen/ui/kartu";
 import { Lencana } from "@/komponen/ui/lencana";
-import { useWarna } from "@/komponen/ui/tampilan";
 import { Keterangan } from "@/komponen/ui/teks";
 import { Tombol, TombolTeks } from "@/komponen/ui/tombol";
+import { WARNA } from "@/tema";
 import { tulisSetoran, useSetoranKolektor, useTulisSetoran } from "../data";
 
 export function Transfer({ kolektorId, terkunci }: { kolektorId: string; terkunci: boolean }) {
-  const WARNA = useWarna();
-  const g = useG();
   const setoran = useSetoranKolektor(kolektorId);
   const [pilih, setPilih] = useState<{ id: string; nominal: number } | null>(null);
   const catat = useTulisSetoran(tulisSetoran.transfer);
   const bisaTransfer = (setoran.data ?? []).filter((t) => t.batasTransfer > 0 || t.transfer);
 
   return (
-    <Kartu>
-      <Text style={g.subjudul}>Transfer Setoran</Text>
+    <Bagian judul="TRANSFER SETORAN">
       <Keterangan>Setoran yang dibayar nasabah lewat transfer, bukan tunai.</Keterangan>
       {setoran.isPending ? <ActivityIndicator color={WARNA.utama} /> : null}
       <PesanGalat pesan={setoran.error?.message} />
@@ -31,9 +28,9 @@ export function Transfer({ kolektorId, terkunci }: { kolektorId: string; terkunc
         <View key={t.id} style={g.tumpuk2}>
           <View style={g.barisNilai}>
             <View style={[g.isi, g.tumpuk05]}>
-              <Text style={g.teksTebal}>{t.nasabah.nama}</Text>
+              <Text style={g.teksTebal}>{tampilNama(t.nasabah.nama)}</Text>
               <Text style={g.teksKecil}>
-                {LABEL_JENIS_TRANSAKSI[t.jenis]} · storting {rupiah(t.storting)}
+                {LABEL_JENIS_TRANSAKSI[t.jenis]} · Storting {rupiah(t.storting)}
               </Text>
             </View>
             {t.transfer ? (
@@ -51,7 +48,7 @@ export function Transfer({ kolektorId, terkunci }: { kolektorId: string; terkunc
           {pilih?.id === t.id ? (
             <View style={g.tumpuk2}>
               <IsianUang
-                label={`Nominal transfer (paling banyak ${rupiah(t.batasTransfer)})`}
+                label={`Nominal Transfer (paling banyak ${rupiah(t.batasTransfer)})`}
                 nilai={pilih.nominal}
                 onUbah={(n) => setPilih({ id: t.id, nominal: n })}
                 galat={pilih.nominal > t.batasTransfer ? "Melebihi batas transfer" : null}
@@ -74,6 +71,6 @@ export function Transfer({ kolektorId, terkunci }: { kolektorId: string; terkunc
           ) : null}
         </View>
       ))}
-    </Kartu>
+    </Bagian>
   );
 }

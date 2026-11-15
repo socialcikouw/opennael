@@ -1,30 +1,27 @@
-import { rupiah } from "@opennael/format";
+import { rupiah, tampilKeterangan } from "@opennael/format";
 import { useState } from "react";
-import { ActivityIndicator, Text, View } from "react-native";
-import { useG } from "@/komponen/ui/gaya-bersama";
+import { ActivityIndicator, View } from "react-native";
+import { g } from "@/komponen/ui/gaya-bersama";
 import { Isian, IsianUang, PesanGalat } from "@/komponen/ui/isian";
-import { Baris, Kartu } from "@/komponen/ui/kartu";
-import { useWarna } from "@/komponen/ui/tampilan";
+import { Bagian, Baris } from "@/komponen/ui/kartu";
 import { Keterangan } from "@/komponen/ui/teks";
 import { Tombol } from "@/komponen/ui/tombol";
+import { WARNA } from "@/tema";
 import { type HariKolektor, tulisSetoran, useBiayaKolektor, useTulisSetoran } from "../data";
 
 export function Biaya({ hari, terkunci }: { hari: HariKolektor; terkunci: boolean }) {
-  const WARNA = useWarna();
-  const g = useG();
   const biaya = useBiayaKolektor(hari.kolektor.id, hari.tanggal);
   const catat = useTulisSetoran(tulisSetoran.biaya);
   const [nominal, setNominal] = useState(0);
   const [keterangan, setKeterangan] = useState("");
 
   return (
-    <Kartu>
-      <Text style={g.subjudul}>Biaya Tak Terduga</Text>
+    <Bagian judul="BIAYA TAK TERDUGA">
       <Keterangan>Uang kolektor yang terpakai di lapangan hari ini (mis. ban bocor).</Keterangan>
       {biaya.isPending ? <ActivityIndicator color={WARNA.utama} /> : null}
       <PesanGalat pesan={biaya.error?.message} />
       {biaya.data?.biaya.map((b) => (
-        <Baris key={b.id} label={b.keterangan} nilai={rupiah(b.nominal)} />
+        <Baris key={b.id} label={tampilKeterangan(b.keterangan)} nilai={rupiah(b.nominal)} />
       ))}
       {biaya.data && biaya.data.biaya.length > 0 ? (
         <Baris label="Total" nilai={rupiah(biaya.data.total)} tebal />
@@ -60,6 +57,6 @@ export function Biaya({ hari, terkunci }: { hari: HariKolektor; terkunci: boolea
           />
         </View>
       )}
-    </Kartu>
+    </Bagian>
   );
 }

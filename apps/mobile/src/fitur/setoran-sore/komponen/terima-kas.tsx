@@ -1,15 +1,13 @@
 import { rupiah } from "@opennael/format";
 import { useState } from "react";
-import { Alert, Text } from "react-native";
-import { useG } from "@/komponen/ui/gaya-bersama";
+import { Alert } from "react-native";
 import { IsianUang, PesanGalat } from "@/komponen/ui/isian";
-import { Kartu } from "@/komponen/ui/kartu";
+import { Bagian } from "@/komponen/ui/kartu";
 import { Keterangan } from "@/komponen/ui/teks";
 import { Tombol } from "@/komponen/ui/tombol";
 import { type HariKolektor, tulisSetoran, useTulisSetoran } from "../data";
 
 export function TerimaKas({ hari }: { hari: HariKolektor }) {
-  const g = useG();
   const terima = useTulisSetoran(tulisSetoran.terimaKas);
   const [tunai, setTunai] = useState(0);
 
@@ -27,8 +25,7 @@ export function TerimaKas({ hari }: { hari: HariKolektor }) {
     );
 
   return (
-    <Kartu>
-      <Text style={g.subjudul}>Terima Kas</Text>
+    <Bagian judul="TERIMA KAS">
       <Keterangan>
         Catat transfer & biaya lebih dulu. Hitung uang fisiknya, lalu ketik jumlahnya — angka
         seharusnya baru tampil sesudah disimpan.
@@ -41,6 +38,6 @@ export function TerimaKas({ hari }: { hari: HariKolektor }) {
         memuat={terima.isPending}
         onPress={simpan}
       />
-    </Kartu>
+    </Bagian>
   );
 }
