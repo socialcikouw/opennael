@@ -1,10 +1,11 @@
 import { useCallback } from "react";
-import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
+import { RefreshControl, StyleSheet, View } from "react-native";
 import { useRuangTab } from "@/komponen/tab-mengambang";
 import { useG } from "@/komponen/ui/gaya-bersama";
 import { Ikon } from "@/komponen/ui/ikon";
 import { PesanGalat } from "@/komponen/ui/isian";
 import { Kerangka } from "@/komponen/ui/kerangka";
+import { GulirKeyboard } from "@/komponen/ui/layar";
 import { Spanduk } from "@/komponen/ui/spanduk";
 import { useGaya, useWarna } from "@/komponen/ui/tampilan";
 import { Keterangan } from "@/komponen/ui/teks";
@@ -50,11 +51,10 @@ export function LayarNotifikasi() {
   }
 
   return (
-    <ScrollView
+    // Formulir absen (kas lapangan, uang jalan) ada di sini: isian naik di atas papan ketik.
+    <GulirKeyboard
       style={g.layar}
       contentContainerStyle={[gaya.isi, { paddingBottom: ruangTab }]}
-      keyboardShouldPersistTaps="handled"
-      automaticallyAdjustKeyboardInsets
       refreshControl={<RefreshControl refreshing={menarik} onRefresh={tarik} />}
     >
       {hariIni.isError ? (
@@ -73,7 +73,7 @@ export function LayarNotifikasi() {
           <Keterangan>Tidak ada pengingat.</Keterangan>
         </View>
       ) : null}
-    </ScrollView>
+    </GulirKeyboard>
   );
 }
 

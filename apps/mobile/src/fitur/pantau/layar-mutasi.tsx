@@ -1,6 +1,6 @@
 import { tanggal as formatTanggal, jam, rupiah } from "@opennael/format";
 import { useCallback, useMemo } from "react";
-import { RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
+import { RefreshControl, StyleSheet, Text, View } from "react-native";
 import { type GerbangMutasi, useGerbangMutasi, useKasHariIni } from "@/fitur/lapangan";
 import { AksiLaporan, ItemPengingat, usePengingat } from "@/fitur/notifikasi";
 import { useRuangTab } from "@/komponen/tab-mengambang";
@@ -9,6 +9,7 @@ import { Ikon } from "@/komponen/ui/ikon";
 import { PesanGalat } from "@/komponen/ui/isian";
 import { Baris, Kartu } from "@/komponen/ui/kartu";
 import { Kerangka } from "@/komponen/ui/kerangka";
+import { GulirKeyboard } from "@/komponen/ui/layar";
 import { Spanduk } from "@/komponen/ui/spanduk";
 import { useGaya, useWarna, useWarnaMode } from "@/komponen/ui/tampilan";
 import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
@@ -100,11 +101,9 @@ export function LayarMutasi() {
   );
 
   return (
-    <ScrollView
+    <GulirKeyboard
       style={g.layar}
       contentContainerStyle={[gaya.isi, { paddingBottom: ruangTab }]}
-      keyboardShouldPersistTaps="handled"
-      automaticallyAdjustKeyboardInsets
       refreshControl={
         <RefreshControl
           refreshing={menarik}
@@ -221,7 +220,7 @@ export function LayarMutasi() {
           </View>
         </>
       ) : null}
-    </ScrollView>
+    </GulirKeyboard>
   );
 }
 

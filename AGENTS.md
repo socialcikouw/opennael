@@ -109,6 +109,7 @@ isi berkas, ukuran, SHA-256).
 | **expo-image-manipulator** | Kompres & simpan ulang foto (±200 KB, EXIF terbuang). |
 | **expo-location** | GPS titik rumah & lokasi foto. |
 | **expo-secure-store** | Token perangkat. |
+| **react-native-keyboard-controller** | Isian tak tertutup papan ketik di iOS & Android layar penuh (edge-to-edge): `KeyboardProvider` di `app/_layout.tsx`, layar berisian memakai `Gulir` / `GulirKeyboard` (`src/komponen/ui/layar.tsx`) — bukan `ScrollView` polos + `automaticallyAdjustKeyboardInsets` (iOS saja). Sudah ada di Expo Go SDK 58. |
 
 ### `apps/web`
 

@@ -3,6 +3,7 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 import { PenyediaTampilan, tampilan, useGelap, useWarna } from "@/komponen/ui/tampilan";
 import { sesi, useSesi } from "@/lib/sesi";
 
@@ -16,11 +17,14 @@ export default function TataLetakAkar() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <QueryClientProvider client={klienKueri}>
-        <PenyediaTampilan>
-          <Kerangka />
-        </PenyediaTampilan>
-      </QueryClientProvider>
+      {/* Penyedia keyboard: syarat `GulirKeyboard` (isian tak tertutup papan ketik, iOS & Android). */}
+      <KeyboardProvider>
+        <QueryClientProvider client={klienKueri}>
+          <PenyediaTampilan>
+            <Kerangka />
+          </PenyediaTampilan>
+        </QueryClientProvider>
+      </KeyboardProvider>
     </GestureHandlerRootView>
   );
 }

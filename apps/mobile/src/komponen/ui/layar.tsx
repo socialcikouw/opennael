@@ -1,7 +1,12 @@
 import type { ReactNode } from "react";
-import { ActivityIndicator, RefreshControl, ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, RefreshControl, Text, View } from "react-native";
+import {
+  KeyboardAwareScrollView,
+  type KeyboardAwareScrollViewProps,
+} from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useWarna } from "@/komponen/ui/tampilan";
+import { RUANG } from "@/komponen/ui/tema";
 import { useTarikSegarkan } from "@/lib/tarik-segarkan";
 import { useG } from "./gaya-bersama";
 
@@ -15,12 +20,30 @@ export function Layar({ children }: { children: ReactNode }) {
   );
 }
 
+/**
+ * ScrollView untuk layar BERISIAN: begitu isian disentuh, isinya otomatis bergulir naik
+ * sampai isian itu (plus sedikit ruang di bawahnya, untuk pesan galat) berada di atas
+ * papan ketik — di iOS dan Android (termasuk Android layar penuh, tempat papan ketik
+ * tak lagi menyusutkan layar). Ketukan di luar isian tetap diteruskan ke tombol.
+ * Wajib di bawah `KeyboardProvider` (akar `app/_layout.tsx`). Layar tanpa isian cukup
+ * `ScrollView` biasa.
+ */
+export function GulirKeyboard(props: KeyboardAwareScrollViewProps) {
+  return (
+    <KeyboardAwareScrollView
+      keyboardShouldPersistTaps="handled"
+      bottomOffset={RUANG[10]}
+      {...props}
+    />
+  );
+}
+
 const TANPA_SEGAR = () => Promise.resolve();
 
 /**
- * Isi layar bergulir (layar ber-header Stack); keyboard tidak menutupi isian.
- * `onSegarkan` (opsional) memasang tarik-untuk-menyegarkan; pemutarnya hanya
- * menyala karena ditarik tangan (lihat `useTarikSegarkan`).
+ * Isi layar bergulir (layar ber-header Stack); keyboard tidak menutupi isian
+ * (`GulirKeyboard`). `onSegarkan` (opsional) memasang tarik-untuk-menyegarkan;
+ * pemutarnya hanya menyala karena ditarik tangan (lihat `useTarikSegarkan`).
  */
 export function Gulir({
   children,
@@ -32,18 +55,16 @@ export function Gulir({
   const g = useG();
   const { aktif, tarik } = useTarikSegarkan(onSegarkan ?? TANPA_SEGAR);
   return (
-    <ScrollView
+    <GulirKeyboard
       style={g.layar}
       contentContainerStyle={g.gulirIsi}
-      keyboardShouldPersistTaps="handled"
       keyboardDismissMode="interactive"
-      automaticallyAdjustKeyboardInsets
       refreshControl={
         onSegarkan ? <RefreshControl refreshing={aktif} onRefresh={tarik} /> : undefined
       }
     >
       {children}
-    </ScrollView>
+    </GulirKeyboard>
   );
 }
 
