@@ -17,7 +17,6 @@ import { Tombol } from "@/komponen/ui/tombol";
 import { useSesi } from "@/lib/sesi";
 import { useTarikSegarkan } from "@/lib/tarik-segarkan";
 import { useDataDasbor } from "./data";
-import { KakiAkun } from "./komponen/kaki-akun";
 import { KartuPerforma } from "./komponen/kartu-performa";
 import { KartuRasio } from "./komponen/kartu-rasio";
 import { Portofolio } from "./komponen/portofolio";
@@ -30,7 +29,8 @@ import { Portofolio } from "./komponen/portofolio";
  * berjalan, macet, diputihkan, piutang aktif), dan setoran hari ini — semuanya
  * dari pinjaman jenis mode itu. Pengingat (belum absen, belum dicatat, laporan)
  * satu untuk semua mode dan ada di tab Notifikasi (mode Semua: di Mutasi);
- * daftar tagih di tab Tagihan. Mode Semua memindahkan tampilan & keluar ke Setelan.
+ * daftar tagih di tab Tagihan. Tanpa pengaturan akun: mode tampilan & keluar hanya di
+ * tab Setelan (mode Semua).
  */
 export function LayarDasbor() {
   const gaya = useGaya(buatGaya);
@@ -147,9 +147,6 @@ export function LayarDasbor() {
           </View>
         </View>
       ) : null}
-
-      {/* Mode Semua punya tab Setelan untuk tampilan & keluar. */}
-      {mode === "semua" ? null : <KakiAkun />}
     </ScrollView>
   );
 }

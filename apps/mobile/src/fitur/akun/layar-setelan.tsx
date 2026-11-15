@@ -11,8 +11,8 @@ import { TombolKeluar } from "./komponen/tombol-keluar";
 
 /**
  * SETELAN (tab mode Semua) — akun yang tertaut di HP ini, mode tampilan
- * (tersimpan di HP ini, langsung berlaku), dan keluar. Di mode lain kedua
- * pengaturan itu ada di dasar Analitik.
+ * (tersimpan di HP ini, langsung berlaku), dan keluar. Satu-satunya tempat
+ * keduanya di HP kolektor (layar Analitik/Dasbor tak memuatnya).
  */
 export function LayarSetelan() {
   const gaya = useGaya(buatGaya);
