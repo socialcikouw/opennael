@@ -1,31 +1,22 @@
 import { router } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ActivityIndicator, ScrollView, Text, View } from "react-native";
-import QRCode from "react-native-qrcode-svg";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useG } from "@/komponen/ui/gaya-bersama";
-import { Ikon } from "@/komponen/ui/ikon";
+import { g } from "@/komponen/ui/gaya-bersama";
 import { PesanGalat } from "@/komponen/ui/isian";
-import { useGaya, useWarna } from "@/komponen/ui/tampilan";
+import { KotakKosong } from "@/komponen/ui/kotak-kosong";
 import { Judul, Keterangan, Merek } from "@/komponen/ui/teks";
 import { Tombol } from "@/komponen/ui/tombol";
 import { api, panggil } from "@/lib/api";
 import { layarAwal } from "@/lib/navigasi";
 import { sesi } from "@/lib/sesi";
 import { infoPerangkat, versiAplikasi } from "@/platform/perangkat";
-import { buatGaya } from "./gaya";
+import { RUANG } from "@/tema";
 import { Langkah } from "./komponen/langkah";
+import { PanelTautan, type Tautan } from "./komponen/panel-tautan";
 
 /** Jeda bertanya ke server selama menunggu bos memindai. */
 const JEDA_TANYA_MS = 2000;
-
-interface Tautan {
-  id: string;
-  kode: string;
-  qr: string;
-  klaim: string;
-  kedaluwarsaAt: string;
-}
 
 /**
  * HP kasir / pengawas / kolektor: minta kode, tampilkan QR, lalu bertanya
@@ -33,9 +24,6 @@ interface Tautan {
  * dipegang HP ini.
  */
 export function LayarTautkan() {
-  const WARNA = useWarna();
-  const gaya = useGaya(buatGaya);
-  const g = useG();
   const [tautan, setTautan] = useState<Tautan | null>(null);
   const [status, setStatus] = useState<"memuat" | "menunggu" | "kedaluwarsa">("memuat");
   const [galat, setGalat] = useState<string | null>(null);
@@ -118,9 +106,6 @@ export function LayarTautkan() {
     };
   }, [tautan, status]);
 
-  const menit = Math.floor(sisaDetik / 60);
-  const detik = String(sisaDetik % 60).padStart(2, "0");
-
   return (
     <SafeAreaView style={g.layar}>
       <ScrollView contentContainerStyle={gaya.gulir}>
@@ -133,64 +118,36 @@ export function LayarTautkan() {
         </View>
         <Langkah />
 
-        <View style={gaya.panel}>
-          {status === "menunggu" && tautan ? (
-            <>
-              <View style={gaya.qr}>
-                <QRCode
-                  value={tautan.qr}
-                  size={208}
-                  color={WARNA.tintaQr}
-                  backgroundColor={WARNA.latarQr}
-                />
-              </View>
-              <View style={gaya.tengah}>
-                <Text style={gaya.kodeLabel}>ATAU KETIK KODE</Text>
-                <Text selectable style={gaya.kode}>
-                  {tautan.kode}
-                </Text>
-              </View>
-              <View style={[g.baris2, gaya.menunggu]}>
-                <ActivityIndicator size="small" color={WARNA.utama} />
-                <Text style={gaya.menungguTeks}>
-                  Menunggu persetujuan bos · {menit}:{detik}
-                </Text>
-              </View>
-              {sinyalPutus ? (
-                <View style={g.baris2}>
-                  <Ikon nama="cloud-off" ukuran={16} warna={WARNA.waspada} />
-                  <Text style={gaya.sinyalPutus}>Sinyal terputus — terus mencoba…</Text>
-                </View>
-              ) : null}
-            </>
-          ) : status === "memuat" ? (
-            <View style={gaya.memuat}>
-              <ActivityIndicator color={WARNA.utama} />
-              <Text style={g.teksRedup}>Meminta kode…</Text>
-            </View>
-          ) : (
-            <View style={gaya.habis}>
-              <View style={gaya.ikonHabis}>
-                <Ikon nama="clock" ukuran={28} warna={WARNA.redup} />
-              </View>
-              <View style={gaya.tengah}>
-                <Text style={g.subjudul}>
-                  {galat ? "Kode Tidak Bisa Diminta" : "Kode Sudah Tidak Berlaku"}
-                </Text>
-                <Text style={[g.teksKecil, gaya.rataTengah]}>
-                  Minta kode baru, lalu tunjukkan ke bos.
-                </Text>
-              </View>
-              <View style={gaya.penuh}>
-                <Tombol judul="Minta kode baru" ikon="refresh-cw" onPress={() => void minta()} />
-              </View>
-            </View>
-          )}
-        </View>
+        {status === "kedaluwarsa" ? (
+          <View style={g.tumpuk3}>
+            <KotakKosong
+              ikon="clock"
+              judul={galat ? "Kode tidak bisa diminta" : "Kode sudah tidak berlaku"}
+              isi="Minta kode baru, lalu tunjukkan ke bos."
+            />
+            <Tombol judul="Minta kode baru" ikon="refresh-cw" onPress={() => void minta()} />
+          </View>
+        ) : (
+          <PanelTautan
+            tautan={status === "menunggu" ? tautan : null}
+            sisaDetik={sisaDetik}
+            sinyalPutus={sinyalPutus}
+          />
+        )}
 
         <PesanGalat pesan={galat} />
-        <Text style={gaya.versi}>{versiAplikasi()}</Text>
+        <Text style={[g.teksMini, gaya.versi]}>{versiAplikasi()}</Text>
       </ScrollView>
     </SafeAreaView>
   );
 }
+
+const gaya = StyleSheet.create({
+  gulir: {
+    gap: RUANG[6],
+    paddingHorizontal: RUANG[5],
+    paddingTop: RUANG[4],
+    paddingBottom: RUANG[10],
+  },
+  versi: { textAlign: "center" },
+});

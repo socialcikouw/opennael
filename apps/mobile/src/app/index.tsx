@@ -1,22 +1,19 @@
 import { Redirect } from "expo-router";
-import { ActivityIndicator, View } from "react-native";
-import { useG } from "@/komponen/ui/gaya-bersama";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { g } from "@/komponen/ui/gaya-bersama";
 import { Layar } from "@/komponen/ui/layar";
 import { Spanduk } from "@/komponen/ui/spanduk";
-import { useWarna } from "@/komponen/ui/tampilan";
 import { Judul, Keterangan, Merek } from "@/komponen/ui/teks";
 import { ALAMAT_API } from "@/lib/api";
 import { layarAwal } from "@/lib/navigasi";
 import { useSesi } from "@/lib/sesi";
-import { RUANG } from "@/tema";
+import { RUANG, WARNA } from "@/tema";
 
 /**
  * Pintu masuk: HP yang belum tertaut langsung ke layar penautan QR — aplikasi
  * HP khusus kasir, pengawas, kolektor; tidak ada login nomor HP + kata sandi.
  */
 export default function Pintu() {
-  const WARNA = useWarna();
-  const g = useG();
   const s = useSesi();
 
   if (!ALAMAT_API) {
@@ -34,7 +31,7 @@ export default function Pintu() {
   }
   if (s === undefined) {
     return (
-      <View style={[g.memuat, { gap: RUANG[6] }]}>
+      <View style={[g.memuat, gaya.memuat]}>
         <Merek besar />
         <ActivityIndicator color={WARNA.utama} />
       </View>
@@ -43,3 +40,7 @@ export default function Pintu() {
   if (!s) return <Redirect href="/tautkan" />;
   return <Redirect href={layarAwal(s.pengguna.peran)} />;
 }
+
+const gaya = StyleSheet.create({
+  memuat: { gap: RUANG[6] },
+});
