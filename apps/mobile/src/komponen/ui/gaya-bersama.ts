@@ -220,11 +220,3 @@ export const g = StyleSheet.create({
   },
   butirDitekan: { backgroundColor: WARNA.isiNetral },
 });
-
-/**
- * Pembungkus lama untuk layar yang belum dimigrasi (`const g = useG()`); layar baru
- * mengimpor `g` langsung. Akan dihapus bila tak ada lagi pemakainya.
- */
-export function useG() {
-  return g;
-}

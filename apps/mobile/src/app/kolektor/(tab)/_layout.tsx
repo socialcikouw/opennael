@@ -7,8 +7,7 @@ import { bacaGerbang, useGerbangMutasi, useHariIni } from "@/fitur/lapangan";
 import { useJumlahPengingat } from "@/fitur/notifikasi";
 import { HurufMode, jenisDariMode, LembarMode, MODE, type ModeApp, useMode } from "@/fitur/tagihan";
 import { TabMengambang } from "@/komponen/tab-mengambang";
-import { useWarna, useWarnaMode } from "@/komponen/ui/tampilan";
-import { TEBAL } from "@/tema";
+import { AKSEN_MODE, OPSI_TAB } from "@/tema";
 
 /** Ikon Lucide tiap tab. */
 const IKON = {
@@ -45,9 +44,7 @@ const TAB: Record<ModeApp, readonly string[]> = {
  * tindakan.
  */
 export default function TabKolektor() {
-  const WARNA = useWarna();
   const mode = useMode();
-  const warnaMode = useWarnaMode(mode);
   const hariIni = useHariIni();
   const pengingat = useJumlahPengingat();
   const [lembarMode, setLembarMode] = useState(false);
@@ -83,7 +80,7 @@ export default function TabKolektor() {
             ikon={ikon}
             tampil={TAB[mode]}
             lencana={{ notifikasi: pengingat }}
-            warna={warnaMode}
+            warna={AKSEN_MODE[mode]}
             kiri={{
               isi: <HurufMode mode={mode} />,
               label: `Mode ${MODE[mode].label}. Ketuk untuk ganti mode.`,
@@ -96,12 +93,7 @@ export default function TabKolektor() {
             }
           />
         )}
-        screenOptions={{
-          headerTitleStyle: { color: WARNA.teks, fontWeight: TEBAL.tebal },
-          headerStyle: { backgroundColor: WARNA.latar },
-          headerShadowVisible: false,
-          sceneStyle: { backgroundColor: WARNA.latar },
-        }}
+        screenOptions={OPSI_TAB}
       >
         <Tabs.Screen name="index" options={{ title: "Dasbor" }} />
         <Tabs.Screen name="tagihan" options={{ title: "Tagihan", headerShown: false }} />

@@ -1,12 +1,10 @@
 import { Stack } from "expo-router";
-import { useOpsiStack } from "@/komponen/ui/tampilan";
+import { OPSI_STACK } from "@/tema";
 
 /** Layar-layar pengawas (penjaga peran di `app/_layout.tsx`). */
 export default function TataLetakPengawas() {
-  const opsi = useOpsiStack();
-
   return (
-    <Stack screenOptions={opsi}>
+    <Stack screenOptions={OPSI_STACK}>
       <Stack.Screen name="index" options={{ title: "Pengawas" }} />
       <Stack.Screen name="cocokkan" options={{ title: "Cocokkan Kas" }} />
       <Stack.Screen name="tunggakan" options={{ title: "Pinjaman Menunggak" }} />

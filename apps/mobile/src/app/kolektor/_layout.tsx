@@ -1,12 +1,10 @@
 import { Stack } from "expo-router";
-import { useOpsiStack } from "@/komponen/ui/tampilan";
+import { OPSI_STACK } from "@/tema";
 
 /** Layar-layar kolektor (penjaga peran di `app/_layout.tsx`). */
 export default function TataLetakKolektor() {
-  const opsi = useOpsiStack();
-
   return (
-    <Stack screenOptions={opsi}>
+    <Stack screenOptions={OPSI_STACK}>
       <Stack.Screen name="(tab)" options={{ headerShown: false }} />
       <Stack.Screen name="nasabah/[id]" options={{ title: "Nasabah" }} />
       <Stack.Screen name="pinjaman/[id]" options={{ title: "Pinjaman" }} />
