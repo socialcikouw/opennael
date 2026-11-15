@@ -1,17 +1,15 @@
 import { useCallback } from "react";
-import { RefreshControl, StyleSheet, View } from "react-native";
+import { RefreshControl, StyleSheet, Text, View } from "react-native";
 import { useRuangTab } from "@/komponen/tab-mengambang";
-import { useG } from "@/komponen/ui/gaya-bersama";
+import { g } from "@/komponen/ui/gaya-bersama";
 import { Ikon } from "@/komponen/ui/ikon";
 import { PesanGalat } from "@/komponen/ui/isian";
 import { Kerangka } from "@/komponen/ui/kerangka";
 import { GulirKeyboard } from "@/komponen/ui/layar";
 import { Spanduk } from "@/komponen/ui/spanduk";
-import { useGaya, useWarna } from "@/komponen/ui/tampilan";
-import { Keterangan } from "@/komponen/ui/teks";
 import { Tombol } from "@/komponen/ui/tombol";
 import { useTarikSegarkan } from "@/lib/tarik-segarkan";
-import { RUANG, SUDUT, type Warna } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 import { usePengingat } from "./data";
 import { ItemPengingat } from "./komponen/item-pengingat";
 
@@ -24,9 +22,6 @@ import { ItemPengingat } from "./komponen/item-pengingat";
  * lapangan di HP; notifikasi kiriman server belum ada.
  */
 export function LayarNotifikasi() {
-  const WARNA = useWarna();
-  const gaya = useGaya(buatGaya);
-  const g = useG();
   const ruangTab = useRuangTab();
   const { hariIni, tagihan, kas, pengingat } = usePengingat();
 
@@ -69,26 +64,38 @@ export function LayarNotifikasi() {
       ))}
       {pengingat.length === 0 ? (
         <View style={gaya.kosong}>
-          <Ikon nama="bell" ukuran={28} warna={WARNA.redup} />
-          <Keterangan>Tidak ada pengingat.</Keterangan>
+          <View style={gaya.lingkaranKosong}>
+            <Ikon nama="bell" ukuran={24} warna={WARNA.redup} />
+          </View>
+          <Text style={gaya.kosongJudul}>Tidak ada pengingat</Text>
+          <Text style={gaya.kosongIsi}>Semua yang perlu dikerjakan hari ini sudah beres.</Text>
         </View>
       ) : null}
     </GulirKeyboard>
   );
 }
 
-const buatGaya = (WARNA: Warna) =>
-  StyleSheet.create({
-    galat: { gap: RUANG[4], paddingHorizontal: RUANG[5], paddingVertical: RUANG[6] },
-    isi: { gap: RUANG[4], paddingHorizontal: RUANG[5], paddingTop: RUANG[2] },
-    kosong: {
-      alignItems: "center",
-      gap: RUANG[2],
-      borderRadius: SUDUT.besar,
-      borderWidth: 1,
-      borderStyle: "dashed",
-      borderColor: WARNA.garisTegas,
-      paddingHorizontal: RUANG[4],
-      paddingVertical: RUANG[8],
-    },
-  });
+const gaya = StyleSheet.create({
+  galat: { gap: RUANG[4], paddingHorizontal: RUANG[5], paddingVertical: RUANG[6] },
+  isi: { gap: RUANG[4], paddingHorizontal: RUANG[5], paddingTop: RUANG[2] },
+  kosong: {
+    alignItems: "center",
+    gap: RUANG[2],
+    borderRadius: SUDUT.besar,
+    borderWidth: 1,
+    borderStyle: "dashed",
+    borderColor: WARNA.garisTegas,
+    paddingHorizontal: RUANG[4],
+    paddingVertical: RUANG[8],
+  },
+  lingkaranKosong: {
+    width: 56,
+    height: 56,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: SUDUT.bulat,
+    backgroundColor: WARNA.isiNetral,
+  },
+  kosongJudul: { ...HURUF.base, fontWeight: TEBAL.tebal, color: WARNA.teks },
+  kosongIsi: { ...HURUF.sm, textAlign: "center", color: WARNA.redup },
+});

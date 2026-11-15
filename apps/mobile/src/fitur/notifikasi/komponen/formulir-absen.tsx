@@ -1,14 +1,18 @@
 import { kasPagiSah } from "@opennael/domain";
 import { useState } from "react";
-import { Text } from "react-native";
+import { Text, View } from "react-native";
 import { tulis, useTulis } from "@/fitur/lapangan";
-import { useG } from "@/komponen/ui/gaya-bersama";
+import { g } from "@/komponen/ui/gaya-bersama";
+import { Ikon } from "@/komponen/ui/ikon";
 import { Isian, IsianUang, PesanGalat } from "@/komponen/ui/isian";
 import { Kartu } from "@/komponen/ui/kartu";
 import { Pilihan } from "@/komponen/ui/pilihan";
 import { Tombol } from "@/komponen/ui/tombol";
+import { WARNA } from "@/tema";
 
 const ATURAN = "Minimal Rp 5.000, kelipatan Rp 5.000";
+/** Sama, untuk kalimat petunjuk (huruf kecil di awal; "Rp" tetap). */
+const ATURAN_KALIMAT = "minimal Rp 5.000, kelipatan Rp 5.000";
 
 /** Kosong belum dianggap salah (baru mulai mengisi); selain itu harus sah (aturan-usaha I0). */
 const galatKas = (n: number) => (n === 0 || kasPagiSah(n) ? null : ATURAN);
@@ -19,7 +23,6 @@ const galatKas = (n: number) => (n === 0 || kasPagiSah(n) ? null : ATURAN);
  * menolaknya). Tidak kerja: alasan wajib.
  */
 export function FormulirAbsen() {
-  const g = useG();
   const [absensi, setAbsensi] = useState<"masuk_kerja" | "tidak_kerja">("masuk_kerja");
   const [kasLapangan, setKasLapangan] = useState(0);
   const [uangJalan, setUangJalan] = useState(0);
@@ -34,7 +37,10 @@ export function FormulirAbsen() {
 
   return (
     <Kartu>
-      <Text style={g.subjudul}>Absen Pagi</Text>
+      <View style={g.baris2}>
+        <Ikon nama="clock" ukuran={18} warna={WARNA.teksKedua} />
+        <Text style={g.subjudul}>Absen Pagi</Text>
+      </View>
       <Pilihan
         segmen
         pilihan={[
@@ -58,7 +64,7 @@ export function FormulirAbsen() {
             onUbah={setUangJalan}
             galat={galatKas(uangJalan)}
           />
-          <Text style={g.teksMini}>Keduanya wajib diisi · {ATURAN.toLowerCase()}.</Text>
+          <Text style={g.teksMini}>Keduanya wajib diisi · {ATURAN_KALIMAT}.</Text>
         </>
       ) : (
         <Isian

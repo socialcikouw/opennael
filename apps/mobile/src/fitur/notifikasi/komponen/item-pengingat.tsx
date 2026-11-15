@@ -5,9 +5,8 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { MODE, modeAktif, useMode } from "@/fitur/tagihan";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
-import { useGaya, useWarna, useWarnaMode } from "@/komponen/ui/tampilan";
 import { Tombol } from "@/komponen/ui/tombol";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/tema";
+import { AKSEN_MODE, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 import type { Pengingat } from "../inti/pengingat";
 import { FormulirAbsen } from "./formulir-absen";
 
@@ -25,23 +24,41 @@ const IKON: Record<Pengingat["jenis"], NamaIkon> = {
   "kas-diterima": "banknote",
 };
 
+/** Nada kartu: latar & garis lembut, lingkaran ikon (`lencana`) lebih pekat, ikon berwarna aksen. */
+const NADA = {
+  kuning: {
+    latar: WARNA.waspadaLembut,
+    garis: WARNA.waspadaGaris,
+    lencana: WARNA.waspadaMuda,
+    ikon: WARNA.waspada,
+  },
+  merah: {
+    latar: WARNA.bahayaLembut,
+    garis: WARNA.bahayaGaris,
+    lencana: WARNA.bahayaMuda,
+    ikon: WARNA.bahaya,
+  },
+  hijau: {
+    latar: WARNA.utamaLembut,
+    garis: WARNA.utamaGaris,
+    lencana: WARNA.utamaMuda,
+    ikon: WARNA.utama,
+  },
+} as const;
+
 /**
- * Satu pemberitahuan: judul jelas ("Nasabah harian yang belum ditagih: 5"),
- * penjelasan, daftar nasabahnya (nama, kampung, nominal), dan tindakannya —
- * formulir absen, "Tagih di mode …" (pindah mode lalu ke Tagihan), atau "Buka
- * Mutasi kas" (pindah ke mode Semua). `tanpaMutasi` menyembunyikan tombol
- * Mutasi (dipakai di layar Mutasi sendiri).
+ * Satu pemberitahuan, dari atas ke bawah:
+ *   (◉)  Nasabah harian yang belum ditagih: 5        ← lingkaran ikon + judul jelas
+ *        penjelasan
+ *   ┌ nama · KAMPUNG ............ nominal ┐           ← daftar nasabah (5 teratas, "Lihat semua")
+ *   └──────────────────────────────────────┘
+ *   [ tindakan ]                                      ← formulir absen · "Tagih di mode …" · "Buka Mutasi kas"
+ * `tanpaMutasi` menyembunyikan tombol Mutasi (dipakai di layar Mutasi sendiri).
  */
 export function ItemPengingat({ p, tanpaMutasi = false }: { p: Pengingat; tanpaMutasi?: boolean }) {
-  const gaya = useGaya(buatGaya);
-  const WARNA = useWarna();
   const mode = useMode();
   const [semua, setSemua] = useState(false);
-  const nada = {
-    kuning: { latar: WARNA.waspadaLembut, garis: WARNA.waspadaGaris, ikon: WARNA.waspada },
-    merah: { latar: WARNA.bahayaLembut, garis: WARNA.bahayaGaris, ikon: WARNA.bahaya },
-    hijau: { latar: WARNA.utamaLembut, garis: WARNA.utamaGaris, ikon: WARNA.utama },
-  }[p.nada];
+  const nada = NADA[p.nada];
   const tampil = semua ? p.nasabah : p.nasabah.slice(0, RINGKAS);
   const sisa = p.nasabah.length - tampil.length;
 
@@ -58,7 +75,9 @@ export function ItemPengingat({ p, tanpaMutasi = false }: { p: Pengingat; tanpaM
     <View style={gaya.wadah}>
       <View style={[gaya.kartu, { backgroundColor: nada.latar, borderColor: nada.garis }]}>
         <View style={gaya.kepala}>
-          <Ikon nama={IKON[p.jenis]} ukuran={20} warna={nada.ikon} />
+          <View style={[gaya.lingkaranIkon, { backgroundColor: nada.lencana }]}>
+            <Ikon nama={IKON[p.jenis]} ukuran={20} warna={nada.ikon} />
+          </View>
           <View style={gaya.teks}>
             <Text style={gaya.judul}>{judul(p.judul)}</Text>
             {p.isi ? <Text style={gaya.isi}>{p.isi}</Text> : null}
@@ -119,8 +138,7 @@ function TombolMode(props: {
   aktif: boolean;
   onPress: () => void;
 }) {
-  const gaya = useGaya(buatGaya);
-  const w = useWarnaMode(props.jenis);
+  const w = AKSEN_MODE[props.jenis];
   const judul = props.aktif ? "Buka Tagihan" : `Tagih di mode ${MODE[props.jenis].label}`;
   return (
     <Pressable
@@ -142,57 +160,68 @@ function TombolMode(props: {
   );
 }
 
-const buatGaya = (WARNA: Warna) =>
-  StyleSheet.create({
-    wadah: { gap: RUANG[3] },
-    kartu: { gap: RUANG[3], borderRadius: SUDUT.besar, borderWidth: 1, padding: RUANG[4] },
-    kepala: { flexDirection: "row", alignItems: "flex-start", gap: RUANG[3] },
-    teks: { flex: 1, gap: RUANG[0.5] },
-    judul: { ...HURUF.base, fontWeight: TEBAL.tebal, color: WARNA.teks },
-    isi: { ...HURUF.sm, color: WARNA.teksLabel },
-    daftar: {
-      borderRadius: SUDUT.sedang,
-      borderWidth: 1,
-      borderColor: WARNA.garis,
-      backgroundColor: WARNA.permukaan,
-      paddingHorizontal: RUANG[3],
-    },
-    baris: { flexDirection: "row", alignItems: "center", gap: RUANG[3], paddingVertical: RUANG[2] },
-    garisAtas: { borderTopWidth: 1, borderTopColor: WARNA.garis },
-    nama: { ...HURUF.sm, fontWeight: TEBAL.semi, color: WARNA.teks },
-    kampung: { ...HURUF.xs, color: WARNA.redup },
-    keterangan: {
-      ...HURUF.sm,
-      fontWeight: TEBAL.semi,
-      color: WARNA.teks,
-      fontVariant: ["tabular-nums"],
-    },
-    lihat: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: RUANG[1],
-      paddingVertical: RUANG[2],
-    },
-    lihatTeks: { ...HURUF.sm, fontWeight: TEBAL.semi, color: WARNA.redup },
-    tombolMode: {
-      minHeight: 52,
-      flexDirection: "row",
-      alignItems: "center",
-      gap: RUANG[3],
-      borderRadius: SUDUT.besar,
-      paddingHorizontal: RUANG[4],
-    },
-    tombolModeHuruf: {
-      ...HURUF.sm,
-      width: 28,
-      height: 28,
-      lineHeight: 26,
-      textAlign: "center",
-      fontWeight: TEBAL.ekstra,
-      borderWidth: 1.5,
-      borderRadius: SUDUT.bulat,
-    },
-    tombolModeTeks: { ...HURUF.base, flex: 1, fontWeight: TEBAL.semi },
-    ditekan: { opacity: 0.8 },
-  });
+const gaya = StyleSheet.create({
+  wadah: { gap: RUANG[3] },
+  kartu: { gap: RUANG[4], borderRadius: SUDUT.besar, borderWidth: 1, padding: RUANG[4] },
+  kepala: { flexDirection: "row", alignItems: "flex-start", gap: RUANG[3] },
+  lingkaranIkon: {
+    width: 40,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: SUDUT.bulat,
+  },
+  teks: { flex: 1, gap: RUANG[0.5] },
+  judul: { ...HURUF.base, fontWeight: TEBAL.tebal, color: WARNA.teks },
+  isi: { ...HURUF.sm, color: WARNA.teksLabel },
+  daftar: {
+    borderRadius: SUDUT.sedang,
+    borderWidth: 1,
+    borderColor: WARNA.garis,
+    backgroundColor: WARNA.permukaan,
+    paddingHorizontal: RUANG[3],
+  },
+  baris: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: RUANG[3],
+    paddingVertical: RUANG[2.5],
+  },
+  garisAtas: { borderTopWidth: 1, borderTopColor: WARNA.garis },
+  nama: { ...HURUF.sm, fontWeight: TEBAL.semi, color: WARNA.teks },
+  kampung: { ...HURUF.xs, letterSpacing: 0.4, color: WARNA.redup },
+  keterangan: {
+    ...HURUF.sm,
+    fontWeight: TEBAL.semi,
+    color: WARNA.teks,
+    fontVariant: ["tabular-nums"],
+  },
+  lihat: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: RUANG[1],
+    paddingVertical: RUANG[2.5],
+  },
+  lihatTeks: { ...HURUF.sm, fontWeight: TEBAL.semi, color: WARNA.teksKedua },
+  tombolMode: {
+    minHeight: 52,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: RUANG[3],
+    borderRadius: SUDUT.besar,
+    paddingHorizontal: RUANG[4],
+  },
+  tombolModeHuruf: {
+    ...HURUF.sm,
+    width: 28,
+    height: 28,
+    lineHeight: 26,
+    textAlign: "center",
+    fontWeight: TEBAL.ekstra,
+    borderWidth: 1.5,
+    borderRadius: SUDUT.bulat,
+  },
+  tombolModeTeks: { ...HURUF.base, flex: 1, fontWeight: TEBAL.semi },
+  ditekan: { opacity: 0.8 },
+});
