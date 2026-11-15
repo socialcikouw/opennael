@@ -25,6 +25,7 @@ import CloudOff from "lucide-react-native/icons/cloud-off";
 import Delete from "lucide-react-native/icons/delete";
 import Eraser from "lucide-react-native/icons/eraser";
 import Eye from "lucide-react-native/icons/eye";
+import EyeOff from "lucide-react-native/icons/eye-off";
 import FileText from "lucide-react-native/icons/file-text";
 import HandCoins from "lucide-react-native/icons/hand-coins";
 import ImageIcon from "lucide-react-native/icons/image";
@@ -93,6 +94,7 @@ export const IKON = {
   "users-round": UsersRound,
   clock: Clock,
   "cloud-off": CloudOff,
+  "eye-off": EyeOff,
   "file-text": FileText,
   "layout-dashboard": LayoutDashboard,
   image: ImageIcon,

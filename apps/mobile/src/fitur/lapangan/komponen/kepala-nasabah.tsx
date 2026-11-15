@@ -1,26 +1,37 @@
-import { StyleSheet, Text, View } from "react-native";
+import { useState } from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Ikon } from "@/komponen/ui/ikon";
 import { Baris, Kartu } from "@/komponen/ui/kartu";
 import { Lencana } from "@/komponen/ui/lencana";
-import { useGaya } from "@/komponen/ui/tampilan";
+import { useGaya, useWarna } from "@/komponen/ui/tampilan";
 import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
-import { TabunganRahasia } from "./tabungan-rahasia";
+
+/** Pengganti judul & nominal yang disembunyikan (sama dengan tabungan di kartu tagih). */
+const TITIK = "••••";
 
 /**
  * KEPALA NASABAH — kartu identitas di Detail Nasabah:
- *   budi santoso                       [Diblokir]
+ *   budi santoso                          [Diblokir]
  *   PULE BARAT
- *   Tabungan  ••••   │   Sisa Pinjaman  Rp 1.250.000
- *   ──────────────────────────────────────────────
+ *   ┌───────────────────────────────────┐
+ *   │            Sisa Saldo             │
+ *   │           Rp 1.000.000            │
+ *   ├───────────────────────────────────┤
+ *   │ Tabungan                 Hutang 👁 │   ← disembunyikan: •••• ••••
+ *   │ Rp 50.000             Rp 950.000  │   ← disembunyikan: •••• ••••
+ *   └───────────────────────────────────┘
  *   Nomor HP · NIK (bila ada)
- * Tabungan rahasia sampai diketuk (layar sering terbuka di depan orang lain).
- * `saldoPinjaman` null = belum termuat ("—").
+ * Sisa Saldo selalu tampil. Tabungan & Hutang — judul dan nominalnya — "••••" sampai
+ * ikon mata (atau barisnya) diketuk, lalu keduanya terbuka bersama (layar sering terbuka
+ * di depan orang lain); keluar dari layar = tersembunyi lagi. Nilai null = belum termuat ("—").
  */
 export function KepalaNasabah(props: {
   nama: string;
   kampung: string | null;
   diblokir: boolean;
+  sisaSaldo: string | null;
   tabungan: string | null;
-  saldoPinjaman: string | null;
+  hutang: string | null;
   nomorHp: string | null;
   nik: string | null;
 }) {
@@ -36,19 +47,7 @@ export function KepalaNasabah(props: {
       </View>
       {props.kampung ? <Text style={gaya.kampung}>{props.kampung}</Text> : null}
 
-      <View style={gaya.angka}>
-        {props.tabungan !== null ? (
-          <View style={gaya.kolom}>
-            <Text style={gaya.label}>Tabungan</Text>
-            <TabunganRahasia nilai={props.tabungan} besar />
-          </View>
-        ) : null}
-        {props.tabungan !== null ? <View style={gaya.pemisah} /> : null}
-        <View style={gaya.kolom}>
-          <Text style={gaya.label}>Sisa Pinjaman</Text>
-          <Text style={gaya.nilai}>{props.saldoPinjaman ?? "—"}</Text>
-        </View>
-      </View>
+      <KotakAngka sisaSaldo={props.sisaSaldo} tabungan={props.tabungan} hutang={props.hutang} />
 
       {adaKontak ? (
         <>
@@ -58,6 +57,46 @@ export function KepalaNasabah(props: {
         </>
       ) : null}
     </Kartu>
+  );
+}
+
+function KotakAngka(props: {
+  sisaSaldo: string | null;
+  tabungan: string | null;
+  hutang: string | null;
+}) {
+  const WARNA = useWarna();
+  const gaya = useGaya(buatGaya);
+  const [tampil, setTampil] = useState(false);
+  const nilai = (teks: string | null) => (tampil ? (teks ?? "—") : TITIK);
+  return (
+    <View style={gaya.angka}>
+      <View style={gaya.saldo}>
+        <Text style={gaya.label}>Sisa Saldo</Text>
+        <Text style={gaya.saldoNilai}>{props.sisaSaldo ?? "—"}</Text>
+      </View>
+      <View style={gaya.pemisah} />
+      <Pressable
+        onPress={() => setTampil((t) => !t)}
+        accessibilityRole="button"
+        accessibilityLabel={
+          tampil ? "Sembunyikan tabungan dan hutang" : "Tampilkan tabungan dan hutang"
+        }
+        style={({ pressed }) => [gaya.rahasia, pressed ? gaya.ditekan : null]}
+      >
+        <View style={gaya.deret}>
+          <Text style={gaya.label}>{tampil ? "Tabungan" : TITIK}</Text>
+          <View style={gaya.hutangJudul}>
+            <Text style={gaya.label}>{tampil ? "Hutang" : TITIK}</Text>
+            <Ikon nama={tampil ? "eye" : "eye-off"} ukuran={18} warna={WARNA.redup} />
+          </View>
+        </View>
+        <View style={gaya.deret}>
+          <Text style={gaya.nilai}>{nilai(props.tabungan)}</Text>
+          <Text style={gaya.nilai}>{nilai(props.hutang)}</Text>
+        </View>
+      </Pressable>
+    </View>
   );
 }
 
@@ -79,18 +118,26 @@ const buatGaya = (WARNA: Warna) =>
       letterSpacing: 0.6,
       color: WARNA.redup,
     },
-    angka: {
-      flexDirection: "row",
-      alignItems: "stretch",
-      gap: RUANG[4],
+    angka: { overflow: "hidden", borderRadius: SUDUT.sedang, backgroundColor: WARNA.abu },
+    saldo: {
+      alignItems: "center",
+      gap: RUANG[0.5],
       paddingVertical: RUANG[3],
       paddingHorizontal: RUANG[4],
-      borderRadius: SUDUT.sedang,
-      backgroundColor: WARNA.abu,
     },
-    kolom: { flex: 1, gap: RUANG[0.5] },
-    pemisah: { width: 1, backgroundColor: WARNA.garisTegas },
-    label: { ...HURUF.xs, fontWeight: TEBAL.sedang, color: WARNA.redup },
+    saldoNilai: {
+      ...HURUF["2xl"],
+      fontWeight: TEBAL.ekstra,
+      letterSpacing: -0.4,
+      color: WARNA.teks,
+      fontVariant: ["tabular-nums"],
+    },
+    pemisah: { height: 1, backgroundColor: WARNA.garisTegas },
+    rahasia: { gap: RUANG[0.5], paddingVertical: RUANG[3], paddingHorizontal: RUANG[4] },
+    ditekan: { opacity: 0.6 },
+    deret: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+    hutangJudul: { flexDirection: "row", alignItems: "center", gap: RUANG[1.5] },
+    label: { ...HURUF.sm, fontWeight: TEBAL.sedang, color: WARNA.redup },
     nilai: {
       ...HURUF.base,
       fontWeight: TEBAL.semi,

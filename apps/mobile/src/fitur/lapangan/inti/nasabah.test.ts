@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import {
   fotoTerbaru,
+  hutangNasabah,
   nomorWhatsApp,
   pinjamanAktif,
   saldoAktif,
@@ -119,5 +120,18 @@ describe("saldoAktif", () => {
   test("tanpa pinjaman aktif = 0", () => {
     expect(saldoAktif([])).toBe(0);
     expect(saldoAktif([{ status: "digulung", saldo: 100_000 }])).toBe(0);
+  });
+});
+
+describe("hutangNasabah", () => {
+  test("hutang = sisa saldo − tabungan", () => {
+    expect(hutangNasabah(1_000_000, 50_000)).toBe(950_000);
+    expect(hutangNasabah(1_000_000, 0)).toBe(1_000_000);
+  });
+
+  test("tabungan melebihi atau sama dengan saldo → 0, tak pernah minus", () => {
+    expect(hutangNasabah(100_000, 100_000)).toBe(0);
+    expect(hutangNasabah(100_000, 250_000)).toBe(0);
+    expect(hutangNasabah(0, 50_000)).toBe(0);
   });
 });

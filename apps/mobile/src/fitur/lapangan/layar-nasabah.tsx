@@ -17,6 +17,7 @@ import {
 } from "./data";
 import {
   fotoTerbaru,
+  hutangNasabah,
   nomorWhatsApp,
   saldoAktif,
   tautanPeta,
@@ -46,7 +47,8 @@ function bukaWhatsApp(nomorLengkap: string) {
 /**
  * DETAIL NASABAH (diketuk dari nama di kartu tagih), dari atas ke bawah:
  *   1. foto serah terima terbaru, dengan nama desa titik rumah di pojok kiri bawah;
- *   2. kartu identitas — nama, kampung, tabungan (rahasia), sisa pinjaman, nomor HP, NIK;
+ *   2. kartu identitas — nama, kampung, Sisa Saldo, Tabungan & Hutang (tersembunyi sampai
+ *      ikon mata diketuk; hutang = sisa saldo − tabungan), nomor HP, NIK;
  *   3. aksi cepat — Telepon, WhatsApp (bila nomor HP tercatat), Peta (bila titik rumah ada);
  *   4. semua pinjamannya, rincian lengkap di tempat (tanpa layar rincian lagi).
  * Titik rumah direkam otomatis saat akad (tak diganti lagi); tombol rekam manual hanya
@@ -84,11 +86,10 @@ export function LayarNasabah({ id }: { id: string }) {
   }
 
   const namaTampil = tampilNama(nama);
-  const saldoPinjaman = pinjaman.data
-    ? rupiah(saldoAktif(pinjaman.data))
-    : kartu
-      ? rupiah(kartu.saldo)
-      : null;
+  // Sisa saldo: dari semua pinjamannya; selagi belum termuat, dari kartu tagih di memori.
+  const sisaSaldo = pinjaman.data ? saldoAktif(pinjaman.data) : (kartu?.saldo ?? null);
+  const hutang =
+    sisaSaldo !== null && tabungan !== null ? hutangNasabah(sisaSaldo, tabungan) : null;
   const nomorHp = n?.nomorHp ?? null;
   const nomorWa = nomorHp ? nomorWhatsApp(nomorHp) : null;
   const lokasi = n?.lokasi ?? null;
@@ -124,8 +125,9 @@ export function LayarNasabah({ id }: { id: string }) {
         nama={namaTampil}
         kampung={kampung ? tampilKampung(kampung) : null}
         diblokir={!!n?.diblokir}
+        sisaSaldo={sisaSaldo !== null ? rupiah(sisaSaldo) : null}
         tabungan={tabungan !== null ? rupiah(tabungan) : null}
-        saldoPinjaman={saldoPinjaman}
+        hutang={hutang !== null ? rupiah(hutang) : null}
         nomorHp={nomorHp}
         nik={n?.nik ?? null}
       />

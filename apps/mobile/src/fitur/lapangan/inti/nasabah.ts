@@ -71,3 +71,11 @@ export function tautanWhatsAppWeb(nomorLengkap: string): string {
 export function saldoAktif(daftar: readonly { status: string; saldo: number }[]): number {
   return daftar.filter(pinjamanAktif).reduce((jumlah, p) => jumlah + p.saldo, 0);
 }
+
+/**
+ * Hutang nasabah = sisa saldo pinjaman − tabungannya (tabungan ikut melunasi saat lunas).
+ * Tak pernah minus: tabungan yang melebihi saldo berarti tak ada hutang (0), bukan hutang negatif.
+ */
+export function hutangNasabah(sisaSaldo: number, tabungan: number): number {
+  return Math.max(0, sisaSaldo - tabungan);
+}
