@@ -4,13 +4,12 @@ import { router, Stack } from "expo-router";
 import { useState } from "react";
 import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Gulir } from "@/komponen/ui/layar";
-import { useGaya, useWarnaMode } from "@/komponen/ui/tampilan";
 import { Keterangan } from "@/komponen/ui/teks";
 import { Tombol } from "@/komponen/ui/tombol";
 import { cobaAturan } from "@/lib/aturan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/tema";
+import { AKSEN_MODE, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 import { tulis, useTagihan, useTulis } from "./data";
-import { jumlahKetukan, tekanPokok } from "./inti/papan";
+import { jumlahKetukan, PAPAN_POKOK, tekanPokok } from "./inti/papan";
 import { FotoGulung } from "./komponen/foto-gulung";
 import { AvatarNasabah } from "./komponen/foto-nasabah";
 import {
@@ -19,7 +18,7 @@ import {
   KameraSerahTerima,
 } from "./komponen/kamera-serah-terima";
 import { NominalGulung } from "./komponen/nominal-gulung";
-import { PanelGulung } from "./komponen/panel-gulung";
+import { PanelPapan } from "./komponen/panel-papan";
 
 /**
  * GULUNG (E) — pinjaman lama dilunasi pinjaman baru berjenis sama.
@@ -34,9 +33,8 @@ import { PanelGulung } from "./komponen/panel-gulung";
  * hanya diketahui server.
  */
 export function LayarGulung({ id }: { id: string }) {
-  const gaya = useGaya(buatGaya);
   const p = useTagihan().data?.find((x) => x.id === id);
-  const aksen = useWarnaMode(p?.jenis ?? "harian");
+  const aksen = AKSEN_MODE[p?.jenis ?? "harian"];
   const [ketukan, setKetukan] = useState<readonly number[]>([]);
   /** Pilihan kolektor; null = bawaan (tenor pinjaman lama bila masih berlaku). */
   const [tenorDipilih, setTenor] = useState<number | null>(null);
@@ -141,7 +139,9 @@ export function LayarGulung({ id }: { id: string }) {
         />
       </ScrollView>
 
-      <PanelGulung
+      <PanelPapan
+        papan={PAPAN_POKOK}
+        sisaTinggi={600}
         sah={sah}
         memuat={gulung.isPending}
         aksen={aksen}
@@ -165,21 +165,20 @@ export function LayarGulung({ id }: { id: string }) {
   );
 }
 
-const buatGaya = (WARNA: Warna) =>
-  StyleSheet.create({
-    layar: { flex: 1, backgroundColor: WARNA.latar },
-    gulir: { flex: 1 },
-    atas: {
-      flexGrow: 1,
-      gap: RUANG[3],
-      paddingHorizontal: RUANG[5],
-      paddingTop: RUANG[4],
-      paddingBottom: RUANG[3],
-    },
-    nasabah: { flexDirection: "row", alignItems: "center", gap: RUANG[3] },
-    isi: { flex: 1 },
-    nama: { ...HURUF.xl, fontWeight: TEBAL.ekstra, color: WARNA.teks },
-    kampung: { ...HURUF.sm, color: WARNA.redup },
-    chip: { paddingHorizontal: RUANG[2.5], paddingVertical: RUANG[1], borderRadius: SUDUT.bulat },
-    chipTeks: { ...HURUF.xs, fontWeight: TEBAL.tebal },
-  });
+const gaya = StyleSheet.create({
+  layar: { flex: 1, backgroundColor: WARNA.latar },
+  gulir: { flex: 1 },
+  atas: {
+    flexGrow: 1,
+    gap: RUANG[3],
+    paddingHorizontal: RUANG[5],
+    paddingTop: RUANG[4],
+    paddingBottom: RUANG[3],
+  },
+  nasabah: { flexDirection: "row", alignItems: "center", gap: RUANG[3] },
+  isi: { flex: 1 },
+  nama: { ...HURUF.xl, fontWeight: TEBAL.ekstra, color: WARNA.teks },
+  kampung: { ...HURUF.sm, color: WARNA.redup },
+  chip: { paddingHorizontal: RUANG[2.5], paddingVertical: RUANG[1], borderRadius: SUDUT.bulat },
+  chipTeks: { ...HURUF.xs, fontWeight: TEBAL.tebal },
+});

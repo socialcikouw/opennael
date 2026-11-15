@@ -145,6 +145,8 @@ export const HURUF = {
   xl: { fontSize: 20, lineHeight: 28 },
   "2xl": { fontSize: 24, lineHeight: 32 },
   "3xl": { fontSize: 30, lineHeight: 36 },
+  /** Angka pahlawan layar transaksi (nominal Bayar & Gulung) — satu-satunya di atas skala Tailwind. */
+  hero: { fontSize: 48, lineHeight: 56 },
 } as const satisfies Record<string, TextStyle>;
 
 export const TEBAL = {

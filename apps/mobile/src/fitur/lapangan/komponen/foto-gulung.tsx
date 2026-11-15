@@ -1,7 +1,6 @@
 import { Image, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { Ikon } from "@/komponen/ui/ikon";
-import { useGaya, useWarna } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
 import type { FotoSerahTerima } from "./kamera-serah-terima";
 
 /**
@@ -19,8 +18,6 @@ export function FotoGulung({
   aksen: WarnaMode;
   onPotret: () => void;
 }) {
-  const WARNA = useWarna();
-  const gaya = useGaya(buatGaya);
   const { height } = useWindowDimensions();
 
   if (!foto) {
@@ -65,41 +62,40 @@ export function FotoGulung({
   );
 }
 
-const buatGaya = (WARNA: Warna) =>
-  StyleSheet.create({
-    foto: {
-      overflow: "hidden",
-      justifyContent: "flex-end",
-      borderRadius: SUDUT.besar,
-      backgroundColor: WARNA.isiNetral,
-    },
-    fotoKaki: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      padding: RUANG[2],
-    },
-    fotoChip: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: RUANG[1],
-      paddingHorizontal: RUANG[2.5],
-      paddingVertical: RUANG[1],
-      borderRadius: SUDUT.bulat,
-      backgroundColor: WARNA.tiraiGelap,
-    },
-    fotoChipLewat: { backgroundColor: WARNA.bahaya },
-    fotoChipTeks: { ...HURUF.xs, fontWeight: TEBAL.semi, color: WARNA.diAtasFoto },
-    fotoKosong: {
-      height: 72,
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: RUANG[2],
-      borderRadius: SUDUT.besar,
-      borderWidth: 1.5,
-      borderStyle: "dashed",
-      borderColor: WARNA.garisTegas,
-    },
-    fotoKosongTeks: { ...HURUF.sm, fontWeight: TEBAL.tebal },
-    ditekan: { opacity: 0.8 },
-  });
+const gaya = StyleSheet.create({
+  foto: {
+    overflow: "hidden",
+    justifyContent: "flex-end",
+    borderRadius: SUDUT.besar,
+    backgroundColor: WARNA.isiNetral,
+  },
+  fotoKaki: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: RUANG[2],
+  },
+  fotoChip: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: RUANG[1],
+    paddingHorizontal: RUANG[2.5],
+    paddingVertical: RUANG[1],
+    borderRadius: SUDUT.bulat,
+    backgroundColor: WARNA.tiraiGelap,
+  },
+  fotoChipLewat: { backgroundColor: WARNA.bahaya },
+  fotoChipTeks: { ...HURUF.xs, fontWeight: TEBAL.semi, color: WARNA.diAtasFoto },
+  fotoKosong: {
+    height: 72,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: RUANG[2],
+    borderRadius: SUDUT.besar,
+    borderWidth: 1.5,
+    borderStyle: "dashed",
+    borderColor: WARNA.garisTegas,
+  },
+  fotoKosongTeks: { ...HURUF.sm, fontWeight: TEBAL.tebal },
+  ditekan: { opacity: 0.8 },
+});

@@ -1,7 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Ikon } from "@/komponen/ui/ikon";
-import { useGaya, useWarna } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 import { KOSONGKAN, MUNDUR, type Papan } from "../inti/papan";
 
 /** Tinggi tombol papan menurut tinggi HP: 46–60 pt, papan selalu muat tanpa digulir. */
@@ -21,8 +20,6 @@ export function PapanTombol(props: {
   tinggi: number;
   onTekan: (kunci: string) => void;
 }) {
-  const WARNA = useWarna();
-  const gaya = useGaya(buatGaya);
   return (
     <View style={gaya.papan}>
       {props.papan.map((baris) => (
@@ -65,26 +62,25 @@ export function PapanTombol(props: {
   );
 }
 
-const buatGaya = (WARNA: Warna) =>
-  StyleSheet.create({
-    papan: { gap: RUANG[2.5] },
-    baris: { flexDirection: "row", gap: RUANG[2.5] },
-    tombol: {
-      flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
-      paddingHorizontal: RUANG[2],
-      borderRadius: SUDUT.bulat,
-      backgroundColor: WARNA.isiNetral,
-    },
-    ditekan: { backgroundColor: WARNA.isiNetralTegas, transform: [{ scale: 0.96 }] },
-    label: {
-      ...HURUF["2xl"],
-      fontWeight: TEBAL.semi,
-      color: WARNA.teks,
-      fontVariant: ["tabular-nums"],
-    },
-    kosongkan: { backgroundColor: WARNA.bahayaLembut },
-    kosongkanTeks: { ...HURUF.xl, fontWeight: TEBAL.tebal, color: WARNA.bahayaTeks },
-    mundur: { backgroundColor: WARNA.isiNetralTegas },
-  });
+const gaya = StyleSheet.create({
+  papan: { gap: RUANG[2.5] },
+  baris: { flexDirection: "row", gap: RUANG[2.5] },
+  tombol: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: RUANG[2],
+    borderRadius: SUDUT.bulat,
+    backgroundColor: WARNA.isiNetral,
+  },
+  ditekan: { backgroundColor: WARNA.isiNetralTegas, transform: [{ scale: 0.96 }] },
+  label: {
+    ...HURUF["2xl"],
+    fontWeight: TEBAL.semi,
+    color: WARNA.teks,
+    fontVariant: ["tabular-nums"],
+  },
+  kosongkan: { backgroundColor: WARNA.bahayaLembut },
+  kosongkanTeks: { ...HURUF.xl, fontWeight: TEBAL.tebal, color: WARNA.bahayaTeks },
+  mundur: { backgroundColor: WARNA.isiNetralTegas },
+});
