@@ -20,8 +20,10 @@ export const JARAK_KARTU = RUANG[3];
 /**
  * Satu baris kartu di samping rel. `cabang` = jarak (pt) dari atas baris ke
  * garis tengah cabang yang masuk ke kotak; null = tanpa cabang (mis. tombol).
- * `akhir` = baris terakhir kartu terakhir kelompok: rel berhenti di sini,
- * tidak menjalar ke jarak sesudahnya.
+ * `akhir` = baris terakhir kartu terakhir kelompok: rel menekuk jadi siku (└)
+ * — turun dari judul lalu berbelok ke kotak dan berhenti di cabang, tanpa
+ * ekor di bawahnya. Tanpa cabang, rel berhenti di dasar kotak (tidak menjalar
+ * ke jarak sesudahnya).
  */
 export function BarisRel(props: {
   cabang: number | null;
@@ -30,10 +32,17 @@ export function BarisRel(props: {
   children: ReactNode;
 }) {
   const gaya = useGaya(buatGaya);
+  // Baris terakhir: rel berhenti di sisi bawah cabang (siku rapat, tanpa ekor); tanpa cabang, di dasar kotak.
+  const ujungRel =
+    props.akhir && props.cabang !== null
+      ? { bottom: undefined, height: props.cabang + TEBAL_REL / 2 }
+      : props.akhir
+        ? { bottom: props.jarak }
+        : null;
   return (
     <View style={gaya.baris}>
       <View style={gaya.lajur} pointerEvents="none">
-        <View style={[gaya.rel, props.akhir ? { bottom: props.jarak } : null]} />
+        <View style={[gaya.rel, ujungRel]} />
         {props.cabang !== null ? (
           <View style={[gaya.cabang, { top: props.cabang - TEBAL_REL / 2 }]} />
         ) : null}

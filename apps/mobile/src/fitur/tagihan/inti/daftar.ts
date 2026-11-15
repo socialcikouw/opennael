@@ -60,7 +60,7 @@ export type Baris =
       jenis: "kartu";
       id: string;
       vm: KartuVM;
-      /** Kartu terakhir kelompoknya: rel pohon berhenti di sini. */
+      /** Kartu terakhir kelompoknya: rel pohon menekuk jadi siku ke kartu ini lalu berhenti. */
       terakhir: boolean;
     }
   | { jenis: "sudah"; id: string; vm: KartuVM };

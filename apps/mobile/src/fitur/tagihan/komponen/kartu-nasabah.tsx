@@ -39,7 +39,7 @@ export const KartuNasabah = memo(function KartuNasabah(props: {
   kolomHariIni: number;
   /** Transaksi yang baru tercatat: kartu menampilkan stempelnya sebentar sebelum turun ke "Sudah ditagih". */
   stempel: Stempel | null;
-  /** Kartu terakhir kelompoknya: rel berhenti di akhir kartu ini. */
+  /** Kartu terakhir kelompoknya: rel menekuk jadi siku ke kartu ini lalu berhenti. */
   terakhir: boolean;
   /** Libur/Lunasi kartu ini masih berjalan: selubung "Mencatat…", tanpa tahan-lama. */
   sibuk: boolean;
