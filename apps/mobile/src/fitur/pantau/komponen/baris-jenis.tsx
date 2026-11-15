@@ -4,7 +4,7 @@ import { memo } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { MODE } from "@/fitur/tagihan";
 import { useGaya, useWarna, useWarnaMode } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/tema";
 
 /**
  * Satu baris uang di tab pantau (setoran / akad): pita & huruf jenis pinjaman

@@ -6,8 +6,8 @@ import {
 } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useWarna } from "@/komponen/ui/tampilan";
-import { RUANG } from "@/komponen/ui/tema";
 import { useTarikSegarkan } from "@/lib/tarik-segarkan";
+import { RUANG } from "@/tema";
 import { useG } from "./gaya-bersama";
 
 /** Kerangka layar tanpa header: aman dari poni & bilah navigasi. */

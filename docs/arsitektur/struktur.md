@@ -272,10 +272,11 @@ apps/mobile/src/
 │   ├── pencocokan-kas/          layar-cocokkan · data.ts
 │   ├── tunggakan/               layar-tunggakan · data.ts
 │   └── akun/                    layar-beranda-bos · komponen/{tombol-keluar, kepala-peran}
+├── tema/                        palet.ts · token.ts · native.ts · kontras.ts (+ uji) — docs/tema.md
 ├── komponen/
-│   ├── ui/                      tema.ts · tampilan.tsx · daftar-ikon.ts · ikon.tsx · gaya-bersama.ts
+│   ├── ui/                      tampilan.tsx · daftar-ikon.ts · ikon.tsx · gaya-bersama.ts
 │   │                            layar · teks · tombol · isian · kartu · lencana · spanduk · pilihan
-│   └── lembar-bawah.tsx · tab-mengambang.tsx · pilih-tampilan.tsx
+│   └── lembar-bawah.tsx · tab-mengambang.tsx
 ├── platform/                    brankas.ts (SecureStore) · foto.ts (kompres + unggah) · perangkat.ts (info & versi)
 └── lib/                         api.ts · sesi.ts · kantor.ts · navigasi.ts · aturan.ts
 ```

@@ -2,7 +2,6 @@ import { rupiah } from "@opennael/format";
 import { router } from "expo-router";
 import { ActivityIndicator, Pressable, RefreshControl, ScrollView, Text, View } from "react-native";
 import { KepalaPeran, TombolKeluar } from "@/fitur/akun";
-import { PilihTampilan } from "@/komponen/pilih-tampilan";
 import { useG } from "@/komponen/ui/gaya-bersama";
 import { Ikon } from "@/komponen/ui/ikon";
 import { PesanGalat } from "@/komponen/ui/isian";
@@ -70,7 +69,6 @@ export function LayarKasir() {
           ))}
         </>
       ) : null}
-      <PilihTampilan />
       <TombolKeluar />
     </ScrollView>
   );

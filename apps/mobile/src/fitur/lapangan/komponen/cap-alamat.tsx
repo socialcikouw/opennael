@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Ikon } from "@/komponen/ui/ikon";
 import { useGaya, useWarna } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, TEBAL, type Warna } from "@/komponen/ui/tema";
+import { HURUF, RUANG, TEBAL, type Warna } from "@/tema";
 
 /**
  * CAP ALAMAT — alamat titik rumah yang menempel di dasar foto, seperti cap kamera
@@ -22,7 +22,7 @@ export function CapAlamat({ baris, bawah = 0 }: { baris: readonly string[]; bawa
       style={[gaya.pita, { paddingBottom: RUANG[1.5] + bawah }]}
     >
       <View style={gaya.pin}>
-        <Ikon nama="map-pin" ukuran={11} warna={WARNA.putih} />
+        <Ikon nama="map-pin" ukuran={11} warna={WARNA.diAtasFoto} />
       </View>
       <View style={gaya.baris}>
         {baris.map((b, i) => (
@@ -51,6 +51,6 @@ const buatGaya = (WARNA: Warna) =>
     },
     pin: { paddingTop: 1 },
     baris: { flex: 1, minWidth: 0 },
-    utama: { ...HURUF["3xs"], fontWeight: TEBAL.tebal, color: WARNA.putih },
-    lain: { ...HURUF["3xs"], fontWeight: TEBAL.sedang, color: WARNA.putih, opacity: 0.9 },
+    utama: { ...HURUF["3xs"], fontWeight: TEBAL.tebal, color: WARNA.diAtasFoto },
+    lain: { ...HURUF["3xs"], fontWeight: TEBAL.sedang, color: WARNA.diAtasFoto, opacity: 0.9 },
   });

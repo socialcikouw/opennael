@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import { useGaya, useWarna } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/komponen/ui/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/tema";
 
 /**
  * Kartu JATUH TEMPO di kepala mode Tempoan — jumlah nasabah saja. (Rasio bayar hari

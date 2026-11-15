@@ -3,8 +3,8 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { LembarBawah } from "@/komponen/lembar-bawah";
 import { Isian } from "@/komponen/ui/isian";
 import { useGaya } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
 import { Tombol } from "@/komponen/ui/tombol";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/tema";
 import type { KartuVM } from "../inti/kartu";
 
 /** Alasan yang paling sering — sekali ketuk mengisi kolom alasan. */

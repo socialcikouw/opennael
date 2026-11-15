@@ -4,7 +4,7 @@ import { useHariIni, useTagihan } from "@/fitur/lapangan";
 import { LembarBawah } from "@/komponen/lembar-bawah";
 import { Ikon } from "@/komponen/ui/ikon";
 import { useGaya, useWarna, useWarnaMode } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/tema";
 import { MODE, type ModeApp, modeAktif, ringkasPerMode, URUTAN_MODE, useMode } from "../mode";
 
 /** Huruf mode di lingkaran berwarna mode — (H) (M) (T) (S). Isi tombol kiri batang tab. */

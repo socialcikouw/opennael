@@ -4,7 +4,7 @@ import { Ikon } from "@/komponen/ui/ikon";
 import { Baris, Kartu } from "@/komponen/ui/kartu";
 import { Lencana } from "@/komponen/ui/lencana";
 import { useGaya, useWarna } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/tema";
 
 /** Pengganti judul & nominal yang disembunyikan (sama dengan tabungan di kartu tagih). */
 const TITIK = "••••";

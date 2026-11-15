@@ -1,18 +1,17 @@
 import { LABEL_PERAN } from "@opennael/format";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { PilihTampilan } from "@/komponen/pilih-tampilan";
 import { useRuangTab } from "@/komponen/tab-mengambang";
 import { useG } from "@/komponen/ui/gaya-bersama";
 import { Kartu } from "@/komponen/ui/kartu";
 import { useGaya } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, TEBAL, type Warna } from "@/komponen/ui/tema";
 import { useSesi } from "@/lib/sesi";
+import { HURUF, RUANG, TEBAL, type Warna } from "@/tema";
 import { TombolKeluar } from "./komponen/tombol-keluar";
 
 /**
- * SETELAN (tab mode Semua) — akun yang tertaut di HP ini, mode tampilan
- * (tersimpan di HP ini, langsung berlaku), dan keluar. Satu-satunya tempat
- * keduanya di HP kolektor (layar Analitik/Dasbor tak memuatnya).
+ * SETELAN (tab mode Semua) — akun yang tertaut di HP ini dan keluar. Satu-satunya
+ * tempat keluar di HP kolektor (layar Analitik/Dasbor tak memuatnya). Tak ada pilihan
+ * tampilan: aplikasi hanya bertema gelap.
  */
 export function LayarSetelan() {
   const gaya = useGaya(buatGaya);
@@ -41,11 +40,6 @@ export function LayarSetelan() {
           </View>
         </Kartu>
       ) : null}
-
-      <View style={gaya.bagian}>
-        <Text style={gaya.judulBagian}>TAMPILAN</Text>
-        <PilihTampilan />
-      </View>
 
       <View style={gaya.bagian}>
         <Text style={gaya.judulBagian}>AKUN</Text>

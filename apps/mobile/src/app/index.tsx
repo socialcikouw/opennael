@@ -5,10 +5,10 @@ import { Layar } from "@/komponen/ui/layar";
 import { Spanduk } from "@/komponen/ui/spanduk";
 import { useWarna } from "@/komponen/ui/tampilan";
 import { Judul, Keterangan, Merek } from "@/komponen/ui/teks";
-import { RUANG } from "@/komponen/ui/tema";
 import { ALAMAT_API } from "@/lib/api";
 import { layarAwal } from "@/lib/navigasi";
 import { useSesi } from "@/lib/sesi";
+import { RUANG } from "@/tema";
 
 /**
  * Pintu masuk: HP yang belum tertaut langsung ke layar penautan QR — aplikasi

@@ -23,9 +23,15 @@ interface Impor {
   spec: string;
   baris: number;
 }
+/** Warna tertulis langsung, seluruh string: hex (#rgb … #rrggbbaa) atau rgb()/rgba()/hsl()/hsla(). */
+const WARNA_LITERAL = /^(#[0-9a-fA-F]{3,8}|(?:rgb|hsl)a?\([^)]*\))$/;
+/** Warna di dalam string yang lebih panjang (mis. nilai `boxShadow`); hex ≥ 6 digit supaya "#1" dst. tak terhitung. */
+const WARNA_DALAM_TEKS = /(#[0-9a-fA-F]{6,8}\b|\b(?:rgb|hsl)a?\([\d\s.,%]+\))/;
+
 /**
  * Isi satu berkas TS/TSX: impor, penulisan tabel, kunci kueri berupa array
- * literal, dan judul kolom (`header: "…"`) yang masih kalimat biasa.
+ * literal, judul kolom (`header: "…"`) yang masih kalimat biasa, dan nilai warna
+ * literal (`"#1e293b"`, `"rgba(…)"`) yang seharusnya token tema.
  */
 export function bacaTeks(
   jalur: string,
@@ -35,6 +41,7 @@ export function bacaTeks(
   tulis: { tabelId: string; baris: number }[];
   kunciLiteral: number[];
   headerKalimat: { baris: number; teks: string }[];
+  warnaLiteral: { baris: number; teks: string }[];
 } {
   const sf = ts.createSourceFile(
     jalur,
@@ -47,6 +54,7 @@ export function bacaTeks(
   const tulis: { tabelId: string; baris: number }[] = [];
   const kunciLiteral: number[] = [];
   const headerKalimat: { baris: number; teks: string }[] = [];
+  const warnaLiteral: { baris: number; teks: string }[] = [];
   const baris = (n: { getStart(): number }) =>
     sf.getLineAndCharacterOfPosition(n.getStart()).line + 1;
   // biome-ignore lint/suspicious/noExplicitAny: simpul AST tanpa tipe
@@ -91,10 +99,21 @@ export function bacaTeks(
     ) {
       headerKalimat.push({ baris: baris(n), teks: n.initializer.text });
     }
+    // Warna literal: string utuh ("#1e293b") atau potongan tetap di string templat / nilai gabungan
+    // (boxShadow "0 1px 2px rgba(0,0,0,.1)"). Impor & nama kunci bukan warna, jadi dilewati.
+    if (
+      (ts.isStringLiteral(n) || ts.isNoSubstitutionTemplateLiteral(n)) &&
+      !(n.parent && (ts.isImportDeclaration(n.parent) || ts.isExportDeclaration(n.parent))) &&
+      (WARNA_LITERAL.test(n.text.trim()) || WARNA_DALAM_TEKS.test(n.text))
+    ) {
+      warnaLiteral.push({ baris: baris(n), teks: n.text });
+    } else if (ts.isTemplateHead(n) || ts.isTemplateMiddle(n) || ts.isTemplateTail(n)) {
+      if (WARNA_DALAM_TEKS.test(n.text)) warnaLiteral.push({ baris: baris(n), teks: n.text });
+    }
     ts.forEachChild(n, kunjungi);
   };
   kunjungi(sf);
-  return { impor, tulis, kunciLiteral, headerKalimat };
+  return { impor, tulis, kunciLiteral, headerKalimat, warnaLiteral };
 }
 
 export function bacaBerkas(jalur: string) {

@@ -5,7 +5,7 @@ import { bayangan } from "@/komponen/ui/bayangan";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
 import { useGaya, useWarna, useWarnaMode } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/tema";
 
 export interface RincianTotal {
   label: string;

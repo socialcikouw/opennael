@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AccessibilityInfo, Animated, type DimensionValue, Easing, View } from "react-native";
 import { useWarna } from "@/komponen/ui/tampilan";
-import { RUANG, SUDUT } from "@/komponen/ui/tema";
+import { RUANG, SUDUT } from "@/tema";
 import { useG } from "./gaya-bersama";
 
 /** Denyut pelan (opasitas 1 ↔ 0,55) untuk seluruh kerangka; diam bila animasi dimatikan di HP. */

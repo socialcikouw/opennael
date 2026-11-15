@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Text, TextInput, type TextInputProps, View } from "react-native";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { useWarna } from "@/komponen/ui/tampilan";
-import { GELAP, type Warna } from "@/komponen/ui/tema";
+import type { Warna } from "@/tema";
 import { useG } from "./gaya-bersama";
 import { Ikon } from "./ikon";
 
@@ -31,7 +31,7 @@ export function Isian(
         {ikon ? <Ikon nama={ikon} warna={WARNA.redup} /> : null}
         <TextInput
           style={g.isian}
-          keyboardAppearance={WARNA === GELAP ? "dark" : "light"}
+          keyboardAppearance="dark"
           placeholderTextColor={WARNA.samar}
           onFocus={(e) => {
             setFokus(true);
@@ -67,7 +67,7 @@ export function IsianUang(props: {
         <Text style={g.awalanRp}>Rp</Text>
         <TextInput
           style={g.isianUang}
-          keyboardAppearance={WARNA === GELAP ? "dark" : "light"}
+          keyboardAppearance="dark"
           keyboardType="number-pad"
           placeholder="0"
           placeholderTextColor={WARNA.samar}

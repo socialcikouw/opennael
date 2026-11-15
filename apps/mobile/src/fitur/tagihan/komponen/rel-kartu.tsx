@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
 import { useGaya } from "@/komponen/ui/tampilan";
-import { RUANG, type Warna } from "@/komponen/ui/tema";
+import { RUANG, type Warna } from "@/tema";
 
 /**
  * REL POHON — garis tegak di kiri yang menyambungkan judul kelompok dengan

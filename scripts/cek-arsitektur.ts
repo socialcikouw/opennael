@@ -8,11 +8,15 @@
  *  3. tidak ada siklus antar-konteks API maupun antar-fitur web/HP;
  *  4. `.insert/.update/.delete(<tabel>)` hanya di konteks pemilik tabelnya;
  *  5. setiap tabel di skema punya pemilik, dan sebaliknya;
- *  6. tidak ada `../` yang menyeberang batas paket.
+ *  6. tidak ada `../` yang menyeberang batas paket;
+ *  7. kunci kueri web/HP dari katalog api-client, bukan array literal;
+ *  8. judul kolom tabel web Kapital Tiap Kata;
+ *  9. warna HP hanya dari token tema: tak ada nilai warna literal di luar `apps/mobile/src/tema/`
+ *     (juga `app.config.ts` & `app.json`), dan layar tak mengimpor palet mentah (`tema/palet`).
  *
  * Jalankan: `bun run cek:arsitektur` (dari akar). Keluar dengan kode 1 bila ada pelanggaran.
  */
-import { existsSync, readdirSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join, relative, resolve, sep } from "node:path";
 import {
   klasifikasiApi,
@@ -174,6 +178,47 @@ export function periksaSemua(): Pelanggaran[] {
         `judul kolom "${h.teks}" masih kalimat biasa — tulis Kapital Tiap Kata (docs/tampilan.md)`,
       );
     }
+  }
+  // 9. tema HP: satu sumber token (docs/tema.md)
+  const mobile = join(akar, "apps/mobile");
+  const dirTema = join(mobile, "src/tema") + sep;
+  for (const f of [...semuaBerkas(join(mobile, "src")), join(mobile, "app.config.ts")]) {
+    if (!existsSync(f)) continue;
+    const dalamTema = f.startsWith(dirTema);
+    const baca = bacaBerkas(f);
+    if (!dalamTema) {
+      for (const w of baca.warnaLiteral) {
+        catat(
+          "warna-literal",
+          f,
+          w.baris,
+          `warna "${w.teks}" ditulis langsung — pakai token dari @/tema (nilai mentah hanya di src/tema/palet.ts)`,
+        );
+      }
+      for (const im of baca.impor) {
+        if (/\/palet$/.test(im.spec))
+          catat(
+            "palet-mentah",
+            f,
+            im.baris,
+            "palet mentah hanya untuk src/tema/ — layar memakai token (@/tema)",
+          );
+      }
+    }
+  }
+  const appJson = join(mobile, "app.json");
+  if (existsSync(appJson)) {
+    readFileSync(appJson, "utf8")
+      .split("\n")
+      .forEach((isi, i) => {
+        if (/"#[0-9a-fA-F]{3,8}"/.test(isi))
+          catat(
+            "warna-literal",
+            appJson,
+            i + 1,
+            "warna di app.json — turunkan dari token lewat tema-native.json (src/tema/native.ts)",
+          );
+      });
   }
   return salah;
 }

@@ -6,7 +6,7 @@ import { bayangan } from "@/komponen/ui/bayangan";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
 import { useGaya, useWarna } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/komponen/ui/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/tema";
 
 /** Tinggi pil tab. */
 const TINGGI = 64;
@@ -200,7 +200,7 @@ const buatGaya = (WARNA: Warna) =>
     lencanaTeks: {
       ...HURUF["2xs"],
       fontWeight: TEBAL.ekstra,
-      color: WARNA.putih,
+      color: WARNA.teksAtasBahaya,
       fontVariant: ["tabular-nums"],
     },
     bulat: {

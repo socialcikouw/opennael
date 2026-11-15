@@ -4,15 +4,14 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
-import { PenyediaTampilan, tampilan, useGelap, useWarna } from "@/komponen/ui/tampilan";
 import { sesi, useSesi } from "@/lib/sesi";
+import { WARNA } from "@/tema";
 
 export default function TataLetakAkar() {
   const [klienKueri] = useState(() => new QueryClient());
 
   useEffect(() => {
     void sesi.muat();
-    void tampilan.muat();
   }, []);
 
   return (
@@ -20,9 +19,7 @@ export default function TataLetakAkar() {
       {/* Penyedia keyboard: syarat `GulirKeyboard` (isian tak tertutup papan ketik, iOS & Android). */}
       <KeyboardProvider>
         <QueryClientProvider client={klienKueri}>
-          <PenyediaTampilan>
-            <Kerangka />
-          </PenyediaTampilan>
+          <Kerangka />
         </QueryClientProvider>
       </KeyboardProvider>
     </GestureHandlerRootView>
@@ -30,14 +27,13 @@ export default function TataLetakAkar() {
 }
 
 /**
- * Di dalam penyedia tampilan: latar layar & bilah status mengikuti mode, dan
- * penjaga sesi/peran di satu tempat. Pintu (`index`) tak dijaga: selama sesi
- * belum terbaca ia menampilkan pemuatan, lalu mengarahkan sesuai peran. Penjaga
- * ini hanya di HP — server tetap memeriksa peran di setiap permintaan.
+ * Kerangka tunggal: latar layar dari token, bilah status selalu terang (aplikasi
+ * hanya bertema gelap), dan penjaga sesi/peran di satu tempat. Pintu (`index`)
+ * tak dijaga: selama sesi belum terbaca ia menampilkan pemuatan, lalu mengarahkan
+ * sesuai peran. Penjaga ini hanya di HP — server tetap memeriksa peran di setiap
+ * permintaan.
  */
 function Kerangka() {
-  const WARNA = useWarna();
-  const gelap = useGelap();
   const s = useSesi();
   const peran = s?.pengguna.peran;
   return (
@@ -60,7 +56,7 @@ function Kerangka() {
           <Stack.Screen name="beranda" />
         </Stack.Protected>
       </Stack>
-      <StatusBar style={gelap ? "light" : "dark"} />
+      <StatusBar style="light" />
     </>
   );
 }

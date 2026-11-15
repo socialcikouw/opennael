@@ -1,5 +1,5 @@
 import { Platform, type ViewStyle } from "react-native";
-import { BAYANGAN } from "@/komponen/ui/tema";
+import { BAYANGAN } from "@/tema";
 
 /**
  * BAYANGAN — hanya di iOS. Di Android `boxShadow` tampil sebagai kotak di

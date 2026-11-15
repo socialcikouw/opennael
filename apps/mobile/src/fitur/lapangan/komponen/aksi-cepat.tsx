@@ -3,7 +3,7 @@ import { bayangan } from "@/komponen/ui/bayangan";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
 import { useGaya, useWarna } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/tema";
 
 /**
  * AKSI CEPAT — kotak ketuk berikon di satu deret (Telepon · WhatsApp · Peta): satu ketukan

@@ -8,7 +8,7 @@ import { useJumlahPengingat } from "@/fitur/notifikasi";
 import { HurufMode, jenisDariMode, LembarMode, MODE, type ModeApp, useMode } from "@/fitur/tagihan";
 import { TabMengambang } from "@/komponen/tab-mengambang";
 import { useWarna, useWarnaMode } from "@/komponen/ui/tampilan";
-import { TEBAL } from "@/komponen/ui/tema";
+import { TEBAL } from "@/tema";
 
 /** Ikon Lucide tiap tab. */
 const IKON = {

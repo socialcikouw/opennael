@@ -152,3 +152,31 @@ describe("bacaTeks: judul kolom kalimat biasa", () => {
     expect(hasil(teks)).toEqual([]);
   });
 });
+
+describe("bacaTeks: warna literal (tema HP satu sumber)", () => {
+  const hasil = (teks: string) => bacaTeks("x.tsx", teks).warnaLiteral;
+  test("hex dan rgba() utuh dilaporkan beserta barisnya", () => {
+    const teks = ["const a = {", '  color: "#1e293b",', '  fon: "rgba(2, 6, 23, 0.6)",', "};"].join(
+      "\n",
+    );
+    expect(hasil(teks)).toEqual([
+      { baris: 2, teks: "#1e293b" },
+      { baris: 3, teks: "rgba(2, 6, 23, 0.6)" },
+    ]);
+  });
+  test("warna di dalam string panjang (boxShadow) dan templat dilaporkan", () => {
+    expect(hasil('const s = "0px 1px 2px rgba(15, 23, 42, 0.06)";')).toHaveLength(1);
+    expect(hasil("const s = `0 0 4px #0f172a`;")).toHaveLength(1);
+  });
+  test("token, nama pendek, transparent, dan teks biasa tidak dilaporkan", () => {
+    const teks = [
+      "const a = WARNA.permukaan;",
+      'const b = { backgroundColor: "transparent" };',
+      'const c = "Pesanan #12 selesai";',
+      'import x from "@/tema";',
+      'const d = "#abc";',
+    ].join("\n");
+    // "#abc" (3 digit, utuh) dianggap warna; "#12" di tengah kalimat bukan (kurang dari 6 digit hex).
+    expect(hasil(teks)).toEqual([{ baris: 5, teks: "#abc" }]);
+  });
+});

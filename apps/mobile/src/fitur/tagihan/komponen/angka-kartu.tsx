@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import { useGaya } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, TEBAL, type Warna } from "@/komponen/ui/tema";
+import { HURUF, RUANG, TEBAL, type Warna } from "@/tema";
 import type { KartuVM } from "../inti/kartu";
 
 /**

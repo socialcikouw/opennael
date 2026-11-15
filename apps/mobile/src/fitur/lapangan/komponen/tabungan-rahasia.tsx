@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Pressable, StyleSheet, Text } from "react-native";
 import { useGaya } from "@/komponen/ui/tampilan";
-import { HURUF, TEBAL, type Warna } from "@/komponen/ui/tema";
+import { HURUF, TEBAL, type Warna } from "@/tema";
 
 /**
  * Tabungan nasabah tak dipampang: "••••" sampai diketuk (layar sering terbuka

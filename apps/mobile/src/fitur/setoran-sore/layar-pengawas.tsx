@@ -3,7 +3,6 @@ import { type Href, router } from "expo-router";
 import { useState } from "react";
 import { ActivityIndicator, Pressable, RefreshControl, ScrollView, Text, View } from "react-native";
 import { KepalaPeran, TombolKeluar } from "@/fitur/akun";
-import { PilihTampilan } from "@/komponen/pilih-tampilan";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { useG } from "@/komponen/ui/gaya-bersama";
 import { Ikon } from "@/komponen/ui/ikon";
@@ -54,7 +53,6 @@ export function LayarPengawas() {
       {hari.data?.map((h) => (
         <BarisHari key={h.id} h={h} />
       ))}
-      <PilihTampilan />
       <TombolKeluar />
     </ScrollView>
   );

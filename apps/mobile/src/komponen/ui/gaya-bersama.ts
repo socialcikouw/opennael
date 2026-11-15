@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import { bayangan } from "@/komponen/ui/bayangan";
 import { useGaya } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SENTUH, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
+import { HURUF, RUANG, SENTUH, SUDUT, TEBAL, type Warna } from "@/tema";
 
 /**
  * Gaya bersama: dipakai komponen di atas, dan oleh layar untuk tata letak

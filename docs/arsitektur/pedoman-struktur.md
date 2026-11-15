@@ -339,8 +339,9 @@ apps/mobile/
     │   ├── index.tsx        pintu: arahkan ke layar awal
     │   └── <peran>/…        tiap rute ±5–20 baris: baca param → render Layar dari fitur/
     ├── fitur/<area>/        anatomi sama dengan web (layar-*.tsx, komponen/, data.ts, inti/, index.ts)
+    ├── tema/                SATU sumber token tampilan (hanya tema gelap): palet.ts → token.ts → native.ts (docs/tema.md)
     ├── komponen/
-    │   ├── ui/              sistem desain: tema.ts, tampilan.tsx, daftar-ikon.ts, satu komponen per berkas
+    │   ├── ui/              sistem desain: tampilan.tsx, daftar-ikon.ts, satu komponen per berkas
     │   └── <bersama>.tsx    komponen lintas fitur tanpa data (lembar-bawah, tab-mengambang)
     ├── platform/            API perangkat non-UI: brankas aman, kompres & unggah foto, info perangkat
     └── lib/                 instance & pembantu aplikasi (api.ts, sesi.ts, navigasi.ts)
@@ -360,7 +361,7 @@ Arah impor: `app → fitur → komponen → lib → platform → packages`
 3. `platform/` = API perangkat non-UI. Komponen native yang tampil (mis.
    `CameraView`) tinggal di komponen fiturnya.
 4. Gaya: `StyleSheet.create` di bawah berkas komponen; warna, jarak, huruf
-   dari token `komponen/ui/tema.ts`.
+   dari token `src/tema/` (docs/tema.md).
 5. Alias `@/` = `src/` lewat `paths` di `tsconfig.json` (tidak ikut sidik
    jari). Berkas `inti/` yang diuji `bun test` memakai impor relatif.
 6. **Sidik jari runtime** (`runtimeVersion: fingerprint`): memindah berkas

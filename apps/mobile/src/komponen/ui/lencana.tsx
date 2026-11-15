@@ -1,6 +1,6 @@
 import { Text } from "react-native";
 import { useGaya } from "@/komponen/ui/tampilan";
-import type { Warna } from "@/komponen/ui/tema";
+import type { Warna } from "@/tema";
 import { useG } from "./gaya-bersama";
 
 const buatWarnaLencana = (WARNA: Warna) =>

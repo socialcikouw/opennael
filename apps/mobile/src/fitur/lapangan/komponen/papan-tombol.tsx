@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Ikon } from "@/komponen/ui/ikon";
 import { useGaya, useWarna } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/tema";
 import { KOSONGKAN, MUNDUR, type Papan } from "../inti/papan";
 
 /** Tinggi tombol papan menurut tinggi HP: 46–60 pt, papan selalu muat tanpa digulir. */

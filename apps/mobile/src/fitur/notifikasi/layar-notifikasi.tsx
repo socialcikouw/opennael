@@ -9,9 +9,9 @@ import { GulirKeyboard } from "@/komponen/ui/layar";
 import { Spanduk } from "@/komponen/ui/spanduk";
 import { useGaya, useWarna } from "@/komponen/ui/tampilan";
 import { Keterangan } from "@/komponen/ui/teks";
-import { RUANG, SUDUT, type Warna } from "@/komponen/ui/tema";
 import { Tombol } from "@/komponen/ui/tombol";
 import { useTarikSegarkan } from "@/lib/tarik-segarkan";
+import { RUANG, SUDUT, type Warna } from "@/tema";
 import { usePengingat } from "./data";
 import { ItemPengingat } from "./komponen/item-pengingat";
 

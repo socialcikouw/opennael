@@ -1,13 +1,12 @@
 import { Image, type ImageSource } from "expo-image";
-import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ikon } from "@/komponen/ui/ikon";
 import { useGaya, useWarna } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
 import { ALAMAT_API } from "@/lib/api";
 import { sesi } from "@/lib/sesi";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/tema";
 import { CapAlamat } from "./cap-alamat";
 
 /**
@@ -112,7 +111,7 @@ export function FotoSerahTerima({
           />
           {alamat ? <CapAlamat baris={alamat} /> : null}
           <View style={gaya.petunjuk}>
-            <Ikon nama="maximize-2" ukuran={14} warna={WARNA.putih} />
+            <Ikon nama="maximize-2" ukuran={14} warna={WARNA.diAtasFoto} />
           </View>
         </View>
       </Pressable>
@@ -122,8 +121,6 @@ export function FotoSerahTerima({
         onRequestClose={() => setPenuh(false)}
         statusBarTranslucent
       >
-        {/* Layar penuh berlatar hitam: ikon status bar harus terang di tema terang juga. */}
-        <StatusBar style="light" />
         <Pressable style={gaya.layarPenuh} onPress={() => setPenuh(false)}>
           <Image
             source={sumberFoto(fotoId)}
@@ -133,7 +130,7 @@ export function FotoSerahTerima({
           />
           {alamat ? <CapAlamat baris={alamat} bawah={bawah} /> : null}
           <View style={[gaya.tutup, { top: atas + RUANG[3] }]}>
-            <Ikon nama="x" ukuran={24} warna={WARNA.putih} />
+            <Ikon nama="x" ukuran={24} warna={WARNA.diAtasFoto} />
           </View>
         </Pressable>
       </Modal>
@@ -179,7 +176,7 @@ const buatGaya = (WARNA: Warna) =>
       borderColor: WARNA.garisTegas,
     },
     gagalTeks: { ...HURUF.sm, color: WARNA.redup },
-    layarPenuh: { flex: 1, backgroundColor: WARNA.hitam },
+    layarPenuh: { flex: 1, backgroundColor: WARNA.latarMedia },
     isiPenuh: { flex: 1 },
     tutup: {
       position: "absolute",

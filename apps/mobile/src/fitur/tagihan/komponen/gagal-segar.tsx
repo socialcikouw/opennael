@@ -1,6 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import { Spanduk } from "@/komponen/ui/spanduk";
-import { RUANG } from "@/komponen/ui/tema";
+import { RUANG } from "@/tema";
 
 /**
  * Penyegaran di latar gagal tetapi data terakhir masih ada: daftar tetap tampil,

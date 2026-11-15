@@ -1,7 +1,7 @@
 import { Image, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { Ikon } from "@/komponen/ui/ikon";
 import { useGaya, useWarna } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/komponen/ui/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/tema";
 import type { FotoSerahTerima } from "./kamera-serah-terima";
 
 /**
@@ -40,7 +40,7 @@ export function FotoGulung({
       <Image source={{ uri: foto.uri }} style={StyleSheet.absoluteFill} resizeMode="cover" />
       <View style={gaya.fotoKaki}>
         <View style={[gaya.fotoChip, fotoSah ? null : gaya.fotoChipLewat]}>
-          <Ikon nama="clock" ukuran={12} warna={WARNA.putih} />
+          <Ikon nama="clock" ukuran={12} warna={WARNA.diAtasFoto} />
           <Text style={gaya.fotoChipTeks}>
             {fotoSah
               ? `${new Date(foto.diambilAt).toLocaleTimeString("id-ID", {
@@ -57,7 +57,7 @@ export function FotoGulung({
           hitSlop={6}
           style={({ pressed }) => [gaya.fotoChip, pressed ? gaya.ditekan : null]}
         >
-          <Ikon nama="camera" ukuran={12} warna={WARNA.putih} />
+          <Ikon nama="camera" ukuran={12} warna={WARNA.diAtasFoto} />
           <Text style={gaya.fotoChipTeks}>Potret ulang</Text>
         </Pressable>
       </View>
@@ -88,7 +88,7 @@ const buatGaya = (WARNA: Warna) =>
       backgroundColor: WARNA.tiraiGelap,
     },
     fotoChipLewat: { backgroundColor: WARNA.bahaya },
-    fotoChipTeks: { ...HURUF.xs, fontWeight: TEBAL.semi, color: WARNA.putih },
+    fotoChipTeks: { ...HURUF.xs, fontWeight: TEBAL.semi, color: WARNA.diAtasFoto },
     fotoKosong: {
       height: 72,
       flexDirection: "row",

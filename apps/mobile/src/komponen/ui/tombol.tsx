@@ -1,7 +1,7 @@
 import { ActivityIndicator, Pressable, Text } from "react-native";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { useGaya } from "@/komponen/ui/tampilan";
-import type { Warna } from "@/komponen/ui/tema";
+import type { Warna } from "@/tema";
 import { useG } from "./gaya-bersama";
 import { Ikon } from "./ikon";
 

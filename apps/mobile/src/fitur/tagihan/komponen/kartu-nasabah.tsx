@@ -3,7 +3,7 @@ import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-nati
 import Animated, { ZoomIn } from "react-native-reanimated";
 import type { Stempel } from "@/fitur/lapangan";
 import { useGaya, useWarna } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/komponen/ui/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/tema";
 import type { KartuVM } from "../inti/kartu";
 import { AngkaKartu } from "./angka-kartu";
 import { GridBulan } from "./grid-bulan";

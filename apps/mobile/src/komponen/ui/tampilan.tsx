@@ -1,92 +1,32 @@
-import * as SecureStore from "expo-secure-store";
-import { createContext, type ReactNode, useContext, useMemo, useSyncExternalStore } from "react";
-import { useColorScheme } from "react-native";
-import { GELAP, MODE_GELAP, MODE_TERANG, TEBAL, TERANG, type Warna, type WarnaMode } from "./tema";
+import { AKSEN_MODE, type NamaMode, TEBAL, WARNA, type Warna, type WarnaMode } from "@/tema";
 
 /**
- * MODE TAMPILAN — terang / gelap. Bawaan mengikuti HP; pengguna boleh memilih
- * sendiri (disimpan di HP ini). APK yang `userInterfaceStyle`-nya masih
- * `light` (`app.config.ts`) selalu melaporkan terang, jadi di sana "Ikuti HP"
- * = terang dan mode gelap hanya lewat pilihan manual.
+ * AKSES TEMA UNTUK KOMPONEN — aplikasi hanya bertema gelap (keputusan pemilik, 16 Nov
+ * 2026), jadi tak ada penyedia, pilihan, maupun percabangan terang/gelap: semuanya
+ * membaca SATU palet dari `@/tema`.
+ *
+ * Hook-hook ini sengaja dipertahankan supaya layar lama tak perlu berubah selama
+ * Tahap 1–2 pekerjaan tema (docs/tema.md). Layar BARU boleh mengimpor `WARNA` dari
+ * `@/tema` langsung dan memakai `StyleSheet.create` di tingkat modul; hook ini akan
+ * hilang sendiri seiring layar didesain ulang.
  */
-export type PilihanTampilan = "sistem" | "terang" | "gelap";
 
-const KUNCI = "opennael.tampilan";
-let pilihan: PilihanTampilan = "sistem";
-const pendengar = new Set<() => void>();
-
-export const tampilan = {
-  ambil: () => pilihan,
-
-  /** Dibaca sekali saat aplikasi menyala; sebelum selesai = "sistem". */
-  async muat(): Promise<void> {
-    try {
-      const nilai = await SecureStore.getItemAsync(KUNCI);
-      if (nilai === "terang" || nilai === "gelap") {
-        pilihan = nilai;
-        for (const p of pendengar) p();
-      }
-    } catch {
-      // Brankas tak terbaca: tetap mengikuti HP.
-    }
-  },
-
-  async pilih(baru: PilihanTampilan): Promise<void> {
-    pilihan = baru;
-    for (const p of pendengar) p();
-    await SecureStore.setItemAsync(KUNCI, baru);
-  },
-
-  dengar(p: () => void) {
-    pendengar.add(p);
-    return () => {
-      pendengar.delete(p);
-    };
-  },
-};
-
-export function usePilihanTampilan(): PilihanTampilan {
-  return useSyncExternalStore(tampilan.dengar, tampilan.ambil);
-}
-
-const KonteksWarna = createContext<Warna>(TERANG);
-
-/** Pasang sekali di akar aplikasi. */
-export function PenyediaTampilan({ children }: { children: ReactNode }) {
-  const pilih = usePilihanTampilan();
-  const sistem = useColorScheme();
-  const gelap = pilih === "gelap" || (pilih === "sistem" && sistem === "dark");
-  return <KonteksWarna.Provider value={gelap ? GELAP : TERANG}>{children}</KonteksWarna.Provider>;
-}
-
-/** Palet warna mode yang sedang berlaku. */
+/** Palet warna aplikasi. */
 export function useWarna(): Warna {
-  return useContext(KonteksWarna);
+  return WARNA;
 }
 
-export function useGelap(): boolean {
-  return useWarna() === GELAP;
-}
-
-/** Gaya hasil `buat(palet)`, dibuat sekali per palet dan dipakai bersama semua komponen. */
-const simpananGaya = new WeakMap<object, Map<Warna, unknown>>();
+/** Gaya hasil `buat(palet)`, dibuat sekali per fungsi dan dipakai bersama semua pemanggil. */
+const simpananGaya = new WeakMap<object, unknown>();
 
 export function useGaya<T>(buat: (w: Warna) => T): T {
-  const w = useWarna();
-  return useMemo(() => {
-    let perPalet = simpananGaya.get(buat);
-    if (!perPalet) {
-      perPalet = new Map();
-      simpananGaya.set(buat, perPalet);
-    }
-    if (!perPalet.has(w)) perPalet.set(w, buat(w));
-    return perPalet.get(w) as T;
-  }, [buat, w]);
+  if (!simpananGaya.has(buat)) simpananGaya.set(buat, buat(WARNA));
+  return simpananGaya.get(buat) as T;
 }
 
-/** Warna mode aplikasi kolektor (Harian/Mingguan/Tempoan/Semua) di tema yang berlaku. */
-export function useWarnaMode(mode: keyof typeof MODE_TERANG): WarnaMode {
-  return (useGelap() ? MODE_GELAP : MODE_TERANG)[mode];
+/** Warna aksen mode KERJA kolektor (Harian/Mingguan/Tempoan/Semua). */
+export function useWarnaMode(mode: NamaMode): WarnaMode {
+  return AKSEN_MODE[mode];
 }
 
 const buatOpsiStack = (WARNA: Warna) =>
@@ -99,7 +39,7 @@ const buatOpsiStack = (WARNA: Warna) =>
     contentStyle: { backgroundColor: WARNA.latar },
   }) as const;
 
-/** Header Stack baku layar-layar peran (kolektor, kasir, pengawas), sesuai mode tampilan. */
+/** Header Stack baku layar-layar peran (kolektor, kasir, pengawas). */
 export function useOpsiStack() {
   return useGaya(buatOpsiStack);
 }

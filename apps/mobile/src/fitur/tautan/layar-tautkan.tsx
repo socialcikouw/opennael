@@ -137,7 +137,12 @@ export function LayarTautkan() {
           {status === "menunggu" && tautan ? (
             <>
               <View style={gaya.qr}>
-                <QRCode value={tautan.qr} size={208} />
+                <QRCode
+                  value={tautan.qr}
+                  size={208}
+                  color={WARNA.tintaQr}
+                  backgroundColor={WARNA.latarQr}
+                />
               </View>
               <View style={gaya.tengah}>
                 <Text style={gaya.kodeLabel}>ATAU KETIK KODE</Text>

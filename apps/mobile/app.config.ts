@@ -1,4 +1,5 @@
 import type { ConfigContext, ExpoConfig } from "expo/config";
+import NATIVE from "./tema-native.json";
 
 /**
  * VARIAN APLIKASI — `APP_VARIANT` disetel per profil di `eas.json`. Satu nama
@@ -33,13 +34,34 @@ const VARIAN = {
   expogo: { name: "OpenNael", paket: null, lingkungan: "preview" },
 } as const;
 
-export default ({ config }: ConfigContext): ExpoConfig => {
+/**
+ * WARNA & GAYA NATIVE dari token tema (`tema-native.json`, dihasilkan dari
+ * `src/tema/native.ts`; lihat catatan di sana) — satu sumber untuk semua varian. Aplikasi hanya bertema gelap (16 Nov 2026): gaya sistem `dark` (dialog bawaan,
+ * keyboard, bilah navigasi), latar jendela = latar layar, latar splash & ikon adaptif.
+ * `app.json` sengaja tak memuat warna apa pun. Mengubah nilai-nilai ini mengubah sidik
+ * jari runtime: APK `preview` yang sudah terpasang perlu dibangun ulang.
+ */
+function denganTema(config: ExpoConfig): ExpoConfig {
+  return {
+    ...config,
+    userInterfaceStyle: NATIVE.gaya as "dark",
+    backgroundColor: NATIVE.latar,
+    android: {
+      ...config.android,
+      adaptiveIcon: { ...config.android?.adaptiveIcon, backgroundColor: NATIVE.ikonAdaptif },
+    },
+    plugins: config.plugins?.map((p) =>
+      Array.isArray(p) && p[0] === "expo-splash-screen"
+        ? [p[0], { ...p[1], backgroundColor: NATIVE.splash }]
+        : p,
+    ),
+  };
+}
+
+export default ({ config: konfigurasiAsli }: ConfigContext): ExpoConfig => {
+  const config = denganTema(konfigurasiAsli);
   const varian = process.env.APP_VARIANT;
-  // Mode gelap mengikuti HP di Expo Go (`development` & `expogo`). APK
-  // `preview` tetap `light` dari app.json sampai build ulang berikutnya —
-  // mengubahnya mengganti sidik jari, OTA ke APK lama berhenti masuk. Di APK
-  // itu mode gelap hanya lewat pilihan Tampilan di aplikasi.
-  if (!varian) return { ...config, userInterfaceStyle: "automatic" } as ExpoConfig;
+  if (!varian) return config;
   // Varian salah ketik / usang (mis. `development`) jangan diam-diam jatuh ke
   // konfigurasi dasar: sidik jarinya lain, OTA terkirim tapi tak pernah masuk.
   if (!Object.hasOwn(VARIAN, varian)) {
@@ -72,7 +94,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       ...config,
       name,
       runtimeVersion: { policy: "sdkVersion" },
-      userInterfaceStyle: "automatic",
     };
   }
 

@@ -1,7 +1,7 @@
 import { rupiah } from "@opennael/format";
 import { StyleSheet, Text, View } from "react-native";
 import { useGaya } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/komponen/ui/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/tema";
 import type { RingkasPerforma } from "../inti/performa";
 
 /** Tinggi bidang batang (pt) — 100% persentase. */

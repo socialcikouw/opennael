@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Text, View } from "react-native";
-import { HURUF } from "@/komponen/ui/tema";
+import { HURUF } from "@/tema";
 import { useG } from "./gaya-bersama";
 
 /** Tanda merek: kotak hijau ber-"N" + nama aplikasi. */

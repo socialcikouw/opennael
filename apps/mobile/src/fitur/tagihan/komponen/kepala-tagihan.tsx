@@ -4,7 +4,7 @@ import Animated, { interpolate, type SharedValue, useAnimatedStyle } from "react
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ikon } from "@/komponen/ui/ikon";
 import { useGaya, useWarna } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/komponen/ui/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/tema";
 import { TAB_KERJA, type TabKerja } from "../inti/daftar";
 
 /**

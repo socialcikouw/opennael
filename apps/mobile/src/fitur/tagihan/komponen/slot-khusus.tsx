@@ -2,7 +2,7 @@ import { memo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Ikon } from "@/komponen/ui/ikon";
 import { useGaya, useWarna } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/komponen/ui/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna, type WarnaMode } from "@/tema";
 import type { KeadaanTempo, MingguanVM, StatusKotak, TempoVM } from "../inti/khusus";
 
 /** Slot grid kartu MINGGUAN: kabar (minggu terlewat / tagih berikutnya) + kotak per minggu. */
@@ -67,7 +67,7 @@ export const BlokTempo = memo(function BlokTempo({ t, aksen }: { t: TempoVM; aks
     segera: { teks: WARNA.waspada, latar: WARNA.waspadaLembut },
     hariini: { teks: aksen.teksIsi, latar: aksen.isi },
     lewat: { teks: WARNA.bahayaTeks, latar: WARNA.bahayaLembut },
-    macet: { teks: WARNA.putih, latar: WARNA.bahaya },
+    macet: { teks: WARNA.teksAtasBahaya, latar: WARNA.bahaya },
   };
   const w = rupa[t.keadaan];
   const isiRel =

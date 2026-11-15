@@ -6,8 +6,8 @@ import { MODE, modeAktif, useMode } from "@/fitur/tagihan";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
 import { useGaya, useWarna, useWarnaMode } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
 import { Tombol } from "@/komponen/ui/tombol";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/tema";
 import type { Pengingat } from "../inti/pengingat";
 import { FormulirAbsen } from "./formulir-absen";
 

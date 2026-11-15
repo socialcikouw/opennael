@@ -10,8 +10,8 @@ import { StyleSheet, Text, View } from "react-native";
 import { Kartu } from "@/komponen/ui/kartu";
 import { Lencana } from "@/komponen/ui/lencana";
 import { useGaya, useWarna } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
 import { useZonaKantor } from "@/lib/kantor";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/tema";
 import { pinjamanAktif, teksAkad } from "../inti/nasabah";
 
 const WARNA_STATUS = {

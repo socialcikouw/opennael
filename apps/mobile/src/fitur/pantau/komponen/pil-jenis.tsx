@@ -1,6 +1,6 @@
 import { Pressable, ScrollView, StyleSheet, Text } from "react-native";
 import { useGaya, useWarnaMode } from "@/komponen/ui/tampilan";
-import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/komponen/ui/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, type Warna } from "@/tema";
 import { SARING_JENIS, type SaringJenis } from "../inti/jenis";
 
 /** Pil saringan jenis pinjaman berangka (Semua · Harian · Mingguan · Tempoan). */
