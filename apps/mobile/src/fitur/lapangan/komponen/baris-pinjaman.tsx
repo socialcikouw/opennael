@@ -29,7 +29,7 @@ const WARNA_STATUS = {
  *   Pinjaman Ke-3                       [Berjalan]
  *   Harian 24×            Akad: 27 Okt 26 14.00
  * Pinjaman aktif memuat sisa saldo besar dan kemajuan angsuran; semuanya memuat pokok,
- * total kembali, angsuran, jatuh tempo (atau tanggal selesai), tunai yang diterima, dan
+ * total kembali, angsuran, jatuh tempo (atau tanggal selesai), pencairan, dan
  * masuk tabungan.
  */
 export function BarisPinjaman({ p }: { p: KartuPinjaman }) {
@@ -52,7 +52,7 @@ export function BarisPinjaman({ p }: { p: KartuPinjaman }) {
       : p.tanggalSelesai
         ? [{ label: "Selesai", nilai: tanggalPendek(p.tanggalSelesai) }]
         : []),
-    { label: "Tunai Diterima", nilai: rupiah(p.pencairan) },
+    { label: "Pencairan", nilai: rupiah(p.pencairan) },
     { label: "Masuk Tabungan", nilai: rupiah(p.tabunganMasuk) },
   ];
 

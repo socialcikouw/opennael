@@ -86,7 +86,7 @@ export function DialogPinjaman({
                   {p.saldoLama > 0 ? (
                     <BarisNilai label="Saldo Lama Ditutup">{rupiah(p.saldoLama)}</BarisNilai>
                   ) : null}
-                  <BarisNilai label="Tunai Ke Nasabah">{rupiah(p.pencairan)}</BarisNilai>
+                  <BarisNilai label="Pencairan">{rupiah(p.pencairan)}</BarisNilai>
                 </div>
                 <div className="divide-y">
                   <BarisNilai label="Total Kembali">{rupiah(p.totalKembali)}</BarisNilai>

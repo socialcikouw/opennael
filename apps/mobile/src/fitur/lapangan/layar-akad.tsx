@@ -92,24 +92,20 @@ export function LayarAkad({ jenis: param }: { jenis?: string }) {
             ...(nik ? { nik } : {}),
             ...(nomorHp ? { nomorHp } : {}),
           };
-    Alert.alert(
-      "Simpan Akad?",
-      `Serahkan ${rupiah(syarat.hasil.pencairan)} tunai ke ${namaNasabah}.`,
-      [
-        { text: "Batal", style: "cancel" },
-        {
-          text: "Simpan",
-          onPress: () =>
-            akad.mutate(
-              {
-                akad: { nasabah, jenis, pokok, tenor, fotoSerahTerimaId: foto.id },
-                titik: titikLatar.status === "siap" ? titikLatar.titik : null,
-              },
-              { onSuccess: () => router.back() },
-            ),
-        },
-      ],
-    );
+    Alert.alert("Simpan Akad?", `Cairkan ${rupiah(syarat.hasil.pencairan)} ke ${namaNasabah}.`, [
+      { text: "Batal", style: "cancel" },
+      {
+        text: "Simpan",
+        onPress: () =>
+          akad.mutate(
+            {
+              akad: { nasabah, jenis, pokok, tenor, fotoSerahTerimaId: foto.id },
+              titik: titikLatar.status === "siap" ? titikLatar.titik : null,
+            },
+            { onSuccess: () => router.back() },
+          ),
+      },
+    ]);
   };
 
   return (
@@ -197,7 +193,7 @@ export function LayarAkad({ jenis: param }: { jenis?: string }) {
           <Baris label="Potongan Admin" nilai={rupiah(syarat.hasil.potonganAdmin)} />
           <Baris label="Masuk Tabungan" nilai={rupiah(syarat.hasil.tabunganMasuk)} />
           <Baris
-            label="Tunai Ke Nasabah"
+            label="Pencairan"
             nilai={rupiah(syarat.hasil.pencairan)}
             tebal
             warna={WARNA.utama}

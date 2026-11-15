@@ -25,7 +25,7 @@ const jenisDari = (p: KartuTagih) => p.jenis;
 
 /**
  * DROPING (mode Semua) — pokok pinjaman yang keluar hari ini dari ketiga jenis:
- * total droping (drop baru + drop gulung) dan tunai yang diterima nasabah
+ * total droping (drop baru + drop gulung) dan pencairan (uang yang dicairkan ke nasabah)
  * (pencairan), lalu satu baris per akad (terbaru dulu). Diketuk → rincian
  * pinjaman hanya-baca. Potongan admin & tabungan masuk ada di arus kas (Mutasi).
  */
@@ -114,7 +114,7 @@ export function LayarDroping() {
             label="DROPING HARI INI"
             ikon="banknote-arrow-up"
             nilai={ringkas.total}
-            keterangan={`${ringkas.jumlah} akad · nasabah menerima ${rupiah(ringkas.pencairan)}`}
+            keterangan={`${ringkas.jumlah} akad · pencairan ${rupiah(ringkas.pencairan)}`}
             rincian={[
               { label: "Drop Baru", nilai: ringkas.baru },
               { label: "Drop Gulung", nilai: ringkas.gulung, tanda: "+" },

@@ -22,7 +22,7 @@ export interface RingkasDroping {
   total: number;
   baru: number;
   gulung: number;
-  /** Tunai yang benar-benar diterima nasabah. */
+  /** Pencairan: uang yang benar-benar dicairkan ke nasabah. */
   pencairan: number;
   /** Banyaknya akad. */
   jumlah: number;

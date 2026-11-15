@@ -14,7 +14,7 @@ export function Neraca({ id }: { id: string }) {
     <div className="grid gap-x-8 sm:grid-cols-2">
       <div className="divide-y">
         <BarisNilai label="Jumlah Pinjaman">{r.jumlahPinjaman}</BarisNilai>
-        <BarisNilai label="Uang Diterima Nasabah">{rupiah(r.totalPencairan)}</BarisNilai>
+        <BarisNilai label="Total Pencairan">{rupiah(r.totalPencairan)}</BarisNilai>
         <BarisNilai label="Tabungan Dikembalikan">{rupiah(r.tabunganDikembalikan)}</BarisNilai>
         <BarisNilai label="Total Setoran">{rupiah(r.totalSetoran)}</BarisNilai>
         <BarisNilai label="Arus Kas Kantor">

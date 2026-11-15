@@ -34,7 +34,7 @@ total kembali 120% pokok; angsuran = total kembali ÷ tenor.
 **A4. Tempoan:** tanpa potongan; total kembali 125% pokok; angsuran = total
 kembali (sekali bayar); jatuh tempo = tanggal akad + tenor hari.
 
-**A5. Pencairan** (tunai ke nasabah) = pokok − admin − tabungan − saldo pinjaman
+**A5. Pencairan** (uang yang dicairkan ke nasabah) = pokok − admin − tabungan − saldo pinjaman
 lama (hanya gulung).
 
 | Contoh | Pokok | Admin | Tabungan | Pencairan | Total kembali | Angsuran |

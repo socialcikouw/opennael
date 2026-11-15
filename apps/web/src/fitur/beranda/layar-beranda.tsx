@@ -107,7 +107,7 @@ export function LayarBeranda() {
           <KartuAngka
             label="Droping"
             nilai={rupiah(r.akad.droping)}
-            catatan={`${angka(r.akad.jumlahAkad)} akad · cair ${rupiah(r.akad.pencairan)}`}
+            catatan={`${angka(r.akad.jumlahAkad)} akad · pencairan ${rupiah(r.akad.pencairan)}`}
           />
           <KartuAngka
             label="Tunai Diterima"
