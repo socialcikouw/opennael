@@ -1,15 +1,17 @@
-import { LABEL_JENIS, namaTenor, rupiah } from "@opennael/format";
+import { LABEL_JENIS, namaTenor, rupiah, tampilKampung, tampilNama } from "@opennael/format";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { ActivityIndicator, RefreshControl, ScrollView, Text, View } from "react-native";
-import { useG } from "@/komponen/ui/gaya-bersama";
+import { useCallback, useState } from "react";
+import { RefreshControl, ScrollView, Text, View } from "react-native";
+import { g } from "@/komponen/ui/gaya-bersama";
 import { PesanGalat } from "@/komponen/ui/isian";
 import { KotakAngka } from "@/komponen/ui/kartu";
+import { Kerangka } from "@/komponen/ui/kerangka";
+import { KotakKosong } from "@/komponen/ui/kotak-kosong";
 import { Lencana } from "@/komponen/ui/lencana";
 import { Pilihan } from "@/komponen/ui/pilihan";
-import { useWarna } from "@/komponen/ui/tampilan";
-import { Keterangan } from "@/komponen/ui/teks";
 import { kueri } from "@/lib/api";
+import { useTarikSegarkan } from "@/lib/tarik-segarkan";
+import { WARNA } from "@/tema";
 
 /**
  * PINJAMAN MENUNGGAK (pengawas) — kartu pinjaman aktif yang tertinggal
@@ -17,10 +19,14 @@ import { kueri } from "@/lib/api";
  * angsuran terbayar), urut tunggakan terbesar.
  */
 export function LayarTunggakan() {
-  const WARNA = useWarna();
-  const g = useG();
   const [kolektorId, setKolektorId] = useState<string>("semua");
   const q = useQuery(kueri.pinjaman.aktif());
+  const { refetch } = q;
+  const segarkan = useCallback(() => refetch(), [refetch]);
+  const { aktif: menarik, tarik } = useTarikSegarkan(segarkan);
+
+  if (q.isPending) return <Kerangka jenis="daftar" teks="Memuat pinjaman menunggak…" />;
+
   const menunggak = (q.data ?? [])
     .filter((p) => (p.tagih?.tertinggal ?? 0) > 0)
     .sort((a, b) => (b.tagih?.tunggakan ?? 0) - (a.tagih?.tunggakan ?? 0));
@@ -34,11 +40,8 @@ export function LayarTunggakan() {
     <ScrollView
       style={g.layar}
       contentContainerStyle={g.gulirIsi}
-      refreshControl={
-        <RefreshControl refreshing={q.isRefetching} onRefresh={() => void q.refetch()} />
-      }
+      refreshControl={<RefreshControl refreshing={menarik} onRefresh={tarik} />}
     >
-      {q.isPending ? <ActivityIndicator color={WARNA.utama} /> : null}
       <PesanGalat pesan={q.error?.message} />
       {q.data ? (
         <>
@@ -50,31 +53,37 @@ export function LayarTunggakan() {
             <Pilihan
               pilihan={[
                 { nilai: "semua", teks: "Semua" },
-                ...kolektor.map((k) => ({ nilai: k.id, teks: k.nama })),
+                ...kolektor.map((k) => ({ nilai: k.id, teks: tampilNama(k.nama) })),
               ]}
               nilai={kolektorId}
               onPilih={setKolektorId}
             />
           ) : null}
-          {tampil.length === 0 ? <Keterangan>Tidak ada pinjaman yang menunggak.</Keterangan> : null}
+          {tampil.length === 0 ? (
+            <KotakKosong
+              ikon="circle-check"
+              judul="Tidak ada tunggakan"
+              isi="Tidak ada pinjaman aktif yang tertinggal angsuran."
+            />
+          ) : null}
           {tampil.map((p) => (
             <View key={p.id} style={[g.butirDaftar, g.tumpuk1]}>
               <View style={g.barisNilai}>
-                <Text style={[g.teksTebal, g.isi]}>{p.nasabah.nama}</Text>
-                <Text style={[g.teksTebal, { color: WARNA.bahaya }]}>
+                <Text style={[g.teksTebal, g.isi]}>{tampilNama(p.nasabah.nama)}</Text>
+                <Text style={[g.teksTebal, { color: WARNA.bahayaTeks }]}>
                   {rupiah(p.tagih?.tunggakan ?? 0)}
                 </Text>
               </View>
               <Text style={g.teksKecil}>
-                {p.nasabah.kampung} · {p.kolektor.nama} · {LABEL_JENIS[p.jenis]}{" "}
-                {namaTenor(p.jenis, p.tenor)} ke-{p.pinjamanKe}
+                {tampilKampung(p.nasabah.kampung)} · {tampilNama(p.kolektor.nama)} ·{" "}
+                {LABEL_JENIS[p.jenis]} {namaTenor(p.jenis, p.tenor)} ke-{p.pinjamanKe}
               </Text>
               <View style={g.bungkus}>
                 <Lencana
                   teks={
                     p.jenis === "tempoan"
                       ? "Lewat Jatuh Tempo"
-                      : `Tertinggal ${p.tagih?.tertinggal ?? 0}× angsuran`
+                      : `Tertinggal ${p.tagih?.tertinggal ?? 0}× Angsuran`
                   }
                   warna="kuning"
                 />

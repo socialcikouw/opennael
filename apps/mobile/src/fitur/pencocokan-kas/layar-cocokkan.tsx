@@ -1,22 +1,23 @@
 import { kunci } from "@opennael/api-client";
 import { geserTanggal } from "@opennael/domain";
-import { rupiah, tanggalPendek } from "@opennael/format";
+import { rupiah, tampilKeterangan, tanggalPendek } from "@opennael/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { ActivityIndicator, Alert, Text, View } from "react-native";
-import { useG } from "@/komponen/ui/gaya-bersama";
+import { g } from "@/komponen/ui/gaya-bersama";
 import { Isian, IsianUang, PesanGalat } from "@/komponen/ui/isian";
-import { Baris, Kartu } from "@/komponen/ui/kartu";
+import { Bagian, Baris, Kartu } from "@/komponen/ui/kartu";
+import { KotakKosong } from "@/komponen/ui/kotak-kosong";
 import { Gulir } from "@/komponen/ui/layar";
 import { Lencana } from "@/komponen/ui/lencana";
 import { Pilihan } from "@/komponen/ui/pilihan";
 import { Spanduk } from "@/komponen/ui/spanduk";
-import { useWarna } from "@/komponen/ui/tampilan";
 import { Keterangan } from "@/komponen/ui/teks";
 import { Tombol } from "@/komponen/ui/tombol";
 import { api, kueri, panggil } from "@/lib/api";
 import { hariIniKantor } from "@/lib/kantor";
 import { useSesi } from "@/lib/sesi";
+import { WARNA } from "@/tema";
 
 const LABEL_AKUN = { tunai: "Tunai (brankas)", bank: "Bank (rekening)" } as const;
 type Akun = keyof typeof LABEL_AKUN;
@@ -27,8 +28,6 @@ type Akun = keyof typeof LABEL_AKUN;
  * tersimpan. Riwayat: pencocokan miliknya 30 hari terakhir.
  */
 export function LayarCocokkan() {
-  const WARNA = useWarna();
-  const g = useG();
   const s = useSesi();
   const klien = useQueryClient();
   const [akun, setAkun] = useState<Akun>("tunai");
@@ -84,8 +83,7 @@ export function LayarCocokkan() {
           isi={`Buku ${rupiah(hasil.saldoBuku)} · dihitung ${rupiah(hasil.saldoNyata)}`}
         />
       ) : null}
-      <Kartu>
-        <Text style={g.subjudul}>Hitung Kas</Text>
+      <Bagian judul="HITUNG KAS">
         <Keterangan>
           Hitung uang di brankas atau lihat saldo rekening lebih dulu, lalu ketik angkanya.
         </Keterangan>
@@ -119,40 +117,48 @@ export function LayarCocokkan() {
           memuat={cocok.isPending}
           onPress={simpan}
         />
-      </Kartu>
+      </Bagian>
 
-      <Text style={g.subjudul}>Riwayat 30 Hari</Text>
-      {riwayat.isPending ? <ActivityIndicator color={WARNA.utama} /> : null}
-      <PesanGalat pesan={riwayat.error?.message} />
-      {riwayat.data && riwayat.data.length === 0 ? (
-        <Keterangan>Belum ada pencocokan.</Keterangan>
-      ) : null}
-      {[...(riwayat.data ?? [])].reverse().map((p) => (
-        <Kartu key={p.id}>
-          <View style={g.barisNilai}>
-            <Text style={g.teksTebal}>
-              {tanggalPendek(p.tanggal)} · {LABEL_AKUN[p.akun]}
-            </Text>
-            {p.dibatalkanAt ? (
-              <Lencana teks="Dibatalkan Bos" warna="abu" />
-            ) : (
-              <Lencana
-                teks={p.selisih === 0 ? "Cocok" : p.selisih < 0 ? "Kurang" : "Lebih"}
-                warna={p.selisih === 0 ? "hijau" : "merah"}
-              />
-            )}
-          </View>
-          <Baris label="Buku" nilai={rupiah(p.saldoBuku)} />
-          <Baris label="Dihitung" nilai={rupiah(p.saldoNyata)} />
-          <Baris
-            label="Selisih"
-            nilai={rupiah(p.selisih)}
-            tebal
-            warna={p.selisih < 0 ? WARNA.bahaya : WARNA.teks}
+      <View style={g.bagian}>
+        <Text style={g.judulBagian}>RIWAYAT 30 HARI</Text>
+        {riwayat.isPending ? <ActivityIndicator color={WARNA.utama} /> : null}
+        <PesanGalat pesan={riwayat.error?.message} />
+        {riwayat.data && riwayat.data.length === 0 ? (
+          <KotakKosong
+            ikon="calculator"
+            judul="Belum ada pencocokan"
+            isi="Hitungan kas yang sudah disimpan akan muncul di sini."
           />
-          {p.keterangan ? <Text style={g.teksKecil}>{p.keterangan}</Text> : null}
-        </Kartu>
-      ))}
+        ) : null}
+        {[...(riwayat.data ?? [])].reverse().map((p) => (
+          <Kartu key={p.id}>
+            <View style={g.barisNilai}>
+              <Text style={g.teksTebal}>
+                {tanggalPendek(p.tanggal)} · {LABEL_AKUN[p.akun]}
+              </Text>
+              {p.dibatalkanAt ? (
+                <Lencana teks="Dibatalkan Bos" warna="abu" />
+              ) : (
+                <Lencana
+                  teks={p.selisih === 0 ? "Cocok" : p.selisih < 0 ? "Kurang" : "Lebih"}
+                  warna={p.selisih === 0 ? "hijau" : "merah"}
+                />
+              )}
+            </View>
+            <Baris label="Buku" nilai={rupiah(p.saldoBuku)} />
+            <Baris label="Dihitung" nilai={rupiah(p.saldoNyata)} />
+            <Baris
+              label="Selisih"
+              nilai={rupiah(p.selisih)}
+              tebal
+              warna={p.selisih < 0 ? WARNA.bahayaTeks : WARNA.teks}
+            />
+            {p.keterangan ? (
+              <Text style={g.teksKecil}>{tampilKeterangan(p.keterangan)}</Text>
+            ) : null}
+          </Kartu>
+        ))}
+      </View>
     </Gulir>
   );
 }
