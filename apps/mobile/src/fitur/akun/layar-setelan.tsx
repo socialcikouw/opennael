@@ -8,7 +8,7 @@ import { RUANG } from "@/tema";
 import { TombolKeluar } from "./komponen/tombol-keluar";
 
 /**
- * SETELAN (tab mode Semua) — akun yang tertaut di HP ini dan keluar. Satu-satunya
+ * SETELAN (tab mode Laporan) — akun yang tertaut di HP ini dan keluar. Satu-satunya
  * tempat keluar di HP kolektor (layar Analitik/Dasbor tak memuatnya). Tak ada pilihan
  * tampilan: aplikasi hanya bertema terang.
  */

@@ -107,10 +107,10 @@ export const WARNA = {
 export type Warna = { readonly [K in keyof typeof WARNA]: string };
 
 /**
- * AKSEN MODE kerja kolektor (Harian · Mingguan · Tempoan · Semua): aksen teks/ikon
+ * AKSEN MODE kerja kolektor (Harian · Mingguan · Tempoan · Laporan): aksen teks/ikon
  * (`teks`), latar lembut (`lembut`), dan isi tombol berteks (`isi` + `teksIsi`).
  * SEMUA MODE MEMAKAI TERAKOTA (keputusan pemilik, 24 Nov 2026: konsisten); mode dikenali
- * dari huruf H/M/T/S dan label mode, bukan warna. Bentuknya tetap per mode supaya mode
+ * dari huruf H/M/T/L dan label mode, bukan warna. Bentuknya tetap per mode supaya mode
  * bisa diberi warna sendiri lagi tanpa menyentuh layar. (Kata "mode" di sini = mode
  * KERJA, bukan terang/gelap.)
  */
@@ -127,7 +127,7 @@ export const AKSEN_MODE = {
   harian: AKSEN_TERAKOTA,
   mingguan: AKSEN_TERAKOTA,
   tempoan: AKSEN_TERAKOTA,
-  semua: AKSEN_TERAKOTA,
+  laporan: AKSEN_TERAKOTA,
 } as const satisfies Record<string, WarnaMode>;
 
 export type NamaMode = keyof typeof AKSEN_MODE;

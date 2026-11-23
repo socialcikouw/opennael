@@ -22,14 +22,14 @@ import { Portofolio } from "./komponen/portofolio";
 
 /**
  * DASBOR KOLEKTOR — angka kerja sekilas, MENGIKUTI MODE aktif (Harian ·
- * Mingguan · Tempoan · Semua): bentuk layarnya sama, isinya tidak. Di mode kerja
- * tampil sebagai tab Analitik (paling kanan), di mode Semua sebagai Dasbor. Rasio bayar
+ * Mingguan · Tempoan · Laporan): bentuk layarnya sama, isinya tidak. Di mode kerja
+ * tampil sebagai tab Analitik (paling kanan), di mode Laporan sebagai Dasbor. Rasio bayar
  * hari ini (Tempoan: jatuh tempo), performa tagihan murni, portofolio (saldo
  * berjalan, macet, diputihkan, piutang aktif), dan setoran hari ini — semuanya
  * dari pinjaman jenis mode itu. Pengingat (belum absen, belum dicatat, laporan)
- * satu untuk semua mode dan ada di tab Notifikasi (mode Semua: di Mutasi);
+ * satu untuk semua mode dan ada di tab Notifikasi (mode Laporan: di Mutasi);
  * daftar tagih di tab Tagihan. Tanpa pengaturan akun: mode tampilan & keluar hanya di
- * tab Setelan (mode Semua).
+ * tab Setelan (mode Laporan).
  */
 export function LayarDasbor() {
   const s = useSesi();
@@ -113,16 +113,16 @@ export function LayarDasbor() {
           r={rasio}
           gagal={tagihan.isError && !tagihan.data}
           aksen={aksen}
-          // Mode Semua tak punya tab Notifikasi: buka laporan dari Mutasi.
+          // Mode Laporan tak punya tab Notifikasi: buka laporan dari Mutasi.
           onLaporan={() =>
-            router.navigate(mode === "semua" ? "/kolektor/mutasi" : "/kolektor/notifikasi")
+            router.navigate(mode === "laporan" ? "/kolektor/mutasi" : "/kolektor/notifikasi")
           }
         />
       )}
       <KartuPerforma
         p={performa}
         gagal={deret.isError && !deret.data}
-        jenis={mode === "semua" ? "semua jenis" : `pinjaman ${namaMode.toLowerCase()}`}
+        jenis={mode === "laporan" ? "semua jenis" : `pinjaman ${namaMode.toLowerCase()}`}
         aksen={aksen}
       />
 

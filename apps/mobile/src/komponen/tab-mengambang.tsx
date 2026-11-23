@@ -25,7 +25,7 @@ export function useRuangTab(): number {
  * TAB BAR MENGAMBANG — (kiri) · pil berisi tab-tab layar · (+). Judul dari
  * `title` tiap layar; ikon Lucide per nama rute. Tab aktif & tombol + memakai
  * `warna` (warna mode aplikasi; bawaan terakota merek). Tombol kiri & + tidak
- * tampil bila tak diberikan (mis. mode Semua tanpa +). `tampil` = rute yang
+ * tampil bila tak diberikan (mis. mode Laporan tanpa +). `tampil` = rute yang
  * tampil di pil, urut seperti itu (bawaan: semua rute); bila tab yang sedang
  * dibuka tak lagi tampil (ganti mode), pindah ke tab tampil pertama.
  */

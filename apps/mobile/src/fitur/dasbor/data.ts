@@ -8,7 +8,7 @@ import { portofolioUntuk } from "./inti/portofolio";
 
 /**
  * Bacaan Dasbor kolektor — SEMUANYA mengikuti mode aktif (Harian · Mingguan ·
- * Tempoan · Semua): rasio bayar dari pinjaman jenis itu, performa tagihan murni
+ * Tempoan · Laporan): rasio bayar dari pinjaman jenis itu, performa tagihan murni
  * menurut jenis (aturan-usaha N), portofolio jenis itu, dan di Tempoan jatuh
  * tempo sebagai ganti rasio. Semua kueri berawalan kunci `lapangan`, jadi tiap
  * transaksi lapangan dan tarik-segarkan menyegarkannya bersama; performa

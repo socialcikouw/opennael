@@ -67,7 +67,7 @@ export function ItemPengingat({ p, tanpaMutasi = false }: { p: Pengingat; tanpaM
     router.navigate("/kolektor/tagihan");
   };
   const keMutasi = () => {
-    modeAktif.ganti("semua");
+    modeAktif.ganti("laporan");
     router.navigate("/kolektor/mutasi");
   };
 

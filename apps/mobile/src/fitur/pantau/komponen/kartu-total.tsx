@@ -14,7 +14,7 @@ export interface RincianTotal {
 
 /**
  * KARTU TOTAL — angka utama tab pantau (tunai harus disetor, total storting,
- * total droping) dalam warna aksen mode Semua, dengan rincian penyusunnya di
+ * total droping) dalam warna aksen mode Laporan, dengan rincian penyusunnya di
  * bawah garis. `kaki` = isi tambahan (mis. tekor/lebih setor).
  */
 export function KartuTotal(props: {
@@ -25,7 +25,7 @@ export function KartuTotal(props: {
   rincian?: readonly RincianTotal[];
   kaki?: ReactNode;
 }) {
-  const aksen = AKSEN_MODE.semua;
+  const aksen = AKSEN_MODE.laporan;
   return (
     <View style={gaya.kartu}>
       <View style={gaya.kepala}>

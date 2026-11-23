@@ -92,8 +92,8 @@ describe("kontras teks di atas isi berwarna", () => {
 });
 
 describe("aksen mode kerja", () => {
-  test("empat mode lengkap: harian, mingguan, tempoan, semua", () => {
-    expect(Object.keys(AKSEN_MODE).sort()).toEqual(["harian", "mingguan", "semua", "tempoan"]);
+  test("empat mode lengkap: harian, mingguan, tempoan, laporan", () => {
+    expect(Object.keys(AKSEN_MODE).sort()).toEqual(["harian", "laporan", "mingguan", "tempoan"]);
   });
 
   test("semua mode memakai terakota yang sama dengan warna utama (keputusan pemilik 24 Nov 2026)", () => {

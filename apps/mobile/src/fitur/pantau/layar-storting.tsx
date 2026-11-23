@@ -23,13 +23,13 @@ import { PilJenis } from "./komponen/pil-jenis";
 const jenisDari = (t: TransaksiHari) => t.jenisPinjaman;
 
 /**
- * STORTING (mode Semua) — uang setoran yang masuk hari ini dari ketiga jenis
+ * STORTING (mode Laporan) — uang setoran yang masuk hari ini dari ketiga jenis
  * pinjaman: total & penyusunnya (murni + pelunasan − tabungan keluar), bagian
  * yang ditransfer, lalu satu baris per setoran. Saringan jenis mengubah total
  * dan daftar. Hanya-baca; menagih dari mode jenisnya.
  */
 export function LayarStorting() {
-  const aksen = AKSEN_MODE.semua;
+  const aksen = AKSEN_MODE.laporan;
   const ruangTab = useRuangTab();
   const setoran = useSetoranHariIni();
   const tagihan = useTagihan();

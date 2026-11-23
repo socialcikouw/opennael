@@ -5,7 +5,7 @@ const STATUS = ["berjalan", "macet", "diputihkan"] as const;
 
 /**
  * Portofolio untuk satu mode: jenisnya sendiri, atau ketiganya dijumlah untuk
- * mode Semua (`jenis` null). Server memberi angka per jenis sekaligus, jadi
+ * mode Laporan (`jenis` null). Server memberi angka per jenis sekaligus, jadi
  * pindah mode tak perlu permintaan ulang.
  */
 export function portofolioUntuk(data: Portofolio, jenis: JenisPinjaman | null): PortofolioJenis {

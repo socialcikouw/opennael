@@ -1,7 +1,7 @@
 import type { HariKas, RincianKasJawaban } from "@opennael/contracts";
 
 /**
- * TAB MUTASI (mode Semua) — arus kas kolektor hari ini menurut aturan-usaha
+ * TAB MUTASI (mode Laporan) — arus kas kolektor hari ini menurut aturan-usaha
  * I1: kas lapangan + storting + tabungan masuk + admin − droping − transfer −
  * biaya tak terduga = tunai yang harus disetor. Angkanya dari server
  * (`GET /hari-kolektor`, rincian milik kolektor sendiri); di sini hanya

@@ -23,13 +23,13 @@ import { PilJenis } from "./komponen/pil-jenis";
 const jenisDari = (p: KartuTagih) => p.jenis;
 
 /**
- * DROPING (mode Semua) — pokok pinjaman yang keluar hari ini dari ketiga jenis:
+ * DROPING (mode Laporan) — pokok pinjaman yang keluar hari ini dari ketiga jenis:
  * total droping (drop baru + drop gulung) dan pencairan (uang yang dicairkan ke nasabah)
  * (pencairan), lalu satu baris per akad (terbaru dulu). Diketuk → rincian
  * pinjaman hanya-baca. Potongan admin & tabungan masuk ada di arus kas (Mutasi).
  */
 export function LayarDroping() {
-  const aksen = AKSEN_MODE.semua;
+  const aksen = AKSEN_MODE.laporan;
   const ruangTab = useRuangTab();
   const zona = useZonaKantor();
   const hariIni = useHariIni();

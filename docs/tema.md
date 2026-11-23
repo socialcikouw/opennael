@@ -23,7 +23,7 @@ native.ts  LAPIS 3 · turunan untuk konfigurasi native → tema-native.json → 
 | Berkas | Isi |
 |---|---|
 | `palet.ts` | Nilai mentah. Tidak mengimpor apa pun. **Tidak diekspor** lewat `@/tema` — hanya `token.ts` & `native.ts` yang memakainya. |
-| `token.ts` | `WARNA` (peran → nilai palet), `AKSEN_MODE` (aksen Harian/Mingguan/Tempoan/Semua), skala `RUANG`/`SUDUT`/`HURUF`/`TEBAL`/`SENTUH`. |
+| `token.ts` | `WARNA` (peran → nilai palet), `AKSEN_MODE` (aksen Harian/Mingguan/Tempoan/Laporan), skala `RUANG`/`SUDUT`/`HURUF`/`TEBAL`/`SENTUH`. |
 | `native.ts` | Gaya sistem (`light`), latar jendela, latar splash & ikon adaptif. `jsonNative()` menghasilkan isi `tema-native.json`. |
 | `navigasi.ts` | `OPSI_STACK` (header Stack baku kolektor/kasir/pengawas) dan `OPSI_TAB` (header + latar adegan tab kolektor), dirangkai dari token — satu-satunya tempat gaya header ditentukan. |
 | `kontras.ts` | Hitung rasio kontras WCAG (murni) untuk uji. |
@@ -49,7 +49,7 @@ perbaikannya: `bun apps/mobile/scripts/tulis-tema-native.ts`.
    `bahaya*` (merah) = galat, libur, belum boleh; `waspada*` (amber tua) = peringatan.
    Jangan memakai `utama` untuk arti "berhasil".
 7. Kata "mode" di aplikasi berarti mode **kerja** kolektor (Harian · Mingguan · Tempoan ·
-   Semua), bukan terang/gelap. Karena itu token aksennya bernama `AKSEN_MODE`.
+   Laporan), bukan terang/gelap. Karena itu token aksennya bernama `AKSEN_MODE`.
 
 ## Pagar (otomatis)
 
@@ -92,7 +92,7 @@ teks gelap di atas latar terang paling terbaca, tak memantulkan sekitar seperti 
 dan HP lapangan banyak yang LCD (tema gelap tak menghemat baterai di sana). **Putih kertas**
 (netral hangat, mirip buku kas) bukan putih kebiruan; **terakota** (seperti oranye Claude)
 sebagai warna merek. **Semua mode kerja memakai terakota** — mode dikenali dari huruf
-H/M/T/S dan label mode.
+H/M/T/L dan label mode.
 
 | Peran | Token | Nilai |
 |---|---|---|

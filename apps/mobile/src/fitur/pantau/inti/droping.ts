@@ -3,7 +3,7 @@ import type { JenisPinjaman } from "@opennael/domain";
 import { judul } from "@opennael/format";
 
 /**
- * TAB DROPING (mode Semua) — pokok pinjaman yang keluar hari ini dari ketiga
+ * TAB DROPING (mode Laporan) — pokok pinjaman yang keluar hari ini dari ketiga
  * jenis: akad baru (drop baru) dan gulung (drop gulung = bagian yang memutar
  * pinjaman lama; aturan-usaha E7). Diambil dari daftar tagih kolektor (akad
  * hari ini, bukan salinan migrasi) — aturan yang sama dengan segmen Droping

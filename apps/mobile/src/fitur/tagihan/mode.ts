@@ -4,20 +4,20 @@ import { useSyncExternalStore } from "react";
 
 /**
  * MODE APLIKASI KOLEKTOR — tiga "wajah" sesuai jenis pinjaman (Harian ·
- * Mingguan · Tempoan) dan satu wajah pantau (Semua: ketiganya, tanpa transaksi
+ * Mingguan · Tempoan) dan satu wajah pantau (Laporan: ketiganya, tanpa transaksi
  * nasabah dan tanpa tombol +). Mode mengubah susunan tab, isi Tagihan &
  * Analitik/Dasbor, jenis akad dari tombol +, dan warna aksen. Tab per mode di
  * `app/kolektor/(tab)/_layout.tsx`: Harian & Mingguan Tagihan · Notifikasi ·
- * Analitik; Tempoan Notifikasi · Tagihan · Analitik; Semua Dasbor · Mutasi ·
+ * Analitik; Tempoan Notifikasi · Tagihan · Analitik; Laporan Dasbor · Mutasi ·
  * Storting · Droping · Setelan (`fitur/pantau`). Absen & laporan tetap
  * satu untuk semua mode: laporan menghitung kewajiban hari ini dari semua jenis
- * (C6) — di mode kerja lewat Notifikasi, di mode Semua lewat Mutasi.
+ * (C6) — di mode kerja lewat Notifikasi, di mode Laporan lewat Mutasi.
  *
  * Mode tidak disimpan: aplikasi selalu dibuka di mode Harian.
  */
-export type ModeApp = JenisPinjaman | "semua";
+export type ModeApp = JenisPinjaman | "laporan";
 
-export const URUTAN_MODE: readonly ModeApp[] = ["harian", "mingguan", "tempoan", "semua"];
+export const URUTAN_MODE: readonly ModeApp[] = ["harian", "mingguan", "tempoan", "laporan"];
 
 export const MODE: Record<ModeApp, { label: string; huruf: string; keterangan: string }> = {
   harian: { label: "Harian", huruf: "H", keterangan: "Ditagih setiap hari kerja" },
@@ -27,12 +27,16 @@ export const MODE: Record<ModeApp, { label: string; huruf: string; keterangan: s
     huruf: "T",
     keterangan: "Dibayar sekali penuh, paling lambat jatuh tempo",
   },
-  semua: { label: "Semua", huruf: "S", keterangan: "Pantau ketiganya · tanpa transaksi" },
+  laporan: {
+    label: "Laporan",
+    huruf: "L",
+    keterangan: "Pantau & laporkan ketiganya · tanpa transaksi",
+  },
 };
 
-/** Jenis pinjaman yang menyaring data mode ini; null = Semua (tak disaring). */
+/** Jenis pinjaman yang menyaring data mode ini; null = Laporan (ketiganya, tak disaring). */
 export function jenisDariMode(mode: ModeApp): JenisPinjaman | null {
-  return mode === "semua" ? null : mode;
+  return mode === "laporan" ? null : mode;
 }
 
 let aktif: ModeApp = "harian";
@@ -73,11 +77,11 @@ export function ringkasPerMode(
     harian: { aktif: 0, tagih: 0 },
     mingguan: { aktif: 0, tagih: 0 },
     tempoan: { aktif: 0, tagih: 0 },
-    semua: { aktif: 0, tagih: 0 },
+    laporan: { aktif: 0, tagih: 0 },
   };
   for (const p of daftar) {
     const perlu = !p.hariIni && wajibDitagihHariIni(p, hariIni);
-    for (const r of [hasil[p.jenis], hasil.semua]) {
+    for (const r of [hasil[p.jenis], hasil.laporan]) {
       r.aktif++;
       if (perlu) r.tagih++;
     }

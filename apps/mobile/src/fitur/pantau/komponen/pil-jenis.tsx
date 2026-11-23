@@ -8,7 +8,7 @@ export function PilJenis(props: {
   jumlah: Record<SaringJenis, number>;
   onPilih: (s: SaringJenis) => void;
 }) {
-  const aksen = AKSEN_MODE.semua;
+  const aksen = AKSEN_MODE.laporan;
   return (
     <ScrollView
       horizontal

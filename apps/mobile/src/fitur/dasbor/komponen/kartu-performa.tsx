@@ -11,7 +11,7 @@ const BATANG_MIN = 4;
 
 /**
  * PERFORMA TAGIHAN MURNI (aturan-usaha N): setoran murni ÷ patokan, untuk
- * jenis pinjaman mode aktif (harian: N1; mingguan & tempoan: N3; semua: N4).
+ * jenis pinjaman mode aktif (harian: N1; mingguan & tempoan: N3; laporan: N4).
  * Angka besar = hari ini; batang = tiap hari yang ada tagihannya bulan ini (hari
  * ini paling pekat); di bawahnya rata-rata hari yang sudah lewat. `p` null =
  * belum dimuat; `gagal` = tak ada data dan pemuatan gagal; `jenis` = keterangan

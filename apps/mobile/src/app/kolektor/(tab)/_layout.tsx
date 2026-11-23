@@ -30,14 +30,14 @@ const TAB: Record<ModeApp, readonly string[]> = {
   harian: ["tagihan", "notifikasi", "analitik"],
   mingguan: ["tagihan", "notifikasi", "analitik"],
   tempoan: ["notifikasi", "tagihan", "analitik"],
-  semua: ["index", "mutasi", "storting", "droping", "setelan"],
+  laporan: ["index", "mutasi", "storting", "droping", "setelan"],
 };
 
 /**
  * Tab kolektor: (mode) · tab-tab · (+). Tombol kiri = huruf mode aktif
- * (H/M/T/S), membuka lembar Ganti Mode. Harian & Mingguan: Tagihan ·
+ * (H/M/T/L), membuka lembar Ganti Mode. Harian & Mingguan: Tagihan ·
  * Notifikasi · Analitik; Tempoan: Notifikasi · Tagihan · Analitik — ketiganya
- * dengan tombol + (akad berjenis mode itu). Mode Semua (pantau, tanpa +):
+ * dengan tombol + (akad berjenis mode itu). Mode Laporan (pantau, tanpa +):
  * Dasbor · Mutasi (arus kas) · Storting · Droping · Setelan. Analitik & Dasbor
  * = layar yang sama (`fitur/dasbor`), isinya mengikuti mode. Warna tab aktif & +
  * mengikuti mode. Lonceng Notifikasi bertanda angka pengingat yang menunggu

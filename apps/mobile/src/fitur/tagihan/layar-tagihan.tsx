@@ -29,7 +29,7 @@ import { jenisDariMode, MODE, useMode } from "./mode";
  * TAGIHAN — klon layar Kerja aplikasi lama (naelcapital): kepala melayang
  * yang melipat, segmen Aktif · Macet · Droping, daftar per kampung (urut rute), kartu
  * nasabah lengkap, dan transaksi langsung dari kartu. Isinya mengikuti mode
- * aplikasi (Harian · Mingguan · Tempoan). Mode Semua tak punya tab Tagihan
+ * aplikasi (Harian · Mingguan · Tempoan). Mode Laporan tak punya tab Tagihan
  * (tab pantau di `fitur/pantau`); tab bar memindahkan kolektor ke Dasbor.
  *
  * Data tetap satu sumber (`lib/lapangan`): sesudah transaksi kartu
@@ -41,7 +41,7 @@ export function LayarTagihan({ segmen }: { segmen?: string }) {
   // Ganti mode = seluruh wajah berganti: dipasang ulang dengan pudar singkat.
   return (
     <Animated.View key={mode} entering={FadeIn.duration(200)} style={{ flex: 1 }}>
-      {mode === "semua" ? null : <LayarTagihanKerja segmenAwal={segmen} />}
+      {mode === "laporan" ? null : <LayarTagihanKerja segmenAwal={segmen} />}
     </Animated.View>
   );
 }

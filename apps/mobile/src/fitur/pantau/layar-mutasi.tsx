@@ -40,7 +40,7 @@ const ALASAN_GEMBOK: Record<Exclude<GerbangMutasi, "siap">, string> = {
 };
 
 /**
- * MUTASI (mode Semua) — arus kas kolektor hari ini (aturan-usaha I1): kas
+ * MUTASI (mode Laporan) — arus kas kolektor hari ini (aturan-usaha I1): kas
  * lapangan + storting + tabungan masuk + admin − droping − transfer − biaya
  * tak terduga = tunai yang harus disetor sore.
  *
@@ -52,7 +52,7 @@ const ALASAN_GEMBOK: Record<Exclude<GerbangMutasi, "siap">, string> = {
  * ini). Sesudah kasir menerima kas: tekor / lebih setor.
  */
 export function LayarMutasi() {
-  const aksen = AKSEN_MODE.semua;
+  const aksen = AKSEN_MODE.laporan;
   const ruangTab = useRuangTab();
   const zona = useZonaKantor();
   const { hariIni, tagihan, pengingat } = usePengingat();
