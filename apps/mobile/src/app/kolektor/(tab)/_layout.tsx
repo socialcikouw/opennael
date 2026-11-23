@@ -5,7 +5,15 @@ import { useMemo, useState } from "react";
 import { Alert } from "react-native";
 import { bacaGerbang, useGerbangMutasi, useHariIni } from "@/fitur/lapangan";
 import { useJumlahPengingat } from "@/fitur/notifikasi";
-import { HurufMode, jenisDariMode, LembarMode, MODE, type ModeApp, useMode } from "@/fitur/tagihan";
+import {
+  HurufMode,
+  jenisDariMode,
+  LembarMode,
+  MODE,
+  type ModeApp,
+  SorotMode,
+  useMode,
+} from "@/fitur/tagihan";
 import { TabMengambang } from "@/komponen/tab-mengambang";
 import { AKSEN_MODE, OPSI_TAB } from "@/tema";
 
@@ -82,7 +90,7 @@ export default function TabKolektor() {
             lencana={{ notifikasi: pengingat }}
             warna={AKSEN_MODE[mode]}
             kiri={{
-              isi: <HurufMode mode={mode} />,
+              isi: <HurufMode mode={mode} bergerak />,
               label: `Mode ${MODE[mode].label}. Ketuk untuk ganti mode.`,
               onPress: () => setLembarMode(true),
             }}
@@ -104,6 +112,7 @@ export default function TabKolektor() {
         <Tabs.Screen name="setelan" options={{ title: "Setelan" }} />
         <Tabs.Screen name="analitik" options={{ title: "Analitik" }} />
       </Tabs>
+      <SorotMode />
       <LembarMode terbuka={lembarMode} onTutup={() => setLembarMode(false)} />
     </>
   );

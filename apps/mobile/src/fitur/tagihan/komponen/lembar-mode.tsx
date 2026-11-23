@@ -1,14 +1,42 @@
 import { useMemo } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import Animated, { FadeOut, LayoutAnimationConfig, withTiming } from "react-native-reanimated";
 import { useHariIni, useTagihan } from "@/fitur/lapangan";
 import { LembarBawah } from "@/komponen/lembar-bawah";
+import { DURASI, KURVA } from "@/komponen/ui/gerak";
 import { Ikon } from "@/komponen/ui/ikon";
 import { AKSEN_MODE, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 import { MODE, type ModeApp, modeAktif, ringkasPerMode, URUTAN_MODE, useMode } from "../mode";
 
-/** Huruf mode di lingkaran berwarna mode — (H) (M) (T) (S). Isi tombol kiri batang tab. */
-export function HurufMode({ mode, ukuran = 36 }: { mode: ModeApp; ukuran?: number }) {
+/** Huruf baru meluncur naik ke tempatnya (ease-out); huruf lama memudar cepat. */
+function hurufMasuk() {
+  "worklet";
+  const kurva = { duration: DURASI.kecil, easing: KURVA.keluar };
+  return {
+    initialValues: { opacity: 0, transform: [{ translateY: 10 }] },
+    animations: {
+      opacity: withTiming(1, kurva),
+      transform: [{ translateY: withTiming(0, kurva) }],
+    },
+  };
+}
+
+/**
+ * Huruf mode di lingkaran berwarna mode — (H) (M) (T) (L). Isi tombol kiri batang tab.
+ * `bergerak`: huruf berganti dengan gerak saat mode berganti (tombol tab bar); tanpa gerak
+ * di daftar lembar Ganti Mode dan saat pertama tampil.
+ */
+export function HurufMode({
+  mode,
+  ukuran = 36,
+  bergerak = false,
+}: {
+  mode: ModeApp;
+  ukuran?: number;
+  bergerak?: boolean;
+}) {
   const w = AKSEN_MODE[mode];
+  const huruf = <Text style={[gaya.huruf, { color: w.teksIsi }]}>{MODE[mode].huruf}</Text>;
   return (
     <View
       style={[
@@ -16,7 +44,21 @@ export function HurufMode({ mode, ukuran = 36 }: { mode: ModeApp; ukuran?: numbe
         { width: ukuran, height: ukuran, borderRadius: ukuran / 2, backgroundColor: w.isi },
       ]}
     >
-      <Text style={[gaya.huruf, { color: w.teksIsi }]}>{MODE[mode].huruf}</Text>
+      {bergerak ? (
+        // Huruf lama & baru sempat tampil bersamaan: keduanya ditumpuk (absolut), tak berbaris.
+        <LayoutAnimationConfig skipEntering>
+          <Animated.View
+            key={mode}
+            entering={hurufMasuk}
+            exiting={FadeOut.duration(DURASI.keluar)}
+            style={gaya.tumpuk}
+          >
+            {huruf}
+          </Animated.View>
+        </LayoutAnimationConfig>
+      ) : (
+        huruf
+      )}
     </View>
   );
 }
@@ -91,7 +133,8 @@ function BarisMode(props: {
 }
 
 const gaya = StyleSheet.create({
-  lingkaran: { alignItems: "center", justifyContent: "center" },
+  lingkaran: { alignItems: "center", justifyContent: "center", overflow: "hidden" },
+  tumpuk: { ...StyleSheet.absoluteFill, alignItems: "center", justifyContent: "center" },
   huruf: { ...HURUF.lg, fontWeight: TEBAL.ekstra, includeFontPadding: false },
   baris: {
     flexDirection: "row",

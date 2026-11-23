@@ -1,8 +1,10 @@
 import type { BottomTabBarProps } from "expo-router/js-tabs";
 import { type ReactNode, useEffect } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import Animated, { LayoutAnimationConfig } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
+import { GESER, HILANG, MUNCUL } from "@/komponen/ui/gerak";
 import { Ikon } from "@/komponen/ui/ikon";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
 
@@ -69,75 +71,89 @@ export function TabMengambang({
   const rapat = rute.length > 4;
   return (
     <View pointerEvents="box-none" style={[gaya.wadah, { bottom: insets.bottom + JARAK_BAWAH }]}>
-      {kiri ? (
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={kiri.label}
-          onPress={kiri.onPress}
-          style={({ pressed }) => [gaya.bulat, gaya.kiri, pressed ? gaya.ditekan : null]}
-        >
-          {kiri.isi}
-        </Pressable>
-      ) : null}
-      <View style={gaya.pil}>
-        {rute.map((route) => {
-          const judul = descriptors[route.key]?.options.title ?? route.name;
-          const ikonTab = ikon[route.name] ?? "circle";
-          const aktif = route.key === kunciAktif;
-          const warnaTab = aktif ? aksen.teks : WARNA.redup;
-          const menunggu = lencana?.[route.name] ?? 0;
-          const tekan = () => {
-            const e = emitter.emit({
-              type: "tabPress",
-              target: route.key,
-              canPreventDefault: true,
-            });
-            if (!aktif && !e.defaultPrevented) navigateToTab(route.key);
-          };
-          return (
-            <Pressable
-              key={route.key}
-              accessibilityRole="tab"
-              accessibilityState={{ selected: aktif }}
-              accessibilityLabel={menunggu > 0 ? `${judul}, ${menunggu} menunggu` : judul}
-              onPress={tekan}
-              style={({ pressed }) => [gaya.tab, pressed ? gaya.ditekan : null]}
-            >
-              <View
-                style={[
-                  gaya.ikonTab,
-                  rapat ? gaya.ikonTabRapat : null,
-                  aktif ? { backgroundColor: aksen.lembut } : null,
-                ]}
+      <LayoutAnimationConfig skipEntering>
+        {kiri ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={kiri.label}
+            onPress={kiri.onPress}
+            style={({ pressed }) => [gaya.bulat, gaya.kiri, pressed ? gaya.ditekan : null]}
+          >
+            {kiri.isi}
+          </Pressable>
+        ) : null}
+        {/* Ganti mode: tab baru memudar masuk, tab lama memudar keluar, yang tetap bergeser;
+          pil melebar/menyempit saat tombol + muncul/hilang. Tak bergerak saat pertama tampil
+          maupun saat sekadar pindah tab (susunan tak berubah). */}
+        <Animated.View layout={GESER} style={gaya.pil}>
+          {rute.map((route) => {
+            const judul = descriptors[route.key]?.options.title ?? route.name;
+            const ikonTab = ikon[route.name] ?? "circle";
+            const aktif = route.key === kunciAktif;
+            const warnaTab = aktif ? aksen.teks : WARNA.redup;
+            const menunggu = lencana?.[route.name] ?? 0;
+            const tekan = () => {
+              const e = emitter.emit({
+                type: "tabPress",
+                target: route.key,
+                canPreventDefault: true,
+              });
+              if (!aktif && !e.defaultPrevented) navigateToTab(route.key);
+            };
+            return (
+              <Animated.View
+                key={route.key}
+                entering={MUNCUL}
+                exiting={HILANG}
+                layout={GESER}
+                style={gaya.slotTab}
               >
-                <Ikon nama={ikonTab} ukuran={26} warna={warnaTab} tebal={aktif} />
-                {menunggu > 0 ? (
-                  <View style={gaya.lencana}>
-                    <Text style={gaya.lencanaTeks}>{menunggu > 9 ? "9+" : menunggu}</Text>
+                <Pressable
+                  accessibilityRole="tab"
+                  accessibilityState={{ selected: aktif }}
+                  accessibilityLabel={menunggu > 0 ? `${judul}, ${menunggu} menunggu` : judul}
+                  onPress={tekan}
+                  style={({ pressed }) => [gaya.tab, pressed ? gaya.ditekan : null]}
+                >
+                  <View
+                    style={[
+                      gaya.ikonTab,
+                      rapat ? gaya.ikonTabRapat : null,
+                      aktif ? { backgroundColor: aksen.lembut } : null,
+                    ]}
+                  >
+                    <Ikon nama={ikonTab} ukuran={26} warna={warnaTab} tebal={aktif} />
+                    {menunggu > 0 ? (
+                      <View style={gaya.lencana}>
+                        <Text style={gaya.lencanaTeks}>{menunggu > 9 ? "9+" : menunggu}</Text>
+                      </View>
+                    ) : null}
                   </View>
-                ) : null}
-              </View>
-              <Text style={[gaya.label, { color: warnaTab }]} numberOfLines={1}>
-                {judul}
-              </Text>
+                  <Text style={[gaya.label, { color: warnaTab }]} numberOfLines={1}>
+                    {judul}
+                  </Text>
+                </Pressable>
+              </Animated.View>
+            );
+          })}
+        </Animated.View>
+        {tambah ? (
+          <Animated.View entering={MUNCUL} exiting={HILANG}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={tambah.label}
+              onPress={tambah.onPress}
+              style={({ pressed }) => [
+                gaya.bulat,
+                { backgroundColor: aksen.isi },
+                pressed ? gaya.ditekan : null,
+              ]}
+            >
+              <Ikon nama="plus" ukuran={28} warna={aksen.teksIsi} tebal />
             </Pressable>
-          );
-        })}
-      </View>
-      {tambah ? (
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={tambah.label}
-          onPress={tambah.onPress}
-          style={({ pressed }) => [
-            gaya.bulat,
-            { backgroundColor: aksen.isi },
-            pressed ? gaya.ditekan : null,
-          ]}
-        >
-          <Ikon nama="plus" ukuran={28} warna={aksen.teksIsi} tebal />
-        </Pressable>
-      ) : null}
+          </Animated.View>
+        ) : null}
+      </LayoutAnimationConfig>
     </View>
   );
 }
@@ -162,6 +178,7 @@ const gaya = StyleSheet.create({
     backgroundColor: WARNA.permukaanTinggi,
     paddingHorizontal: RUANG[1],
   },
+  slotTab: { flex: 1, height: "100%" },
   tab: {
     flex: 1,
     height: "100%",
