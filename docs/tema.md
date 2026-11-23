@@ -97,7 +97,8 @@ H/M/T/L dan label mode.
 | Peran | Token | Nilai |
 |---|---|---|
 | Latar layar, isi netral | `latar`, `isiNetral` | kertas `#f4f2ec` |
-| Kartu, isian, tab bar, lembar | `permukaan`, `permukaanTinggi` | putih hangat `#fffefb` |
+| Kartu, isian, lembar bawah | `permukaan`, `permukaanTinggi` | putih hangat `#fffefb` |
+| Tab bar mengambang | `latarTab` (pil), `ikonTab` (tab tak aktif), kapsul aktif `utamaIsi` | hitam hangat `#1c1917`, abu `#a8a29e`, coral |
 | Segmen aktif, garis | `isiNetralTegas`, `garis` | krem `#d9d5cc` |
 | Batas isian, rel, placeholder | `garisTegas`, `samar` | stone-500 `#78716c` |
 | Teks | `teks` → `teksLabel` → `teksKedua` → `redup` | stone-900 → 800 → 700 → 600 |
@@ -112,7 +113,9 @@ maupun untuk teks di atas kertas (2,8:1). Coral hanya dipakai sebagai **isi**; t
 terakota memakai `#a8461f`.
 
 **Kedalaman tanpa bayangan:** latar kertas → kartu putih hangat (lebih terang); yang melayang
-(tab bar, lembar bawah) sama putihnya dengan kartu dan dipisah **garis**.
+(lembar bawah) sama putihnya dengan kartu dan dipisah **garis**. Tab bar mengambang sengaja
+**hitam hangat** (24 Nov 2026, arahan pemilik) dengan kapsul coral meluncur di tab aktif —
+kontras penuh dengan halaman kertas, jadi tak butuh garis maupun bayangan.
 
 | Garis | Token | Syarat |
 |---|---|---|

@@ -23,6 +23,8 @@ const kertas = {
   100: "#f4f2ec",
   /** Garis & isi netral tegas — krem. */
   200: "#d9d5cc",
+  /** Ikon & tulisan tab tak aktif di atas tab bar hitam. */
+  400: "#a8a29e",
   500: "#78716c",
   600: "#57534e",
   700: "#44403c",

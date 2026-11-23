@@ -11,7 +11,8 @@ import { PALET } from "./palet";
  *  - nilai warna mentah hanya di `palet.ts`; layar tak pernah mengimpor palet;
  *  - nama token menyebut PERAN (`permukaan`, `teksKedua`), bukan warna (`putih`);
  *  - KEDALAMAN tanpa bayangan: `latar` kertas → `permukaan` putih hangat (kartu, isian);
- *    yang melayang (`permukaanTinggi`: tab bar, lembar) sama putihnya dan dipisah GARIS;
+ *    yang melayang (`permukaanTinggi`: lembar bawah) sama putihnya dan dipisah GARIS; tab bar
+ *    mengambang sengaja hitam hangat (`latarTab`) dengan kapsul coral di tab aktif;
  *  - ARTI WARNA terpisah dari MEREK: `utama*` (terakota) = merek & aksi; `sukses*` (hijau)
  *    = berhasil / boleh; `bahaya*` (merah) = galat & belum boleh; `waspada*` (amber tua) =
  *    peringatan. Jangan memakai `utama` untuk arti "berhasil";
@@ -31,7 +32,7 @@ export const WARNA = {
   latar: kertas[100],
   /** Kartu, isian, tombol kedua — putih hangat. */
   permukaan: kertas[50],
-  /** Yang melayang di atas isi: tab bar, lembar bawah — putih seperti kartu, dipisah `garis`. */
+  /** Yang melayang di atas isi: lembar bawah — putih seperti kartu, dipisah `garis` (tab bar: `latarTab`). */
   permukaanTinggi: kertas[50],
   /** Isi netral: kolom di dalam kartu, avatar, lencana netral, kerangka muat, tombol papan angka. */
   isiNetral: kertas[100],
@@ -103,6 +104,10 @@ export const WARNA = {
   tiraiTerang: tirai.terang,
   /** Lapisan kertas tembus pandang yang menutup kartu selama tulisan berjalan ("Mencatat…"). */
   tiraiSibuk: tirai.kertas,
+
+  /** Tab bar mengambang: pil hitam hangat; tab tak aktif abu terang; tab aktif = kapsul `utamaIsi`. */
+  latarTab: kertas[900],
+  ikonTab: kertas[400],
 
   /** Layar transisi beralih mode: latar hitam hangat, teks kertas. */
   latarTransisi: kertas[900],

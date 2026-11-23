@@ -1,10 +1,15 @@
 import type { BottomTabBarProps } from "expo-router/js-tabs";
-import { type ReactNode, useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import Animated, { LayoutAnimationConfig } from "react-native-reanimated";
+import { type ReactNode, useCallback, useEffect, useRef } from "react";
+import { type LayoutChangeEvent, StyleSheet, Text, View } from "react-native";
+import Animated, {
+  LayoutAnimationConfig,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
-import { GESER, HILANG, MUNCUL } from "@/komponen/ui/gerak";
+import { GESER, HILANG, KURVA, MUNCUL } from "@/komponen/ui/gerak";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Tekan } from "@/komponen/ui/tekan";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
@@ -15,6 +20,8 @@ const TINGGI = 64;
 const TOMBOL = 56;
 /** Jarak pil dari tepi bawah area aman. */
 const JARAK_BAWAH = RUANG[3];
+/** Celah antara tepi pil dan kapsul tab aktif. */
+const CELAH = 6;
 
 /**
  * Ruang kosong di bawah isi layar ber-tab, supaya butir terakhir tidak
@@ -25,12 +32,20 @@ export function useRuangTab(): number {
 }
 
 /**
- * TAB BAR MENGAMBANG — (kiri) · pil berisi tab-tab layar · (+). Judul dari
- * `title` tiap layar; ikon Lucide per nama rute. Tab aktif & tombol + memakai
- * `warna` (warna mode aplikasi; bawaan terakota merek). Tombol kiri & + tidak
- * tampil bila tak diberikan (mis. mode Laporan tanpa +). `tampil` = rute yang
- * tampil di pil, urut seperti itu (bawaan: semua rute); bila tab yang sedang
- * dibuka tak lagi tampil (ganti mode), pindah ke tab tampil pertama.
+ * TAB BAR MENGAMBANG (rombak 24 Nov 2026, arahan pemilik: latar hitam, tab aktif warna
+ * utama) — (mode) · pil HITAM HANGAT berisi tab-tab · (+).
+ *
+ * - Tab aktif = KAPSUL coral (`warna.isi`) dengan ikon & tulisan gelap (`warna.teksIsi`).
+ *   Kapsul MELUNCUR ke tab yang diketuk (220 ms, ease-out, UI thread); tab tak aktif abu
+ *   terang (`ikonTab`). Pertama tampil: kapsul langsung di tempat, tanpa meluncur.
+ * - Tombol mode (kiri) = lingkaran hitam berisi huruf mode; tombol + (kanan) tetap coral
+ *   pekat — aksi utama paling menonjol.
+ * - Ganti mode: tab baru memudar masuk, tab lama memudar keluar, yang tetap bergeser
+ *   (`GESER`); kapsul ikut ke tempat tab aktif yang baru.
+ *
+ * Judul dari `title` tiap layar; ikon Lucide per nama rute. `tampil` = rute yang tampil di
+ * pil, urut (bawaan: semua rute); bila tab yang sedang dibuka tak lagi tampil (ganti mode),
+ * pindah ke tab tampil pertama. Tombol kiri & + tak tampil bila tak diberikan.
  */
 export function TabMengambang({
   state,
@@ -68,8 +83,36 @@ export function TabMengambang({
   useEffect(() => {
     if (tersembunyi && kunciPertama) navigateToTab(kunciPertama);
   }, [tersembunyi, kunciPertama, navigateToTab]);
-  // Lima tab sepil: bantalan sorot ikon dirampingkan supaya label tak terpotong.
-  const rapat = rute.length > 4;
+
+  // Kapsul tab aktif: posisi & lebar tiap slot tab dicatat dari tata letak, kapsul
+  // menuju slot aktif. Lebar boleh dianimasikan: kapsul absolut & tanpa anak.
+  const posisi = useRef(new Map<string, { x: number; lebar: number }>());
+  const x = useSharedValue(0);
+  const lebar = useSharedValue(0);
+  const tampak = useSharedValue(0);
+  const geserKapsul = useCallback(
+    (kunci: string | undefined) => {
+      const p = kunci ? posisi.current.get(kunci) : undefined;
+      if (!p) return;
+      if (tampak.get() === 0) {
+        x.set(p.x);
+        lebar.set(p.lebar);
+        tampak.set(1);
+        return;
+      }
+      const kurva = { duration: 220, easing: KURVA.keluar };
+      x.set(withTiming(p.x, kurva));
+      lebar.set(withTiming(p.lebar, kurva));
+    },
+    [x, lebar, tampak],
+  );
+  useEffect(() => geserKapsul(kunciAktif), [kunciAktif, geserKapsul]);
+  const gayaKapsul = useAnimatedStyle(() => ({
+    opacity: tampak.get(),
+    width: lebar.get(),
+    transform: [{ translateX: x.get() }],
+  }));
+
   return (
     <View pointerEvents="box-none" style={[gaya.wadah, { bottom: insets.bottom + JARAK_BAWAH }]}>
       <LayoutAnimationConfig skipEntering>
@@ -83,15 +126,16 @@ export function TabMengambang({
             {kiri.isi}
           </Tekan>
         ) : null}
-        {/* Ganti mode: tab baru memudar masuk, tab lama memudar keluar, yang tetap bergeser;
-          pil melebar/menyempit saat tombol + muncul/hilang. Tak bergerak saat pertama tampil
-          maupun saat sekadar pindah tab (susunan tak berubah). */}
         <Animated.View layout={GESER} style={gaya.pil}>
+          <Animated.View
+            pointerEvents="none"
+            style={[gaya.kapsul, { backgroundColor: aksen.isi }, gayaKapsul]}
+          />
           {rute.map((route) => {
             const judul = descriptors[route.key]?.options.title ?? route.name;
             const ikonTab = ikon[route.name] ?? "circle";
             const aktif = route.key === kunciAktif;
-            const warnaTab = aktif ? aksen.teks : WARNA.redup;
+            const warnaTab = aktif ? aksen.teksIsi : WARNA.ikonTab;
             const menunggu = lencana?.[route.name] ?? 0;
             const tekan = () => {
               const e = emitter.emit({
@@ -101,6 +145,11 @@ export function TabMengambang({
               });
               if (!aktif && !e.defaultPrevented) navigateToTab(route.key);
             };
+            const catatPosisi = (e: LayoutChangeEvent) => {
+              const { x: kiriSlot, width } = e.nativeEvent.layout;
+              posisi.current.set(route.key, { x: kiriSlot, lebar: width });
+              if (aktif) geserKapsul(route.key);
+            };
             return (
               <Animated.View
                 key={route.key}
@@ -108,29 +157,27 @@ export function TabMengambang({
                 exiting={HILANG}
                 layout={GESER}
                 style={gaya.slotTab}
+                onLayout={catatPosisi}
               >
                 <Tekan
                   accessibilityRole="tab"
                   accessibilityState={{ selected: aktif }}
                   accessibilityLabel={menunggu > 0 ? `${judul}, ${menunggu} menunggu` : judul}
                   onPress={tekan}
-                  style={({ pressed }) => [gaya.tab, pressed ? gaya.ditekan : null]}
+                  style={({ pressed }) => [gaya.tab, pressed && !aktif ? gaya.tabDitekan : null]}
                 >
-                  <View
-                    style={[
-                      gaya.ikonTab,
-                      rapat ? gaya.ikonTabRapat : null,
-                      aktif ? { backgroundColor: aksen.lembut } : null,
-                    ]}
-                  >
-                    <Ikon nama={ikonTab} ukuran={26} warna={warnaTab} tebal={aktif} />
+                  <View>
+                    <Ikon nama={ikonTab} ukuran={22} warna={warnaTab} tebal={aktif} />
                     {menunggu > 0 ? (
                       <View style={gaya.lencana}>
                         <Text style={gaya.lencanaTeks}>{menunggu > 9 ? "9+" : menunggu}</Text>
                       </View>
                     ) : null}
                   </View>
-                  <Text style={[gaya.label, { color: warnaTab }]} numberOfLines={1}>
+                  <Text
+                    style={[gaya.label, aktif ? gaya.labelAktif : null, { color: warnaTab }]}
+                    numberOfLines={1}
+                  >
                     {judul}
                   </Text>
                 </Tekan>
@@ -174,10 +221,16 @@ const gaya = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderRadius: SUDUT.bulat,
-    borderWidth: 1,
-    borderColor: WARNA.garis,
-    backgroundColor: WARNA.permukaanTinggi,
-    paddingHorizontal: RUANG[1],
+    backgroundColor: WARNA.latarTab,
+    paddingHorizontal: CELAH,
+  },
+  // Kapsul tab aktif: di belakang tab, setinggi pil dikurangi celah; posisi & lebar dari animasi.
+  kapsul: {
+    position: "absolute",
+    left: 0,
+    top: CELAH,
+    bottom: CELAH,
+    borderRadius: SUDUT.bulat,
   },
   slotTab: { flex: 1, height: "100%" },
   tab: {
@@ -185,32 +238,28 @@ const gaya = StyleSheet.create({
     height: "100%",
     alignItems: "center",
     justifyContent: "center",
-    gap: RUANG[0.5],
+    gap: 2,
   },
-  ditekan: { opacity: 0.6 },
-  ikonTab: {
-    height: 32,
-    paddingHorizontal: RUANG[3],
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: SUDUT.bulat,
-  },
-  ikonTabRapat: { paddingHorizontal: RUANG[2] },
-  label: { ...HURUF["2xs"], fontWeight: TEBAL.biasa },
+  tabDitekan: { transform: [{ scale: 0.92 }] },
+  ditekan: { opacity: 0.75, transform: [{ scale: 0.96 }] },
+  label: { ...HURUF["2xs"], fontWeight: TEBAL.sedang },
+  labelAktif: { fontWeight: TEBAL.ekstra },
   lencana: {
     position: "absolute",
-    top: -RUANG[1],
-    right: RUANG[1],
+    top: -7,
+    right: -11,
     minWidth: 18,
     height: 18,
     paddingHorizontal: RUANG[1],
     borderRadius: SUDUT.bulat,
+    borderWidth: 2,
+    borderColor: WARNA.latarTab,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: WARNA.bahayaBingkai,
   },
   lencanaTeks: {
-    ...HURUF["2xs"],
+    ...HURUF["3xs"],
     fontWeight: TEBAL.ekstra,
     color: WARNA.teksAtasBahaya,
     fontVariant: ["tabular-nums"],
@@ -222,5 +271,5 @@ const gaya = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  kiri: { borderWidth: 1, borderColor: WARNA.garis, backgroundColor: WARNA.permukaanTinggi },
+  kiri: { backgroundColor: WARNA.latarTab },
 });

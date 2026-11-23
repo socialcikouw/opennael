@@ -84,6 +84,8 @@ describe("kontras teks di atas isi berwarna", () => {
     ["waspada", "waspadaLembut", 4.5],
     ["diAtasFoto", "latarMedia", 7],
     ["teksTransisi", "latarTransisi", 7],
+    ["ikonTab", "latarTab", 4.5],
+    ["utamaIsi", "latarTab", 3],
     ["teksTransisiRedup", "latarTransisi", 4.5],
     ["utamaIsi", "latarTransisi", 3],
     ["tintaQr", "latarQr", 7],
