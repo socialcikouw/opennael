@@ -5,6 +5,7 @@ import { router, Stack } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Gulir } from "@/komponen/ui/layar";
+import { SelubungMencatat } from "@/komponen/ui/selubung-mencatat";
 import { Keterangan } from "@/komponen/ui/teks";
 import { Tombol } from "@/komponen/ui/tombol";
 import { cobaAturan } from "@/lib/aturan";
@@ -67,7 +68,14 @@ export function LayarBayar({ id }: { id: string }) {
 
   return (
     <View style={gaya.layar}>
-      <Stack.Screen options={{ title: "Bayar Angsuran" }} />
+      {/* Selama menyimpan: kembali dikunci (header & usap), formulir ditutup selubung. */}
+      <Stack.Screen
+        options={{
+          title: "Bayar Angsuran",
+          headerBackVisible: !bayar.isPending,
+          gestureEnabled: !bayar.isPending,
+        }}
+      />
 
       <View style={gaya.atas}>
         <View style={gaya.nasabah}>
@@ -139,6 +147,9 @@ export function LayarBayar({ id }: { id: string }) {
         onTekan={(k) => ubah(tekanBayar(digit, k))}
         onKonfirmasi={konfirmasi}
       />
+      {bayar.isPending ? (
+        <SelubungMencatat judul="Mencatat pembayaran…" warna={aksen.teks} layar />
+      ) : null}
     </View>
   );
 }

@@ -4,6 +4,7 @@ import { router, Stack } from "expo-router";
 import { useState } from "react";
 import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Gulir } from "@/komponen/ui/layar";
+import { SelubungMencatat } from "@/komponen/ui/selubung-mencatat";
 import { Keterangan } from "@/komponen/ui/teks";
 import { Tombol } from "@/komponen/ui/tombol";
 import { cobaAturan } from "@/lib/aturan";
@@ -100,7 +101,14 @@ export function LayarGulung({ id }: { id: string }) {
 
   return (
     <View style={gaya.layar}>
-      <Stack.Screen options={{ title: "Gulung" }} />
+      {/* Selama menyimpan: kembali dikunci (header & usap), formulir ditutup selubung. */}
+      <Stack.Screen
+        options={{
+          title: "Gulung",
+          headerBackVisible: !gulung.isPending,
+          gestureEnabled: !gulung.isPending,
+        }}
+      />
 
       <ScrollView
         style={gaya.gulir}
@@ -161,6 +169,9 @@ export function LayarGulung({ id }: { id: string }) {
           setKamera(false);
         }}
       />
+      {gulung.isPending ? (
+        <SelubungMencatat judul="Mencatat gulung…" warna={aksen.teks} layar />
+      ) : null}
     </View>
   );
 }

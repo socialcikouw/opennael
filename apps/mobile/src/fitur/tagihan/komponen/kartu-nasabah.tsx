@@ -1,8 +1,9 @@
 import { memo } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import type { Stempel } from "@/fitur/lapangan";
+import { SelubungMencatat } from "@/komponen/ui/selubung-mencatat";
 import { Tekan } from "@/komponen/ui/tekan";
-import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
+import { RUANG, SUDUT, WARNA, type WarnaMode } from "@/tema";
 import type { KartuVM } from "../inti/kartu";
 import { AngkaKartu } from "./angka-kartu";
 import { GridBulan } from "./grid-bulan";
@@ -71,7 +72,8 @@ export const KartuNasabah = memo(function KartuNasabah(props: {
       {props.stempel ? (
         <StempelBerhasil jenis={props.stempel} />
       ) : props.sibuk ? (
-        <SelubungSibuk aksen={props.aksen} />
+        // Selama tulisan berjalan: menutup kartu (tombol tak terjangkau sentuhan).
+        <SelubungMencatat warna={props.aksen.teks} />
       ) : null}
     </View>
   );
@@ -93,16 +95,6 @@ export const KartuNasabah = memo(function KartuNasabah(props: {
   );
 });
 
-/** Selama tulisan berjalan: menutup kartu (tombol tak terjangkau sentuhan) dengan penanda tunggu. */
-function SelubungSibuk({ aksen }: { aksen: WarnaMode }) {
-  return (
-    <View style={gaya.selubung} accessibilityLiveRegion="polite">
-      <ActivityIndicator color={aksen.teks} />
-      <Text style={[gaya.sibukTeks, { color: aksen.teks }]}>Mencatat…</Text>
-    </View>
-  );
-}
-
 const gaya = StyleSheet.create({
   wadah: { marginHorizontal: RUANG[4] },
   kotak: {
@@ -113,14 +105,4 @@ const gaya = StyleSheet.create({
     borderColor: WARNA.garis,
     backgroundColor: WARNA.permukaan,
   },
-  // Menutup seluruh kotak (rel di kiri tetap terlihat).
-  selubung: {
-    ...StyleSheet.absoluteFill,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: RUANG[2],
-    borderRadius: SUDUT.besar,
-    backgroundColor: WARNA.tiraiSibuk,
-  },
-  sibukTeks: { ...HURUF.sm, fontWeight: TEBAL.semi },
 });
