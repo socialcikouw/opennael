@@ -110,7 +110,7 @@ isi berkas, ukuran, SHA-256).
 | **expo-image-manipulator** | Kompres & simpan ulang foto (±200 KB, EXIF terbuang). |
 | **expo-location** | GPS titik rumah & lokasi foto. |
 | **expo-secure-store** | Token perangkat. |
-| **react-native-reanimated** + **expo-haptics** | Animasi di UI thread & getar halus. Kurva, durasi, dan pembangun bersama (`MUNCUL`, `HILANG`, `GESER`) di `src/komponen/ui/gerak.ts`: ease-out untuk masuk/keluar, tak pernah ease-in, < 300 ms, mulai dari skala 0,95 (bukan 0). Animasi hanya untuk kejadian yang jarang (ganti mode), bukan pindah tab biasa. Getar satu kali per tindakan, selalu bersama tanda visual. |
+| **react-native-reanimated** + **expo-haptics** | Animasi di UI thread & getar halus. Kurva, durasi, dan pembangun bersama (`MUNCUL`, `HILANG`, `GESER`) di `src/komponen/ui/gerak.ts`: ease-out untuk masuk/keluar, tak pernah ease-in, < 300 ms, mulai dari skala 0,95 (bukan 0). Animasi hanya untuk kejadian yang jarang (ganti mode = layar transisi `TiraiMode`, dipicu lewat `beralihMode`, bukan `modeAktif.ganti` langsung), bukan pindah tab biasa. Getar satu kali per tindakan, selalu bersama tanda visual. |
 | **react-native-keyboard-controller** | Isian tak tertutup papan ketik di iOS & Android layar penuh (edge-to-edge): `KeyboardProvider` di `app/_layout.tsx`, layar berisian memakai `Gulir` / `GulirKeyboard` (`src/komponen/ui/layar.tsx`) — bukan `ScrollView` polos + `automaticallyAdjustKeyboardInsets` (iOS saja). Sudah ada di Expo Go SDK 58. |
 
 ### `apps/web`

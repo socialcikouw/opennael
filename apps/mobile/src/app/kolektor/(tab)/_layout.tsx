@@ -11,7 +11,7 @@ import {
   LembarMode,
   MODE,
   type ModeApp,
-  SorotMode,
+  TiraiMode,
   useMode,
 } from "@/fitur/tagihan";
 import { TabMengambang } from "@/komponen/tab-mengambang";
@@ -112,8 +112,9 @@ export default function TabKolektor() {
         <Tabs.Screen name="setelan" options={{ title: "Setelan" }} />
         <Tabs.Screen name="analitik" options={{ title: "Analitik" }} />
       </Tabs>
-      <SorotMode />
       <LembarMode terbuka={lembarMode} onTutup={() => setLembarMode(false)} />
+      {/* Paling atas: menutupi tab & isi selama beralih mode. */}
+      <TiraiMode />
     </>
   );
 }

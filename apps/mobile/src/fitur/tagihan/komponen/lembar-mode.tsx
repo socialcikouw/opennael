@@ -6,7 +6,8 @@ import { LembarBawah } from "@/komponen/lembar-bawah";
 import { DURASI, KURVA } from "@/komponen/ui/gerak";
 import { Ikon } from "@/komponen/ui/ikon";
 import { AKSEN_MODE, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
-import { MODE, type ModeApp, modeAktif, ringkasPerMode, URUTAN_MODE, useMode } from "../mode";
+import { MODE, type ModeApp, ringkasPerMode, URUTAN_MODE, useMode } from "../mode";
+import { beralihMode } from "../transisi-mode";
 
 /** Huruf baru meluncur naik ke tempatnya (ease-out); huruf lama memudar cepat. */
 function hurufMasuk() {
@@ -79,7 +80,7 @@ export function LembarMode({ terbuka, onTutup }: { terbuka: boolean; onTutup: ()
 
   const pilih = (m: ModeApp) => {
     onTutup();
-    modeAktif.ganti(m);
+    beralihMode(m);
   };
 
   return (

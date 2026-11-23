@@ -101,6 +101,11 @@ export const WARNA = {
   tiraiTerang: tirai.terang,
   /** Lapisan kertas tembus pandang yang menutup kartu selama tulisan berjalan ("Mencatat…"). */
   tiraiSibuk: tirai.kertas,
+
+  /** Layar transisi beralih mode: latar hitam hangat, teks kertas. */
+  latarTransisi: kertas[900],
+  teksTransisi: kertas[50],
+  teksTransisiRedup: kertas[200],
 } as const;
 
 /** Bentuk palet (nama kunci → teks warna); jenis parameter fungsi gaya `(WARNA: Warna) => …`. */

@@ -2,7 +2,7 @@ import { judul, tampilKampung, tampilNama } from "@opennael/format";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { MODE, modeAktif, useMode } from "@/fitur/tagihan";
+import { beralihMode, MODE, useMode } from "@/fitur/tagihan";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Tombol } from "@/komponen/ui/tombol";
@@ -63,12 +63,13 @@ export function ItemPengingat({ p, tanpaMutasi = false }: { p: Pengingat; tanpaM
   const sisa = p.nasabah.length - tampil.length;
 
   const keTagihan = () => {
-    if (p.jenisPinjaman) modeAktif.ganti(p.jenisPinjaman);
-    router.navigate("/kolektor/tagihan");
+    const keLayar = () => router.navigate("/kolektor/tagihan");
+    // Pindah tab terjadi di balik tirai transisi, sesudah mode berganti.
+    if (p.jenisPinjaman) beralihMode(p.jenisPinjaman, keLayar);
+    else keLayar();
   };
   const keMutasi = () => {
-    modeAktif.ganti("laporan");
-    router.navigate("/kolektor/mutasi");
+    beralihMode("laporan", () => router.navigate("/kolektor/mutasi"));
   };
 
   return (

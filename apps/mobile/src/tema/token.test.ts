@@ -82,6 +82,9 @@ describe("kontras teks di atas isi berwarna", () => {
     ["bahayaTeks", "bahayaLembut", 4.5],
     ["waspada", "waspadaLembut", 4.5],
     ["diAtasFoto", "latarMedia", 7],
+    ["teksTransisi", "latarTransisi", 7],
+    ["teksTransisiRedup", "latarTransisi", 4.5],
+    ["utamaIsi", "latarTransisi", 3],
     ["tintaQr", "latarQr", 7],
   ];
   for (const [teks, isi, minimal] of PASANGAN) {
