@@ -1,8 +1,9 @@
 import { kunciWilayah } from "@opennael/domain";
 import { useMemo } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { g } from "@/komponen/ui/gaya-bersama";
 import { Isian } from "@/komponen/ui/isian";
+import { Tekan } from "@/komponen/ui/tekan";
 import { useKampung } from "../data";
 
 /** Kampung: ketik bebas, atau ketuk kampung yang sudah ada (ejaan baku). */
@@ -32,13 +33,13 @@ export function PilihKampung(props: {
       {props.terpilih ? null : (
         <View style={g.bungkus}>
           {saran.map((k) => (
-            <Pressable
+            <Tekan
               key={k.id}
               onPress={() => props.onUbah(k.nama, k.id)}
               style={({ pressed }) => [g.chip, pressed ? g.ditekan : null]}
             >
               <Text style={g.teksKecil}>{k.nama}</Text>
-            </Pressable>
+            </Tekan>
           ))}
         </View>
       )}

@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Baris, Kartu } from "@/komponen/ui/kartu";
 import { Lencana } from "@/komponen/ui/lencana";
+import { Tekan } from "@/komponen/ui/tekan";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 
 /** Pengganti judul & nominal yang disembunyikan (sama dengan tabungan di kartu tagih). */
@@ -72,7 +73,7 @@ function KotakAngka(props: {
         <Text style={gaya.saldoNilai}>{props.sisaSaldo ?? "—"}</Text>
       </View>
       <View style={gaya.pemisah} />
-      <Pressable
+      <Tekan
         onPress={() => setTampil((t) => !t)}
         accessibilityRole="button"
         accessibilityLabel={
@@ -91,7 +92,7 @@ function KotakAngka(props: {
           <Text style={gaya.nilai}>{nilai(props.tabungan)}</Text>
           <Text style={gaya.nilai}>{nilai(props.hutang)}</Text>
         </View>
-      </Pressable>
+      </Tekan>
     </View>
   );
 }

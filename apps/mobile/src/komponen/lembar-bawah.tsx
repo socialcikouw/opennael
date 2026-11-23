@@ -3,7 +3,6 @@ import {
   KeyboardAvoidingView,
   Modal,
   Platform,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -11,6 +10,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ikon } from "@/komponen/ui/ikon";
+import { Tekan } from "@/komponen/ui/tekan";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 
 /**
@@ -37,14 +37,14 @@ export function LembarBawah(props: {
       onDismiss={props.onSelesaiTutup}
       statusBarTranslucent
     >
-      <Pressable style={gaya.tirai} onPress={props.onTutup} accessibilityLabel="Tutup" />
+      <Tekan getar={false} style={gaya.tirai} onPress={props.onTutup} accessibilityLabel="Tutup" />
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined}>
         <View style={[gaya.lembar, { paddingBottom: bawah + RUANG[4] }]}>
           <View style={gaya.pegangan} />
           {props.judul ? (
             <View style={gaya.kepala}>
               <Text style={gaya.judul}>{props.judul}</Text>
-              <Pressable
+              <Tekan
                 onPress={props.onTutup}
                 hitSlop={10}
                 accessibilityRole="button"
@@ -52,7 +52,7 @@ export function LembarBawah(props: {
                 style={gaya.tutup}
               >
                 <Ikon nama="x" ukuran={18} warna={WARNA.teksKedua} />
-              </Pressable>
+              </Tekan>
             </View>
           ) : null}
           <ScrollView

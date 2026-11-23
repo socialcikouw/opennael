@@ -1,11 +1,12 @@
 import type { BottomTabBarProps } from "expo-router/js-tabs";
 import { type ReactNode, useEffect } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import Animated, { LayoutAnimationConfig } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { GESER, HILANG, MUNCUL } from "@/komponen/ui/gerak";
 import { Ikon } from "@/komponen/ui/ikon";
+import { Tekan } from "@/komponen/ui/tekan";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
 
 /** Tinggi pil tab. */
@@ -73,14 +74,14 @@ export function TabMengambang({
     <View pointerEvents="box-none" style={[gaya.wadah, { bottom: insets.bottom + JARAK_BAWAH }]}>
       <LayoutAnimationConfig skipEntering>
         {kiri ? (
-          <Pressable
+          <Tekan
             accessibilityRole="button"
             accessibilityLabel={kiri.label}
             onPress={kiri.onPress}
             style={({ pressed }) => [gaya.bulat, gaya.kiri, pressed ? gaya.ditekan : null]}
           >
             {kiri.isi}
-          </Pressable>
+          </Tekan>
         ) : null}
         {/* Ganti mode: tab baru memudar masuk, tab lama memudar keluar, yang tetap bergeser;
           pil melebar/menyempit saat tombol + muncul/hilang. Tak bergerak saat pertama tampil
@@ -108,7 +109,8 @@ export function TabMengambang({
                 layout={GESER}
                 style={gaya.slotTab}
               >
-                <Pressable
+                <Tekan
+                  getar="pilih"
                   accessibilityRole="tab"
                   accessibilityState={{ selected: aktif }}
                   accessibilityLabel={menunggu > 0 ? `${judul}, ${menunggu} menunggu` : judul}
@@ -132,14 +134,14 @@ export function TabMengambang({
                   <Text style={[gaya.label, { color: warnaTab }]} numberOfLines={1}>
                     {judul}
                   </Text>
-                </Pressable>
+                </Tekan>
               </Animated.View>
             );
           })}
         </Animated.View>
         {tambah ? (
           <Animated.View entering={MUNCUL} exiting={HILANG}>
-            <Pressable
+            <Tekan
               accessibilityRole="button"
               accessibilityLabel={tambah.label}
               onPress={tambah.onPress}
@@ -150,7 +152,7 @@ export function TabMengambang({
               ]}
             >
               <Ikon nama="plus" ukuran={28} warna={aksen.teksIsi} tebal />
-            </Pressable>
+            </Tekan>
           </Animated.View>
         ) : null}
       </LayoutAnimationConfig>

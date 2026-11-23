@@ -1,10 +1,11 @@
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { useRef, useState } from "react";
-import { Image, Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, Modal, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { g } from "@/komponen/ui/gaya-bersama";
 import { Ikon } from "@/komponen/ui/ikon";
 import { PesanGalat } from "@/komponen/ui/isian";
+import { Tekan } from "@/komponen/ui/tekan";
 import { Keterangan } from "@/komponen/ui/teks";
 import { Tombol } from "@/komponen/ui/tombol";
 import { unggahFotoSerahTerima } from "@/platform/foto";
@@ -109,16 +110,16 @@ export function KameraSerahTerima(props: {
               </Text>
               <PesanGalat pesan={galat} />
               <View style={gaya.kendali}>
-                <Pressable onPress={tutup} style={gaya.sisi}>
+                <Tekan onPress={tutup} style={gaya.sisi}>
                   <Text style={gaya.batal}>Batal</Text>
-                </Pressable>
-                <Pressable
+                </Tekan>
+                <Tekan
                   onPress={() => void jepret()}
                   disabled={!siap}
                   style={[gaya.rana, siap ? null : gaya.ranaMati]}
                 >
                   <View style={gaya.ranaIsi} />
-                </Pressable>
+                </Tekan>
                 <View style={gaya.sisi} />
               </View>
             </View>
@@ -166,9 +167,9 @@ export function IsianFotoSerahTerima(props: {
               })}{" "}
               · berlaku 1 jam
             </Text>
-            <Pressable onPress={() => setTerbuka(true)} hitSlop={10}>
+            <Tekan onPress={() => setTerbuka(true)} hitSlop={10}>
               <Text style={g.tautan}>Potret ulang</Text>
-            </Pressable>
+            </Tekan>
           </View>
         </View>
       ) : (

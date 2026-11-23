@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Pressable, StyleSheet, Text } from "react-native";
+import { StyleSheet, Text } from "react-native";
+import { Tekan } from "@/komponen/ui/tekan";
 import { HURUF, TEBAL, WARNA } from "@/tema";
 
 /**
@@ -9,7 +10,7 @@ import { HURUF, TEBAL, WARNA } from "@/tema";
 export function TabunganRahasia({ nilai, besar }: { nilai: string; besar?: boolean }) {
   const [buka, setBuka] = useState(false);
   return (
-    <Pressable
+    <Tekan
       onPress={() => setBuka((b) => !b)}
       hitSlop={8}
       accessibilityRole="button"
@@ -20,7 +21,7 @@ export function TabunganRahasia({ nilai, besar }: { nilai: string; besar?: boole
       }
     >
       <Text style={besar ? gaya.besar : gaya.kecil}>{buka ? nilai : "••••"}</Text>
-    </Pressable>
+    </Tekan>
   );
 }
 

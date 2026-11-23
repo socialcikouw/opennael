@@ -42,6 +42,8 @@ export function bacaTeks(
   kunciLiteral: number[];
   headerKalimat: { baris: number; teks: string }[];
   warnaLiteral: { baris: number; teks: string }[];
+  /** Baris impor `Pressable` langsung dari react-native (HP memakai `Tekan` yang bergetar). */
+  pressableLangsung: number[];
 } {
   const sf = ts.createSourceFile(
     jalur,
@@ -55,6 +57,7 @@ export function bacaTeks(
   const kunciLiteral: number[] = [];
   const headerKalimat: { baris: number; teks: string }[] = [];
   const warnaLiteral: { baris: number; teks: string }[] = [];
+  const pressableLangsung: number[] = [];
   const baris = (n: { getStart(): number }) =>
     sf.getLineAndCharacterOfPosition(n.getStart()).line + 1;
   // biome-ignore lint/suspicious/noExplicitAny: simpul AST tanpa tipe
@@ -65,6 +68,16 @@ export function bacaTeks(
       ts.isStringLiteral(n.moduleSpecifier)
     ) {
       impor.push({ spec: n.moduleSpecifier.text, baris: baris(n) });
+      const nama = n.importClause?.namedBindings;
+      if (
+        n.moduleSpecifier.text === "react-native" &&
+        nama &&
+        ts.isNamedImports(nama) &&
+        // biome-ignore lint/suspicious/noExplicitAny: simpul AST tanpa tipe
+        nama.elements.some((el: any) => (el.propertyName ?? el.name).text === "Pressable")
+      ) {
+        pressableLangsung.push(baris(n));
+      }
     } else if (ts.isCallExpression(n)) {
       if (
         n.expression.kind === ts.SyntaxKind.ImportKeyword &&
@@ -113,7 +126,7 @@ export function bacaTeks(
     ts.forEachChild(n, kunjungi);
   };
   kunjungi(sf);
-  return { impor, tulis, kunciLiteral, headerKalimat, warnaLiteral };
+  return { impor, tulis, kunciLiteral, headerKalimat, warnaLiteral, pressableLangsung };
 }
 
 export function bacaBerkas(jalur: string) {

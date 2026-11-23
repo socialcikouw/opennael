@@ -1,6 +1,7 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
+import { Tekan } from "@/komponen/ui/tekan";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 
 /**
@@ -15,7 +16,7 @@ export function AksiCepat(props: {
   onPress: () => void;
 }) {
   return (
-    <Pressable
+    <Tekan
       onPress={props.onPress}
       accessibilityRole="button"
       accessibilityLabel={props.petunjuk ?? props.label}
@@ -25,7 +26,7 @@ export function AksiCepat(props: {
         <Ikon nama={props.ikon} ukuran={20} warna={WARNA.utama} />
       </View>
       <Text style={gaya.label}>{props.label}</Text>
-    </Pressable>
+    </Tekan>
   );
 }
 

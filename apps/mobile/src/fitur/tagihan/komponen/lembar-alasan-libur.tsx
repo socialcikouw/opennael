@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { LembarBawah } from "@/komponen/lembar-bawah";
 import { Isian } from "@/komponen/ui/isian";
+import { Tekan } from "@/komponen/ui/tekan";
 import { Tombol } from "@/komponen/ui/tombol";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 import type { KartuVM } from "../inti/kartu";
@@ -42,7 +43,8 @@ export function LembarAlasanLibur(props: {
           {ALASAN_CEPAT.map((a) => {
             const pilih = isi === a;
             return (
-              <Pressable
+              <Tekan
+                getar="pilih"
                 key={a}
                 accessibilityRole="button"
                 accessibilityState={{ selected: pilih }}
@@ -50,7 +52,7 @@ export function LembarAlasanLibur(props: {
                 style={[gaya.keping, pilih ? gaya.kepingPilih : null]}
               >
                 <Text style={[gaya.kepingTeks, pilih ? gaya.kepingTeksPilih : null]}>{a}</Text>
-              </Pressable>
+              </Tekan>
             );
           })}
         </View>

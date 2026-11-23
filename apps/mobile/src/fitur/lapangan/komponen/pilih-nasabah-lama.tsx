@@ -2,10 +2,11 @@ import type { NasabahLama } from "@opennael/contracts";
 import { kunciWilayah } from "@opennael/domain";
 import { LABEL_JENIS, rupiah, tampilKampung } from "@opennael/format";
 import { useMemo, useState } from "react";
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { g } from "@/komponen/ui/gaya-bersama";
 import { Isian, PesanGalat } from "@/komponen/ui/isian";
 import { Baris } from "@/komponen/ui/kartu";
+import { Tekan } from "@/komponen/ui/tekan";
 import { Keterangan } from "@/komponen/ui/teks";
 import { TombolTeks } from "@/komponen/ui/tombol";
 import { RUANG, SUDUT, WARNA } from "@/tema";
@@ -60,7 +61,7 @@ export function PilihNasabahLama(props: {
         <Keterangan>Tidak ada nasabah lama tanpa pinjaman aktif.</Keterangan>
       ) : null}
       {cocok.map((n) => (
-        <Pressable
+        <Tekan
           key={n.id}
           onPress={() => props.onPilih(n)}
           style={({ pressed }) => [g.butirDaftar, pressed ? g.butirDitekan : null]}
@@ -72,7 +73,7 @@ export function PilihNasabahLama(props: {
               ? ` · terakhir ${LABEL_JENIS[n.terakhir.jenis]} ${rupiah(n.terakhir.pokok)}`
               : ""}
           </Text>
-        </Pressable>
+        </Tekan>
       ))}
     </View>
   );

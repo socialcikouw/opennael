@@ -1,6 +1,7 @@
 import { memo } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { Ikon } from "@/komponen/ui/ikon";
+import { Tekan } from "@/komponen/ui/tekan";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
 import type { KartuVM } from "../inti/kartu";
 import type { AksiKartu } from "./kartu-nasabah";
@@ -43,7 +44,7 @@ export const KartuSudah = memo(function KartuSudah({
             {vm.p.angsuranKe}
           </Text>
         </View>
-        <Pressable
+        <Tekan
           style={({ pressed }) => [gaya.identitas, pressed ? gaya.ditekan : null]}
           onPress={() => aksi.nasabah(vm)}
           onPressIn={() => aksi.siapNasabah(vm)}
@@ -57,7 +58,7 @@ export const KartuSudah = memo(function KartuSudah({
           <Text style={gaya.alamat} numberOfLines={1}>
             {vm.subjudul}
           </Text>
-        </Pressable>
+        </Tekan>
       </View>
       <View style={gaya.status}>
         <View style={[gaya.pita, { backgroundColor: latar }]}>

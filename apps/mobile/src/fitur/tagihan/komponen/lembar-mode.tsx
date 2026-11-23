@@ -1,10 +1,11 @@
 import { useMemo } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import Animated, { FadeOut, LayoutAnimationConfig, withTiming } from "react-native-reanimated";
 import { useHariIni, useTagihan } from "@/fitur/lapangan";
 import { LembarBawah } from "@/komponen/lembar-bawah";
 import { DURASI, KURVA } from "@/komponen/ui/gerak";
 import { Ikon } from "@/komponen/ui/ikon";
+import { Tekan } from "@/komponen/ui/tekan";
 import { AKSEN_MODE, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 import { MODE, type ModeApp, ringkasPerMode, URUTAN_MODE, useMode } from "../mode";
 import { beralihMode } from "../transisi-mode";
@@ -104,7 +105,8 @@ function BarisMode(props: {
 }) {
   const w = AKSEN_MODE[props.mode];
   return (
-    <Pressable
+    <Tekan
+      getar="pilih"
       onPress={() => props.onPilih(props.mode)}
       accessibilityRole="button"
       accessibilityState={{ selected: props.aktif }}
@@ -129,7 +131,7 @@ function BarisMode(props: {
         ukuran={20}
         warna={props.aktif ? w.teks : WARNA.samar}
       />
-    </Pressable>
+    </Tekan>
   );
 }
 

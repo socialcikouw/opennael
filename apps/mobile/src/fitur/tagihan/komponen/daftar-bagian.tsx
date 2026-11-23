@@ -1,7 +1,8 @@
 import { rupiah } from "@opennael/format";
 import { memo } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { Ikon } from "@/komponen/ui/ikon";
+import { Tekan } from "@/komponen/ui/tekan";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
 import type { Baris, TabKerja } from "../inti/daftar";
 import { LEBAR_REL, TEBAL_REL, TENGAH_REL } from "./rel-kartu";
@@ -26,7 +27,7 @@ export const JudulKelompok = memo(function JudulKelompok({
 }) {
   const uang = baris.total !== null ? rupiah(baris.total) : null;
   return (
-    <Pressable
+    <Tekan
       onPress={() => onLipat(baris.id)}
       accessibilityRole="button"
       accessibilityState={{ expanded: !baris.terlipat }}
@@ -50,7 +51,7 @@ export const JudulKelompok = memo(function JudulKelompok({
         warna={WARNA.redup}
       />
       {!baris.terlipat && !baris.sudah ? <View pointerEvents="none" style={gaya.rel} /> : null}
-    </Pressable>
+    </Tekan>
   );
 });
 

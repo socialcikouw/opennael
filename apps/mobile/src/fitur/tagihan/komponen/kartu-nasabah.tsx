@@ -1,7 +1,8 @@
 import { memo } from "react";
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import Animated, { ZoomIn } from "react-native-reanimated";
 import type { Stempel } from "@/fitur/lapangan";
+import { Tekan } from "@/komponen/ui/tekan";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
 import type { KartuVM } from "../inti/kartu";
 import { AngkaKartu } from "./angka-kartu";
@@ -81,9 +82,9 @@ export const KartuNasabah = memo(function KartuNasabah(props: {
         {lunasi ? (
           // Pembungkus tahan-lama tidak menjadi satu elemen aksesibilitas: tombol di dalamnya
           // tetap terjangkau; aksi Lunasi untuk pembaca layar ada di baris nama.
-          <Pressable accessible={false} delayLongPress={TAHAN_LUNASI_MS} onLongPress={lunasi}>
+          <Tekan accessible={false} delayLongPress={TAHAN_LUNASI_MS} onLongPress={lunasi}>
             {kotak}
-          </Pressable>
+          </Tekan>
         ) : (
           kotak
         )}

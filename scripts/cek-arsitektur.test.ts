@@ -180,3 +180,23 @@ describe("bacaTeks: warna literal (tema HP satu sumber)", () => {
     expect(hasil(teks)).toEqual([{ baris: 5, teks: "#abc" }]);
   });
 });
+
+describe("bacaTeks: Pressable langsung (tombol HP wajib Tekan yang bergetar)", () => {
+  const hasil = (teks: string) => bacaTeks("x.tsx", teks).pressableLangsung;
+  test("impor Pressable dari react-native dilaporkan, juga yang diberi nama lain", () => {
+    expect(hasil('import { Pressable, Text } from "react-native";')).toEqual([1]);
+    const dua = [
+      'import { View } from "react-native";',
+      'import { Pressable as P } from "react-native";',
+    ];
+    expect(hasil(dua.join("\n"))).toEqual([2]);
+  });
+  test("Tekan, Pressable dari paket lain, dan impor tanpa Pressable tidak dilaporkan", () => {
+    const teks = [
+      'import { Tekan } from "@/komponen/ui/tekan";',
+      'import { Pressable } from "react-native-gesture-handler";',
+      'import { Text, View } from "react-native";',
+    ].join("\n");
+    expect(hasil(teks)).toEqual([]);
+  });
+});

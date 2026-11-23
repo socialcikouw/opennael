@@ -1,6 +1,7 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { TabunganRahasia } from "@/fitur/lapangan";
 import { Ikon } from "@/komponen/ui/ikon";
+import { Tekan } from "@/komponen/ui/tekan";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
 import type { KartuVM } from "../inti/kartu";
 import { LencanaHari, LencanaStatus } from "./lencana-kartu";
@@ -40,7 +41,7 @@ export function InfoKartu({
 }) {
   return (
     <View style={gaya.info}>
-      <Pressable
+      <Tekan
         style={({ pressed }) => [gaya.baris, pressed ? gaya.ditekan : null]}
         onPress={onBuka}
         onPressIn={onSiap}
@@ -69,7 +70,7 @@ export function InfoKartu({
           {vm.namaTampil}
         </Text>
         <Ikon nama="chevron-right" ukuran={16} warna={WARNA.redup} />
-      </Pressable>
+      </Tekan>
       <View style={gaya.barisKecil}>
         <View style={gaya.kiri}>
           <Text style={gaya.pinjamanKe} numberOfLines={1}>

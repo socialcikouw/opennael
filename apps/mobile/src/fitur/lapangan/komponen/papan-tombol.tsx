@@ -1,5 +1,6 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { Ikon } from "@/komponen/ui/ikon";
+import { Tekan } from "@/komponen/ui/tekan";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 import { KOSONGKAN, MUNDUR, type Papan } from "../inti/papan";
 
@@ -28,7 +29,7 @@ export function PapanTombol(props: {
             const kosongkan = k === KOSONGKAN;
             const mundur = k === MUNDUR;
             return (
-              <Pressable
+              <Tekan
                 key={k}
                 accessibilityRole="button"
                 accessibilityLabel={kosongkan ? "Kosongkan" : mundur ? "Hapus terakhir" : k}
@@ -53,7 +54,7 @@ export function PapanTombol(props: {
                     {k}
                   </Text>
                 )}
-              </Pressable>
+              </Tekan>
             );
           })}
         </View>

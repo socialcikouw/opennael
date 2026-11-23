@@ -1,8 +1,9 @@
 import { type ReactNode, useState } from "react";
-import { type LayoutChangeEvent, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { type LayoutChangeEvent, StyleSheet, Text, TextInput, View } from "react-native";
 import Animated, { interpolate, type SharedValue, useAnimatedStyle } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ikon } from "@/komponen/ui/ikon";
+import { Tekan } from "@/komponen/ui/tekan";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
 import { TAB_KERJA, type TabKerja } from "../inti/daftar";
 
@@ -126,7 +127,7 @@ function TombolBulat(props: {
   onPress: () => void;
 }) {
   return (
-    <Pressable
+    <Tekan
       accessibilityRole="button"
       accessibilityLabel={props.label}
       onPress={props.onPress}
@@ -134,7 +135,7 @@ function TombolBulat(props: {
       style={({ pressed }) => [gaya.tombolBulat, pressed ? gaya.ditekan : null]}
     >
       <Ikon nama={props.ikon} ukuran={19} warna={props.warna ?? WARNA.teksKedua} />
-    </Pressable>
+    </Tekan>
   );
 }
 
@@ -153,7 +154,8 @@ function SegmenTab(props: {
         const aktif = t.nilai === props.tab;
         const angka = props.jumlah[t.nilai];
         return (
-          <Pressable
+          <Tekan
+            getar="pilih"
             key={t.nilai}
             accessibilityRole="tab"
             accessibilityState={{ selected: aktif }}
@@ -169,7 +171,7 @@ function SegmenTab(props: {
                 <Text style={[gaya.angkaTeks, aktif ? gaya.angkaTeksAktif : null]}>{angka}</Text>
               </View>
             ) : null}
-          </Pressable>
+          </Tekan>
         );
       })}
     </View>

@@ -1,8 +1,9 @@
 import type { JenisGulung, JenisPinjaman } from "@opennael/domain";
 import { namaTenor, rupiah } from "@opennael/format";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
+import { Tekan } from "@/komponen/ui/tekan";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
 import { KetNominal, NominalBesar } from "./nominal-besar";
 
@@ -82,7 +83,7 @@ export function NominalGulung({
             {pilihanTenor.map((t) => {
               const aktif = t === tenor;
               return (
-                <Pressable
+                <Tekan
                   key={t}
                   accessibilityRole="radio"
                   accessibilityState={{ selected: aktif }}
@@ -95,7 +96,7 @@ export function NominalGulung({
                   <Text style={[gaya.tenorTeks, aktif ? { color: aksen.teksIsi } : null]}>
                     {namaTenor(jenis, t)}
                   </Text>
-                </Pressable>
+                </Tekan>
               );
             })}
           </View>

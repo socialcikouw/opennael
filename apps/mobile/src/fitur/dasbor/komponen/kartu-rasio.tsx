@@ -1,7 +1,8 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import type { RasioHariIni } from "@/fitur/lapangan";
 import { g } from "@/komponen/ui/gaya-bersama";
 import { Ikon } from "@/komponen/ui/ikon";
+import { Tekan } from "@/komponen/ui/tekan";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
 
 /**
@@ -24,12 +25,12 @@ export function KartuRasio(props: {
       <View style={gaya.barisLabel}>
         <Text style={g.judulBagian}>RASIO BAYAR</Text>
         {beres ? (
-          <Pressable onPress={props.onLaporan} style={gaya.selesai} accessibilityRole="button">
+          <Tekan onPress={props.onLaporan} style={gaya.selesai} accessibilityRole="button">
             <Ikon nama="circle-check" ukuran={12} warna={WARNA.sukses} />
             <Text style={[gaya.ket, { color: WARNA.sukses }]}>
               Tagihan wajib selesai · buka laporan
             </Text>
-          </Pressable>
+          </Tekan>
         ) : (
           <Text style={gaya.ket}>
             {!r

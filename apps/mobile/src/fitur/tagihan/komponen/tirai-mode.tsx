@@ -1,4 +1,3 @@
-import * as Haptics from "expo-haptics";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { AccessibilityInfo, StyleSheet, Text, View } from "react-native";
@@ -33,7 +32,7 @@ const KELUAR_MS = 260;
  * menghitam, muncul huruf mode + "Beralih ke / Mode Harian" + tiga titik muat yang melompat
  * bergantian, mode diganti DI BALIK tirai (pergantian tab & isi tak terlihat patah), lalu
  * tirai memudar dan mode baru tampil. Total ±1,2 dtk; menahan sentuhan selama tampil.
- * Satu getar halus & pengumuman pembaca layar saat mode berganti. Dipasang sekali di tata
+ * Pengumuman pembaca layar saat mode berganti (getar sudah diberikan tombol pemicunya, `Tekan`). Dipasang sekali di tata
  * letak tab kolektor; pemicu: `beralihMode` (bukan `modeAktif.ganti` langsung).
  */
 export function TiraiMode() {
@@ -49,7 +48,6 @@ export function TiraiMode() {
     const ganti = setTimeout(() => {
       modeAktif.ganti(mode);
       lalu?.();
-      void Haptics.selectionAsync().catch(() => undefined);
       AccessibilityInfo.announceForAccessibility(`Mode ${MODE[mode].label}`);
     }, GANTI_MS);
     const tutup = setTimeout(() => {

@@ -1,4 +1,5 @@
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
+import { Tekan } from "@/komponen/ui/tekan";
 import { WARNA } from "@/tema";
 import { g } from "./gaya-bersama";
 import { Label } from "./isian";
@@ -22,7 +23,8 @@ export function Pilihan<T extends string | number>(props: {
           {props.pilihan.map((p) => {
             const aktif = p.nilai === props.nilai;
             return (
-              <Pressable
+              <Tekan
+                getar="pilih"
                 key={String(p.nilai)}
                 onPress={() => props.onPilih(p.nilai)}
                 accessibilityRole="button"
@@ -32,7 +34,7 @@ export function Pilihan<T extends string | number>(props: {
                 <Text style={[g.pilihanTeks, { color: aktif ? WARNA.utamaTua : WARNA.teksKedua }]}>
                   {p.teks}
                 </Text>
-              </Pressable>
+              </Tekan>
             );
           })}
         </View>
@@ -46,7 +48,8 @@ export function Pilihan<T extends string | number>(props: {
         {props.pilihan.map((p) => {
           const aktif = p.nilai === props.nilai;
           return (
-            <Pressable
+            <Tekan
+              getar="pilih"
               key={String(p.nilai)}
               onPress={() => props.onPilih(p.nilai)}
               accessibilityRole="button"
@@ -62,7 +65,7 @@ export function Pilihan<T extends string | number>(props: {
               >
                 {p.teks}
               </Text>
-            </Pressable>
+            </Tekan>
           );
         })}
       </View>

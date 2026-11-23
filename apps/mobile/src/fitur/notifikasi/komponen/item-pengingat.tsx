@@ -1,10 +1,11 @@
 import { judul, tampilKampung, tampilNama } from "@opennael/format";
 import { router } from "expo-router";
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { beralihMode, MODE, useMode } from "@/fitur/tagihan";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
+import { Tekan } from "@/komponen/ui/tekan";
 import { Tombol } from "@/komponen/ui/tombol";
 import { AKSEN_MODE, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 import type { Pengingat } from "../inti/pengingat";
@@ -103,7 +104,7 @@ export function ItemPengingat({ p, tanpaMutasi = false }: { p: Pengingat; tanpaM
               </View>
             ))}
             {sisa > 0 || semua ? (
-              <Pressable
+              <Tekan
                 accessibilityRole="button"
                 onPress={() => setSemua((s) => !s)}
                 style={[gaya.lihat, gaya.garisAtas]}
@@ -116,7 +117,7 @@ export function ItemPengingat({ p, tanpaMutasi = false }: { p: Pengingat; tanpaM
                   ukuran={16}
                   warna={WARNA.redup}
                 />
-              </Pressable>
+              </Tekan>
             ) : null}
           </View>
         ) : null}
@@ -142,7 +143,7 @@ function TombolMode(props: {
   const w = AKSEN_MODE[props.jenis];
   const judul = props.aktif ? "Buka Tagihan" : `Tagih di mode ${MODE[props.jenis].label}`;
   return (
-    <Pressable
+    <Tekan
       accessibilityRole="button"
       accessibilityLabel={judul}
       onPress={props.onPress}
@@ -157,7 +158,7 @@ function TombolMode(props: {
       </Text>
       <Text style={[gaya.tombolModeTeks, { color: w.teksIsi }]}>{judul}</Text>
       <Ikon nama="chevron-right" ukuran={18} warna={w.teksIsi} />
-    </Pressable>
+    </Tekan>
   );
 }
 

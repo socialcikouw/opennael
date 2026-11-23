@@ -1,4 +1,5 @@
-import { Pressable, ScrollView, StyleSheet, Text } from "react-native";
+import { ScrollView, StyleSheet, Text } from "react-native";
+import { Tekan } from "@/komponen/ui/tekan";
 import { AKSEN_MODE, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 import { SARING_JENIS, type SaringJenis } from "../inti/jenis";
 
@@ -19,7 +20,8 @@ export function PilJenis(props: {
       {SARING_JENIS.map((s) => {
         const aktif = s.nilai === props.nilai;
         return (
-          <Pressable
+          <Tekan
+            getar="pilih"
             key={s.nilai}
             accessibilityRole="tab"
             accessibilityState={{ selected: aktif }}
@@ -34,7 +36,7 @@ export function PilJenis(props: {
             <Text style={[gaya.angka, aktif ? { color: aksen.teksIsi } : null]}>
               {props.jumlah[s.nilai]}
             </Text>
-          </Pressable>
+          </Tekan>
         );
       })}
     </ScrollView>

@@ -206,6 +206,19 @@ export function periksaSemua(): Pelanggaran[] {
       }
     }
   }
+  // 10. tombol HP selalu bergetar: Pressable hanya lewat `Tekan` (komponen/ui/tekan.tsx)
+  const tekan = join(mobile, "src/komponen/ui/tekan.tsx");
+  for (const f of semuaBerkas(join(mobile, "src"))) {
+    if (f === tekan) continue;
+    for (const b of bacaBerkas(f).pressableLangsung) {
+      catat(
+        "pressable-langsung",
+        f,
+        b,
+        "Pressable langsung dari react-native — pakai Tekan (@/komponen/ui/tekan) supaya tombol bergetar",
+      );
+    }
+  }
   const appJson = join(mobile, "app.json");
   if (existsSync(appJson)) {
     readFileSync(appJson, "utf8")

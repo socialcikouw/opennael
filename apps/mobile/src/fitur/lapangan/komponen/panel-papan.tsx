@@ -1,6 +1,7 @@
-import { Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import { StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ikon } from "@/komponen/ui/ikon";
+import { Tekan } from "@/komponen/ui/tekan";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
 import type { Papan } from "../inti/papan";
 import { PapanTombol, tinggiTombolPapan } from "./papan-tombol";
@@ -40,7 +41,8 @@ export function PanelPapan({
         tinggi={tinggiTombolPapan(height, papan.length, sisaTinggi)}
         onTekan={onTekan}
       />
-      <Pressable
+      <Tekan
+        getar="tegas"
         accessibilityRole="button"
         accessibilityState={{ disabled: !aktif }}
         disabled={!aktif}
@@ -60,7 +62,7 @@ export function PanelPapan({
         <Text style={[gaya.konfirmasiTeks, { color: sah ? aksen.teksIsi : WARNA.samar }]}>
           {memuat ? "MENYIMPAN…" : "KONFIRMASI"}
         </Text>
-      </Pressable>
+      </Tekan>
     </View>
   );
 }

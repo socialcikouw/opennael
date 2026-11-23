@@ -1,6 +1,7 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
+import { Tekan } from "@/komponen/ui/tekan";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
 import type { KartuVM } from "../inti/kartu";
 import type { AksiKartu } from "./kartu-nasabah";
@@ -41,7 +42,7 @@ export function KakiKartu({ vm, aksi, aksen }: { vm: KartuVM; aksi: AksiKartu; a
           onPress={() => aksi.gulung(vm)}
         />
       </View>
-      <Pressable
+      <Tekan
         accessibilityRole="button"
         accessibilityLabel={
           vm.sekaliBayar ? `Lunasi ${vm.bayarTeks}` : `Bayar angsuran ${vm.bayarTeks}`
@@ -66,7 +67,7 @@ export function KakiKartu({ vm, aksi, aksen }: { vm: KartuVM; aksi: AksiKartu; a
         <Text style={[gaya.bayarNominal, { color: aksen.teksIsi }]} numberOfLines={1}>
           {vm.bayarTeks}
         </Text>
-      </Pressable>
+      </Tekan>
     </View>
   );
 }
@@ -102,7 +103,7 @@ function TombolTonal(props: {
         ? WARNA.suksesLembut
         : WARNA.isiNetral;
   return (
-    <Pressable
+    <Tekan
       accessibilityRole="button"
       accessibilityState={{ disabled: props.mati !== null }}
       accessibilityLabel={
@@ -133,7 +134,7 @@ function TombolTonal(props: {
           {props.sinyal}
         </Text>
       ) : null}
-    </Pressable>
+    </Tekan>
   );
 }
 

@@ -1,5 +1,6 @@
-import { Image, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import { Image, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { Ikon } from "@/komponen/ui/ikon";
+import { Tekan } from "@/komponen/ui/tekan";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
 import type { FotoSerahTerima } from "./kamera-serah-terima";
 
@@ -22,14 +23,14 @@ export function FotoGulung({
 
   if (!foto) {
     return (
-      <Pressable
+      <Tekan
         accessibilityRole="button"
         onPress={onPotret}
         style={({ pressed }) => [gaya.fotoKosong, pressed ? gaya.ditekan : null]}
       >
         <Ikon nama="camera" ukuran={20} warna={aksen.teks} />
         <Text style={[gaya.fotoKosongTeks, { color: aksen.teks }]}>Potret serah terima</Text>
-      </Pressable>
+      </Tekan>
     );
   }
   return (
@@ -47,7 +48,7 @@ export function FotoGulung({
               : "Lewat 1 jam"}
           </Text>
         </View>
-        <Pressable
+        <Tekan
           accessibilityRole="button"
           accessibilityLabel="Potret ulang foto serah terima"
           onPress={onPotret}
@@ -56,7 +57,7 @@ export function FotoGulung({
         >
           <Ikon nama="camera" ukuran={12} warna={WARNA.diAtasFoto} />
           <Text style={gaya.fotoChipTeks}>Potret ulang</Text>
-        </Pressable>
+        </Tekan>
       </View>
     </View>
   );

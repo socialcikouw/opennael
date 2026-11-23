@@ -1,7 +1,7 @@
 import { rupiah, tampilNama } from "@opennael/format";
 import { type Href, router } from "expo-router";
 import { useCallback, useState } from "react";
-import { ActivityIndicator, Pressable, RefreshControl, ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, RefreshControl, ScrollView, Text, View } from "react-native";
 import { KepalaPeran, TombolKeluar } from "@/fitur/akun";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { g } from "@/komponen/ui/gaya-bersama";
@@ -9,6 +9,7 @@ import { Ikon } from "@/komponen/ui/ikon";
 import { PesanGalat } from "@/komponen/ui/isian";
 import { KotakKosong } from "@/komponen/ui/kotak-kosong";
 import { Lencana } from "@/komponen/ui/lencana";
+import { Tekan } from "@/komponen/ui/tekan";
 import { useTarikSegarkan } from "@/lib/tarik-segarkan";
 import { WARNA } from "@/tema";
 import { type HariKolektor, useHariKolektor } from "./data";
@@ -67,7 +68,7 @@ export function LayarPengawas() {
 
 function Menu(props: { ikon: NamaIkon; judul: string; isi: string; ke: Href }) {
   return (
-    <Pressable
+    <Tekan
       onPress={() => router.push(props.ke)}
       style={({ pressed }) => [g.butirDaftar, g.baris3, pressed ? g.butirDitekan : null]}
     >
@@ -77,7 +78,7 @@ function Menu(props: { ikon: NamaIkon; judul: string; isi: string; ke: Href }) {
         <Text style={g.teksKecil}>{props.isi}</Text>
       </View>
       <Ikon nama="chevron-right" ukuran={18} warna={WARNA.samar} />
-    </Pressable>
+    </Tekan>
   );
 }
 
@@ -87,7 +88,7 @@ function BarisHari({ h }: { h: HariKolektor }) {
   const k = keadaanHari(h);
   return (
     <View style={g.tumpuk2}>
-      <Pressable
+      <Tekan
         disabled={!h.serahTerima}
         onPress={() => setBuka(!buka)}
         style={({ pressed }) => [g.butirDaftar, g.baris3, pressed ? g.butirDitekan : null]}
@@ -109,7 +110,7 @@ function BarisHari({ h }: { h: HariKolektor }) {
             <Ikon nama={buka ? "chevron-up" : "chevron-down"} ukuran={18} warna={WARNA.samar} />
           </>
         ) : null}
-      </Pressable>
+      </Tekan>
       {buka ? <RincianKas hari={h} /> : null}
     </View>
   );

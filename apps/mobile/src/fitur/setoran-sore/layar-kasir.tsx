@@ -1,7 +1,7 @@
 import { rupiah, tampilKeterangan, tampilNama } from "@opennael/format";
 import { router } from "expo-router";
 import { useCallback } from "react";
-import { ActivityIndicator, Pressable, RefreshControl, ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, RefreshControl, ScrollView, Text, View } from "react-native";
 import { KepalaPeran, TombolKeluar } from "@/fitur/akun";
 import { g } from "@/komponen/ui/gaya-bersama";
 import { Ikon } from "@/komponen/ui/ikon";
@@ -9,6 +9,7 @@ import { PesanGalat } from "@/komponen/ui/isian";
 import { KotakAngka } from "@/komponen/ui/kartu";
 import { KotakKosong } from "@/komponen/ui/kotak-kosong";
 import { Lencana } from "@/komponen/ui/lencana";
+import { Tekan } from "@/komponen/ui/tekan";
 import { Tombol } from "@/komponen/ui/tombol";
 import { useTarikSegarkan } from "@/lib/tarik-segarkan";
 import { WARNA } from "@/tema";
@@ -84,7 +85,7 @@ function BarisKolektor({ h }: { h: HariKolektor }) {
   const k = keadaanHari(h);
   const bisaDibuka = h.absensi === "masuk_kerja";
   return (
-    <Pressable
+    <Tekan
       disabled={!bisaDibuka}
       onPress={() =>
         router.push({ pathname: "/kasir/[kolektorId]", params: { kolektorId: h.kolektor.id } })
@@ -105,6 +106,6 @@ function BarisKolektor({ h }: { h: HariKolektor }) {
         <Text style={g.teksTebal}>{rupiah(h.serahTerima.tunaiDiterima)}</Text>
       ) : null}
       {bisaDibuka ? <Ikon nama="chevron-right" ukuran={18} warna={WARNA.samar} /> : null}
-    </Pressable>
+    </Tekan>
   );
 }

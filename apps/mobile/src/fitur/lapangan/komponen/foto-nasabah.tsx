@@ -1,8 +1,9 @@
 import { Image, type ImageSource } from "expo-image";
 import { useState } from "react";
-import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { Modal, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ikon } from "@/komponen/ui/ikon";
+import { Tekan } from "@/komponen/ui/tekan";
 import { ALAMAT_API } from "@/lib/api";
 import { sesi } from "@/lib/sesi";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
@@ -90,7 +91,7 @@ export function FotoSerahTerima({
 
   return (
     <>
-      <Pressable
+      <Tekan
         onPress={() => setPenuh(true)}
         accessibilityRole="imagebutton"
         accessibilityLabel={`Foto serah terima ${nama} — ketuk untuk layar penuh`}
@@ -109,14 +110,14 @@ export function FotoSerahTerima({
             <Ikon nama="maximize-2" ukuran={14} warna={WARNA.diAtasFoto} />
           </View>
         </View>
-      </Pressable>
+      </Tekan>
       <Modal
         visible={penuh}
         animationType="fade"
         onRequestClose={() => setPenuh(false)}
         statusBarTranslucent
       >
-        <Pressable style={gaya.layarPenuh} onPress={() => setPenuh(false)}>
+        <Tekan style={gaya.layarPenuh} onPress={() => setPenuh(false)}>
           <Image
             source={sumberFoto(fotoId)}
             cachePolicy="disk"
@@ -127,7 +128,7 @@ export function FotoSerahTerima({
           <View style={[gaya.tutup, { top: atas + RUANG[3] }]}>
             <Ikon nama="x" ukuran={24} warna={WARNA.diAtasFoto} />
           </View>
-        </Pressable>
+        </Tekan>
       </Modal>
     </>
   );

@@ -1,8 +1,9 @@
 import type { JenisPinjaman } from "@opennael/domain";
 import { tampilNama } from "@opennael/format";
 import { memo } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { MODE } from "@/fitur/tagihan";
+import { Tekan } from "@/komponen/ui/tekan";
 import { AKSEN_MODE, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 
 /**
@@ -24,7 +25,7 @@ export const BarisJenis = memo(function BarisJenis(props: {
   const w = AKSEN_MODE[props.jenis];
   const nama = tampilNama(props.nama);
   return (
-    <Pressable
+    <Tekan
       accessibilityRole={props.onPress ? "button" : undefined}
       accessibilityLabel={`${nama}, ${MODE[props.jenis].label}, ${props.sub}, ${props.nilai}`}
       disabled={!props.onPress}
@@ -65,7 +66,7 @@ export const BarisJenis = memo(function BarisJenis(props: {
           </Text>
         ) : null}
       </View>
-    </Pressable>
+    </Tekan>
   );
 });
 

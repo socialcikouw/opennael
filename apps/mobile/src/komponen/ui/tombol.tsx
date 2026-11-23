@@ -1,5 +1,6 @@
-import { ActivityIndicator, Pressable, Text } from "react-native";
+import { ActivityIndicator, Text } from "react-native";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
+import { Tekan } from "@/komponen/ui/tekan";
 import { WARNA } from "@/tema";
 import { g } from "./gaya-bersama";
 import { Ikon } from "./ikon";
@@ -31,7 +32,7 @@ export function Tombol(props: {
   const gaya = GAYA_TOMBOL[props.jenis ?? "utama"];
   const mati = props.nonaktif || props.memuat;
   return (
-    <Pressable
+    <Tekan
       onPress={props.onPress}
       disabled={mati}
       accessibilityRole="button"
@@ -51,19 +52,19 @@ export function Tombol(props: {
           <Text style={[g.tombolTeks, { color: gaya.teks }]}>{props.judul}</Text>
         </>
       )}
-    </Pressable>
+    </Tekan>
   );
 }
 
 /** Tautan teks kecil (mis. "Ganti nasabah"). */
 export function TombolTeks(props: { judul: string; onPress: () => void }) {
   return (
-    <Pressable
+    <Tekan
       onPress={props.onPress}
       hitSlop={10}
       style={({ pressed }) => [g.tautanTombol, pressed ? g.ditekanKuat : null]}
     >
       <Text style={g.tautan}>{props.judul}</Text>
-    </Pressable>
+    </Tekan>
   );
 }
