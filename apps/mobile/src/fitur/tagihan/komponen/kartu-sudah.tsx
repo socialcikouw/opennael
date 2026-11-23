@@ -13,7 +13,7 @@ import { LencanaHari } from "./lencana-kartu";
  *   (12)  BUDI SANTOSO                       ← lingkaran angsuran ke-, nama, alamat
  *         PULE BARAT · harian
  *   [✓ SUDAH BAYAR • 50K] [Rabu]             ← pita status ("LIBUR HARI INI" bila libur)
- *   Angsuran 50.000            Saldo 650.000
+ *   Angsuran 50.000       Sisa Saldo 650.000
  */
 export const KartuSudah = memo(function KartuSudah({
   vm,
@@ -80,7 +80,7 @@ export const KartuSudah = memo(function KartuSudah({
           </Text>
         </View>
         <View style={gaya.kolom}>
-          <Text style={[gaya.labelRapat, gaya.kanan]}>Saldo</Text>
+          <Text style={[gaya.labelRapat, gaya.kanan]}>Sisa Saldo</Text>
           <Text
             style={[gaya.saldoRapat, gaya.kanan]}
             numberOfLines={1}

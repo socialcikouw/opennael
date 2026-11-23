@@ -131,7 +131,7 @@ export function LayarBayar({ id }: { id: string }) {
                 galat ??
                 (pratinjau?.hasil
                   ? `${pas ? "Pas angsuran · " : ""}sisa saldo ${rupiah(pratinjau.hasil.sisaSaldo)}`
-                  : `Saldo ${rupiah(p.saldo)} · ketik nominal setoran`)
+                  : `Sisa saldo ${rupiah(p.saldo)} · ketik nominal setoran`)
               }
             />
           }

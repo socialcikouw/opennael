@@ -84,7 +84,7 @@ export function DialogPinjaman({
                   <BarisNilai label="Potongan Admin">{rupiah(p.potonganAdmin)}</BarisNilai>
                   <BarisNilai label="Masuk Tabungan">{rupiah(p.tabunganMasuk)}</BarisNilai>
                   {p.saldoLama > 0 ? (
-                    <BarisNilai label="Saldo Lama Ditutup">{rupiah(p.saldoLama)}</BarisNilai>
+                    <BarisNilai label="Sisa Saldo Lama Ditutup">{rupiah(p.saldoLama)}</BarisNilai>
                   ) : null}
                   <BarisNilai label="Pencairan">{rupiah(p.pencairan)}</BarisNilai>
                 </div>
@@ -93,7 +93,7 @@ export function DialogPinjaman({
                   <BarisNilai label={p.jenis === "tempoan" ? "Dibayar Sekali" : "Angsuran"}>
                     {rupiah(p.angsuran)}
                   </BarisNilai>
-                  <BarisNilai label="Saldo">{rupiah(p.saldo)}</BarisNilai>
+                  <BarisNilai label="Sisa Saldo">{rupiah(p.saldo)}</BarisNilai>
                   {p.jenis !== "tempoan" ? (
                     <BarisNilai label="Angsuran Lunas">
                       {p.angsuranKe} dari {p.tenor}

@@ -88,7 +88,7 @@ export function LayarTunggakan() {
                   warna="kuning"
                 />
                 {p.status === "macet" ? <Lencana teks="Macet" warna="merah" /> : null}
-                <Text style={g.teksMini}>saldo {rupiah(p.saldo)}</Text>
+                <Text style={g.teksMini}>sisa saldo {rupiah(p.saldo)}</Text>
               </View>
             </View>
           ))}

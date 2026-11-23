@@ -122,7 +122,7 @@ export function LayarGulung({ id }: { id: string }) {
               {p.nasabah.nama}
             </Text>
             <Text style={gaya.kampung} numberOfLines={1}>
-              {tampilKampung(p.nasabah.kampung)} · saldo {rupiah(p.saldo)}
+              {tampilKampung(p.nasabah.kampung)} · sisa saldo {rupiah(p.saldo)}
             </Text>
           </View>
           <View style={[gaya.chip, { backgroundColor: aksen.lembut }]}>

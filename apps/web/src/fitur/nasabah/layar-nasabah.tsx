@@ -30,7 +30,7 @@ const KOLOM = [
   k.accessor((n) => n.kolektor?.nama ?? "—", { id: "pemegang", header: "Pemegang" }),
   k.accessor((n) => n.pinjamanAktif?.saldo ?? 0, {
     id: "pinjaman",
-    header: "Pinjaman Aktif",
+    header: "Sisa Saldo",
     meta: { kanan: true },
     cell: (c) => {
       const p = c.row.original.pinjamanAktif;

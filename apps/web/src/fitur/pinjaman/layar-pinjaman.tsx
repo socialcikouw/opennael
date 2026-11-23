@@ -47,7 +47,7 @@ const KOLOM = [
     },
   }),
   k.accessor("saldo", {
-    header: "Saldo",
+    header: "Sisa Saldo",
     meta: { kanan: true },
     cell: (c) => rupiah(c.getValue()),
   }),
@@ -110,7 +110,10 @@ export function LayarPinjaman() {
       {saring === "aktif" && q.data ? (
         <div className="grid gap-3 sm:grid-cols-3">
           <KartuAngka label="Pinjaman Aktif" nilai={q.data.length} />
-          <KartuAngka label="Total Saldo" nilai={rupiah(q.data.reduce((s, p) => s + p.saldo, 0))} />
+          <KartuAngka
+            label="Total Sisa Saldo"
+            nilai={rupiah(q.data.reduce((s, p) => s + p.saldo, 0))}
+          />
           <KartuAngka
             label="Total Tunggakan"
             nilai={rupiah(menunggak.reduce((s, p) => s + (p.tagih?.tunggakan ?? 0), 0))}

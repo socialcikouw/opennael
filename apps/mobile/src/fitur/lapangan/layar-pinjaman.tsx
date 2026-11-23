@@ -82,7 +82,7 @@ export function LayarPinjaman({ id, lihat }: { id: string; lihat?: string }) {
             nilai={`${rupiah(p.angsuran)} · ke-${p.angsuranKe} dari ${p.tenor}`}
           />
         )}
-        <Baris label="Saldo" nilai={rupiah(p.saldo)} tebal />
+        <Baris label="Sisa Saldo" nilai={rupiah(p.saldo)} tebal />
         <Baris label="Tabungan Nasabah" nilai={rupiah(p.tabungan)} />
       </Kartu>
 

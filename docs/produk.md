@@ -113,7 +113,7 @@ dan keluar saat pelunasan — atau atas keputusan bos (penarikan tabungan).
 | **Potongan admin** | potongan jasa saat pencairan — pendapatan kantor |
 | **Resort** | label wilayah kerja kolektor (tampilan saja) |
 | **Rute** | urutan kampung yang didatangi seorang kolektor |
-| **Saldo** | sisa yang masih harus dibayar nasabah atas satu pinjaman |
+| **Saldo** (di layar: **Sisa Saldo**) | sisa yang masih harus dibayar nasabah atas satu pinjaman. Label di web & HP selalu "Sisa Saldo" (dalam kalimat "sisa saldo Rp …"); "saldo" saja dipakai untuk kas (saldo tunai, saldo bank, saldo buku) dan tabungan |
 | **Serah terima kas** | kasir menerima uang tunai dari kolektor di sore hari |
 | **Setoran murni** | angsuran yang dibayar nasabah |
 | **Setoran pelunasan** | bagian yang mengurangi saldo di luar setoran murni (uang lebih, tutupan tabungan, atau tutupan gulung) |

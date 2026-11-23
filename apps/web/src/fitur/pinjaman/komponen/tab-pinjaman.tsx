@@ -33,7 +33,7 @@ export function TabPinjaman({ nasabahId }: { nasabahId: string }) {
                 <LencanaTagih p={p} />
               </span>
               <span className="block text-xs text-muted-foreground tabular-nums">
-                Akad {formatTanggal(p.tanggalAkad, "tanpa")} · pokok {rupiah(p.pokok)} · saldo{" "}
+                Akad {formatTanggal(p.tanggalAkad, "tanpa")} · pokok {rupiah(p.pokok)} · sisa saldo{" "}
                 {rupiah(p.saldo)}
                 {p.jenis === "tempoan"
                   ? p.jatuhTempo
