@@ -1,5 +1,4 @@
 import { StyleSheet, Text, View } from "react-native";
-import { TabunganRahasia } from "@/fitur/lapangan";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Tekan } from "@/komponen/ui/tekan";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
@@ -17,11 +16,13 @@ export const CABANG_INFO = 1 + ISIAN_KOTAK + TINGGI_LINGKARAN / 2;
 /**
  * Bagian atas kotak kartu:
  *   (12) Budi Santoso                                ›
- *   Pinjaman Ke-3 · 1 Sep • 14.00 [Rabu]               ••••
- * Tanggal & jam akad sebaris di kanan "Pinjaman Ke-" (bila sempit, akad yang
- * terpotong lebih dulu; tahun hanya bila bukan tahun ini; jenis & tenor tak diulang). Lingkaran = angsuran yang sudah lunas: pekat berwarna mode dan besar supaya
- * paling mencolok (beda dari lencana jumlah nasabah di judul kelompok yang
- * abu). Tabungan tanpa label — "••••" sampai diketuk, lalu nominalnya.
+ *   1 Sep • 14.00 [Rabu]                    Pinjaman Ke-3
+ * Baris kedua (permintaan pemilik 24 Nov 2026): tanggal & jam akad KECIL di kiri, tepat
+ * di bawah lingkaran (bila sempit, akad yang terpotong; tahun hanya bila bukan tahun
+ * ini), "Pinjaman Ke-N" di kanan berwarna terakota & tebal supaya mencolok. Tabungan
+ * "••••" tak lagi di kartu (ada di Detail Nasabah). Lingkaran = angsuran yang sudah
+ * lunas: pekat berwarna mode dan besar supaya paling mencolok (beda dari lencana jumlah
+ * nasabah di judul kelompok yang abu).
  * Baris nama bisa diketuk: membuka detail nasabah (`onBuka`); `onSiap` dipanggil
  * saat jari menekan, supaya datanya sudah mulai diambil. Tahan lama di baris itu
  * tetap Lunasi (`onLunasi`), juga ditawarkan sebagai aksi aksesibilitas.
@@ -73,14 +74,15 @@ export function InfoKartu({
       </Tekan>
       <View style={gaya.barisKecil}>
         <View style={gaya.kiri}>
-          <Text style={gaya.pinjamanKe} numberOfLines={1}>
-            {vm.pinjamanKeTeks}
-            <Text style={gaya.akad}> · {vm.akadTeks}</Text>
+          <Text style={gaya.akad} numberOfLines={1}>
+            {vm.akadTeks}
           </Text>
           {vm.hariTagih ? <LencanaHari hari={vm.hariTagih} aksen={aksen} /> : null}
           {vm.lencana ? <LencanaStatus lencana={vm.lencana} /> : null}
         </View>
-        <TabunganRahasia nilai={vm.tabunganRp} />
+        <Text style={[gaya.pinjamanKe, { color: aksen.teks }]} numberOfLines={1}>
+          {vm.pinjamanKeTeks}
+        </Text>
       </View>
     </View>
   );
@@ -105,8 +107,16 @@ const gaya = StyleSheet.create({
   },
   lingkaranTeks: { ...HURUF.lg, fontWeight: TEBAL.ekstra, fontVariant: ["tabular-nums"] },
   nama: { ...HURUF.lg, flex: 1, fontWeight: TEBAL.tebal, color: WARNA.teks },
-  akad: { ...HURUF.xs, color: WARNA.redup, fontVariant: ["tabular-nums"] },
-  barisKecil: { minHeight: 20, flexDirection: "row", alignItems: "center", gap: RUANG[2] },
+  // Tanggal & jam akad: kecil, di bawah lingkaran angsuran (rata kiri kotak).
+  akad: { ...HURUF["2xs"], flexShrink: 1, color: WARNA.redup, fontVariant: ["tabular-nums"] },
+  barisKecil: {
+    minHeight: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: RUANG[2],
+  },
   kiri: { flex: 1, minWidth: 0, flexDirection: "row", alignItems: "center", gap: RUANG[2] },
-  pinjamanKe: { ...HURUF.xs, flexShrink: 1, color: WARNA.redup },
+  // Pinjaman Ke-N: rata kanan, terakota & tebal supaya mencolok (menggantikan tabungan ••••).
+  pinjamanKe: { ...HURUF.sm, flexShrink: 0, fontWeight: TEBAL.tebal },
 });

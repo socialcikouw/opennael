@@ -16,4 +16,3 @@ export { belumDicatat } from "./inti/belum-dicatat";
 export type { GerbangMutasi } from "./inti/gerbang-mutasi";
 export { type RasioHariIni, rasioHariIni, rasioMode } from "./inti/rasio";
 export { kabarTercatat, type Stempel } from "./kabar-tercatat";
-export { TabunganRahasia } from "./komponen/tabungan-rahasia";
