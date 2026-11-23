@@ -21,7 +21,6 @@ export function PilJenis(props: {
         const aktif = s.nilai === props.nilai;
         return (
           <Tekan
-            getar="pilih"
             key={s.nilai}
             accessibilityRole="tab"
             accessibilityState={{ selected: aktif }}

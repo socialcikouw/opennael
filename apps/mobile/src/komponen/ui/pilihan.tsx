@@ -24,7 +24,6 @@ export function Pilihan<T extends string | number>(props: {
             const aktif = p.nilai === props.nilai;
             return (
               <Tekan
-                getar="pilih"
                 key={String(p.nilai)}
                 onPress={() => props.onPilih(p.nilai)}
                 accessibilityRole="button"
@@ -49,7 +48,6 @@ export function Pilihan<T extends string | number>(props: {
           const aktif = p.nilai === props.nilai;
           return (
             <Tekan
-              getar="pilih"
               key={String(p.nilai)}
               onPress={() => props.onPilih(p.nilai)}
               accessibilityRole="button"

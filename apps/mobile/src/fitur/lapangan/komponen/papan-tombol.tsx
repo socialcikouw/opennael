@@ -31,6 +31,7 @@ export function PapanTombol(props: {
             return (
               <Tekan
                 key={k}
+                getar="pilih"
                 accessibilityRole="button"
                 accessibilityLabel={kosongkan ? "Kosongkan" : mundur ? "Hapus terakhir" : k}
                 onPress={() => props.onTekan(k)}

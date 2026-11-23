@@ -3,18 +3,19 @@ import { Pressable } from "react-native";
 import { getar, type JenisGetar } from "./getar";
 
 export type TekanProps = ComponentProps<typeof Pressable> & {
-  /** Getar saat diketuk (bawaan `ketuk`); `false` = tanpa getar (mis. latar penutup lembar). */
+  /** Getar saat diketuk; bawaan TANPA getar — pasang hanya di momen yang berarti (lihat `getar.ts`). */
   getar?: JenisGetar | false;
 };
 
 /**
- * TEKAN — `Pressable` yang selalu bergetar: SATU-SATUNYA tombol di aplikasi HP (dijaga
- * `cek:arsitektur`, aturan `pressable-langsung`). Getar `getar` saat ketukan jadi (`onPress`,
- * bukan saat jari menyentuh — supaya menggulir daftar tak bergetar), dan getar `tahan` saat
- * tekan lama tercapai (`onLongPress`). Tombol mati (`disabled`) tak bergetar karena
- * `onPress` tak dipanggil. Selebihnya sama persis dengan `Pressable`.
+ * TEKAN — SATU-SATUNYA tombol di aplikasi HP (dijaga `cek:arsitektur`, aturan
+ * `pressable-langsung`): `Pressable` + tempat getar. Bawaannya tanpa getar; `getar="…"`
+ * bergetar saat ketukan jadi (`onPress`, bukan saat jari menyentuh — menggulir tak
+ * bergetar). Tekan lama yang tercapai (`onLongPress`) selalu bergetar `tahan`: itulah
+ * satu-satunya tanda bahwa tahan sudah cukup. Tombol mati tak bergetar. Selebihnya sama
+ * persis dengan `Pressable`.
  */
-export function Tekan({ getar: jenis = "ketuk", onPress, onLongPress, ...sisa }: TekanProps) {
+export function Tekan({ getar: jenis = false, onPress, onLongPress, ...sisa }: TekanProps) {
   return (
     <Pressable
       {...sisa}

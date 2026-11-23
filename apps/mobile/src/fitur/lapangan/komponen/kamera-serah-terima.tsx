@@ -114,6 +114,7 @@ export function KameraSerahTerima(props: {
                   <Text style={gaya.batal}>Batal</Text>
                 </Tekan>
                 <Tekan
+                  getar="ketuk"
                   onPress={() => void jepret()}
                   disabled={!siap}
                   style={[gaya.rana, siap ? null : gaya.ranaMati]}

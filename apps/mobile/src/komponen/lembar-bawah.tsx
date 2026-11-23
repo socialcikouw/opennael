@@ -37,7 +37,7 @@ export function LembarBawah(props: {
       onDismiss={props.onSelesaiTutup}
       statusBarTranslucent
     >
-      <Tekan getar={false} style={gaya.tirai} onPress={props.onTutup} accessibilityLabel="Tutup" />
+      <Tekan style={gaya.tirai} onPress={props.onTutup} accessibilityLabel="Tutup" />
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined}>
         <View style={[gaya.lembar, { paddingBottom: bawah + RUANG[4] }]}>
           <View style={gaya.pegangan} />

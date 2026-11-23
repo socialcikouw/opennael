@@ -44,7 +44,6 @@ export function LembarAlasanLibur(props: {
             const pilih = isi === a;
             return (
               <Tekan
-                getar="pilih"
                 key={a}
                 accessibilityRole="button"
                 accessibilityState={{ selected: pilih }}

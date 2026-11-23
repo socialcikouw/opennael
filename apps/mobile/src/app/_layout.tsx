@@ -1,14 +1,25 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { MutationCache, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
+import { getar } from "@/komponen/ui/getar";
 import { sesi, useSesi } from "@/lib/sesi";
 import { WARNA } from "@/tema";
 
 export default function TataLetakAkar() {
-  const [klienKueri] = useState(() => new QueryClient());
+  // Semua penyimpanan (bayar, gulung, akad, absen, laporan, kasir, pengawas) lewat mutasi
+  // TanStack Query: getar "berhasil" / "galat" dipasang sekali di sini, bukan di tiap layar.
+  const [klienKueri] = useState(
+    () =>
+      new QueryClient({
+        mutationCache: new MutationCache({
+          onSuccess: () => getar("berhasil"),
+          onError: () => getar("galat"),
+        }),
+      }),
+  );
 
   useEffect(() => {
     void sesi.muat();

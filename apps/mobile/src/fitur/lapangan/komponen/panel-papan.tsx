@@ -42,7 +42,6 @@ export function PanelPapan({
         onTekan={onTekan}
       />
       <Tekan
-        getar="tegas"
         accessibilityRole="button"
         accessibilityState={{ disabled: !aktif }}
         disabled={!aktif}

@@ -13,6 +13,7 @@ import {
   type useHariIni,
   useSiapkanNasabah,
 } from "@/fitur/lapangan";
+import { getar } from "@/komponen/ui/getar";
 import type { KartuVM } from "./inti/kartu";
 import type { AksiKartu } from "./komponen/kartu-nasabah";
 
@@ -64,8 +65,11 @@ export function useAksiKartu(hariIni: ReturnType<typeof useHariIni>) {
       setSibuk(new Set(berjalan.current));
       try {
         await kerja();
+        // Libur & Lunasi kartu tak lewat mutasi TanStack: getar hasilnya di sini.
+        getar("berhasil");
         tercatat(id, cap);
       } catch (e) {
+        getar("galat");
         Alert.alert(judulGagal, e instanceof Error ? e.message : String(e));
       } finally {
         berjalan.current.delete(id);

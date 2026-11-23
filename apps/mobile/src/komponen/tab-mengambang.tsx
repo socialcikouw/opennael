@@ -110,7 +110,6 @@ export function TabMengambang({
                 style={gaya.slotTab}
               >
                 <Tekan
-                  getar="pilih"
                   accessibilityRole="tab"
                   accessibilityState={{ selected: aktif }}
                   accessibilityLabel={menunggu > 0 ? `${judul}, ${menunggu} menunggu` : judul}

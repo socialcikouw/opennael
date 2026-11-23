@@ -155,7 +155,6 @@ function SegmenTab(props: {
         const angka = props.jumlah[t.nilai];
         return (
           <Tekan
-            getar="pilih"
             key={t.nilai}
             accessibilityRole="tab"
             accessibilityState={{ selected: aktif }}
