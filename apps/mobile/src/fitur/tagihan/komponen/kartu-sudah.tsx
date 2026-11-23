@@ -60,7 +60,7 @@ export const KartuSudah = memo(function KartuSudah({
           </Text>
         </Tekan>
       </View>
-      <View style={gaya.status}>
+      <View style={[gaya.status, gaya.statusBungkus]}>
         <View style={[gaya.pita, { backgroundColor: latar }]}>
           <Ikon nama={libur ? "circle-pause" : "circle-check"} ukuran={12} warna={warna} />
           <Text style={[gaya.pitaTeks, { color: warna }]}>{vm.judulSudah}</Text>
@@ -68,13 +68,27 @@ export const KartuSudah = memo(function KartuSudah({
         {vm.hariTagih ? <LencanaHari hari={vm.hariTagih} aksen={aksen} /> : null}
       </View>
       <View style={gaya.angka}>
-        <View>
-          <Text style={gaya.label}>Angsuran</Text>
-          <Text style={gaya.nilai}>{vm.angsuranTeks}</Text>
+        <View style={gaya.kolom}>
+          <Text style={gaya.labelRapat}>Angsuran</Text>
+          <Text
+            style={gaya.nilaiRapat}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.75}
+          >
+            {vm.angsuranTeks}
+          </Text>
         </View>
-        <View>
-          <Text style={[gaya.label, gaya.kanan]}>Saldo</Text>
-          <Text style={[gaya.nilai, gaya.kanan, gaya.tegas]}>{vm.saldoTeks}</Text>
+        <View style={gaya.kolom}>
+          <Text style={[gaya.labelRapat, gaya.kanan]}>Saldo</Text>
+          <Text
+            style={[gaya.saldoRapat, gaya.kanan]}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.75}
+          >
+            {vm.saldoTeks}
+          </Text>
         </View>
       </View>
     </View>
@@ -139,7 +153,7 @@ const gaya = StyleSheet.create({
   identitas: { flex: 1, minWidth: 0, gap: RUANG[0.5] },
   ditekan: { opacity: 0.6 },
   nama: { ...HURUF.base, fontWeight: TEBAL.tebal, textTransform: "uppercase", color: WARNA.teks },
-  alamat: { ...HURUF.xs, color: WARNA.redup },
+  alamat: { ...HURUF["2xs"], color: WARNA.redup },
   status: { flexDirection: "row", alignItems: "center", gap: RUANG[1.5] },
   pita: {
     flexDirection: "row",
@@ -150,16 +164,24 @@ const gaya = StyleSheet.create({
     borderRadius: SUDUT.bulat,
   },
   pitaTeks: { ...HURUF["2xs"], fontWeight: TEBAL.ekstra, letterSpacing: 0.5 },
-  angka: { flexDirection: "row", justifyContent: "space-between" },
-  label: { ...HURUF["2xs"], color: WARNA.redup },
-  nilai: {
-    ...HURUF.sm,
+  angka: { flexDirection: "row", justifyContent: "space-between", gap: RUANG[3] },
+  kolom: { flex: 1, minWidth: 0, gap: 1 },
+  // Angka kartu "Sudah ditagih" = ukuran rapat kartu lain (10 / 12 / 14 pt).
+  labelRapat: { ...HURUF["3xs"], color: WARNA.redup },
+  nilaiRapat: {
+    ...HURUF.xs,
     fontWeight: TEBAL.semi,
+    color: WARNA.teksKedua,
+    fontVariant: ["tabular-nums"],
+  },
+  saldoRapat: {
+    ...HURUF.sm,
+    fontWeight: TEBAL.ekstra,
     color: WARNA.teks,
     fontVariant: ["tabular-nums"],
   },
+  statusBungkus: { flexWrap: "wrap", rowGap: RUANG[1] },
   kanan: { textAlign: "right" },
-  tegas: { fontWeight: TEBAL.ekstra },
   judulDroping: {
     ...HURUF["3xs"],
     fontWeight: TEBAL.ekstra,
