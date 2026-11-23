@@ -17,8 +17,8 @@ import { getar } from "@/komponen/ui/getar";
 import type { KartuVM } from "./inti/kartu";
 import type { AksiKartu } from "./komponen/kartu-nasabah";
 
-/** Lama stempel tampil di kartu sebelum kartu turun ke "Sudah ditagih". */
-const LAMA_STEMPEL_MS = 900;
+/** Lama stempel "Berhasil" tampil di kartu (animasi ±0,45 dtk + waktu membaca) sebelum kartu turun ke "Sudah ditagih". */
+const LAMA_STEMPEL_MS = 1200;
 
 /**
  * Transaksi dari kartu (bayar, gulung, libur, lunas): gerbang lapangan,

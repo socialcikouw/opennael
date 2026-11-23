@@ -1,6 +1,5 @@
 import { memo } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
-import Animated, { ZoomIn } from "react-native-reanimated";
 import type { Stempel } from "@/fitur/lapangan";
 import { Tekan } from "@/komponen/ui/tekan";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
@@ -11,6 +10,7 @@ import { CABANG_INFO, InfoKartu, ISIAN_KOTAK, TAHAN_LUNASI_MS } from "./info-kar
 import { KakiKartu } from "./kaki-kartu";
 import { BarisRel, JARAK_KARTU } from "./rel-kartu";
 import { BlokMinggu, BlokTempo } from "./slot-khusus";
+import { StempelBerhasil } from "./stempel-berhasil";
 
 /** Aksi kartu — SATU objek stabil dari layar, diteruskan ke kartu-kartu ber-memo. */
 export interface AksiKartu {
@@ -69,7 +69,7 @@ export const KartuNasabah = memo(function KartuNasabah(props: {
       <AngkaKartu vm={vm} tanpaAngsuran={bisaAksi} />
       {bisaAksi ? <KakiKartu vm={vm} aksi={props.aksi} aksen={props.aksen} /> : null}
       {props.stempel ? (
-        <StempelKartu jenis={props.stempel} aksen={props.aksen} />
+        <StempelBerhasil jenis={props.stempel} />
       ) : props.sibuk ? (
         <SelubungSibuk aksen={props.aksen} />
       ) : null}
@@ -92,22 +92,6 @@ export const KartuNasabah = memo(function KartuNasabah(props: {
     </View>
   );
 });
-
-const TEKS_STEMPEL: Record<Stempel, string> = { bayar: "DIBAYAR", libur: "LIBUR", lunas: "LUNAS" };
-
-function StempelKartu({ jenis, aksen }: { jenis: Stempel; aksen: WarnaMode }) {
-  const warna = jenis === "libur" ? WARNA.bahaya : aksen.teks;
-  return (
-    <View pointerEvents="none" style={gaya.selubung}>
-      <Animated.View
-        entering={ZoomIn.springify().damping(12)}
-        style={[gaya.stempel, { borderColor: warna }]}
-      >
-        <Text style={[gaya.stempelTeks, { color: warna }]}>{TEKS_STEMPEL[jenis]}</Text>
-      </Animated.View>
-    </View>
-  );
-}
 
 /** Selama tulisan berjalan: menutup kartu (tombol tak terjangkau sentuhan) dengan penanda tunggu. */
 function SelubungSibuk({ aksen }: { aksen: WarnaMode }) {
@@ -139,13 +123,4 @@ const gaya = StyleSheet.create({
     backgroundColor: WARNA.tiraiSibuk,
   },
   sibukTeks: { ...HURUF.sm, fontWeight: TEBAL.semi },
-  stempel: {
-    paddingHorizontal: RUANG[5],
-    paddingVertical: RUANG[2],
-    borderWidth: 3,
-    borderRadius: SUDUT.sedang,
-    transform: [{ rotate: "-8deg" }],
-    backgroundColor: WARNA.permukaan,
-  },
-  stempelTeks: { ...HURUF["2xl"], fontWeight: TEBAL.ekstra, letterSpacing: 2 },
 });

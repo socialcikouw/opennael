@@ -71,6 +71,7 @@ describe("kontras teks di atas isi berwarna", () => {
   const PASANGAN: [teks: string, isi: string, minimal: number][] = [
     // Coral terang hanya terbaca dengan tulisan gelap (putih = 3,1:1).
     ["teksAtasUtama", "utamaIsi", 4.5],
+    ["teksAtasSukses", "sukses", 4.5],
     ["teksAtasBahaya", "bahaya", 4.5],
     ["teksAtasBahaya", "bahayaBingkai", 4.5],
     ["utamaTua", "utamaMuda", 4.5],

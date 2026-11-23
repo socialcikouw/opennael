@@ -65,6 +65,8 @@ export const WARNA = {
 
   /** Hijau = berhasil / boleh: Bisa Digulung, lencana Baru & Gulung Naik, lebih setor, foto siap. */
   sukses: emerald[700],
+  /** Teks/ikon di atas isi `sukses` (centang stempel Berhasil) — putih. */
+  teksAtasSukses: mutlak.putih,
   suksesTua: emerald[800],
   suksesMuda: emerald[100],
   suksesLembut: emerald[50],
