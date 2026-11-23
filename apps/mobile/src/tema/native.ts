@@ -13,12 +13,15 @@ import { WARNA } from "./token";
  * (uji `native.test.ts` menggagalkan `bun run test` bila JSON-nya tertinggal).
  */
 export const NATIVE = {
-  /** Aplikasi bertema gelap saja: dialog bawaan, keyboard, bilah navigasi, dan status bar ikut gelap. */
-  gaya: "dark",
+  /** Aplikasi bertema terang saja: dialog bawaan, keyboard, bilah navigasi, dan status bar ikut terang. */
+  gaya: "light",
   /** Latar jendela (tampil sebelum JS memuat & di balik keyboard) — sama dengan latar layar. */
   latar: WARNA.latar,
-  /** Latar splash = latar layar: tak ada kilatan warna lain sebelum aplikasi tampil (logo splash putih). */
-  splash: WARNA.latar,
+  /**
+   * Latar splash = isi terakota merek: logo splash berwarna PUTIH, jadi tak terlihat di atas
+   * kertas. Diganti ke `WARNA.latar` bila logo merek (gelap / berwarna) sudah ada.
+   */
+  splash: WARNA.utamaIsi,
   /** Latar ikon adaptif — warna templat sementara (lihat `palet.ts`); diganti bersama ikon merek. */
   ikonAdaptif: PALET.native.ikonAdaptif,
 } as const;

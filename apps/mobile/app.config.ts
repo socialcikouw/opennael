@@ -36,7 +36,7 @@ const VARIAN = {
 
 /**
  * WARNA & GAYA NATIVE dari token tema (`tema-native.json`, dihasilkan dari
- * `src/tema/native.ts`; lihat catatan di sana) — satu sumber untuk semua varian. Aplikasi hanya bertema gelap (16 Nov 2026): gaya sistem `dark` (dialog bawaan,
+ * `src/tema/native.ts`; lihat catatan di sana) — satu sumber untuk semua varian. Aplikasi hanya bertema terang (24 Nov 2026): gaya sistem `light` (dialog bawaan,
  * keyboard, bilah navigasi), latar jendela = latar layar, latar splash & ikon adaptif.
  * `app.json` sengaja tak memuat warna apa pun. Mengubah nilai-nilai ini mengubah sidik
  * jari runtime: APK `preview` yang sudah terpasang perlu dibangun ulang.
@@ -44,7 +44,7 @@ const VARIAN = {
 function denganTema(config: ExpoConfig): ExpoConfig {
   return {
     ...config,
-    userInterfaceStyle: NATIVE.gaya as "dark",
+    userInterfaceStyle: NATIVE.gaya as "light",
     backgroundColor: NATIVE.latar,
     android: {
       ...config.android,

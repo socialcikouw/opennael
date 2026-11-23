@@ -39,10 +39,10 @@ const NADA = {
     ikon: WARNA.bahaya,
   },
   hijau: {
-    latar: WARNA.utamaLembut,
-    garis: WARNA.utamaGaris,
-    lencana: WARNA.utamaMuda,
-    ikon: WARNA.utama,
+    latar: WARNA.suksesLembut,
+    garis: WARNA.suksesGaris,
+    lencana: WARNA.suksesMuda,
+    ikon: WARNA.sukses,
   },
 } as const;
 

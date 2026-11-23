@@ -3,77 +3,90 @@ import { PALET } from "./palet";
 
 /**
  * TOKEN TEMA HP — LAPIS 2, SATU SUMBER KEBENARAN tampilan aplikasi: warna, jarak,
- * sudut, huruf, tinggi sentuh. Aplikasi hanya bertema GELAP (keputusan pemilik,
- * 16 Nov 2026): tak ada pilihan terang, tak ada percabangan tema di layar mana pun.
+ * sudut, huruf, tinggi sentuh. Aplikasi hanya bertema TERANG — putih kertas + terakota
+ * (keputusan pemilik, 24 Nov 2026; menggantikan "hanya gelap" 16 Nov): tak ada pilihan
+ * tema, tak ada percabangan tema di layar mana pun.
  *
  * Aturan:
  *  - nilai warna mentah hanya di `palet.ts`; layar tak pernah mengimpor palet;
  *  - nama token menyebut PERAN (`permukaan`, `teksKedua`), bukan warna (`putih`);
- *  - KEDALAMAN = KECERAHAN PERMUKAAN, bukan bayangan: `latar` (paling dalam) →
- *    `permukaan` (kartu, isian) → `permukaanTinggi` (yang melayang: tab bar, lembar);
- *    makin tinggi, makin terang. Bayangan tak terlihat di latar gelap, jadi tak dipakai;
+ *  - KEDALAMAN tanpa bayangan: `latar` kertas → `permukaan` putih hangat (kartu, isian);
+ *    yang melayang (`permukaanTinggi`: tab bar, lembar) sama putihnya dan dipisah GARIS;
+ *  - ARTI WARNA terpisah dari MEREK: `utama*` (terakota) = merek & aksi; `sukses*` (hijau)
+ *    = berhasil / boleh; `bahaya*` (merah) = galat & belum boleh; `waspada*` (amber tua) =
+ *    peringatan. Jangan memakai `utama` untuk arti "berhasil";
  *  - ingin mengganti rupa aplikasi? Ubah rujukan di sini — semua layar mengikuti.
  *
  * Penjelasan lengkap & pembagian lapis: docs/tema.md.
  */
 
-const { neutral, emerald, red, amber, violet, orange, teal, mutlak, tirai } = PALET;
+const { kertas, terakota, emerald, red, amber, mutlak, tirai } = PALET;
 
 /**
  * Warna semantik. Kelompok: latar & permukaan · isi netral · garis · teks · aksi (utama) ·
- * bahaya · waspada · di atas foto / media · lapisan.
+ * sukses · bahaya · waspada · di atas foto / media · lapisan.
  */
 export const WARNA = {
-  /** Latar layar — tingkat paling dalam. */
-  latar: neutral[950],
-  /** Kartu, isian, tombol kedua. */
-  permukaan: neutral[900],
-  /** Yang melayang di atas isi: tab bar, lembar bawah — satu tingkat di atas `permukaan`. */
-  permukaanTinggi: neutral[800],
+  /** Latar layar — kertas, tingkat paling dalam. */
+  latar: kertas[100],
+  /** Kartu, isian, tombol kedua — putih hangat. */
+  permukaan: kertas[50],
+  /** Yang melayang di atas isi: tab bar, lembar bawah — putih seperti kartu, dipisah `garis`. */
+  permukaanTinggi: kertas[50],
   /** Isi netral: kolom di dalam kartu, avatar, lencana netral, kerangka muat, tombol papan angka. */
-  isiNetral: neutral[800],
-  /** Isi netral lebih tegas: alas kontrol bersegmen, segmen aktif, tombol tertekan, penanda kosong. */
-  isiNetralTegas: neutral[700],
-  /** Garis kartu & pemisah (hiasan; ≥ 1,4:1). */
-  garis: neutral[750],
+  isiNetral: kertas[100],
+  /** Isi netral lebih tegas: segmen aktif, tombol tertekan, kotak jumlah, penanda kosong. */
+  isiNetralTegas: kertas[200],
+  /** Garis kartu & pemisah (hiasan). */
+  garis: kertas[200],
   /** Batas isian & tombol kedua, rel pohon (≥ 3:1 — pembatas komponen harus terlihat). */
-  garisTegas: neutral[550],
+  garisTegas: kertas[500],
 
-  teks: neutral[50],
-  teksTombol: neutral[100],
-  teksLabel: neutral[200],
-  teksKedua: neutral[300],
-  redup: neutral[400],
-  samar: neutral[500],
+  teks: kertas[900],
+  teksTombol: kertas[900],
+  teksLabel: kertas[800],
+  teksKedua: kertas[700],
+  redup: kertas[600],
+  samar: kertas[500],
 
-  /** Hijau (merek) untuk teks, ikon, tab aktif. */
-  utama: emerald[400],
-  /** Hijau berkontras lebih kuat (teks di atas `utamaMuda`). */
-  utamaTua: emerald[300],
-  utamaFokus: emerald[500],
-  utamaMuda: emerald[900],
-  utamaLembut: emerald[950],
-  utamaGaris: emerald[800],
-  /** Isi tombol utama & tombol (+). */
-  utamaIsi: emerald[500],
-  /** Teks/ikon di atas `utamaIsi`. */
-  teksAtasUtama: neutral[950],
+  /** Terakota (merek) untuk teks, ikon, tab aktif, tautan. */
+  utama: terakota[700],
+  /** Terakota berkontras lebih kuat (teks di atas `utamaMuda` & segmen aktif). */
+  utamaTua: terakota[800],
+  /** Bingkai isian yang sedang diketik (≥ 3:1 di atas permukaan). */
+  utamaFokus: terakota[500],
+  utamaMuda: terakota[100],
+  utamaLembut: terakota[50],
+  utamaGaris: terakota[200],
+  /** Isi tombol utama, tombol (+), lingkaran angsuran — coral terang. */
+  utamaIsi: terakota[400],
+  /** Teks/ikon di atas `utamaIsi` — GELAP (tulisan putih di coral hanya 3,1:1). */
+  teksAtasUtama: kertas[900],
 
-  bahaya: red[400],
-  bahayaTua: red[300],
-  bahayaTeks: red[400],
-  bahayaBingkai: red[500],
-  bahayaMuda: red[900],
-  bahayaLembut: red[950],
-  bahayaGaris: red[900],
-  /** Teks/ikon di atas isi `bahaya` / `bahayaBingkai` (lencana merah pekat) — gelap, ≥ 4,5:1. */
-  teksAtasBahaya: neutral[950],
+  /** Hijau = berhasil / boleh: Bisa Digulung, lencana Baru & Gulung Naik, lebih setor, foto siap. */
+  sukses: emerald[700],
+  suksesTua: emerald[800],
+  suksesMuda: emerald[100],
+  suksesLembut: emerald[50],
+  suksesGaris: emerald[200],
 
-  waspada: amber[400],
-  waspadaTua: amber[300],
-  waspadaMuda: amber[900],
-  waspadaLembut: amber[950],
-  waspadaGaris: amber[900],
+  /** Teks & ikon merah (galat, libur, belum boleh). */
+  bahaya: red[700],
+  bahayaTua: red[800],
+  bahayaTeks: red[700],
+  /** Isi merah pekat (lencana angka, bingkai galat). */
+  bahayaBingkai: red[600],
+  bahayaMuda: red[100],
+  bahayaLembut: red[50],
+  bahayaGaris: red[200],
+  /** Teks/ikon di atas isi `bahaya` / `bahayaBingkai` (lencana merah pekat) — putih, ≥ 4,5:1. */
+  teksAtasBahaya: mutlak.putih,
+
+  waspada: amber[800],
+  waspadaTua: amber[900],
+  waspadaMuda: amber[100],
+  waspadaLembut: amber[50],
+  waspadaGaris: amber[200],
 
   /** Teks & ikon di atas foto (cap alamat, keterangan, petunjuk) — selalu putih. */
   diAtasFoto: mutlak.putih,
@@ -86,6 +99,8 @@ export const WARNA = {
   tiraiGelap: tirai.gelap,
   /** Lapisan terang tembus pandang di atas latar gelap (tombol tutup layar penuh). */
   tiraiTerang: tirai.terang,
+  /** Lapisan kertas tembus pandang yang menutup kartu selama tulisan berjalan ("Mencatat…"). */
+  tiraiSibuk: tirai.kertas,
 } as const;
 
 /** Bentuk palet (nama kunci → teks warna); jenis parameter fungsi gaya `(WARNA: Warna) => …`. */
@@ -94,16 +109,25 @@ export type Warna = { readonly [K in keyof typeof WARNA]: string };
 /**
  * AKSEN MODE kerja kolektor (Harian · Mingguan · Tempoan · Semua): aksen teks/ikon
  * (`teks`), latar lembut (`lembut`), dan isi tombol berteks (`isi` + `teksIsi`).
- * Harian = hijau merek; mode lain punya warna sendiri supaya wajah aplikasi terasa
- * berganti. (Kata "mode" di sini = mode KERJA, bukan terang/gelap — itu sudah tak ada.)
+ * SEMUA MODE MEMAKAI TERAKOTA (keputusan pemilik, 24 Nov 2026: konsisten); mode dikenali
+ * dari huruf H/M/T/S dan label mode, bukan warna. Bentuknya tetap per mode supaya mode
+ * bisa diberi warna sendiri lagi tanpa menyentuh layar. (Kata "mode" di sini = mode
+ * KERJA, bukan terang/gelap.)
  */
 export type WarnaMode = { teks: string; lembut: string; isi: string; teksIsi: string };
 
+const AKSEN_TERAKOTA: WarnaMode = {
+  teks: WARNA.utama,
+  lembut: WARNA.utamaLembut,
+  isi: WARNA.utamaIsi,
+  teksIsi: WARNA.teksAtasUtama,
+};
+
 export const AKSEN_MODE = {
-  harian: { teks: emerald[400], lembut: emerald[950], isi: emerald[500], teksIsi: neutral[950] },
-  mingguan: { teks: violet[400], lembut: violet[950], isi: violet[500], teksIsi: neutral[950] },
-  tempoan: { teks: orange[400], lembut: orange[950], isi: orange[500], teksIsi: neutral[950] },
-  semua: { teks: teal[400], lembut: teal[950], isi: teal[500], teksIsi: neutral[950] },
+  harian: AKSEN_TERAKOTA,
+  mingguan: AKSEN_TERAKOTA,
+  tempoan: AKSEN_TERAKOTA,
+  semua: AKSEN_TERAKOTA,
 } as const satisfies Record<string, WarnaMode>;
 
 export type NamaMode = keyof typeof AKSEN_MODE;

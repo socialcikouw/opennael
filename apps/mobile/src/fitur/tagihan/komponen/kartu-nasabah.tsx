@@ -135,7 +135,7 @@ const gaya = StyleSheet.create({
     justifyContent: "center",
     gap: RUANG[2],
     borderRadius: SUDUT.besar,
-    backgroundColor: WARNA.tiraiTerang,
+    backgroundColor: WARNA.tiraiSibuk,
   },
   sibukTeks: { ...HURUF.sm, fontWeight: TEBAL.semi },
   stempel: {

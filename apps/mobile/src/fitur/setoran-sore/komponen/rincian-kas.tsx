@@ -30,7 +30,7 @@ export function RincianKas({ hari }: { hari: HariKolektor }) {
           label={s < 0 ? "Tekor" : s > 0 ? "Lebih Setor" : "Pas"}
           nilai={rupiah(s)}
           tebal
-          warna={s < 0 ? WARNA.bahayaTeks : s > 0 ? WARNA.utama : WARNA.teks}
+          warna={s < 0 ? WARNA.bahayaTeks : s > 0 ? WARNA.sukses : WARNA.teks}
         />
       </View>
       <Text style={g.teksMini}>

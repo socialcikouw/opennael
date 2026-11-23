@@ -177,7 +177,7 @@ export function LayarMutasi() {
                       st.selisihSetor < 0
                         ? WARNA.bahaya
                         : st.selisihSetor > 0
-                          ? WARNA.utama
+                          ? WARNA.sukses
                           : WARNA.teks
                     }
                   />

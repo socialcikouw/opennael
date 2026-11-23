@@ -10,7 +10,7 @@ import { TombolKeluar } from "./komponen/tombol-keluar";
 /**
  * SETELAN (tab mode Semua) — akun yang tertaut di HP ini dan keluar. Satu-satunya
  * tempat keluar di HP kolektor (layar Analitik/Dasbor tak memuatnya). Tak ada pilihan
- * tampilan: aplikasi hanya bertema gelap.
+ * tampilan: aplikasi hanya bertema terang.
  */
 export function LayarSetelan() {
   const s = useSesi();

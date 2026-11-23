@@ -1,7 +1,7 @@
 {
   "_dihasilkanDari": "src/tema/native.ts — jangan disunting tangan",
-  "gaya": "dark",
-  "latar": "#0a0a0a",
-  "splash": "#0a0a0a",
+  "gaya": "light",
+  "latar": "#f4f2ec",
+  "splash": "#d97757",
   "ikonAdaptif": "#E6F4FE"
 }

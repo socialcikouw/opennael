@@ -5,7 +5,7 @@ import type { KartuVM, Nada } from "../inti/kartu";
 
 const NADA: Record<Nada, { teks: string; latar: string }> = {
   merah: { teks: WARNA.bahayaTeks, latar: WARNA.bahayaLembut },
-  hijau: { teks: WARNA.utama, latar: WARNA.utamaLembut },
+  hijau: { teks: WARNA.sukses, latar: WARNA.suksesLembut },
   kuning: { teks: WARNA.waspada, latar: WARNA.waspadaLembut },
   abu: { teks: WARNA.teksKedua, latar: WARNA.isiNetral },
 };

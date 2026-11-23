@@ -1,17 +1,18 @@
 # Tema aplikasi HP
 
-**Status:** Tahap 1–4 selesai (16 Nov 2026). Seluruh layar sudah didesain ulang dan memakai token statis; hook tema lama (`useWarna`, `useGaya`, `useWarnaMode`, `useG`, `useOpsiStack`) dan `komponen/ui/tampilan.tsx` sudah dihapus.
+**Status:** Tahap 1–5 selesai (24 Nov 2026). Seluruh layar memakai token statis; sejak Tahap 5 aplikasi **terang** (putih kertas + terakota).
 
-Aplikasi HP (`apps/mobile`) **hanya bertema gelap** — keputusan pemilik, 16 Nov 2026
-(menggantikan mode terang & gelap 27 Okt). Tidak ada tombol Terang / Gelap / Ikuti HP, tidak
-ada percabangan tema di layar mana pun. Semua yang berkaitan dengan rupa aplikasi — warna,
+Aplikasi HP (`apps/mobile`) **hanya bertema terang: dasar putih kertas, warna utama
+terakota** — keputusan pemilik, 24 Nov 2026, dipilih lewat halaman pratinjau (menggantikan
+"hanya gelap" 16 Nov, yang menggantikan mode terang & gelap 27 Okt). Tidak ada tombol Terang /
+Gelap / Ikuti HP, tidak ada percabangan tema di layar mana pun. Semua yang berkaitan dengan rupa aplikasi — warna,
 jarak, sudut, huruf, tinggi sentuh, dan warna di konfigurasi native — berasal dari **satu
 tempat**: `apps/mobile/src/tema/`. (Web bos punya tema sendiri di Tailwind; tidak tercakup di sini.)
 
 ## Tiga lapis
 
 ```
-palet.ts   LAPIS 1 · skala mentah (slate, emerald, red, …). SATU-SATUNYA tempat hex/rgba.
+palet.ts   LAPIS 1 · skala mentah (kertas, terakota, emerald, red, amber). SATU-SATUNYA tempat hex/rgba.
    ↓
 token.ts   LAPIS 2 · token semantik: WARNA, AKSEN_MODE, RUANG, SUDUT, HURUF, TEBAL, SENTUH.
    ↓
@@ -22,7 +23,7 @@ native.ts  LAPIS 3 · turunan untuk konfigurasi native → tema-native.json → 
 |---|---|
 | `palet.ts` | Nilai mentah. Tidak mengimpor apa pun. **Tidak diekspor** lewat `@/tema` — hanya `token.ts` & `native.ts` yang memakainya. |
 | `token.ts` | `WARNA` (peran → nilai palet), `AKSEN_MODE` (aksen Harian/Mingguan/Tempoan/Semua), skala `RUANG`/`SUDUT`/`HURUF`/`TEBAL`/`SENTUH`. |
-| `native.ts` | Gaya sistem (`dark`), latar jendela, latar splash & ikon adaptif. `jsonNative()` menghasilkan isi `tema-native.json`. |
+| `native.ts` | Gaya sistem (`light`), latar jendela, latar splash & ikon adaptif. `jsonNative()` menghasilkan isi `tema-native.json`. |
 | `navigasi.ts` | `OPSI_STACK` (header Stack baku kolektor/kasir/pengawas) dan `OPSI_TAB` (header + latar adegan tab kolektor), dirangkai dari token — satu-satunya tempat gaya header ditentukan. |
 | `kontras.ts` | Hitung rasio kontras WCAG (murni) untuk uji. |
 | `index.ts` | Pintu: `import { WARNA, RUANG, … } from "@/tema"`. |
@@ -42,7 +43,11 @@ perbaikannya: `bun apps/mobile/scripts/tulis-tema-native.ts`.
    (`abu`/`abuTua` sudah diganti `isiNetral`/`isiNetralTegas` di Tahap 3.)
 4. **Tidak ada percabangan tema** (`useGelap`, `TERANG`, `GELAP` sudah dihapus).
 5. Teks harus terbaca di bawah matahari: lihat uji kontras di bawah.
-6. Kata "mode" di aplikasi berarti mode **kerja** kolektor (Harian · Mingguan · Tempoan ·
+6. **Arti warna terpisah dari merek**: `utama*` (terakota) = merek & aksi; `sukses*` (hijau) =
+   berhasil / boleh (Bisa Digulung, lencana Baru & Gulung Naik, lebih setor, foto siap);
+   `bahaya*` (merah) = galat, libur, belum boleh; `waspada*` (amber tua) = peringatan.
+   Jangan memakai `utama` untuk arti "berhasil".
+7. Kata "mode" di aplikasi berarti mode **kerja** kolektor (Harian · Mingguan · Tempoan ·
    Semua), bukan terang/gelap. Karena itu token aksennya bernama `AKSEN_MODE`.
 
 ## Pagar (otomatis)
@@ -51,7 +56,7 @@ perbaikannya: `bun apps/mobile/scripts/tulis-tema-native.ts`.
 |---|---|
 | `bun run cek:arsitektur` — `warna-literal` | Nilai warna literal (`"#1e293b"`, `"rgba(…)"`, juga di dalam nilai gabungan seperti `boxShadow`) di `apps/mobile/src` di luar `src/tema/`, di `app.config.ts`, atau di `app.json`. |
 | `bun run cek:arsitektur` — `palet-mentah` | Impor `…/palet` dari luar `src/tema/`. |
-| `src/tema/token.test.ts` | Teks penting (`teks`, `teksTombol`, `teksLabel`, `teksKedua`) < 7:1; `redup`, teks beraksen, dan teks di atas isi berwarna < 4,5:1; `samar` < 3:1; `garis` < 1,4:1 atau `garisTegas` < 3:1 di atas latar/permukaan; tangga permukaan (`latar` → `permukaan` → `permukaanTinggi`) tak lagi terlihat; token yang bernama warna. Batasnya sengaja lebih ketat dari standar umum (AA = 4,5:1): kolektor bekerja di luar ruangan. |
+| `src/tema/token.test.ts` | Teks penting (`teks`, `teksTombol`, `teksLabel`, `teksKedua`) < 7:1; `redup`, teks beraksen, dan teks di atas isi berwarna < 4,5:1; `samar` < 3:1; `garis` < 1,4:1 di atas kartu (1,3:1 di atas latar kertas) atau `garisTegas` < 3:1; kartu tak lagi lebih terang dari latar, yang melayang tak dipisah garis, atau segmen aktif tak terlihat; mode yang tak lagi memakai terakota; token yang bernama warna. Batasnya sengaja lebih ketat dari standar umum (AA = 4,5:1): kolektor bekerja di luar ruangan. |
 | `src/tema/native.test.ts` | `tema-native.json` tidak sinkron dengan token. |
 
 ## Cara memakai
@@ -78,28 +83,50 @@ native, jadi mengubahnya mengganti sidik jari runtime: pembaruan OTA tidak masuk
 `preview` yang sudah terpasang — APK wajib dibangun ulang (sudah tertunda sejak keputusan
 14 Nov, jadi satu build untuk semuanya). Expo Go tidak terpengaruh.
 
-## Palet (Tahap 3)
+## Palet (Tahap 5 — putih kertas + terakota)
 
-**Arah:** netral murni hampir hitam (skala Tailwind `neutral`, bukan biru-kelabu `slate`) +
-aksen hijau merek. Kolektor memakai aplikasi berjam-jam di luar ruangan: latar hitam pekat
-memberi kontras terbesar dan hemat baterai OLED, dan nominal tampil putih bersih di atasnya.
+**Arah** (pilihan pemilik 24 Nov 2026 setelah membandingkan gelap, slate, merah, biru, hitam,
+dan oranye di halaman pratinjau): **terang** karena kolektor bekerja di bawah matahari —
+teks gelap di atas latar terang paling terbaca, tak memantulkan sekitar seperti layar gelap,
+dan HP lapangan banyak yang LCD (tema gelap tak menghemat baterai di sana). **Putih kertas**
+(netral hangat, mirip buku kas) bukan putih kebiruan; **terakota** (seperti oranye Claude)
+sebagai warna merek. **Semua mode kerja memakai terakota** — mode dikenali dari huruf
+H/M/T/S dan label mode.
 
-**Kedalaman = kecerahan permukaan, bukan bayangan** (bayangan tak terlihat di latar gelap):
-
-| Tingkat | Token | Dipakai untuk |
+| Peran | Token | Nilai |
 |---|---|---|
-| 0 | `latar` | latar layar |
-| 1 | `permukaan` | kartu, isian, tombol kedua |
-| 2 | `permukaanTinggi` | yang melayang: tab bar, lembar bawah |
-| isi | `isiNetral` → `isiNetralTegas` | kolom di dalam kartu, avatar, lencana netral, kerangka muat → segmen aktif, tombol tertekan |
+| Latar layar, isi netral | `latar`, `isiNetral` | kertas `#f4f2ec` |
+| Kartu, isian, tab bar, lembar | `permukaan`, `permukaanTinggi` | putih hangat `#fffefb` |
+| Segmen aktif, garis | `isiNetralTegas`, `garis` | krem `#d9d5cc` |
+| Batas isian, rel, placeholder | `garisTegas`, `samar` | stone-500 `#78716c` |
+| Teks | `teks` → `teksLabel` → `teksKedua` → `redup` | stone-900 → 800 → 700 → 600 |
+| Isi tombol utama, +, lingkaran angsuran | `utamaIsi` + `teksAtasUtama` | coral `#d97757` + tulisan **gelap** (5,6:1) |
+| Teks & ikon terakota, tab aktif | `utama`, `utamaTua` | `#a8461f`, `#8f3d1d` |
+| Berhasil / boleh | `sukses*` | emerald-700 … 50 |
+| Galat, libur, belum boleh | `bahaya*` | red-700 (teks), red-600 (isi) |
+| Peringatan | `waspada*` | amber-800 |
+
+**Kenapa tulisan gelap di tombol coral:** coral terlalu terang untuk tulisan putih (3,1:1)
+maupun untuk teks di atas kertas (2,8:1). Coral hanya dipakai sebagai **isi**; teks & ikon
+terakota memakai `#a8461f`.
+
+**Kedalaman tanpa bayangan:** latar kertas → kartu putih hangat (lebih terang); yang melayang
+(tab bar, lembar bawah) sama putihnya dengan kartu dan dipisah **garis**.
 
 | Garis | Token | Syarat |
 |---|---|---|
-| hiasan | `garis` | ≥ 1,4:1 di atas latar & permukaan |
+| hiasan | `garis` | ≥ 1,4:1 di atas kartu, ≥ 1,3:1 di atas latar kertas |
 | batas komponen | `garisTegas` | ≥ 3:1 di atas latar & permukaan (isian, tombol kedua, rel) |
 
-Bayangan (`bayangan.ts`, `BAYANGAN`, `boxShadow` di layar) **dihapus**; tepi panel bawah kini
-garis atas di semua platform.
+**Native:** gaya sistem `light` (status bar berikon gelap, keyboard & dialog terang). Latar
+splash = `utamaIsi` (coral), bukan `latar`, karena logo splash templat berwarna putih —
+dikembalikan ke `latar` saat logo merek ada. Layar kamera & foto layar penuh tetap hitam
+dengan status bar terang.
+
+### Palet sebelumnya (Tahap 3, 16–24 Nov 2026)
+
+Netral murni hampir hitam (`neutral`) + aksen hijau merek, tiap mode berwarna sendiri (ungu,
+oranye, teal); kedalaman = makin tinggi makin terang. Diganti Tahap 5.
 
 ## Tahapan
 
@@ -109,12 +136,15 @@ garis atas di semua platform.
 | 2. Pagar | Aturan `cek:arsitektur`, uji kontras, dokumen ini | ✅ 16 Nov 2026 |
 | 3. Palet baru | Netral hampir hitam + hijau merek, `permukaanTinggi`, tanpa bayangan, `abu`→`isiNetral`, `abuTua`→`isiNetralTegas`, garis terlihat, lencana merah terbaca, latar splash = latar | ✅ 16 Nov 2026 |
 | 4. Layar per layar | Desain ulang tiap layar; hook lama diganti token statis + `StyleSheet.create` tingkat modul | **Tagihan ✅ · Notifikasi ✅ · Akad ✅ · Bayar ✅ · Gulung ✅ · Detail Nasabah ✅ · Dasbor/Analitik ✅ · Mode Semua (Mutasi, Storting, Droping, Setelan) ✅ · Kasir ✅ · Pengawas ✅ · Pencocokan Kas ✅ · Tunggakan ✅ · Penautan QR ✅ · Pintu masuk ✅ · Tab bar kolektor ✅ · hook lama dihapus ✅ (16 Nov 2026)**; komponen bersama (`komponen/ui`, tab bar, lembar bawah) ✅ token statis |
+| 5. Tema terang | Putih kertas + terakota (pilihan pemilik lewat pratinjau), semua mode terakota, token baru `sukses*` & `tiraiSibuk`, arti "berhasil" dipindah dari `utama` ke `sukses` (±15 tempat), status bar & keyboard terang, uji kedalaman ditulis ulang | ✅ 24 Nov 2026 |
 
 ### Yang masih tersisa
 
-- **Ikon adaptif Android** masih templat Expo (logo biru, latar `#E6F4FE`, `palet.ts` → `native`);
-  diganti bersama identitas APK (nama & ikon merek). Latar splash sudah = `latar`.
+- **Ikon adaptif & logo splash** masih templat Expo (logo putih, latar ikon `#E6F4FE`); diganti
+  bersama identitas APK (nama & ikon merek). Sesudahnya latar splash kembali = `latar`.
+- **Alas segmen** (`isiNetral`) sama dengan latar kertas: di kepala Tagihan, alas segmen tak
+  terlihat, hanya keping aktif yang tampak (sesuai pratinjau yang disetujui). Bisa dipertegas
+  bila pemilik menginginkannya.
 - **Nama varian `Lencana`** (`hijau`, `kuning`, `merah`, `abu`) masih bernama warna; dapat
-  diganti nama peran (mis. `sukses`, `peringatan`, `bahaya`, `netral`) kapan saja — kini tak
-  ada lagi layar yang menunggu didesain ulang.
-- **Aksen Mingguan**: teks gelap di atas ungu `isi` 4,7:1 — lolos 4,5:1 tetapi tipis.
+  diganti nama peran (`sukses`, `peringatan`, `bahaya`, `netral`) kapan saja.
+- **Web bos** masih slate + emerald (Tailwind); belum diputuskan ikut putih kertas + terakota.

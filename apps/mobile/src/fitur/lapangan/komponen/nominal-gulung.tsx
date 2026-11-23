@@ -13,9 +13,9 @@ const LENCANA_GULUNG = {
   turun: { teks: "TURUN", ikon: "trending-down" },
 } as const satisfies Record<string, { teks: string; ikon: NamaIkon }>;
 
-/** Naik = hijau merek, tetap = netral, turun = merah (pokok berkurang). */
+/** Naik = hijau (sukses), tetap = netral, turun = merah (pokok berkurang). */
 const RUPA_GULUNG = {
-  naik: { teks: WARNA.utama, latar: WARNA.utamaLembut },
+  naik: { teks: WARNA.sukses, latar: WARNA.suksesLembut },
   tetap: { teks: WARNA.teksKedua, latar: WARNA.isiNetral },
   turun: { teks: WARNA.bahayaTeks, latar: WARNA.bahayaLembut },
 } as const;

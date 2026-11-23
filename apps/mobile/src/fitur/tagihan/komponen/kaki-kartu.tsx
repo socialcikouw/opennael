@@ -93,10 +93,14 @@ function TombolTonal(props: {
       : props.mati === "abu"
         ? WARNA.redup
         : props.sorot
-          ? WARNA.utama
+          ? WARNA.sukses
           : WARNA.teksTombol;
   const latar =
-    props.mati === "merah" ? WARNA.bahayaLembut : props.sorot ? WARNA.utamaLembut : WARNA.isiNetral;
+    props.mati === "merah"
+      ? WARNA.bahayaLembut
+      : props.sorot
+        ? WARNA.suksesLembut
+        : WARNA.isiNetral;
   return (
     <Pressable
       accessibilityRole="button"

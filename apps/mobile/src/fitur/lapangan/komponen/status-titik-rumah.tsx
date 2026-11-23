@@ -21,7 +21,7 @@ export function StatusTitikRumah({ titik, lama }: { titik: TitikLatar; lama: boo
         : `Titik rumah tidak terekam otomatis. ${titik.alasan}`;
   return (
     <View style={g.baris2} accessibilityLiveRegion="polite">
-      <Ikon nama="map-pin" ukuran={14} warna={siap ? WARNA.utama : WARNA.redup} />
+      <Ikon nama="map-pin" ukuran={14} warna={siap ? WARNA.sukses : WARNA.redup} />
       <Text style={[g.teksRedup, g.isi]}>{teks}</Text>
     </View>
   );

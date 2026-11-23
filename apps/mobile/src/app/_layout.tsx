@@ -28,7 +28,7 @@ export default function TataLetakAkar() {
 
 /**
  * Kerangka tunggal: latar layar dari token, bilah status selalu terang (aplikasi
- * hanya bertema gelap), dan penjaga sesi/peran di satu tempat. Pintu (`index`)
+ * hanya bertema terang), dan penjaga sesi/peran di satu tempat. Pintu (`index`)
  * tak dijaga: selama sesi belum terbaca ia menampilkan pemuatan, lalu mengarahkan
  * sesuai peran. Penjaga ini hanya di HP — server tetap memeriksa peran di setiap
  * permintaan.
@@ -56,7 +56,8 @@ function Kerangka() {
           <Stack.Screen name="beranda" />
         </Stack.Protected>
       </Stack>
-      <StatusBar style="light" />
+      {/* Tema terang: ikon jam & baterai gelap. Layar kamera & foto layar penuh menimpanya dengan "light". */}
+      <StatusBar style="dark" />
     </>
   );
 }

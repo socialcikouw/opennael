@@ -27,7 +27,7 @@ export function Isian(
         {ikon ? <Ikon nama={ikon} warna={WARNA.redup} /> : null}
         <TextInput
           style={g.isian}
-          keyboardAppearance="dark"
+          keyboardAppearance="light"
           placeholderTextColor={WARNA.samar}
           onFocus={(e) => {
             setFokus(true);
@@ -61,7 +61,7 @@ export function IsianUang(props: {
         <Text style={g.awalanRp}>Rp</Text>
         <TextInput
           style={g.isianUang}
-          keyboardAppearance="dark"
+          keyboardAppearance="light"
           keyboardType="number-pad"
           placeholder="0"
           placeholderTextColor={WARNA.samar}

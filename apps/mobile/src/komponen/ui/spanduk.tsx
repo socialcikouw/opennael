@@ -22,9 +22,9 @@ const GAYA_SPANDUK: GayaSpanduk = {
     warna: WARNA.bahaya,
   },
   hijau: {
-    kotak: { backgroundColor: WARNA.utamaLembut, borderColor: WARNA.utamaGaris },
+    kotak: { backgroundColor: WARNA.suksesLembut, borderColor: WARNA.suksesGaris },
     ikon: "circle-check",
-    warna: WARNA.utama,
+    warna: WARNA.sukses,
   },
 };
 

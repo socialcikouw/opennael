@@ -3,79 +3,93 @@
  * ditulis di aplikasi HP; dijaga `bun run cek:arsitektur` (aturan `warna-literal`).
  *
  * Bukan untuk dipakai layar. Layar hanya memakai TOKEN SEMANTIK di `token.ts`
- * (`WARNA.permukaan`, bukan `neutral[900]`), sehingga mengganti tampilan seluruh
+ * (`WARNA.permukaan`, bukan `kertas[50]`), sehingga mengganti tampilan seluruh
  * aplikasi = mengubah rujukan di `token.ts` (atau nilai di sini), tanpa menyentuh
  * satu layar pun. Berkas ini tak mengimpor apa pun.
  *
- * ARAH PALET (Tahap 3, 16 Nov 2026): netral MURNI hampir hitam (bukan biru-kelabu
- * seperti slate sebelumnya) + aksen hijau merek. Alasannya: kolektor memakai aplikasi
- * berjam-jam di luar ruangan — latar hitam pekat memberi kontras terbesar dan hemat
- * baterai layar OLED, sedangkan angka (nominal) tampil putih bersih di atasnya.
- * Skala = Tailwind `neutral`; dua langkah antara (550, 750) ditambahkan untuk garis.
+ * ARAH PALET (Tahap 5, 24 Nov 2026 — pilihan pemilik lewat pratinjau): TERANG saja,
+ * dasar PUTIH KERTAS (netral hangat, skala Tailwind `stone` + dua langkah kertas) dengan
+ * warna utama TERAKOTA (seperti oranye Claude). Kolektor bekerja di bawah matahari:
+ * teks gelap di atas latar terang paling terbaca dan tak memantulkan sekitar seperti
+ * layar gelap. Hijau (`emerald`) tetap ada untuk arti BERHASIL, merah untuk BAHAYA /
+ * BELUM BOLEH, amber tua untuk PERINGATAN — terpisah dari warna merek.
  */
 
-const neutral = {
-  50: "#fafafa",
-  100: "#f5f5f5",
-  200: "#e5e5e5",
-  300: "#d4d4d4",
-  400: "#a3a3a3",
-  500: "#737373",
-  /** Antara 500 dan 600: batas isian & tombol — 3:1 di atas permukaan (aksesibilitas batas komponen). */
-  550: "#666666",
-  600: "#525252",
-  700: "#404040",
-  /** Antara 700 dan 800: garis kartu & pemisah — terlihat tanpa menjadi kerangka kawat. */
-  750: "#333333",
-  800: "#262626",
-  900: "#171717",
-  950: "#0a0a0a",
+/** Netral hangat "putih kertas": 50–100 dibuat khusus, 200 ke atas mendekati Tailwind `stone`. */
+const kertas = {
+  /** Kartu & yang melayang — putih hangat. */
+  50: "#fffefb",
+  /** Latar layar & isi netral — kertas. */
+  100: "#f4f2ec",
+  /** Garis & isi netral tegas — krem. */
+  200: "#d9d5cc",
+  500: "#78716c",
+  600: "#57534e",
+  700: "#44403c",
+  800: "#292524",
+  900: "#1c1917",
+} as const;
+
+/**
+ * Terakota — warna utama. 400 (coral) terlalu terang untuk tulisan putih (3,1:1) maupun
+ * untuk teks di atas kertas (2,8:1): ia HANYA dipakai sebagai isi (tombol, lingkaran)
+ * bertulisan gelap. Teks & ikon terakota memakai 700.
+ */
+const terakota = {
+  50: "#f8e6da",
+  100: "#f3d3c2",
+  200: "#e9b99f",
+  400: "#d97757",
+  500: "#c96442",
+  700: "#a8461f",
+  800: "#8f3d1d",
 } as const;
 
 const emerald = {
-  300: "#6ee7b7",
-  400: "#34d399",
-  500: "#10b981",
+  50: "#ecfdf5",
+  100: "#d1fae5",
+  200: "#a7f3d0",
+  700: "#047857",
   800: "#065f46",
-  900: "#064e3b",
-  950: "#022c22",
 } as const;
 
 const red = {
-  300: "#fca5a5",
-  400: "#f87171",
-  500: "#ef4444",
-  900: "#7f1d1d",
-  950: "#450a0a",
+  50: "#fef2f2",
+  100: "#fee2e2",
+  200: "#fecaca",
+  600: "#dc2626",
+  700: "#b91c1c",
+  800: "#991b1b",
 } as const;
 
 const amber = {
-  300: "#fcd34d",
-  400: "#fbbf24",
+  50: "#fffbeb",
+  100: "#fef3c7",
+  200: "#fde68a",
+  800: "#92400e",
   900: "#78350f",
-  950: "#451a03",
 } as const;
 
-/** Aksen mode kerja (Mingguan · Tempoan · Semua); Harian memakai emerald (merek). */
-const violet = { 400: "#a78bfa", 500: "#8b5cf6", 950: "#2e1065" } as const;
-const orange = { 400: "#fb923c", 500: "#f97316", 950: "#431407" } as const;
-const teal = { 400: "#2dd4bf", 500: "#14b8a6", 950: "#042f2e" } as const;
-
 export const PALET = {
-  neutral,
+  kertas,
+  terakota,
   emerald,
   red,
   amber,
-  violet,
-  orange,
-  teal,
   /** Putih & hitam mutlak (di atas foto, latar kamera & QR) — sama di mana pun. */
   mutlak: { putih: "#ffffff", hitam: "#000000" },
-  /** Lapisan tembus pandang: di atas foto (gelap) dan di atas latar gelap (terang). */
-  tirai: { gelap: "rgba(10, 10, 10, 0.6)", terang: "rgba(255, 255, 255, 0.18)" },
+  /**
+   * Lapisan tembus pandang: `gelap` di atas foto, `terang` di atas latar hitam (tombol
+   * tutup layar penuh), `kertas` menutup kartu yang sedang mencatat.
+   */
+  tirai: {
+    gelap: "rgba(10, 10, 10, 0.6)",
+    terang: "rgba(255, 255, 255, 0.18)",
+    kertas: "rgba(255, 254, 251, 0.85)",
+  },
   /**
    * Warna aset native bawaan templat Expo (latar ikon adaptif) — SEMENTARA: ikut diganti
-   * bersama identitas APK (nama & ikon). Latar splash tak di sini: ia = `WARNA.latar`.
+   * bersama identitas APK (nama & ikon). Latar splash tak di sini: ia = `WARNA.utamaIsi`.
    */
   native: { ikonAdaptif: "#E6F4FE" },
 } as const;

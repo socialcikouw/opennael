@@ -1,12 +1,12 @@
 import { describe, expect, test } from "bun:test";
-import { rasioKontras } from "./kontras";
+import { luminans, rasioKontras } from "./kontras";
 import { AKSEN_MODE, WARNA } from "./token";
 
 /**
- * UJI TEMA — penjaga keterbacaan & kelengkapan token. Aplikasi hanya bertema gelap dan
- * dipakai kolektor di bawah matahari, jadi batasnya sengaja lebih ketat dari standar umum
- * (WCAG AA = 4,5:1): teks penting ≥ 7:1. Menambah / mengubah warna di `palet.ts` atau
- * `token.ts` yang membuat teks sulit dibaca akan menggagalkan uji ini.
+ * UJI TEMA — penjaga keterbacaan & kelengkapan token. Aplikasi hanya bertema terang
+ * (putih kertas + terakota) dan dipakai kolektor di bawah matahari, jadi batasnya sengaja
+ * lebih ketat dari standar umum (WCAG AA = 4,5:1): teks penting ≥ 7:1. Menambah / mengubah
+ * warna di `palet.ts` atau `token.ts` yang membuat teks sulit dibaca akan menggagalkan uji ini.
  */
 
 const W = WARNA as Record<string, string>;
@@ -40,12 +40,26 @@ describe("kontras teks di atas alas", () => {
     periksaTeks(["samar"], ALAS, 3);
   });
 
-  test("teks beraksen (hijau, merah, kuning) ≥ 4,5:1", () => {
+  test("teks beraksen (terakota, hijau, merah, kuning) ≥ 4,5:1", () => {
     periksaTeks(
-      ["utama", "utamaTua", "bahayaTeks", "bahayaTua", "waspada", "waspadaTua"],
+      [
+        "utama",
+        "utamaTua",
+        "sukses",
+        "suksesTua",
+        "bahaya",
+        "bahayaTeks",
+        "bahayaTua",
+        "waspada",
+        "waspadaTua",
+      ],
       ALAS,
       4.5,
     );
+  });
+
+  test("bingkai isian yang sedang diketik (utamaFokus) ≥ 3:1 di atas permukaan", () => {
+    expect(rasioKontras(WARNA.utamaFokus, WARNA.permukaan)).toBeGreaterThanOrEqual(3);
   });
 
   test("aksen yang dipakai di atas isiNetralTegas (segmen aktif) ≥ 4,5:1", () => {
@@ -55,14 +69,16 @@ describe("kontras teks di atas alas", () => {
 
 describe("kontras teks di atas isi berwarna", () => {
   const PASANGAN: [teks: string, isi: string, minimal: number][] = [
+    // Coral terang hanya terbaca dengan tulisan gelap (putih = 3,1:1).
     ["teksAtasUtama", "utamaIsi", 4.5],
-    // Dulu 2,8:1 & 3,8:1 (teks putih) — kekurangan lama yang diperbaiki Tahap 3.
     ["teksAtasBahaya", "bahaya", 4.5],
     ["teksAtasBahaya", "bahayaBingkai", 4.5],
     ["utamaTua", "utamaMuda", 4.5],
+    ["suksesTua", "suksesMuda", 4.5],
     ["bahayaTua", "bahayaMuda", 4.5],
     ["waspadaTua", "waspadaMuda", 4.5],
     ["utama", "utamaLembut", 4.5],
+    ["sukses", "suksesLembut", 4.5],
     ["bahayaTeks", "bahayaLembut", 4.5],
     ["waspada", "waspadaLembut", 4.5],
     ["diAtasFoto", "latarMedia", 7],
@@ -80,6 +96,17 @@ describe("aksen mode kerja", () => {
     expect(Object.keys(AKSEN_MODE).sort()).toEqual(["harian", "mingguan", "semua", "tempoan"]);
   });
 
+  test("semua mode memakai terakota yang sama dengan warna utama (keputusan pemilik 24 Nov 2026)", () => {
+    for (const a of Object.values(AKSEN_MODE)) {
+      expect(a).toEqual({
+        teks: WARNA.utama,
+        lembut: WARNA.utamaLembut,
+        isi: WARNA.utamaIsi,
+        teksIsi: WARNA.teksAtasUtama,
+      });
+    }
+  });
+
   for (const [nama, a] of Object.entries(AKSEN_MODE)) {
     test(`${nama}: teks terbaca di latar, permukaan & latar lembut; teksIsi terbaca di isi`, () => {
       expect(rasioKontras(a.teks, WARNA.latar)).toBeGreaterThanOrEqual(4.5);
@@ -91,16 +118,25 @@ describe("aksen mode kerja", () => {
   }
 });
 
-describe("kedalaman = kecerahan permukaan (tanpa bayangan)", () => {
-  test("tangga naik: latar < permukaan < permukaanTinggi, tiap anak tangga terlihat", () => {
+describe("kedalaman tanpa bayangan: kertas → kartu putih → garis", () => {
+  test("kartu (permukaan) lebih terang dari latar kertas dan terlihat bedanya", () => {
+    expect(luminans(WARNA.permukaan)).toBeGreaterThan(luminans(WARNA.latar));
     expect(rasioKontras(WARNA.latar, WARNA.permukaan)).toBeGreaterThanOrEqual(1.08);
-    expect(rasioKontras(WARNA.permukaan, WARNA.permukaanTinggi)).toBeGreaterThanOrEqual(1.15);
-    expect(rasioKontras(WARNA.isiNetral, WARNA.isiNetralTegas)).toBeGreaterThanOrEqual(1.4);
   });
 
-  test("garis kartu & pemisah terlihat: ≥ 1,4:1 di atas latar dan permukaan", () => {
-    expect(rasioKontras(WARNA.garis, WARNA.latar)).toBeGreaterThanOrEqual(1.4);
+  test("yang melayang (permukaanTinggi) tak lebih gelap dari kartu; dipisah garis ≥ 1,4:1", () => {
+    expect(luminans(WARNA.permukaanTinggi)).toBeGreaterThanOrEqual(luminans(WARNA.permukaan));
+    expect(rasioKontras(WARNA.garis, WARNA.permukaanTinggi)).toBeGreaterThanOrEqual(1.4);
+  });
+
+  test("isi netral tegas (segmen aktif, tombol tertekan) terlihat di atas isi netral & kartu", () => {
+    expect(rasioKontras(WARNA.isiNetral, WARNA.isiNetralTegas)).toBeGreaterThanOrEqual(1.25);
+    expect(rasioKontras(WARNA.permukaan, WARNA.isiNetralTegas)).toBeGreaterThanOrEqual(1.4);
+  });
+
+  test("garis kartu & pemisah terlihat: ≥ 1,4:1 di atas kartu, ≥ 1,3:1 di atas latar kertas", () => {
     expect(rasioKontras(WARNA.garis, WARNA.permukaan)).toBeGreaterThanOrEqual(1.4);
+    expect(rasioKontras(WARNA.garis, WARNA.latar)).toBeGreaterThanOrEqual(1.3);
   });
 
   test("batas isian & tombol (garisTegas) ≥ 3:1 di atas latar dan permukaan (batas komponen)", () => {

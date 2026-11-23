@@ -25,8 +25,8 @@ export function KartuRasio(props: {
         <Text style={g.judulBagian}>RASIO BAYAR</Text>
         {beres ? (
           <Pressable onPress={props.onLaporan} style={gaya.selesai} accessibilityRole="button">
-            <Ikon nama="circle-check" ukuran={12} warna={WARNA.utama} />
-            <Text style={[gaya.ket, { color: WARNA.utama }]}>
+            <Ikon nama="circle-check" ukuran={12} warna={WARNA.sukses} />
+            <Text style={[gaya.ket, { color: WARNA.sukses }]}>
               Tagihan wajib selesai · buka laporan
             </Text>
           </Pressable>

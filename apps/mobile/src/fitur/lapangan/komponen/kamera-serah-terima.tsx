@@ -155,7 +155,7 @@ export function IsianFotoSerahTerima(props: {
           <Image source={{ uri: props.nilai.uri }} style={gaya.pratinjau} />
           <View style={[g.isi, gaya.keteranganFoto]}>
             <View style={g.baris1}>
-              <Ikon nama="circle-check" ukuran={16} warna={WARNA.utama} />
+              <Ikon nama="circle-check" ukuran={16} warna={WARNA.sukses} />
               <Text style={gaya.siap}>Foto siap dipakai</Text>
             </View>
             <Text style={gaya.diambil}>
@@ -234,6 +234,6 @@ const gaya = StyleSheet.create({
     backgroundColor: WARNA.isiNetral,
   },
   keteranganFoto: { gap: RUANG[1] },
-  siap: { ...HURUF.sm, fontWeight: TEBAL.semi, color: WARNA.utama },
+  siap: { ...HURUF.sm, fontWeight: TEBAL.semi, color: WARNA.sukses },
   diambil: { ...HURUF.sm, color: WARNA.teksLabel },
 });
