@@ -59,7 +59,7 @@ const KOLOM = [
       const t = c.row.original.tagih;
       if (!t || t.tertinggal === 0) return <span className="text-muted-foreground">—</span>;
       return (
-        <span className="text-amber-800">
+        <span className="text-waspada">
           {c.row.original.jenis === "tempoan" ? "lewat tempo" : `${t.tertinggal}×`} ·{" "}
           {rupiah(t.tunggakan)}
         </span>

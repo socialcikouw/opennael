@@ -36,7 +36,7 @@ export function BukaBukuKas() {
         >
           <IsianRupiah label="Kas Awal Tunai" nilai={tunai} ubah={setTunai} />
           <IsianRupiah label="Kas Awal Bank" nilai={bank} ubah={setBank} />
-          {m.error ? <p className="text-sm text-red-700">{m.error.message}</p> : null}
+          {m.error ? <p className="text-sm text-bahaya">{m.error.message}</p> : null}
           <Button type="submit" disabled={m.isPending || tunai === null}>
             {m.isPending ? "Memproses…" : "Buka buku kas"}
           </Button>

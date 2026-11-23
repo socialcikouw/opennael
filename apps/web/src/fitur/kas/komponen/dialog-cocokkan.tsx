@@ -46,9 +46,7 @@ export function DialogCocokkan({ tutup }: { tutup: () => void }) {
           <Baris label="Saldo Nyata (dihitung)">{rupiah(h.saldoNyata)}</Baris>
           <Baris label="Saldo Buku">{rupiah(h.saldoBuku)}</Baris>
           <Baris label={h.selisih < 0 ? "Kurang" : h.selisih > 0 ? "Lebih" : "Selisih"} tebal>
-            <span
-              className={cn(h.selisih < 0 && "text-red-700", h.selisih > 0 && "text-emerald-700")}
-            >
+            <span className={cn(h.selisih < 0 && "text-bahaya", h.selisih > 0 && "text-sukses")}>
               {rupiah(h.selisih)}
             </span>
           </Baris>

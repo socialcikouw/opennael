@@ -107,7 +107,7 @@ export function LiburKantor() {
                   variant="ghost"
                   title="Batalkan libur"
                   aria-label={`Batalkan libur ${formatTanggal(l.tanggal)}`}
-                  className="text-red-700"
+                  className="text-bahaya"
                   onClick={() => setBatal(l.tanggal)}
                 >
                   <Undo2 />

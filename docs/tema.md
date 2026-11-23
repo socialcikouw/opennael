@@ -7,7 +7,8 @@ terakota** — keputusan pemilik, 24 Nov 2026, dipilih lewat halaman pratinjau (
 "hanya gelap" 16 Nov, yang menggantikan mode terang & gelap 27 Okt). Tidak ada tombol Terang /
 Gelap / Ikuti HP, tidak ada percabangan tema di layar mana pun. Semua yang berkaitan dengan rupa aplikasi — warna,
 jarak, sudut, huruf, tinggi sentuh, dan warna di konfigurasi native — berasal dari **satu
-tempat**: `apps/mobile/src/tema/`. (Web bos punya tema sendiri di Tailwind; tidak tercakup di sini.)
+tempat**: `apps/mobile/src/tema/`. Web bos memakai palet yang sama lewat Tailwind — lihat
+bagian [Web bos](#web-bos) di bawah.
 
 ## Tiga lapis
 
@@ -147,4 +148,23 @@ oranye, teal); kedalaman = makin tinggi makin terang. Diganti Tahap 5.
   bila pemilik menginginkannya.
 - **Nama varian `Lencana`** (`hijau`, `kuning`, `merah`, `abu`) masih bernama warna; dapat
   diganti nama peran (`sukses`, `peringatan`, `bahaya`, `netral`) kapan saja.
-- **Web bos** masih slate + emerald (Tailwind); belum diputuskan ikut putih kertas + terakota.
+
+## Web bos
+
+Web bos (`apps/web`) ikut **putih kertas + terakota** (keputusan pemilik 24 Nov 2026) dan,
+berbeda dengan HP, **punya dua mode**: Terang dan Gelap ("kertas malam" — cokelat-hitam
+hangat dengan aksen coral yang sama). Bos bekerja di depan layar, sering malam hari, jadi
+mode gelap dipertahankan sebagai pilihan.
+
+| Bagian | Tempat |
+|---|---|
+| Nilai warna kedua mode | `apps/web/src/index.css` — `:root` (terang) & `.dark` (gelap), satu-satunya tempat nilai warna web |
+| Pilihan tema | Tombol di menu (samping & bilah atas): **Ikuti Perangkat** (bawaan) → **Terang** → **Gelap**; tersimpan di `localStorage` (`nael.tema`) per peramban |
+| Logika | `apps/web/src/lib/tema.ts` (+ `tema.test.ts`); skrip kecil di `index.html` memasang `.dark` sebelum halaman tergambar (tanpa kilatan putih) |
+
+Token web memakai nama shadcn (`background`, `card`, `primary`, `muted-foreground`, …)
+ditambah token arti seperti HP: `utama` (teks terakota), `sukses*`, `bahaya*`, `waspada*`
+(`text-sukses`, `bg-bahaya-lembut`, …). **Layar tidak memakai kelas warna Tailwind langsung**
+(`text-red-700`, `bg-emerald-100`) karena tak ikut berganti mode. `primary` = isi coral
+bertulisan gelap (seperti HP); menu aktif & tautan memakai `text-utama`.
+

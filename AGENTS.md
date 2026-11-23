@@ -21,7 +21,7 @@ Dokumen yang dibaca lebih dulu:
 | [`docs/skema/`](docs/skema/README.md) | Rancangan database per tabel + konvensi penamaan |
 | [`docs/arsitektur/`](docs/arsitektur/README.md) | Susunan kode: [pedoman](docs/arsitektur/pedoman-struktur.md) (aturan umum struktur) dan [struktur](docs/arsitektur/struktur.md) (peta pemindahan, batas API, urutan kerja, gerbang verifikasi) |
 | [`docs/tampilan.md`](docs/tampilan.md) | **Huruf besar-kecil**: teks isian disimpan lowercase; tampilan nama lowercase, kampung UPPERCASE, keterangan/alasan lowercase, judul Kapital Tiap Kata — lewat pembantu `@opennael/format`, web & HP |
-| [`docs/tema.md`](docs/tema.md) | **Tema HP**: hanya terang (putih kertas + terakota); satu sumber token di `apps/mobile/src/tema/` (palet → token → native), aturan, pagar otomatis, tahapan |
+| [`docs/tema.md`](docs/tema.md) | **Tema**: HP hanya terang (putih kertas + terakota), web bos terang & gelap dengan palet sama; satu sumber token HP di `apps/mobile/src/tema/` (palet → token → native), aturan, pagar otomatis, tahapan |
 
 Skill proyek: **`tabel-baru`** (`.claude/skills/tabel-baru/SKILL.md`) — langkah baku
 membangun satu tabel dari `docs/skema/`. Claude Code memuatnya otomatis;
@@ -120,7 +120,7 @@ isi berkas, ukuran, SHA-256).
 | **TanStack Router** | Navigasi bertipe. |
 | **TanStack Query** + `hc` | Data. Bacaan lewat katalog `kueri.*` dari `@/lib/api` (`useQuery(kueri.pengguna.kolektor())`), invalidasi lewat `kunci.*` — **tanpa array `queryKey` literal di layar** (dijaga `cek:arsitektur`). Pembatalan uang lewat `tulis.batal.*` (satu definisi untuk layar asal dan daftar aktivitas). Bacaan baru ditambahkan ke katalog di `packages/api-client/src/kueri/<konteks>.ts` beserta uji kunci & rutenya. |
 | **TanStack Table** | Tabel besar (nasabah, transaksi, buku kas). |
-| **Tailwind CSS + shadcn/ui** | Tampilan. |
+| **Tailwind CSS + shadcn/ui** | Tampilan. **Putih kertas + terakota** seperti HP, dengan **mode Terang & Gelap** (tombol di menu: Ikuti Perangkat → Terang → Gelap; `src/lib/tema.ts`, tersimpan di `localStorage`). Nilai warna hanya di `src/index.css` (`:root` & `.dark`); layar memakai kelas token (`bg-card`, `text-muted-foreground`, `text-sukses`, `bg-bahaya-lembut`, `text-utama`), **bukan** kelas warna Tailwind langsung (`text-red-700`) yang tak ikut mode gelap ([docs/tema.md](docs/tema.md#web-bos)). |
 | **Recharts** | Grafik harian. |
 
 ### Uji

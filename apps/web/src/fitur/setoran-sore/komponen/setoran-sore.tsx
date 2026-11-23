@@ -88,7 +88,7 @@ export function SetoranSore({ tanggal, hariIni }: { tanggal: string; hariIni: st
         cell: (c) => {
           const n = c.getValue();
           if (n === null || n === 0) return "—";
-          return <span className={n < 0 ? "text-red-700" : "text-emerald-700"}>{rupiah(n)}</span>;
+          return <span className={n < 0 ? "text-bahaya" : "text-sukses"}>{rupiah(n)}</span>;
         },
       }),
       k.display({

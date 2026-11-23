@@ -116,7 +116,7 @@ export function LayarKaryawan() {
                   variant="ghost"
                   title="Nonaktifkan"
                   aria-label={`Nonaktifkan ${o.nama}`}
-                  className="text-red-700 hover:text-red-800"
+                  className="text-bahaya hover:text-bahaya-tua"
                   onClick={() => setAksi({ jenis: "nonaktifkan", orang: o })}
                 >
                   <PowerOff />

@@ -46,8 +46,8 @@ export function KartuAngka({
       <span
         className={cn(
           "text-xl font-semibold tabular-nums sm:text-2xl",
-          nada === "baik" && "text-emerald-700",
-          nada === "buruk" && "text-red-700",
+          nada === "baik" && "text-sukses",
+          nada === "buruk" && "text-bahaya",
         )}
       >
         {nilai}
@@ -87,7 +87,7 @@ export function Kosong({ children }: { children: ReactNode }) {
 /** Galat memuat data + tombol coba lagi. */
 export function GalatMuat({ galat, ulangi }: { galat: Error; ulangi?: () => void }) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-bahaya-lembut px-4 py-3 text-sm text-bahaya">
       <span>{galat.message}</span>
       {ulangi ? (
         <Button size="sm" variant="outline" onClick={ulangi}>

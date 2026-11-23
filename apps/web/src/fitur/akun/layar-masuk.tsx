@@ -57,9 +57,9 @@ export function LayarMasuk() {
           Masuk
         </Tombol>
       </form>
-      <p className="text-sm text-slate-600">
+      <p className="text-sm text-muted-foreground">
         Membuka kantor baru?{" "}
-        <Link to="/daftar" className="font-semibold text-emerald-700 hover:underline">
+        <Link to="/daftar" className="font-semibold text-sukses hover:underline">
           Daftar dengan kode registrasi
         </Link>
       </p>

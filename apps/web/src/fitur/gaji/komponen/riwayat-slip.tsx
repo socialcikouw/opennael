@@ -64,7 +64,7 @@ export function RiwayatSlip({ kolektorId, hariIni }: { kolektorId?: string; hari
               variant="ghost"
               title="Batalkan pembayaran"
               aria-label="Batalkan pembayaran"
-              className="text-red-700"
+              className="text-bahaya"
               onClick={() => setBatal(s)}
             >
               <Undo2 />

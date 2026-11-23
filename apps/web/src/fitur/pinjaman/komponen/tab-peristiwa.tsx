@@ -68,7 +68,7 @@ export function TabPeristiwa({ nasabahId }: { nasabahId: string }) {
                 variant="ghost"
                 title="Hapus tanda libur"
                 aria-label="Hapus tanda libur"
-                className="text-red-700 hover:text-red-800"
+                className="text-bahaya hover:text-bahaya-tua"
                 onClick={() => setHapus(p)}
               >
                 <Trash2 />

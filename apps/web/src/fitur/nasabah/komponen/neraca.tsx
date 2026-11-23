@@ -18,9 +18,7 @@ export function Neraca({ id }: { id: string }) {
         <BarisNilai label="Tabungan Dikembalikan">{rupiah(r.tabunganDikembalikan)}</BarisNilai>
         <BarisNilai label="Total Setoran">{rupiah(r.totalSetoran)}</BarisNilai>
         <BarisNilai label="Arus Kas Kantor">
-          <span className={r.arusKas < 0 ? "text-red-700" : "text-emerald-700"}>
-            {rupiah(r.arusKas)}
-          </span>
+          <span className={r.arusKas < 0 ? "text-bahaya" : "text-sukses"}>{rupiah(r.arusKas)}</span>
         </BarisNilai>
       </div>
       <div className="divide-y">
@@ -28,7 +26,7 @@ export function Neraca({ id }: { id: string }) {
         <BarisNilai label="Piutang Aktif">{rupiah(r.piutangAktif)}</BarisNilai>
         <BarisNilai label="Piutang Diputihkan">{rupiah(r.piutangDiputihkan)}</BarisNilai>
         <BarisNilai label="Neraca (tabungan − piutang)">
-          <span className={r.neraca < 0 ? "text-red-700" : undefined}>{rupiah(r.neraca)}</span>
+          <span className={r.neraca < 0 ? "text-bahaya" : undefined}>{rupiah(r.neraca)}</span>
         </BarisNilai>
       </div>
     </div>

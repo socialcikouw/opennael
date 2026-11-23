@@ -83,7 +83,7 @@ export function LayarKas() {
         header: "Masuk",
         meta: { kanan: true },
         cell: (c) =>
-          c.getValue() ? <span className="text-emerald-700">{rupiah(c.getValue())}</span> : "",
+          c.getValue() ? <span className="text-sukses">{rupiah(c.getValue())}</span> : "",
       }),
       k.accessor((g) => Math.max(-g.nominal, 0), {
         id: "keluar",
@@ -103,7 +103,7 @@ export function LayarKas() {
               variant="ghost"
               title="Batalkan mutasi"
               aria-label="Batalkan mutasi"
-              className="text-red-700"
+              className="text-bahaya"
               onClick={() => setBatal(g)}
             >
               <Undo2 />

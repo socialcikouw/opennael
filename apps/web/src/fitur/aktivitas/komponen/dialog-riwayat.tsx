@@ -63,10 +63,10 @@ export function DialogRiwayat({
                       <div key={kk} className="contents">
                         <dt className="text-muted-foreground">{kk}</dt>
                         <dd className="break-all">
-                          <span className="text-red-700 line-through">
+                          <span className="text-bahaya line-through">
                             {teksNilai(j.sebelum?.[kk])}
                           </span>{" "}
-                          → <span className="text-emerald-700">{teksNilai(j.sesudah?.[kk])}</span>
+                          → <span className="text-sukses">{teksNilai(j.sesudah?.[kk])}</span>
                         </dd>
                       </div>
                     ))}

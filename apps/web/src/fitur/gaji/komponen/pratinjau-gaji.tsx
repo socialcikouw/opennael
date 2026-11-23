@@ -44,8 +44,7 @@ const KOLOM_HARI = [
   kh.accessor("tekor", {
     header: "Tekor",
     meta: { kanan: true },
-    cell: (c) =>
-      c.getValue() ? <span className="text-red-700">{rupiah(c.getValue())}</span> : "—",
+    cell: (c) => (c.getValue() ? <span className="text-bahaya">{rupiah(c.getValue())}</span> : "—"),
     footer: (c) => rupiah(c.table.getRowModel().rows.reduce((s, r) => s + r.original.tekor, 0)),
   }),
 ] as Kolom<HariGaji>[];
@@ -82,7 +81,7 @@ export function PratinjauGaji({
         kosong="Tidak ada storting atau tekor pada periode ini"
       />
       {p.halangan ? (
-        <p className="rounded-md bg-amber-50 px-3 py-2 text-sm text-amber-800">
+        <p className="rounded-md bg-waspada-lembut px-3 py-2 text-sm text-waspada">
           {HALANGAN[p.halangan]}
         </p>
       ) : (

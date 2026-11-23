@@ -34,8 +34,8 @@ export function RincianKas({ hari }: { hari: HariKas }) {
       <div
         className={cn(
           "flex justify-between gap-4 font-semibold",
-          st.selisihSetor < 0 && "text-red-700",
-          st.selisihSetor > 0 && "text-emerald-700",
+          st.selisihSetor < 0 && "text-bahaya",
+          st.selisihSetor > 0 && "text-sukses",
         )}
       >
         <span>{st.selisihSetor < 0 ? "Tekor" : st.selisihSetor > 0 ? "Lebih Setor" : "Pas"}</span>

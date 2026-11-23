@@ -89,7 +89,7 @@ export function DialogPerangkat({ orang, tutup }: { orang: Karyawan; tutup: () =
                   <Button
                     size="sm"
                     variant="outline"
-                    className="text-red-700 hover:text-red-800"
+                    className="text-bahaya hover:text-bahaya-tua"
                     onClick={() => setPutus(p)}
                   >
                     <Unplug />

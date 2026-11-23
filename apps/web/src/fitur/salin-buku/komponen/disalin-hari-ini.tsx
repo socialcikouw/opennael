@@ -47,7 +47,7 @@ export function DisalinHariIni() {
                   variant="ghost"
                   title="Batalkan salinan"
                   aria-label={`Batalkan salinan ${a.ringkasan}`}
-                  className="text-red-700"
+                  className="text-bahaya"
                   onClick={() => setBatal(a)}
                 >
                   <Undo2 />

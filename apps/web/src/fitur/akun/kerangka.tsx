@@ -8,8 +8,11 @@ import {
   LayoutDashboard,
   LogOut,
   type LucideIcon,
+  Monitor,
+  Moon,
   QrCode,
   Settings,
+  Sun,
   UserCog,
   Users,
   Wallet,
@@ -18,7 +21,29 @@ import { useState } from "react";
 import { Button } from "@/komponen/ui/button";
 import { api } from "@/lib/api";
 import { sesi, useSesi } from "@/lib/sesi";
+import { gantiTema, LABEL_TEMA, type PilihanTema, pilihanBerikut, useTema } from "@/lib/tema";
 import { cn } from "@/lib/utils";
+
+const IKON_TEMA: Record<PilihanTema, LucideIcon> = { sistem: Monitor, terang: Sun, gelap: Moon };
+
+/** Tombol tema: ikon = pilihan saat ini; ketuk = Ikuti Perangkat → Terang → Gelap → … */
+function TombolTema() {
+  const tema = useTema();
+  const berikut = pilihanBerikut(tema);
+  const Ikon = IKON_TEMA[tema];
+  const label = `Tema: ${LABEL_TEMA[tema]}. Ganti ke ${LABEL_TEMA[berikut]}`;
+  return (
+    <Button
+      size="icon"
+      variant="ghost"
+      aria-label={label}
+      title={label}
+      onClick={() => gantiTema(berikut)}
+    >
+      <Ikon />
+    </Button>
+  );
+}
 
 type Menu = { ke: string; label: string; ikon: LucideIcon; persis?: boolean };
 
@@ -45,7 +70,7 @@ function TautanMenu({ menu, ringkas }: { menu: Menu; ringkas?: boolean }) {
       activeOptions={{ exact: menu.persis ?? false }}
       className={cn(
         "flex shrink-0 items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground",
-        "data-[status=active]:bg-primary/10 data-[status=active]:text-primary",
+        "data-[status=active]:bg-utama-lembut data-[status=active]:text-utama",
         ringkas && "py-1.5",
       )}
     >
@@ -85,7 +110,8 @@ export function Kerangka() {
           ))}
         </nav>
         <div className="flex items-center justify-between gap-2 border-t px-5 py-3">
-          <span className="truncate text-sm">{s.pengguna.nama}</span>
+          <span className="min-w-0 flex-1 truncate text-sm">{s.pengguna.nama}</span>
+          <TombolTema />
           <Button
             size="icon"
             variant="ghost"
@@ -101,7 +127,8 @@ export function Kerangka() {
 
       <div className="sticky top-0 z-40 border-b bg-card md:hidden">
         <div className="flex items-center justify-between px-4 py-2">
-          <p className="truncate font-semibold">{s.pengguna.kantor.nama}</p>
+          <p className="min-w-0 flex-1 truncate font-semibold">{s.pengguna.kantor.nama}</p>
+          <TombolTema />
           <Button
             size="icon"
             variant="ghost"

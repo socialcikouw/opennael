@@ -29,6 +29,7 @@ export function GrafikPerforma({ sampai }: { sampai: string }) {
             dataKey="tanggal"
             tickFormatter={tanggalPendek}
             tickLine={false}
+            tick={{ fill: "var(--muted-foreground)" }}
             axisLine={false}
             minTickGap={24}
             fontSize={12}
@@ -37,6 +38,7 @@ export function GrafikPerforma({ sampai }: { sampai: string }) {
             yAxisId="rp"
             tickFormatter={(n: number) => `${angka(Math.round(n / 1000))} rb`}
             tickLine={false}
+            tick={{ fill: "var(--muted-foreground)" }}
             axisLine={false}
             width={72}
             fontSize={12}
@@ -47,11 +49,19 @@ export function GrafikPerforma({ sampai }: { sampai: string }) {
             domain={[0, "auto"]}
             tickFormatter={(n: number) => `${n}%`}
             tickLine={false}
+            tick={{ fill: "var(--muted-foreground)" }}
             axisLine={false}
             width={44}
             fontSize={12}
           />
           <Tooltip
+            contentStyle={{
+              background: "var(--popover)",
+              borderColor: "var(--border)",
+              color: "var(--popover-foreground)",
+              borderRadius: "var(--radius)",
+            }}
+            cursor={{ fill: "var(--muted)" }}
             labelFormatter={(t) => formatTanggal(String(t))}
             formatter={(nilai, nama) =>
               nama === "persentase"

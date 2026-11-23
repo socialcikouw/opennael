@@ -116,7 +116,7 @@ export function RuteKolektor() {
                   size="icon"
                   variant="ghost"
                   aria-label={`Hapus ${nama}`}
-                  className="text-red-700"
+                  className="text-bahaya"
                   onClick={() => setUrutan(daftar.filter((x) => x !== nama))}
                 >
                   <Trash2 />

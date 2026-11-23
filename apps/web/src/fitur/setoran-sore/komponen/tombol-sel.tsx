@@ -19,7 +19,7 @@ export function TombolSel({
       variant="ghost"
       title={label}
       aria-label={label}
-      className={cn(bahaya && "text-red-700 hover:text-red-800")}
+      className={cn(bahaya && "text-bahaya hover:text-bahaya-tua")}
       onClick={(e) => {
         e.stopPropagation();
         onClick();

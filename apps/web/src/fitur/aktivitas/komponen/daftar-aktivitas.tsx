@@ -104,14 +104,14 @@ export function DaftarAktivitas({
               <span
                 className={cn(
                   "mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground",
-                  batal && "bg-red-50 text-red-700",
-                  a.nominal !== null && !batal && "bg-primary/10 text-primary",
+                  batal && "bg-bahaya-lembut text-bahaya",
+                  a.nominal !== null && !batal && "bg-utama-lembut text-utama",
                 )}
               >
                 <Ikon className="size-4" />
               </span>
               <span className="min-w-0 flex-1 space-y-0.5">
-                <span className={cn("block font-medium", batal && "text-red-700")}>
+                <span className={cn("block font-medium", batal && "text-bahaya")}>
                   {a.ringkasan}
                 </span>
                 <span className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
@@ -134,7 +134,7 @@ export function DaftarAktivitas({
               variant="ghost"
               title="Batalkan"
               aria-label={`Batalkan: ${a.ringkasan}`}
-              className="mt-1.5 shrink-0 text-red-700 hover:text-red-800"
+              className="mt-1.5 shrink-0 text-bahaya hover:text-bahaya-tua"
               onClick={() => setDibatalkan(a)}
             >
               <Undo2 />

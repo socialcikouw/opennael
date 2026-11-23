@@ -13,7 +13,7 @@ export function SaranSerupa({ orang, pakai }: { orang: Orang; pakai: (n: Nasabah
   const q = useQuery(kueri.nasabah.serupa(nama, kampung, nik));
   if (!q.data?.length) return null;
   return (
-    <div className="space-y-1.5 rounded-md bg-amber-50 p-3 text-sm text-amber-900">
+    <div className="space-y-1.5 rounded-md bg-waspada-lembut p-3 text-sm text-waspada-tua">
       <p className="font-medium">Mungkin sudah terdaftar:</p>
       {q.data.map((n) => (
         <div key={n.id} className="flex flex-wrap items-center justify-between gap-2">

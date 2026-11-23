@@ -1,30 +1,105 @@
 @import "tailwindcss";
 
-/* Token tema shadcn/ui — warna utama hijau Nael (emerald-700). */
+/* Mode gelap berbasis kelas `.dark` di <html> (dipasang `lib/tema.ts`, bawaan mengikuti perangkat). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * TEMA WEB BOS — putih kertas + terakota, sama dengan aplikasi HP (keputusan pemilik
+ * 24 Nov 2026; lihat docs/tema.md bagian Web). Dua mode: TERANG (bawaan) dan GELAP
+ * ("kertas malam"). Hanya berkas ini yang menulis nilai warna; layar memakai kelas token
+ * (`bg-card`, `text-muted-foreground`, `text-sukses`, `bg-bahaya-lembut`, …), bukan
+ * `text-red-700` / `bg-emerald-100` yang tak ikut berganti mode.
+ *
+ * Arti warna terpisah dari merek:
+ *   primary  = isi coral (tombol utama) bertulisan GELAP — putih di coral hanya 3,1:1;
+ *   utama    = teks & ikon terakota (menu aktif, tautan) — coral terlalu pucat untuk teks;
+ *   sukses   = berhasil / boleh (hijau); bahaya = galat & batal (merah); waspada = peringatan.
+ * Semua pasangan teks ≥ 4,5:1 di atas latar, kartu, dan muted di kedua mode.
+ */
 :root {
+  color-scheme: light;
   --radius: 0.625rem;
-  --background: oklch(0.984 0.003 247.858);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.508 0.118 165.612);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.869 0.022 252.894);
-  --ring: oklch(0.696 0.17 162.48);
-  --chart-1: oklch(0.508 0.118 165.612);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.577 0.245 27.325);
+  --background: #f4f2ec;
+  --foreground: #1c1917;
+  --card: #fffefb;
+  --card-foreground: #1c1917;
+  --popover: #fffefb;
+  --popover-foreground: #1c1917;
+  --primary: #d97757;
+  --primary-foreground: #1c1917;
+  --secondary: #ece9e2;
+  --secondary-foreground: #292524;
+  --muted: #ece9e2;
+  --muted-foreground: #57534e;
+  --accent: #ece9e2;
+  --accent-foreground: #292524;
+  --destructive: #dc2626;
+  --border: #d9d5cc;
+  --input: #cfc9bd;
+  --ring: #c96442;
+
+  --utama: #a8461f;
+  --utama-lembut: #f8e6da;
+  --sukses: #047857;
+  --sukses-tua: #065f46;
+  --sukses-lembut: #ecfdf5;
+  --sukses-muda: #d1fae5;
+  --bahaya: #b91c1c;
+  --bahaya-tua: #991b1b;
+  --bahaya-lembut: #fef2f2;
+  --bahaya-muda: #fee2e2;
+  --waspada: #92400e;
+  --waspada-tua: #78350f;
+  --waspada-lembut: #fffbeb;
+  --waspada-muda: #fef3c7;
+
+  /* Grafik: batang coral, garis netral tua (kontras dengan batang). */
+  --chart-1: #d97757;
+  --chart-2: #0f766e;
+  --chart-3: #44403c;
+  --chart-4: #b91c1c;
+}
+
+.dark {
+  color-scheme: dark;
+  --background: #171412;
+  --foreground: #f5f2ec;
+  --card: #211d1a;
+  --card-foreground: #f5f2ec;
+  --popover: #211d1a;
+  --popover-foreground: #f5f2ec;
+  --primary: #d97757;
+  --primary-foreground: #1c1917;
+  --secondary: #2b2622;
+  --secondary-foreground: #f5f2ec;
+  --muted: #2b2622;
+  --muted-foreground: #b5ada3;
+  --accent: #2b2622;
+  --accent-foreground: #f5f2ec;
+  --destructive: #dc2626;
+  --border: #3a342f;
+  --input: #4a433d;
+  --ring: #d97757;
+
+  --utama: #e08560;
+  --utama-lembut: #3a2116;
+  --sukses: #34d399;
+  --sukses-tua: #6ee7b7;
+  --sukses-lembut: #062e22;
+  --sukses-muda: #064e3b;
+  --bahaya: #f87171;
+  --bahaya-tua: #fca5a5;
+  --bahaya-lembut: #3b0d0d;
+  --bahaya-muda: #5c1414;
+  --waspada: #fbbf24;
+  --waspada-tua: #fcd34d;
+  --waspada-lembut: #3a2006;
+  --waspada-muda: #4d2a07;
+
+  --chart-1: #d97757;
+  --chart-2: #2dd4bf;
+  --chart-3: #d6d3d1;
+  --chart-4: #f87171;
 }
 
 @theme inline {
@@ -50,6 +125,20 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-utama: var(--utama);
+  --color-utama-lembut: var(--utama-lembut);
+  --color-sukses: var(--sukses);
+  --color-sukses-tua: var(--sukses-tua);
+  --color-sukses-lembut: var(--sukses-lembut);
+  --color-sukses-muda: var(--sukses-muda);
+  --color-bahaya: var(--bahaya);
+  --color-bahaya-tua: var(--bahaya-tua);
+  --color-bahaya-lembut: var(--bahaya-lembut);
+  --color-bahaya-muda: var(--bahaya-muda);
+  --color-waspada: var(--waspada);
+  --color-waspada-tua: var(--waspada-tua);
+  --color-waspada-lembut: var(--waspada-lembut);
+  --color-waspada-muda: var(--waspada-muda);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);

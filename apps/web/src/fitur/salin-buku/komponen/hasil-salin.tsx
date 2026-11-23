@@ -19,7 +19,7 @@ export function HasilSalin({ f }: { f: FormulirSalin }) {
       ) : null}
       <PesanGalat pesan={m.error?.message} />
       {terakhir && !m.error ? (
-        <p className="text-sm text-emerald-700">
+        <p className="text-sm text-sukses">
           Tersalin: {terakhir.nasabah.nama} — {LABEL_JENIS[terakhir.jenis].toLowerCase()} pinjaman
           ke-{terakhir.pinjamanKe}, saldo {rupiah(terakhir.saldo)}
           {terakhir.status === "macet" ? " (macet)" : ""}.

@@ -50,7 +50,7 @@ export function DaftarPencocokan({
         cell: (c) => {
           const n = c.getValue();
           return (
-            <span className={cn(n < 0 && "text-red-700", n > 0 && "text-emerald-700")}>
+            <span className={cn(n < 0 && "text-bahaya", n > 0 && "text-sukses")}>
               {n === 0 ? "—" : rupiah(n)}
             </span>
           );
@@ -73,7 +73,7 @@ export function DaftarPencocokan({
               variant="ghost"
               title="Batalkan pencocokan"
               aria-label="Batalkan pencocokan"
-              className="text-red-700"
+              className="text-bahaya"
               onClick={() => setBatal(p)}
             >
               <Undo2 />

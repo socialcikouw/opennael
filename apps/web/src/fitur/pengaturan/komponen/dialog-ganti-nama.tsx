@@ -50,7 +50,7 @@ export function DialogGantiNama({
         onChange={(e) => setNama(e.target.value)}
       />
       {tujuan ? (
-        <p className="rounded-md bg-amber-50 px-3 py-2 text-sm text-amber-800">
+        <p className="rounded-md bg-waspada-lembut px-3 py-2 text-sm text-waspada">
           Nama ini sudah dipakai kampung <b>{tampilKampung(tujuan.nama)}</b>.{" "}
           {tampilKampung(w.nama)} akan digabung ke sana: {w.nasabahTotal} nasabah dan{" "}
           {w.dipakaiRute} rute pindah, lalu {tampilKampung(w.nama)} dihapus.

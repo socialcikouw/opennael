@@ -61,7 +61,7 @@ const KOLOM: Kolom<PerKolektor>[] = [
     cell: (c) => {
       const n = c.getValue();
       return (
-        <span className={n < 0 ? "text-red-700" : n > 0 ? "text-emerald-700" : undefined}>
+        <span className={n < 0 ? "text-bahaya" : n > 0 ? "text-sukses" : undefined}>
           {n === 0 ? "—" : rupiah(n)}
         </span>
       );

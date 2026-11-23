@@ -66,7 +66,7 @@ export function DaftarKampung() {
                   variant="ghost"
                   title="Hapus kampung kosong"
                   aria-label={`Hapus ${w.nama}`}
-                  className="text-red-700 hover:text-red-800"
+                  className="text-bahaya hover:text-bahaya-tua"
                   onClick={() => setAksi({ jenis: "hapus", w })}
                 >
                   <Trash2 />
