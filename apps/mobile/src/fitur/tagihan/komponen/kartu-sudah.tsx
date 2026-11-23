@@ -93,12 +93,18 @@ export function KartuDroping({ baru, gulung }: { baru: number; gulung: number })
         ].map((k) => (
           <View key={k.label} style={gaya.kolomDroping}>
             <View style={gaya.ikonDroping}>
-              <Ikon nama={k.ikon} ukuran={16} warna={WARNA.teksKedua} />
+              <Ikon nama={k.ikon} ukuran={14} warna={WARNA.teksKedua} />
             </View>
-            <View>
-              <Text style={gaya.label}>{k.label}</Text>
+            {/* Lebar kolom dibatasi: nominal jutaan mengecil sendiri, tak mendesak kolom sebelah. */}
+            <View style={gaya.isiDroping}>
+              <Text style={gaya.labelDroping} numberOfLines={1}>
+                {k.label}
+              </Text>
               <Text
-                style={[gaya.nilai, gaya.tegas]}
+                style={gaya.nilaiDroping}
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                minimumFontScale={0.75}
               >{`Rp ${k.nilai.toLocaleString("id-ID")}`}</Text>
             </View>
           </View>
@@ -155,16 +161,24 @@ const gaya = StyleSheet.create({
   kanan: { textAlign: "right" },
   tegas: { fontWeight: TEBAL.ekstra },
   judulDroping: {
-    ...HURUF["2xs"],
+    ...HURUF["3xs"],
     fontWeight: TEBAL.ekstra,
     letterSpacing: 0.6,
     color: WARNA.redup,
   },
-  barisDroping: { flexDirection: "row", gap: RUANG[3] },
-  kolomDroping: { flex: 1, flexDirection: "row", alignItems: "center", gap: RUANG[2] },
+  barisDroping: { flexDirection: "row", gap: RUANG[4] },
+  kolomDroping: { flex: 1, minWidth: 0, flexDirection: "row", alignItems: "center", gap: RUANG[2] },
+  isiDroping: { flex: 1, minWidth: 0, gap: 1 },
+  labelDroping: { ...HURUF["3xs"], color: WARNA.redup },
+  nilaiDroping: {
+    ...HURUF.sm,
+    fontWeight: TEBAL.ekstra,
+    color: WARNA.teks,
+    fontVariant: ["tabular-nums"],
+  },
   ikonDroping: {
-    width: 32,
-    height: 32,
+    width: 28,
+    height: 28,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: SUDUT.bulat,

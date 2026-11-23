@@ -8,11 +8,14 @@ import type { KartuVM } from "../inti/kartu";
  * itu sudah mencetak nominalnya.
  */
 export function AngkaKartu({ vm, tanpaAngsuran }: { vm: KartuVM; tanpaAngsuran: boolean }) {
+  // Tiga kolom (kartu droping / baru tercatat) memakai huruf rapat supaya nominal jutaan
+  // tak berhimpitan; dua kolom (kartu yang ditagih) tetap besar.
+  const rapat = !tanpaAngsuran;
   return (
-    <View style={gaya.baris}>
-      <Angka label="Pokok Pinjaman" nilai={vm.pokokRp} rata={gaya.kiri} />
-      {tanpaAngsuran ? null : <Angka label="Angsuran" nilai={vm.angsuranRp} rata={gaya.tengah} />}
-      <Angka label="Sisa Saldo" nilai={vm.saldoRp} rata={gaya.kanan} tegas />
+    <View style={[gaya.baris, rapat ? gaya.barisRapat : null]}>
+      <Angka label="Pokok Pinjaman" nilai={vm.pokokRp} rata={gaya.kiri} rapat={rapat} />
+      {rapat ? <Angka label="Angsuran" nilai={vm.angsuranRp} rata={gaya.tengah} rapat /> : null}
+      <Angka label="Sisa Saldo" nilai={vm.saldoRp} rata={gaya.kanan} tegas rapat={rapat} />
     </View>
   );
 }
@@ -22,15 +25,21 @@ function Angka(props: {
   nilai: string;
   rata: { textAlign: "left" | "center" | "right" };
   tegas?: boolean;
+  rapat: boolean;
 }) {
+  const nilai = props.rapat
+    ? [gaya.nilaiRapat, props.tegas ? gaya.tegasRapat : null]
+    : [gaya.nilai, props.tegas ? gaya.tegas : null];
   return (
     <View style={gaya.angka}>
-      <Text style={[gaya.label, props.rata]}>{props.label}</Text>
+      <Text style={[props.rapat ? gaya.labelRapat : gaya.label, props.rata]} numberOfLines={1}>
+        {props.label}
+      </Text>
       <Text
-        style={[gaya.nilai, props.tegas ? gaya.tegas : null, props.rata]}
+        style={[...nilai, props.rata]}
         numberOfLines={1}
         adjustsFontSizeToFit
-        minimumFontScale={0.8}
+        minimumFontScale={props.rapat ? 0.75 : 0.8}
       >
         {props.nilai}
       </Text>
@@ -40,7 +49,8 @@ function Angka(props: {
 
 const gaya = StyleSheet.create({
   baris: { flexDirection: "row", alignItems: "flex-end", gap: RUANG[2] },
-  angka: { flex: 1, gap: 2 },
+  barisRapat: { gap: RUANG[3] },
+  angka: { flex: 1, minWidth: 0, gap: 2 },
   label: { ...HURUF.xs, color: WARNA.redup },
   nilai: {
     ...HURUF.base,
@@ -50,6 +60,16 @@ const gaya = StyleSheet.create({
   },
   // Sisa saldo: satu tingkat lebih besar dan paling terang di kartu.
   tegas: { ...HURUF.lg, fontWeight: TEBAL.ekstra, color: WARNA.teks },
+  // Tiga kolom: label 10 pt, nominal 12 pt, Sisa Saldo 14 pt tebal — terkecil yang masih
+  // terbaca di luar ruangan.
+  labelRapat: { ...HURUF["3xs"], color: WARNA.redup },
+  nilaiRapat: {
+    ...HURUF.xs,
+    fontWeight: TEBAL.semi,
+    color: WARNA.teksKedua,
+    fontVariant: ["tabular-nums"],
+  },
+  tegasRapat: { ...HURUF.sm, fontWeight: TEBAL.ekstra, color: WARNA.teks },
   kiri: { textAlign: "left" },
   tengah: { textAlign: "center" },
   kanan: { textAlign: "right" },

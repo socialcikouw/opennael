@@ -109,14 +109,25 @@ const gaya = StyleSheet.create({
   nama: { ...HURUF.lg, flex: 1, fontWeight: TEBAL.tebal, color: WARNA.teks },
   // Tanggal & jam akad: kecil, di bawah lingkaran angsuran (rata kiri kotak).
   akad: { ...HURUF["2xs"], flexShrink: 1, color: WARNA.redup, fontVariant: ["tabular-nums"] },
+  // Kiri (akad + lencana) boleh turun ke baris berikutnya bila sempit — tak pernah
+  // berhimpitan dengan "Pinjaman Ke-N" yang tetap di kanan atas.
   barisKecil: {
     minHeight: 20,
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "space-between",
     gap: RUANG[2],
   },
-  kiri: { flex: 1, minWidth: 0, flexDirection: "row", alignItems: "center", gap: RUANG[2] },
+  kiri: {
+    flex: 1,
+    minWidth: 0,
+    minHeight: 20,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    columnGap: RUANG[1.5],
+    rowGap: RUANG[1],
+  },
   // Pinjaman Ke-N: rata kanan, terakota & tebal supaya mencolok (menggantikan tabungan ••••).
-  pinjamanKe: { ...HURUF.sm, flexShrink: 0, fontWeight: TEBAL.tebal },
+  pinjamanKe: { ...HURUF.sm, lineHeight: 20, flexShrink: 0, fontWeight: TEBAL.tebal },
 });
