@@ -12,7 +12,7 @@ import { KotakKosong } from "@/komponen/ui/kotak-kosong";
 import { Spanduk } from "@/komponen/ui/spanduk";
 import { Tombol } from "@/komponen/ui/tombol";
 import { useTarikSegarkan } from "@/lib/tarik-segarkan";
-import { AKSEN_MODE, RUANG } from "@/tema";
+import { AKSEN, RUANG } from "@/tema";
 import { useSetoranHariIni } from "./data";
 import { hitungPerJenis, type SaringJenis, saringJenis } from "./inti/jenis";
 import { type BarisStorting, barisStorting, ringkasStorting } from "./inti/storting";
@@ -29,7 +29,7 @@ const jenisDari = (t: TransaksiHari) => t.jenisPinjaman;
  * dan daftar. Hanya-baca; menagih dari mode jenisnya.
  */
 export function LayarStorting() {
-  const aksen = AKSEN_MODE.laporan;
+  const aksen = AKSEN;
   const ruangTab = useRuangTab();
   const setoran = useSetoranHariIni();
   const tagihan = useTagihan();

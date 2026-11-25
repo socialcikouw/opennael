@@ -119,30 +119,21 @@ export const WARNA = {
 export type Warna = { readonly [K in keyof typeof WARNA]: string };
 
 /**
- * AKSEN MODE kerja kolektor (Harian · Mingguan · Tempoan · Laporan): aksen teks/ikon
- * (`teks`), latar lembut (`lembut`), dan isi tombol berteks (`isi` + `teksIsi`).
- * SEMUA MODE MEMAKAI TERAKOTA (keputusan pemilik, 24 Nov 2026: konsisten); mode dikenali
- * dari huruf H/M/T/L dan label mode, bukan warna. Bentuknya tetap per mode supaya mode
- * bisa diberi warna sendiri lagi tanpa menyentuh layar. (Kata "mode" di sini = mode
- * KERJA, bukan terang/gelap.)
+ * AKSEN — warna aksen kolektor: teks/ikon (`teks`), latar lembut (`lembut`), isi tombol
+ * berteks (`isi` + `teksIsi`). SATU untuk semua jenis pinjaman (Harian · Mingguan ·
+ * Tempoan) dan semua mode (Kerja · Rekap · Akun) — terakota, keputusan pemilik 24 Nov 2026
+ * (dulu `AKSEN_MODE` berkunci per mode, dihapus 26 Nov 2026 saat mode dirombak).
+ * Komponen menerimanya sebagai prop `aksen` supaya warna bisa dibedakan lagi kelak tanpa
+ * menyentuh komponen.
  */
-export type WarnaMode = { teks: string; lembut: string; isi: string; teksIsi: string };
+export type WarnaAksen = { teks: string; lembut: string; isi: string; teksIsi: string };
 
-const AKSEN_TERAKOTA: WarnaMode = {
+export const AKSEN: WarnaAksen = {
   teks: WARNA.utama,
   lembut: WARNA.utamaLembut,
   isi: WARNA.utamaIsi,
   teksIsi: WARNA.teksAtasUtama,
 };
-
-export const AKSEN_MODE = {
-  harian: AKSEN_TERAKOTA,
-  mingguan: AKSEN_TERAKOTA,
-  tempoan: AKSEN_TERAKOTA,
-  laporan: AKSEN_TERAKOTA,
-} as const satisfies Record<string, WarnaMode>;
-
-export type NamaMode = keyof typeof AKSEN_MODE;
 
 /** Jarak kelipatan 4 pt — kunci = angka skala Tailwind (`5` = 20 pt, seperti `p-5`). */
 export const RUANG = {

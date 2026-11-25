@@ -1,14 +1,14 @@
 import { memo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Ikon } from "@/komponen/ui/ikon";
-import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaAksen } from "@/tema";
 import type { KeadaanTempo, MingguanVM, StatusKotak, TempoVM } from "../inti/khusus";
 
 /** Slot grid kartu MINGGUAN: kabar (minggu terlewat / tagih berikutnya) + kotak per minggu. */
 export const BlokMinggu = memo(function BlokMinggu(props: {
   m: MingguanVM;
   hariTagih: string | null;
-  aksen: WarnaMode;
+  aksen: WarnaAksen;
 }) {
   const warna: Record<StatusKotak, string> = {
     bayar: WARNA.teks,
@@ -56,7 +56,7 @@ export const BlokMinggu = memo(function BlokMinggu(props: {
 });
 
 /** Slot grid kartu TEMPOAN: jatuh tempo + hitung mundur berwarna, lalu garis waktu akad → jatuh tempo. */
-export const BlokTempo = memo(function BlokTempo({ t, aksen }: { t: TempoVM; aksen: WarnaMode }) {
+export const BlokTempo = memo(function BlokTempo({ t, aksen }: { t: TempoVM; aksen: WarnaAksen }) {
   const rupa: Record<KeadaanTempo, { teks: string; latar: string }> = {
     nanti: { teks: WARNA.teksKedua, latar: WARNA.isiNetral },
     segera: { teks: WARNA.waspada, latar: WARNA.waspadaLembut },

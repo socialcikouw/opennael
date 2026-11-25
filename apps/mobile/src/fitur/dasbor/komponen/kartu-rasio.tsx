@@ -3,7 +3,7 @@ import type { RasioHariIni } from "@/fitur/lapangan";
 import { g } from "@/komponen/ui/gaya-bersama";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Tekan } from "@/komponen/ui/tekan";
-import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaAksen } from "@/tema";
 
 /**
  * RASIO BAYAR hari ini atas seluruh pegangan: bayar ÷ (bayar + libur), bilah,
@@ -14,7 +14,7 @@ export function KartuRasio(props: {
   r: RasioHariIni | null;
   /** Daftar tagih gagal dimuat dan belum ada datanya. */
   gagal: boolean;
-  aksen: WarnaMode;
+  aksen: WarnaAksen;
   onLaporan: () => void;
 }) {
   const { r, aksen } = props;

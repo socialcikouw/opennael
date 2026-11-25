@@ -15,7 +15,7 @@ import {
   useMode,
 } from "@/fitur/tagihan";
 import { TabMengambang } from "@/komponen/tab-mengambang";
-import { AKSEN_MODE, OPSI_TAB } from "@/tema";
+import { AKSEN, OPSI_TAB } from "@/tema";
 
 /** Ikon Lucide tiap tab. */
 const IKON = {
@@ -88,7 +88,7 @@ export default function TabKolektor() {
             ikon={ikon}
             tampil={TAB[mode]}
             lencana={{ notifikasi: pengingat }}
-            warna={AKSEN_MODE[mode]}
+            warna={AKSEN}
             kiri={{
               isi: <HurufMode mode={mode} bergerak />,
               label: `Mode ${MODE[mode].label}. Ketuk untuk ganti mode.`,

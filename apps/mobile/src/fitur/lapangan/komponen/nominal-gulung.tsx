@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from "react-native";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Tekan } from "@/komponen/ui/tekan";
-import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaAksen } from "@/tema";
 import { KetNominal, NominalBesar } from "./nominal-besar";
 
 /** Lencana jenis gulung di bawah nominal — ikon sama dengan lencana kartu Droping. */
@@ -45,7 +45,7 @@ export function NominalGulung({
   jenisGulung: JenisGulung | null;
   pilihanTenor: readonly number[];
   tenor: number | null;
-  aksen: WarnaMode;
+  aksen: WarnaAksen;
   onTenor: (tenor: number) => void;
 }) {
   return (

@@ -1,7 +1,7 @@
 import { rupiah } from "@opennael/format";
 import { StyleSheet, Text, View } from "react-native";
 import { g } from "@/komponen/ui/gaya-bersama";
-import { HURUF, RUANG, TEBAL, WARNA, type WarnaMode } from "@/tema";
+import { HURUF, RUANG, TEBAL, WARNA, type WarnaAksen } from "@/tema";
 import type { RingkasPerforma } from "../inti/performa";
 
 /** Tinggi bidang batang (pt) — 100% persentase. */
@@ -21,7 +21,7 @@ export function KartuPerforma(props: {
   p: RingkasPerforma | null;
   gagal: boolean;
   jenis: string;
-  aksen: WarnaMode;
+  aksen: WarnaAksen;
 }) {
   const { p, aksen } = props;
   const hariIni = p?.hariIni ?? null;

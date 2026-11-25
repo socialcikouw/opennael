@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native";
 import type { Stempel } from "@/fitur/lapangan";
 import { SelubungMencatat } from "@/komponen/ui/selubung-mencatat";
 import { Tekan } from "@/komponen/ui/tekan";
-import { RUANG, SUDUT, WARNA, type WarnaMode } from "@/tema";
+import { RUANG, SUDUT, WARNA, type WarnaAksen } from "@/tema";
 import type { KartuVM } from "../inti/kartu";
 import { AngkaKartu } from "./angka-kartu";
 import { GridBulan } from "./grid-bulan";
@@ -36,7 +36,7 @@ export interface AksiKartu {
 export const KartuNasabah = memo(function KartuNasabah(props: {
   vm: KartuVM;
   aksi: AksiKartu;
-  aksen: WarnaMode;
+  aksen: WarnaAksen;
   kolomHariIni: number;
   /** Transaksi yang baru tercatat: kartu menampilkan stempelnya sebentar sebelum turun ke "Sudah ditagih". */
   stempel: Stempel | null;

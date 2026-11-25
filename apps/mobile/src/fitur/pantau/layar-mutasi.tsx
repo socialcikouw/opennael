@@ -14,7 +14,7 @@ import { Spanduk } from "@/komponen/ui/spanduk";
 import { Tombol } from "@/komponen/ui/tombol";
 import { useZonaKantor } from "@/lib/kantor";
 import { useTarikSegarkan } from "@/lib/tarik-segarkan";
-import { AKSEN_MODE, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
+import { AKSEN, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 import { useBiayaHariIni } from "./data";
 import { barisArusKas, type KeadaanKas, keadaanKas } from "./inti/arus-kas";
 import { KartuTotal } from "./komponen/kartu-total";
@@ -52,7 +52,7 @@ const ALASAN_GEMBOK: Record<Exclude<GerbangMutasi, "siap">, string> = {
  * ini). Sesudah kasir menerima kas: tekor / lebih setor.
  */
 export function LayarMutasi() {
-  const aksen = AKSEN_MODE.laporan;
+  const aksen = AKSEN;
   const ruangTab = useRuangTab();
   const zona = useZonaKantor();
   const { hariIni, tagihan, pengingat } = usePengingat();

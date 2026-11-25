@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Tekan } from "@/komponen/ui/tekan";
-import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaAksen } from "@/tema";
 import type { KartuVM } from "../inti/kartu";
 import { LencanaHari, LencanaStatus } from "./lencana-kartu";
 
@@ -35,7 +35,7 @@ export function InfoKartu({
   onSiap,
 }: {
   vm: KartuVM;
-  aksen: WarnaMode;
+  aksen: WarnaAksen;
   onLunasi: (() => void) | null;
   onBuka: () => void;
   onSiap: () => void;

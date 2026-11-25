@@ -4,7 +4,7 @@ import Animated, { interpolate, type SharedValue, useAnimatedStyle } from "react
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Tekan } from "@/komponen/ui/tekan";
-import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaAksen } from "@/tema";
 import { TAB_KERJA, type TabKerja } from "../inti/daftar";
 
 /**
@@ -21,7 +21,7 @@ export function KepalaTagihan(props: {
   terangkat: SharedValue<number>;
   onUkurLipat: (tinggi: number) => void;
   onUkur: (tinggi: number) => void;
-  mode: { label: string; warna: WarnaMode };
+  mode: { label: string; warna: WarnaAksen };
   kartuAtas: ReactNode;
   tab: TabKerja;
   jumlah: Record<TabKerja, number>;

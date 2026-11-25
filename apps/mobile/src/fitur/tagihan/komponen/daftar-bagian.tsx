@@ -3,7 +3,7 @@ import { memo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Tekan } from "@/komponen/ui/tekan";
-import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaAksen } from "@/tema";
 import type { Baris, TabKerja } from "../inti/daftar";
 import { LEBAR_REL, TEBAL_REL, TENGAH_REL } from "./rel-kartu";
 
@@ -90,7 +90,7 @@ export function Kosong({
 }: {
   tab: TabKerja;
   mencari: boolean;
-  aksen: WarnaMode;
+  aksen: WarnaAksen;
 }) {
   const pesan = PESAN_KOSONG[tab];
   return (

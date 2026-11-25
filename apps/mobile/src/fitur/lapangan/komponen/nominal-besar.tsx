@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
-import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaAksen } from "@/tema";
 
 /**
  * NOMINAL BESAR — bagian tengah layar transaksi (Bayar & Gulung), SATU komponen untuk
@@ -20,7 +20,7 @@ export function NominalBesar(props: {
   /** Bacaan pembaca layar untuk nominal, mis. "Nominal setoran Rp 50.000". */
   labelAksesibilitas: string;
   garis: "galat" | "terisi" | "kosong";
-  aksen: WarnaMode;
+  aksen: WarnaAksen;
   ket: ReactNode;
   anak?: ReactNode;
 }) {

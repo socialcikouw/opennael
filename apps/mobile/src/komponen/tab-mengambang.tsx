@@ -12,7 +12,7 @@ import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { GESER, HILANG, KURVA, MUNCUL } from "@/komponen/ui/gerak";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Tekan } from "@/komponen/ui/tekan";
-import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaAksen } from "@/tema";
 
 /** Tinggi pil tab. */
 const TINGGI = 64;
@@ -64,7 +64,7 @@ export function TabMengambang({
   tampil?: readonly string[];
   /** Penanda angka di ikon tab menurut nama rute (mis. pengingat yang menunggu); 0 = tanpa penanda. */
   lencana?: Record<string, number>;
-  warna?: WarnaMode;
+  warna?: WarnaAksen;
   kiri?: { isi: ReactNode; label: string; onPress: () => void };
   tambah?: { label: string; onPress: () => void };
 }) {

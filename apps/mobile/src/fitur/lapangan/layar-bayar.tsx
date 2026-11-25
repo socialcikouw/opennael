@@ -9,7 +9,7 @@ import { SelubungMencatat } from "@/komponen/ui/selubung-mencatat";
 import { Keterangan } from "@/komponen/ui/teks";
 import { Tombol } from "@/komponen/ui/tombol";
 import { cobaAturan } from "@/lib/aturan";
-import { AKSEN_MODE, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
+import { AKSEN, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 import { tulis, useTagihan } from "./data";
 import { nilaiDigit, PAPAN_BAYAR, tekanBayar } from "./inti/papan";
 import { kabarTercatat } from "./kabar-tercatat";
@@ -30,7 +30,7 @@ import { PanelPapan } from "./komponen/panel-papan";
  */
 export function LayarBayar({ id }: { id: string }) {
   const p = useTagihan().data?.find((x) => x.id === id);
-  const aksen = AKSEN_MODE[p?.jenis ?? "harian"];
+  const aksen = AKSEN;
   const [digit, setDigit] = useState("");
   const bayar = useMutation({ mutationFn: tulis.bayar });
 

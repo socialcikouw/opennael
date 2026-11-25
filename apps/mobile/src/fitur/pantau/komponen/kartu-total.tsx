@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
-import { AKSEN_MODE, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
+import { AKSEN, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 
 export interface RincianTotal {
   label: string;
@@ -25,7 +25,7 @@ export function KartuTotal(props: {
   rincian?: readonly RincianTotal[];
   kaki?: ReactNode;
 }) {
-  const aksen = AKSEN_MODE.laporan;
+  const aksen = AKSEN;
   return (
     <View style={gaya.kartu}>
       <View style={gaya.kepala}>

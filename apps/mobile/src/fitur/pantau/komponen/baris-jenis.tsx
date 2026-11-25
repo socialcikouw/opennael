@@ -4,7 +4,7 @@ import { memo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { MODE } from "@/fitur/tagihan";
 import { Tekan } from "@/komponen/ui/tekan";
-import { AKSEN_MODE, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
+import { AKSEN, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 
 /**
  * Satu baris uang di tab pantau (setoran / akad): pita & huruf jenis pinjaman
@@ -22,7 +22,7 @@ export const BarisJenis = memo(function BarisJenis(props: {
   catatan?: string | null | undefined;
   onPress?: (() => void) | undefined;
 }) {
-  const w = AKSEN_MODE[props.jenis];
+  const w = AKSEN;
   const nama = tampilNama(props.nama);
   return (
     <Tekan

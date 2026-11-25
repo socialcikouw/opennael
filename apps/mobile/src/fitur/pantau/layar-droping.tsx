@@ -13,7 +13,7 @@ import { Spanduk } from "@/komponen/ui/spanduk";
 import { Tombol } from "@/komponen/ui/tombol";
 import { useZonaKantor } from "@/lib/kantor";
 import { useTarikSegarkan } from "@/lib/tarik-segarkan";
-import { AKSEN_MODE, RUANG } from "@/tema";
+import { AKSEN, RUANG } from "@/tema";
 import { type BarisDroping, barisDroping, dropingHariIni, ringkasDroping } from "./inti/droping";
 import { hitungPerJenis, type SaringJenis, saringJenis } from "./inti/jenis";
 import { BarisJenis } from "./komponen/baris-jenis";
@@ -29,7 +29,7 @@ const jenisDari = (p: KartuTagih) => p.jenis;
  * pinjaman hanya-baca. Potongan admin & tabungan masuk ada di arus kas (Mutasi).
  */
 export function LayarDroping() {
-  const aksen = AKSEN_MODE.laporan;
+  const aksen = AKSEN;
   const ruangTab = useRuangTab();
   const zona = useZonaKantor();
   const hariIni = useHariIni();

@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { luminans, rasioKontras } from "./kontras";
-import { AKSEN_MODE, WARNA } from "./token";
+import { AKSEN, WARNA } from "./token";
 
 /**
  * UJI TEMA — penjaga keterbacaan & kelengkapan token. Aplikasi hanya bertema terang
@@ -97,31 +97,23 @@ describe("kontras teks di atas isi berwarna", () => {
   }
 });
 
-describe("aksen mode kerja", () => {
-  test("empat mode lengkap: harian, mingguan, tempoan, laporan", () => {
-    expect(Object.keys(AKSEN_MODE).sort()).toEqual(["harian", "laporan", "mingguan", "tempoan"]);
-  });
-
-  test("semua mode memakai terakota yang sama dengan warna utama (keputusan pemilik 24 Nov 2026)", () => {
-    for (const a of Object.values(AKSEN_MODE)) {
-      expect(a).toEqual({
-        teks: WARNA.utama,
-        lembut: WARNA.utamaLembut,
-        isi: WARNA.utamaIsi,
-        teksIsi: WARNA.teksAtasUtama,
-      });
-    }
-  });
-
-  for (const [nama, a] of Object.entries(AKSEN_MODE)) {
-    test(`${nama}: teks terbaca di latar, permukaan & latar lembut; teksIsi terbaca di isi`, () => {
-      expect(rasioKontras(a.teks, WARNA.latar)).toBeGreaterThanOrEqual(4.5);
-      expect(rasioKontras(a.teks, WARNA.permukaan)).toBeGreaterThanOrEqual(4.5);
-      expect(rasioKontras(a.teks, WARNA.permukaanTinggi)).toBeGreaterThanOrEqual(4.5);
-      expect(rasioKontras(a.teks, a.lembut)).toBeGreaterThanOrEqual(4.5);
-      expect(rasioKontras(a.teksIsi, a.isi)).toBeGreaterThanOrEqual(4.5);
+describe("aksen", () => {
+  test("aksen = terakota warna utama (keputusan pemilik 24 Nov 2026)", () => {
+    expect(AKSEN).toEqual({
+      teks: WARNA.utama,
+      lembut: WARNA.utamaLembut,
+      isi: WARNA.utamaIsi,
+      teksIsi: WARNA.teksAtasUtama,
     });
-  }
+  });
+
+  test("teks aksen terbaca di latar, permukaan & latar lembut; teksIsi terbaca di isi", () => {
+    expect(rasioKontras(AKSEN.teks, WARNA.latar)).toBeGreaterThanOrEqual(4.5);
+    expect(rasioKontras(AKSEN.teks, WARNA.permukaan)).toBeGreaterThanOrEqual(4.5);
+    expect(rasioKontras(AKSEN.teks, WARNA.permukaanTinggi)).toBeGreaterThanOrEqual(4.5);
+    expect(rasioKontras(AKSEN.teks, AKSEN.lembut)).toBeGreaterThanOrEqual(4.5);
+    expect(rasioKontras(AKSEN.teksIsi, AKSEN.isi)).toBeGreaterThanOrEqual(4.5);
+  });
 });
 
 describe("kedalaman tanpa bayangan: kertas → kartu putih → garis", () => {

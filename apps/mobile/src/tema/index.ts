@@ -5,14 +5,13 @@
 
 export { OPSI_STACK, OPSI_TAB } from "./navigasi";
 export {
-  AKSEN_MODE,
+  AKSEN,
   HURUF,
-  type NamaMode,
   RUANG,
   SENTUH,
   SUDUT,
   TEBAL,
   WARNA,
   type Warna,
-  type WarnaMode,
+  type WarnaAksen,
 } from "./token";

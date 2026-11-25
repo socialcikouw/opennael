@@ -2,7 +2,7 @@ import { StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Tekan } from "@/komponen/ui/tekan";
-import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaAksen } from "@/tema";
 import type { Papan } from "../inti/papan";
 import { PapanTombol, tinggiTombolPapan } from "./papan-tombol";
 
@@ -26,7 +26,7 @@ export function PanelPapan({
   sah: boolean;
   /** Sedang menyimpan: tombol mati dan berlabel "MENYIMPAN…". */
   memuat: boolean;
-  aksen: WarnaMode;
+  aksen: WarnaAksen;
   onTekan: (kunci: string) => void;
   onKonfirmasi: () => void;
 }) {

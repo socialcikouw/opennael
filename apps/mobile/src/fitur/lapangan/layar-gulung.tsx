@@ -8,7 +8,7 @@ import { SelubungMencatat } from "@/komponen/ui/selubung-mencatat";
 import { Keterangan } from "@/komponen/ui/teks";
 import { Tombol } from "@/komponen/ui/tombol";
 import { cobaAturan } from "@/lib/aturan";
-import { AKSEN_MODE, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
+import { AKSEN, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 import { tulis, useTagihan, useTulis } from "./data";
 import { jumlahKetukan, PAPAN_POKOK, tekanPokok } from "./inti/papan";
 import { FotoGulung } from "./komponen/foto-gulung";
@@ -35,7 +35,7 @@ import { PanelPapan } from "./komponen/panel-papan";
  */
 export function LayarGulung({ id }: { id: string }) {
   const p = useTagihan().data?.find((x) => x.id === id);
-  const aksen = AKSEN_MODE[p?.jenis ?? "harian"];
+  const aksen = AKSEN;
   const [ketukan, setKetukan] = useState<readonly number[]>([]);
   /** Pilihan kolektor; null = bawaan (tenor pinjaman lama bila masih berlaku). */
   const [tenorDipilih, setTenor] = useState<number | null>(null);

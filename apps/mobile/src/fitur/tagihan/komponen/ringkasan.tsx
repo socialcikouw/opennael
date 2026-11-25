@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaAksen } from "@/tema";
 
 /**
  * Kartu JATUH TEMPO di kepala mode Tempoan — jumlah nasabah saja. (Rasio bayar hari
@@ -7,7 +7,7 @@ import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
  */
 export function KartuJatuhTempo(props: {
   r: { lewat: number; hariIni: number; pekan: number; berjalan: number };
-  aksen: WarnaMode;
+  aksen: WarnaAksen;
 }) {
   const sel = [
     {

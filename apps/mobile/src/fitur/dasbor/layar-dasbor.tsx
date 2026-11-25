@@ -14,7 +14,7 @@ import { Spanduk } from "@/komponen/ui/spanduk";
 import { Tombol } from "@/komponen/ui/tombol";
 import { useSesi } from "@/lib/sesi";
 import { useTarikSegarkan } from "@/lib/tarik-segarkan";
-import { AKSEN_MODE, HURUF, RUANG, SUDUT, TEBAL } from "@/tema";
+import { AKSEN, HURUF, RUANG, SUDUT, TEBAL } from "@/tema";
 import { useDataDasbor } from "./data";
 import { KartuPerforma } from "./komponen/kartu-performa";
 import { KartuRasio } from "./komponen/kartu-rasio";
@@ -46,7 +46,7 @@ export function LayarDasbor() {
     jatuhTempo,
     performa,
   } = useDataDasbor();
-  const aksen = AKSEN_MODE[mode];
+  const aksen = AKSEN;
   const namaMode = MODE[mode].label;
 
   // Semua bacaan Dasbor berawalan `lapangan`: satu invalidasi menyegarkan semuanya, dan

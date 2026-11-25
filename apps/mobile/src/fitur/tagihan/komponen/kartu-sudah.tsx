@@ -2,7 +2,7 @@ import { memo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Tekan } from "@/komponen/ui/tekan";
-import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaAksen } from "@/tema";
 import type { KartuVM } from "../inti/kartu";
 import type { AksiKartu } from "./kartu-nasabah";
 import { LencanaHari } from "./lencana-kartu";
@@ -21,7 +21,7 @@ export const KartuSudah = memo(function KartuSudah({
   aksi,
 }: {
   vm: KartuVM;
-  aksen: WarnaMode;
+  aksen: WarnaAksen;
   aksi: AksiKartu;
 }) {
   const libur = vm.p.hariIni?.jenis === "libur";

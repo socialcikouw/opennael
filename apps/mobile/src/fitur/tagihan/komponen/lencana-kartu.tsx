@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Ikon } from "@/komponen/ui/ikon";
-import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaAksen } from "@/tema";
 import type { KartuVM, Nada } from "../inti/kartu";
 
 const NADA: Record<Nada, { teks: string; latar: string }> = {
@@ -22,7 +22,7 @@ export function LencanaStatus({ lencana }: { lencana: NonNullable<KartuVM["lenca
 }
 
 /** Lencana PEKAT hari tagih mingguan, mis. [📅 Rabu] — beda bentuk dari lencana status. */
-export function LencanaHari({ hari, aksen }: { hari: string; aksen: WarnaMode }) {
+export function LencanaHari({ hari, aksen }: { hari: string; aksen: WarnaAksen }) {
   return (
     <View
       accessible

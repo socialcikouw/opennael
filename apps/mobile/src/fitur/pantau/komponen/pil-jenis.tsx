@@ -1,6 +1,6 @@
 import { ScrollView, StyleSheet, Text } from "react-native";
 import { Tekan } from "@/komponen/ui/tekan";
-import { AKSEN_MODE, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
+import { AKSEN, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 import { SARING_JENIS, type SaringJenis } from "../inti/jenis";
 
 /** Pil saringan jenis pinjaman berangka (Semua · Harian · Mingguan · Tempoan). */
@@ -9,7 +9,7 @@ export function PilJenis(props: {
   jumlah: Record<SaringJenis, number>;
   onPilih: (s: SaringJenis) => void;
 }) {
-  const aksen = AKSEN_MODE.laporan;
+  const aksen = AKSEN;
   return (
     <ScrollView
       horizontal

@@ -1,7 +1,7 @@
 import { Image, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Tekan } from "@/komponen/ui/tekan";
-import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaAksen } from "@/tema";
 import type { FotoSerahTerima } from "./kamera-serah-terima";
 
 /**
@@ -16,7 +16,7 @@ export function FotoGulung({
 }: {
   foto: FotoSerahTerima | null;
   fotoSah: boolean;
-  aksen: WarnaMode;
+  aksen: WarnaAksen;
   onPotret: () => void;
 }) {
   const { height } = useWindowDimensions();

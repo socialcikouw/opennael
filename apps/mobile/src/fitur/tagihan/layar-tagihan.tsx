@@ -10,7 +10,7 @@ import { useRuangTab } from "@/komponen/tab-mengambang";
 import { PesanGalat } from "@/komponen/ui/isian";
 import { Tombol } from "@/komponen/ui/tombol";
 import { useTarikSegarkan } from "@/lib/tarik-segarkan";
-import { AKSEN_MODE, RUANG, WARNA } from "@/tema";
+import { AKSEN, RUANG, WARNA } from "@/tema";
 import { useAksiKartu } from "./aksi-kartu";
 import { useDaftarTagihan, useDataTagihan } from "./data-tagihan";
 import { type Baris, jumlahSegmen, type TabKerja } from "./inti/daftar";
@@ -51,7 +51,7 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
   const ruangTab = useRuangTab();
   const mode = useMode();
   const jenis = jenisDariMode(mode);
-  const aksen = AKSEN_MODE[mode];
+  const aksen = AKSEN;
 
   const { hariIni, tanggal, tagihan, kalender, peristiwa, riwayat } = useDataTagihan(jenis);
 
@@ -129,7 +129,7 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
         />
       );
     },
-    [aksi, aksen, bahan, stempel, sibuk, ubahLipat],
+    [aksi, bahan, stempel, sibuk, ubahLipat],
   );
 
   // Layar galat penuh hanya bila belum ada data; gagal menyegarkan data yang sudah ada

@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Tekan } from "@/komponen/ui/tekan";
-import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaMode } from "@/tema";
+import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaAksen } from "@/tema";
 import type { KartuVM } from "../inti/kartu";
 import type { AksiKartu } from "./kartu-nasabah";
 
@@ -16,7 +16,15 @@ import type { AksiKartu } from "./kartu-nasabah";
  * selebar kartu — mencetak nominalnya (tempoan: Lunasi seharga saldo; Libur
  * hanya sejak jatuh tempo, beralasan — G1). Lunasi nasabah lain: tahan lama kartunya.
  */
-export function KakiKartu({ vm, aksi, aksen }: { vm: KartuVM; aksi: AksiKartu; aksen: WarnaMode }) {
+export function KakiKartu({
+  vm,
+  aksi,
+  aksen,
+}: {
+  vm: KartuVM;
+  aksi: AksiKartu;
+  aksen: WarnaAksen;
+}) {
   const status = vm.progres?.status ?? (vm.sekaliBayar ? "boleh" : "terkunci");
   return (
     <View style={gaya.kaki}>

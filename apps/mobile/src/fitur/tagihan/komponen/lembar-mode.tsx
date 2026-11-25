@@ -6,7 +6,7 @@ import { LembarBawah } from "@/komponen/lembar-bawah";
 import { DURASI, KURVA } from "@/komponen/ui/gerak";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Tekan } from "@/komponen/ui/tekan";
-import { AKSEN_MODE, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
+import { AKSEN, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 import { MODE, type ModeApp, ringkasPerMode, URUTAN_MODE, useMode } from "../mode";
 import { beralihMode } from "../transisi-mode";
 
@@ -37,7 +37,7 @@ export function HurufMode({
   ukuran?: number;
   bergerak?: boolean;
 }) {
-  const w = AKSEN_MODE[mode];
+  const w = AKSEN;
   const huruf = <Text style={[gaya.huruf, { color: w.teksIsi }]}>{MODE[mode].huruf}</Text>;
   return (
     <View
@@ -103,7 +103,7 @@ function BarisMode(props: {
   ringkas: { aktif: number; tagih: number } | undefined;
   onPilih: (m: ModeApp) => void;
 }) {
-  const w = AKSEN_MODE[props.mode];
+  const w = AKSEN;
   return (
     <Tekan
       getar="pilih"

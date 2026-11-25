@@ -7,7 +7,7 @@ import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Tekan } from "@/komponen/ui/tekan";
 import { Tombol } from "@/komponen/ui/tombol";
-import { AKSEN_MODE, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
+import { AKSEN, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 import type { Pengingat } from "../inti/pengingat";
 import { FormulirAbsen } from "./formulir-absen";
 
@@ -140,7 +140,7 @@ function TombolMode(props: {
   aktif: boolean;
   onPress: () => void;
 }) {
-  const w = AKSEN_MODE[props.jenis];
+  const w = AKSEN;
   const judul = props.aktif ? "Buka Tagihan" : `Tagih di mode ${MODE[props.jenis].label}`;
   return (
     <Tekan
