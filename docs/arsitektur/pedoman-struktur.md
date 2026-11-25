@@ -51,7 +51,7 @@ teknis (`_id`, `_at`) tetap.
 ### 2.2 Berkas dan simbol
 
 - Berkas dan folder **kebab-case huruf kecil** (`kamera-serah-terima.tsx`).
-  Karakter khusus hanya untuk konvensi rute alat (`[id].tsx`, `(tab)`,
+  Karakter khusus hanya untuk konvensi rute alat (`[id].tsx`, `(kerja)`,
   `_bos.tsx`, `$id`).
 - **Satu komponen utama per berkas**, ekspor bernama; nama berkas = nama
   komponen dalam kebab-case (`KartuNasabah` → `kartu-nasabah.tsx`).

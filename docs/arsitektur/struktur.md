@@ -259,24 +259,32 @@ apps/mobile/src/
 │   ├── _layout.tsx              penyedia + Stack.Protected (tautkan · beranda · kolektor · kasir · pengawas)
 │   ├── index.tsx                pintu tanpa penjaga: layar memuat selama sesi undefined, lalu arahkan
 │   ├── tautkan.tsx · beranda.tsx
-│   ├── kolektor/                _layout · (tab)/{_layout, index, tagihan, notifikasi} · akad · bayar/[id] · gulung/[id] · pinjaman/[id]
+│   ├── kolektor/                _layout (+ TiraiMode) · notifikasi · foto-nasabah · akad · bayar/[id] · gulung/[id] · nasabah/[id] · pinjaman/[id]
+│   │   ├── (kerja)/             _layout · harian · mingguan · tempoan          — Mode Kerja (26 Nov 2026)
+│   │   ├── (rekap)/             _layout · ringkasan · performa · portofolio    — Mode Rekap
+│   │   └── (akun)/              _layout · profil · pengaturan · bantuan        — Mode Akun
 │   ├── kasir/                   _layout · index · [kolektorId]
 │   └── pengawas/                _layout · index · cocokkan · tunggakan
 ├── fitur/
 │   ├── tautan/                  layar-tautkan · komponen/
 │   ├── lapangan/                data.ts · gerbang.ts · kabar-tercatat.ts · inti/papan.ts · index.ts
-│   │                            layar-beranda · layar-akad · layar-bayar · layar-gulung · layar-pinjaman · komponen/
-│   ├── tagihan/                 layar-tagihan · layar-semua · mode.ts · inti/ · komponen/ · index.ts
-│   ├── notifikasi/              layar-notifikasi
+│   │                            layar-akad · layar-bayar · layar-gulung · layar-nasabah · layar-pinjaman · komponen/
+│   ├── mode/                    mode.ts (mode = grup rute) · transisi-mode.ts · rute.ts · komponen/{lembar, tirai, huruf, tab-bar}-mode
+│   ├── tagihan/                 layar-tagihan (tab Harian · Mingguan · Tempoan) · inti/ · komponen/ · index.ts
+│   ├── notifikasi/              layar-notifikasi (lonceng Mode Kerja)
+│   ├── ringkasan/               layar-ringkasan · segmen-mutasi-kas · segmen-storting · segmen-droping
+│   ├── performa/                layar-performa · inti/ · komponen/
+│   ├── portofolio/              layar-portofolio · inti/ · komponen/
+│   ├── foto-nasabah/            layar-foto-nasabah · inti/ · komponen/
 │   ├── setoran-sore/            data.ts · inti.ts · layar-kasir · layar-kas-kolektor · layar-pengawas · komponen/
 │   ├── pencocokan-kas/          layar-cocokkan · data.ts
 │   ├── tunggakan/               layar-tunggakan · data.ts
-│   └── akun/                    layar-beranda-bos · komponen/{tombol-keluar, kepala-peran}
+│   └── akun/                    layar-profil · layar-pengaturan · layar-bantuan · pengaturan.ts · layar-beranda-bos · komponen/
 ├── tema/                        palet.ts · token.ts · native.ts · kontras.ts (+ uji) — docs/tema.md
 ├── komponen/
 │   ├── ui/                      tampilan.tsx · daftar-ikon.ts · ikon.tsx · gaya-bersama.ts
 │   │                            layar · teks · tombol · isian · kartu · lencana · spanduk · pilihan
-│   └── lembar-bawah.tsx · tab-mengambang.tsx
+│   └── lembar-bawah.tsx · tab-mengambang.tsx · pil-jenis.tsx
 ├── platform/                    brankas.ts (SecureStore) · foto.ts (kompres + unggah) · perangkat.ts (info & versi)
 └── lib/                         api.ts · sesi.ts · kantor.ts · navigasi.ts · aturan.ts
 ```
@@ -284,12 +292,25 @@ apps/mobile/src/
 ```mermaid
 flowchart LR
   tagihan --> lapangan
+  tagihan --> notifikasi
+  notifikasi --> lapangan
+  notifikasi --> mode
+  ringkasan --> lapangan
+  ringkasan --> notifikasi
+  performa --> lapangan
+  performa --> tagihan
+  foto-nasabah --> lapangan
+  akun --> lapangan
+  lapangan --> mode
+  setoran-sore --> akun
 ```
 
-Satu-satunya impor antar-fitur HP: `tagihan` memakai data lapangan,
-`kabarTercatat`, dan tipe `Stempel` lewat `@/fitur/lapangan`. Tata letak tab
-kolektor (rute) memakai `@/fitur/tagihan` (mode) dan `@/fitur/lapangan`
-(gerbang).
+Impor antar-fitur HP (26 Nov 2026, sesudah tiga mode) — semuanya lewat `@/fitur/<nama>`
+(`index.ts`) dan tanpa siklus (dijaga `cek:arsitektur`). `lapangan` = data & transaksi
+lapangan; `mode` tak bergantung pada fitur lain (rute tab jenis, `beralihMode`). Tata letak
+grup mode (rute) memakai `@/fitur/mode`, `@/fitur/tagihan`, dan `@/fitur/lapangan`.
+**Penamaan: nama yang tampil = nama rute = nama berkas** (tab Ringkasan = `(rekap)/
+ringkasan.tsx` = `fitur/ringkasan`).
 
 Sketsa penjaga (periksa API `Stack.Protected` di dokumen SDK 58 saat
 mengerjakan):
@@ -568,9 +589,14 @@ sebelum `react()`; `lazyRouteComponent` tidak dipakai lagi.
 | `/` | `app/index.tsx` | pintu (tetap di rute) |
 | `/tautkan` | `app/tautkan.tsx` | `fitur/tautan/layar-tautkan.tsx` |
 | `/beranda` | `app/beranda.tsx` | `fitur/akun/layar-beranda-bos.tsx` |
-| `/kolektor` | `app/kolektor/(tab)/index.tsx` | `fitur/lapangan/layar-beranda.tsx` |
-| `/kolektor/tagihan` | `app/kolektor/(tab)/tagihan.tsx` | `fitur/tagihan/layar-tagihan.tsx` |
-| `/kolektor/notifikasi` | `app/kolektor/(tab)/notifikasi.tsx` | `fitur/notifikasi/layar-notifikasi.tsx` |
+| `/kolektor/harian` · `mingguan` · `tempoan` | `app/kolektor/(kerja)/harian.tsx` dst. | `fitur/tagihan/layar-tagihan.tsx` (berjenis) |
+| `/kolektor/ringkasan` | `app/kolektor/(rekap)/ringkasan.tsx` | `fitur/ringkasan/layar-ringkasan.tsx` |
+| `/kolektor/performa` | `app/kolektor/(rekap)/performa.tsx` | `fitur/performa/layar-performa.tsx` |
+| `/kolektor/portofolio` | `app/kolektor/(rekap)/portofolio.tsx` | `fitur/portofolio/layar-portofolio.tsx` |
+| `/kolektor/profil` · `pengaturan` · `bantuan` | `app/kolektor/(akun)/profil.tsx` dst. | `fitur/akun/layar-profil.tsx` dst. |
+| `/kolektor/notifikasi` | `app/kolektor/notifikasi.tsx` | `fitur/notifikasi/layar-notifikasi.tsx` |
+| `/kolektor/foto-nasabah` | `app/kolektor/foto-nasabah.tsx` | `fitur/foto-nasabah/layar-foto-nasabah.tsx` |
+| `/kolektor/nasabah/[id]` | `app/kolektor/nasabah/[id].tsx` | `fitur/lapangan/layar-nasabah.tsx` |
 | `/kolektor/akad` | `app/kolektor/akad.tsx` | `fitur/lapangan/layar-akad.tsx` |
 | `/kolektor/bayar/[id]` | `app/kolektor/bayar/[id].tsx` | `fitur/lapangan/layar-bayar.tsx` |
 | `/kolektor/gulung/[id]` | `app/kolektor/gulung/[id].tsx` | `fitur/lapangan/layar-gulung.tsx` |
