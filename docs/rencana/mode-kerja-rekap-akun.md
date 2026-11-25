@@ -96,3 +96,5 @@ Gerbang tiap tahap: `bun run typecheck && bun run lint && bun run cek:arsitektur
 | 1 | `c33c429` | Rencana & keputusan. |
 | 2 | `9e57804` | `AKSEN`, `WarnaAksen`. |
 | 3 | `8b91aab` | `fitur/mode` (mode dari grup rute, `beralihMode` + pengarah, `TabBarMode`, `LembarMode` tiga pilihan, `TiraiMode`, `HurufMode`, `RUTE_JENIS`); grup `(kerja)` · `(rekap)` · `(akun)`; `(tab)` dihapus. **Ikut tahap ini** (supaya tiap commit tetap aplikasi utuh): Notifikasi jadi layar bertumpuk + lonceng berangka di kepala Tagihan + tombol "Buka Tab …" / "Buka Mutasi Kas". Sementara: Ringkasan = Mutasi Kas, Performa = Dasbor semua jenis, Profil = Setelan. |
+| — | `5aa4f2e` | Segmen Tagihan: `TabKerja` → `SegmenTagihan`, nilai `"aktif"` → `"berjalan"`. |
+| 4 | `2eb6433` | Spanduk "Absen pagi dulu" + tombol "Absen Sekarang" (→ Notifikasi). |
