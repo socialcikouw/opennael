@@ -40,18 +40,18 @@ const ALASAN_GEMBOK: Record<Exclude<GerbangMutasi, "siap">, string> = {
 };
 
 /**
- * MUTASI (mode Laporan) — arus kas kolektor hari ini (aturan-usaha I1): kas
+ * SEGMEN MUTASI KAS (Ringkasan, Mode Rekap) — arus kas kolektor hari ini (aturan-usaha I1): kas
  * lapangan + storting + tabungan masuk + admin − droping − transfer − biaya
  * tak terduga = tunai yang harus disetor sore.
  *
- * TERGEMBOK (ikon tab ikut menjadi gembok) selama gerbang Mutasi belum terbuka
+ * TERGEMBOK selama gerbang Mutasi belum terbuka
  * (C6): semua nasabah wajib hari ini — harian, mingguan di hari tagihnya,
  * tempoan sejak jatuh tempo — harus sudah dicatat. Selama terkunci tampil
- * alasannya dan siapa yang menahan, dengan tombol pindah ke mode jenisnya.
+ * alasannya dan siapa yang menahan, dengan tombol "Buka Tab …" ke Mode Kerja.
  * Sesudah terbuka: arus kas, lalu Buka laporan (mengunci catatan lapangan hari
  * ini). Sesudah kasir menerima kas: tekor / lebih setor.
  */
-export function LayarMutasi() {
+export function SegmenMutasiKas() {
   const aksen = AKSEN;
   const ruangTab = useRuangTab();
   const zona = useZonaKantor();

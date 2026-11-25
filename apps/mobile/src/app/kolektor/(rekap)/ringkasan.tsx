@@ -1,6 +1,6 @@
-import { LayarMutasi } from "@/fitur/pantau/layar-mutasi";
+import { LayarRingkasan } from "@/fitur/ringkasan";
 
-/** Tab Ringkasan (Mode Rekap). Sementara: Mutasi Kas saja (tahap 5 rencana). */
+/** Tab Ringkasan (Mode Rekap): segmen Mutasi Kas · Storting · Droping. */
 export default function Ringkasan() {
-  return <LayarMutasi />;
+  return <LayarRingkasan />;
 }

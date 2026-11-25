@@ -3,7 +3,7 @@ import type { JenisPinjaman } from "@opennael/domain";
 import { LABEL_JENIS_TRANSAKSI, rupiah } from "@opennael/format";
 
 /**
- * TAB STORTING (mode Laporan) — setoran yang masuk hari ini dari ketiga jenis
+ * SEGMEN STORTING (Ringkasan, Mode Rekap) — setoran yang masuk hari ini dari ketiga jenis
  * pinjaman, dari `GET /transaksi` (setoran berlaku kolektor ini + transfernya).
  * Storting = setoran murni + setoran pelunasan − tabungan keluar (istilah di
  * docs/produk.md); negatif bila tabungan nasabah melebihi saldo saat lunas

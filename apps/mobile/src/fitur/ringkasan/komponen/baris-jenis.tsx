@@ -12,8 +12,8 @@ const JENIS: Record<JenisPinjaman, { label: string; huruf: string }> = {
 };
 
 /**
- * Satu baris uang di tab pantau (setoran / akad): pita & huruf jenis pinjaman
- * (H/M/T, warna mode jenisnya), nama, nominal, keterangan, dan lencana kecil.
+ * Satu baris uang di segmen Storting / Droping (setoran / akad): pita & huruf jenis
+ * pinjaman (H/M/T), nama, nominal, keterangan, dan lencana kecil.
  * Diketuk → rincian pinjaman (hanya-baca) bila `onPress` ada.
  */
 export const BarisJenis = memo(function BarisJenis(props: {

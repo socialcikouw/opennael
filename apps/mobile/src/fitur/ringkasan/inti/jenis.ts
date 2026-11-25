@@ -1,7 +1,7 @@
 import type { JenisPinjaman } from "@opennael/domain";
 
 /**
- * Saringan jenis pinjaman di tab-tab pantau mode Laporan (Storting, Droping):
+ * Saringan jenis pinjaman di segmen Storting & Droping (Ringkasan, Mode Rekap):
  * Semua atau satu jenis. PURE.
  */
 export type SaringJenis = "semua" | JenisPinjaman;

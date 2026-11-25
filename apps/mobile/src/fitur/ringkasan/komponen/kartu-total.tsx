@@ -13,8 +13,8 @@ export interface RincianTotal {
 }
 
 /**
- * KARTU TOTAL — angka utama tab pantau (tunai harus disetor, total storting,
- * total droping) dalam warna aksen mode Laporan, dengan rincian penyusunnya di
+ * KARTU TOTAL — angka utama segmen Ringkasan (tunai harus disetor, total storting,
+ * total droping) dalam warna aksen, dengan rincian penyusunnya di
  * bawah garis. `kaki` = isi tambahan (mis. tekor/lebih setor).
  */
 export function KartuTotal(props: {
