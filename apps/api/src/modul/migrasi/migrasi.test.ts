@@ -15,10 +15,10 @@ describe.skipIf(!URL_DB)("salinan migrasi (A10)", () => {
       const kode = (r: { isi: Record<string, unknown> }) => r.isi.kode;
       const dasar = {
         jenis: "harian",
-        tenor: 24,
+        tenor: 25,
         pokok: 1_000_000,
         tanggalAkad: geserTanggal(hari, -20),
-        saldo: 700_000,
+        saldo: 750_000,
         tabungan: 50_000,
       };
 
@@ -41,10 +41,10 @@ describe.skipIf(!URL_DB)("salinan migrasi (A10)", () => {
         nasabah: { nama: "sari", baru: true },
         kolektor: { id: andiId, nama: "andi" },
         pinjamanKe: 3,
-        totalKembali: 1_200_000,
+        totalKembali: 1_250_000,
         angsuran: 50_000,
         angsuranKe: 10,
-        saldo: 700_000,
+        saldo: 750_000,
         tabunganMasuk: 50_000,
         status: "berjalan",
         tanggalDisalin: hari,
@@ -117,7 +117,7 @@ describe.skipIf(!URL_DB)("salinan migrasi (A10)", () => {
       expect(
         kode(
           await kirim("/pinjaman/migrasi", {
-            isi: { ...dasar, ...orangBaru, saldo: 1_200_001 },
+            isi: { ...dasar, ...orangBaru, saldo: 1_250_001 },
             token: b,
           }),
         ),

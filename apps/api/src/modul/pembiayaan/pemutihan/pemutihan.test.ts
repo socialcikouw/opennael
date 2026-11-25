@@ -89,7 +89,7 @@ describe.skipIf(!URL_DB)("pemutihan", () => {
           nasabah: { nasabahId: nSari },
           jenis: "harian",
           pokok: 1_000_000,
-          tenor: 24,
+          tenor: 25,
           fotoSerahTerimaId: foto?.id,
         },
         token: k,

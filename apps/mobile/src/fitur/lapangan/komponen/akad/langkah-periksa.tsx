@@ -50,7 +50,7 @@ export function LangkahPeriksa(props: {
     props.jenis === "harian" ? " per hari" : props.jenis === "mingguan" ? " per minggu" : "";
   const tenorTeks =
     props.jenis === "harian"
-      ? "24 kali · tiap hari tagih"
+      ? `${props.tenor} kali · tiap hari tagih`
       : tempo
         ? `${props.tenor} hari${props.jatuhTempo ? ` · jatuh tempo ${props.jatuhTempo}` : ""}`
         : `${props.tenor} kali · seminggu sekali`;

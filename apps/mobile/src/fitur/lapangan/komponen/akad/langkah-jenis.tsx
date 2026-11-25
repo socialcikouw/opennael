@@ -7,7 +7,7 @@ import { type Kerangka, KerangkaLangkah } from "./kerangka-langkah";
 
 /** Tiga jenis pinjaman (A2–A4): ikon sama dengan tab Mode Kerja, keterangan = tenor & cara bayar. */
 const PILIHAN: readonly { jenis: JenisPinjaman; ikon: NamaIkon; ket: string }[] = [
-  { jenis: "harian", ikon: "calendar-days", ket: "24 kali · ditagih tiap hari kerja" },
+  { jenis: "harian", ikon: "calendar-days", ket: "25 kali · ditagih tiap hari kerja" },
   { jenis: "mingguan", ikon: "calendar-range", ket: "6, 8, atau 10 kali · seminggu sekali" },
   { jenis: "tempoan", ikon: "calendar-clock", ket: "7, 10, atau 14 hari · dibayar sekali" },
 ];

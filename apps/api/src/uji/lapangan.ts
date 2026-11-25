@@ -53,7 +53,7 @@ export async function siapkanLapangan(tx: Db, deps: Parameters<typeof siapkanKan
         nasabah: { nama, kampung: { nama: " Pule  Barat " } },
         jenis: "harian",
         pokok: 1_000_000,
-        tenor: 24,
+        tenor: 25,
         fotoSerahTerimaId: await fotoBaru(),
         ...isi,
       },

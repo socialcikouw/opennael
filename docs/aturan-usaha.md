@@ -24,12 +24,16 @@ pembagian per tenor selalu bulat.)
 
 | Jenis | Tenor |
 |---|---|
-| Harian | 24 kali |
+| Harian | 25 kali |
 | Mingguan | 6, 8, atau 10 kali |
 | Tempoan | 7, 10, atau 14 hari (sekali bayar) |
 
-**A3. Harian & mingguan:** potongan admin 5% pokok + potongan tabungan 5% pokok;
-total kembali 120% pokok; angsuran = total kembali ÷ tenor.
+**A3. Harian & mingguan:** potongan admin 5% pokok + potongan tabungan 5% pokok
+(dicairkan 90%); total kembali **harian 125%**, mingguan 120% pokok; angsuran =
+total kembali ÷ tenor (harian: 5% pokok). *Keputusan pemilik, 26 Nov 2026* —
+sebelumnya harian 24 kali, kembali 120% (angsuran sama, 5% pokok). Pinjaman
+harian 24 kali yang sudah tercatat tetap apa adanya (A6); akad baru, gulung, dan
+salinan migrasi memakai 25 kali.
 
 **A4. Tempoan:** tanpa potongan; total kembali 125% pokok; angsuran = total
 kembali (sekali bayar); jatuh tempo = tanggal akad + tenor hari.
@@ -39,7 +43,7 @@ lama (hanya gulung).
 
 | Contoh | Pokok | Admin | Tabungan | Pencairan | Total kembali | Angsuran |
 |---|---|---|---|---|---|---|
-| Harian, 24× | 1.000.000 | 50.000 | 50.000 | 900.000 | 1.200.000 | 50.000 |
+| Harian, 25× | 1.000.000 | 50.000 | 50.000 | 900.000 | 1.250.000 | 50.000 |
 | Mingguan, 8× | 1.000.000 | 50.000 | 50.000 | 900.000 | 1.200.000 | 150.000 |
 | Mingguan, 10× | 100.000 | 5.000 | 5.000 | 90.000 | 120.000 | 12.000 |
 | Tempoan, 14 hari | 1.000.000 | 0 | 0 | 1.000.000 | 1.250.000 | 1.250.000 |
@@ -76,9 +80,9 @@ pembukuan lama (buku), untuk nasabah lama atau orang baru:
 - salah ketik dibatalkan bos **di hari disalin**, selama belum ada catatan
   (setoran, libur) — tabungan pembukanya ikut ditarik.
 
-> Contoh: harian 24×, pokok 1.000.000, di buku sudah 10 angsuran → sisa saldo
-> 700.000; tabungan di buku 50.000. Salinan: total kembali 1.200.000,
-> angsuran 50.000, angsuran ke 10, saldo awal 700.000, pencairan 0, droping 0,
+> Contoh: harian 25×, pokok 1.000.000, di buku sudah 10 angsuran → sisa saldo
+> 750.000; tabungan di buku 50.000. Salinan: total kembali 1.250.000,
+> angsuran 50.000, angsuran ke 10, saldo awal 750.000, pencairan 0, droping 0,
 > tabungan nasabah +50.000.
 
 ---
@@ -229,9 +233,9 @@ lebih dari nol**.
 | Turun | 0 | pokok baru | pokok lama − pokok baru |
 
 > Contoh: harian pinjaman ke-4, pokok 1.000.000 (angsuran 50.000), sudah 12
-> angsuran terbayar → saldo 1.200.000 − 600.000 = 600.000; digulung ke pokok
+> angsuran terbayar → saldo 1.250.000 − 600.000 = 650.000; digulung ke pokok
 > 1.500.000. Penerus: admin 75.000, tabungan 75.000, pencairan akad 1.350.000;
-> pencairan bersih 1.350.000 − 600.000 = **750.000**. Gulung naik: drop baru
+> pencairan bersih 1.350.000 − 650.000 = **700.000**. Gulung naik: drop baru
 > 500.000, drop gulung 1.000.000.
 
 **E8.** Gulung butuh foto serah terima (A7). Saldo lama tercatat sebagai

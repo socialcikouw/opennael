@@ -7,9 +7,12 @@ import { wajib } from "./galat";
  */
 export type JenisPinjaman = "harian" | "mingguan" | "tempoan";
 
-/** A2. Harian & mingguan = jumlah kali bayar; tempoan = jangka HARI. */
+/**
+ * A2. Harian & mingguan = jumlah kali bayar; tempoan = jangka HARI. Harian 25 kali sejak
+ * 26 Nov 2026 (sebelumnya 24); pinjaman 24 kali yang sudah ada tetap apa adanya (A6).
+ */
 export const TENOR_PINJAMAN: Record<JenisPinjaman, readonly number[]> = {
-  harian: [24],
+  harian: [25],
   mingguan: [6, 8, 10],
   tempoan: [7, 10, 14],
 };
@@ -59,8 +62,9 @@ export function syaratAkad(jenis: JenisPinjaman, pokok: number, tenor: number): 
       angsuran: totalKembali,
     };
   }
+  // A3: harian kembali 125%, mingguan 120%.
   const potongan = pokok / 20;
-  const totalKembali = (pokok * 6) / 5;
+  const totalKembali = jenis === "harian" ? (pokok * 5) / 4 : (pokok * 6) / 5;
   return {
     jenis,
     tenor,

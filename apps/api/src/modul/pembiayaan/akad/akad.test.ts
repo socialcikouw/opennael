@@ -21,7 +21,7 @@ describe.skipIf(!URL_DB)("akad", () => {
         potonganAdmin: 50_000,
         tabunganMasuk: 50_000,
         pencairan: 900_000,
-        saldo: 1_200_000,
+        saldo: 1_250_000,
         angsuran: 50_000,
         angsuranKe: 0,
         nasabah: { nama: "sari", kampung: "pule barat" },
@@ -60,7 +60,7 @@ describe.skipIf(!URL_DB)("akad", () => {
               nasabah: { nasabahId: sari.isi.nasabah.id },
               jenis: "harian",
               pokok: 1_000_000,
-              tenor: 24,
+              tenor: 25,
               fotoSerahTerimaId: await fotoBaru(),
             },
             k,
@@ -79,13 +79,13 @@ describe.skipIf(!URL_DB)("akad", () => {
       const { kirim, bos, k, kantorId, absen, fotoBaru, akadBaru } = await siapkanLapangan(tx);
       await absen();
       const tono = await akadBaru("tono");
-      // Seolah 12 angsuran sudah terbayar: saldo 600.000.
-      await tx.execute(sql`update pinjaman set saldo = 600000 where id = ${tono.isi.id}`);
+      // Seolah 12 angsuran sudah terbayar: saldo 1.250.000 − 600.000 = 650.000.
+      await tx.execute(sql`update pinjaman set saldo = 650000 where id = ${tono.isi.id}`);
       const gulung = (pokok: number, foto?: string) =>
         (async () =>
           kirim(
             "/lapangan/gulung",
-            { pinjamanId: tono.isi.id, pokok, tenor: 24, fotoSerahTerimaId: foto ?? "" },
+            { pinjamanId: tono.isi.id, pokok, tenor: 25, fotoSerahTerimaId: foto ?? "" },
             k,
           ))();
       await tx.execute(sql`insert into kebijakan (kantor_id, gulung_pinjaman_dikunci, alasan_kunci, diubah_oleh)
@@ -102,14 +102,14 @@ describe.skipIf(!URL_DB)("akad", () => {
       expect(g.isi.transaksi).toMatchObject({
         jenis: "gulung",
         setoranMurni: 0,
-        setoranPelunasan: 600_000,
+        setoranPelunasan: 650_000,
         saldoSesudah: 0,
       });
       expect(g.isi.pinjamanBaru).toMatchObject({
         asal: "gulung",
         pinjamanKe: 2,
-        pencairan: 300_000,
-        saldo: 1_200_000,
+        pencairan: 250_000,
+        saldo: 1_250_000,
       });
     });
   }, 120_000);

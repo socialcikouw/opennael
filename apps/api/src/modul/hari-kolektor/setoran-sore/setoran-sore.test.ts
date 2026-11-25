@@ -62,7 +62,7 @@ describe.skipIf(!URL_DB)("setoran sore", () => {
           nasabah: { nama: "sari", kampung: { nama: "pule" } },
           jenis: "harian",
           pokok: 1_000_000,
-          tenor: 24,
+          tenor: 25,
           fotoSerahTerimaId: foto?.id,
         },
         token: k,

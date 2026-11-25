@@ -202,7 +202,7 @@ describe.skipIf(!URL_DB)("peristiwa & buku nasabah", () => {
       expect(bayar.isi).toMatchObject({
         jenis: "angsuran",
         storting: 50_000,
-        saldoSesudah: 1_150_000,
+        saldoSesudah: 1_200_000,
       });
       expect(
         kode(await kirim("/lapangan/bayar", { pinjamanId: pSari, setoranMurni: 50_000 }, k)),
@@ -215,13 +215,13 @@ describe.skipIf(!URL_DB)("peristiwa & buku nasabah", () => {
       const budi = await akadBaru("budi", { pokok: 500_000 });
       const lunas = await kirim("/lapangan/lunas", { pinjamanId: budi.isi.id }, k);
       expect(lunas.status).toBe(201);
-      // Saldo 600.000, tabungan 25.000 → nasabah membayar 575.000.
+      // Saldo 625.000, tabungan 25.000 → nasabah membayar 600.000.
       expect(lunas.isi).toMatchObject({
         jenis: "pelunasan",
-        setoranMurni: 575_000,
+        setoranMurni: 600_000,
         setoranPelunasan: 25_000,
         tabunganKeluar: 25_000,
-        storting: 575_000,
+        storting: 600_000,
         saldoSesudah: 0,
       });
 

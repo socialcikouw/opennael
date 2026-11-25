@@ -85,7 +85,7 @@ describe.skipIf(!URL_DB)("pembatalan bos", () => {
             nasabah: { nama, kampung: { nama: "pule" } },
             jenis: "harian",
             pokok: 1_000_000,
-            tenor: 24,
+            tenor: 25,
             fotoSerahTerimaId: await fotoBaru(),
           },
           token: k,

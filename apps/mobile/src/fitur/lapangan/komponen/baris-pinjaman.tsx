@@ -26,7 +26,7 @@ const WARNA_STATUS = {
  * Satu pinjaman di Detail Nasabah — rinciannya LENGKAP di sini (tak ada layar rincian
  * lagi dari daftar ini). Kepala dua baris:
  *   Pinjaman Ke-3                       [Berjalan]
- *   Harian 24×            Akad: 27 Okt 26 14.00
+ *   Harian 25×            Akad: 27 Okt 26 14.00
  * Pinjaman aktif memuat sisa saldo besar dan kemajuan angsuran; semuanya memuat pokok,
  * total kembali, angsuran, jatuh tempo (atau tanggal selesai), pencairan, dan
  * masuk tabungan.

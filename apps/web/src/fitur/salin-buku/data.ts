@@ -1,6 +1,6 @@
 import { kunci } from "@opennael/api-client";
 import type { HasilMigrasi } from "@opennael/contracts";
-import type { JenisPinjaman } from "@opennael/domain";
+import { type JenisPinjaman, TENOR_PINJAMAN } from "@opennael/domain";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { type FormEvent, useRef, useState } from "react";
 import { ambil, api, kueri } from "@/lib/api";
@@ -20,7 +20,7 @@ export function useFormulirSalin() {
   const [modus, setModus] = useState<"baru" | "lama">("baru");
   const [kolektorId, setKolektorId] = useState("");
   const [jenis, setJenis] = useState<JenisPinjaman>("harian");
-  const [tenor, setTenor] = useState(24);
+  const [tenor, setTenor] = useState(TENOR_PINJAMAN.harian[0] ?? 0);
   // Diulang tiap baris.
   const [orang, setOrang] = useState<Orang>({ nama: "", kampung: "", nomorHp: "", nik: "" });
   const [lama, setLama] = useState<NasabahLama | null>(null);

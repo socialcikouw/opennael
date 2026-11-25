@@ -12,7 +12,7 @@ import type { JenisPinjaman } from "@opennael/domain";
  * sadar di langkahnya sendiri, tak mengikuti tab yang kebetulan dibuka (koreksi pemilik
  * 26 Nov 2026: takut salah input); letaknya sesudah nasabah supaya pinjaman terakhir
  * nasabah yang pernah melunasi bisa ditampilkan. Harian tak punya langkah tenor (hanya
- * 24 kali, A2). Pokok sebelum tenor: tiap pilihan tenor langsung menampilkan angsurannya.
+ * 25 kali, A2). Pokok sebelum tenor: tiap pilihan tenor langsung menampilkan angsurannya.
  */
 export type LangkahAkad =
   | "foto"

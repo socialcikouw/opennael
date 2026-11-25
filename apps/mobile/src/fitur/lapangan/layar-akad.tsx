@@ -72,7 +72,7 @@ export function LayarAkad() {
 
   const urutan = urutanLangkah(siapa, jenis);
   const pokok = jumlahKetukan(ketukan);
-  const tenor = jenis === "harian" ? (TENOR_PINJAMAN.harian[0] ?? 24) : tenorDipilih;
+  const tenor = jenis === "harian" ? (TENOR_PINJAMAN.harian[0] ?? null) : tenorDipilih;
 
   const ke = (l: LangkahAkad) => {
     if (l === "foto") setKamera(true);

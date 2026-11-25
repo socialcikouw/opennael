@@ -65,7 +65,7 @@ rekening).
 
 | Jenis | Cara bayar |
 |---|---|
-| **Harian** | 24 kali, setiap hari kerja |
+| **Harian** | 25 kali, setiap hari kerja |
 | **Mingguan** | 6, 8, atau 10 kali, sekali seminggu pada hari akad |
 | **Tempoan** | sekali bayar pada jatuh tempo (7, 10, atau 14 hari) |
 

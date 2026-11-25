@@ -42,18 +42,18 @@ describe.skipIf(!url)("skema database", () => {
             nasabah_id: n1,
             pinjaman_ke: 1,
             jenis: "harian",
-            tenor: 24,
+            tenor: 25,
             asal: "baru",
             tanggal_akad: "2026-10-01",
             pokok: 1_000_000,
             potongan_admin: 50_000,
             tabungan_masuk: 50_000,
             pencairan: 900_000,
-            total_kembali: 1_200_000,
+            total_kembali: 1_250_000,
             angsuran: 50_000,
-            saldo_awal: 1_200_000,
+            saldo_awal: 1_250_000,
             drop_baru: 1_000_000,
-            saldo: 1_200_000,
+            saldo: 1_250_000,
             ...isi,
           });
           const masuk = (sp: Tx, isi: Record<string, unknown>) =>
@@ -90,7 +90,7 @@ describe.skipIf(!url)("skema database", () => {
             pencairan: 950_000,
             drop_baru: 1_050_000,
           });
-          await salah("pinjaman_tenor_check", { tenor: 20, angsuran: 60_000 });
+          await salah("pinjaman_tenor_check", { tenor: 10, angsuran: 125_000 });
           await salah("pinjaman_pencairan_check", { pencairan: 950_000 });
           await salah("pinjaman_angsuran_check", { angsuran: 40_000 });
           await salah("pinjaman_saldo_check", { saldo: 1_300_000 });
@@ -119,10 +119,21 @@ describe.skipIf(!url)("skema database", () => {
             potongan_admin: 0,
             pencairan: 0,
             drop_baru: 0,
-            saldo_awal: 600_000,
-            saldo: 600_000,
+            saldo_awal: 650_000,
+            saldo: 650_000,
           })) as unknown as postgres.Row[];
           expect(m?.angsuran_ke).toBe(12);
+
+          // Harian 24 kali (kembali 120%) = pinjaman lama sebelum 26 Nov 2026, tetap sah (A6).
+          const [lama] = (await masuk(tx, {
+            nasabah_id: await nasabahBaru("wati"),
+            foto_serah_terima_id: await fotoBaru(),
+            tenor: 24,
+            total_kembali: 1_200_000,
+            saldo_awal: 1_200_000,
+            saldo: 1_200_000,
+          })) as unknown as postgres.Row[];
+          expect(lama?.tenor).toBe(24);
 
           // Tempoan: jatuh tempo = akad + tenor.
           const n3 = await nasabahBaru("tono");

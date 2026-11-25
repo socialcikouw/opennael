@@ -6,7 +6,7 @@ import { KartuPilihan } from "./kartu-pilihan";
 import { type Kerangka, KerangkaLangkah } from "./kerangka-langkah";
 
 /**
- * Langkah TENOR (mingguan & tempoan; harian selalu 24 kali dan dilewati) — tiap pilihan
+ * Langkah TENOR (mingguan & tempoan; harian selalu 25 kali dan dilewati) — tiap pilihan
  * menampilkan angsurannya untuk pokok yang sudah diisi, tempoan juga tanggal jatuh
  * temponya (tanggal akad + tenor hari, A4). Ketuk = langsung lanjut.
  */

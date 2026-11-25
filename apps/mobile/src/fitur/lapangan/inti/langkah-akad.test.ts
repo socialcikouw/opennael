@@ -28,7 +28,7 @@ describe("urutanLangkah", () => {
     ]);
   });
 
-  test("harian tanpa langkah tenor (selalu 24 kali)", () => {
+  test("harian tanpa langkah tenor (selalu 25 kali)", () => {
     expect(urutanLangkah("baru", "harian")).not.toContain("tenor");
     expect(urutanLangkah("pernah-melunasi", "harian")).toEqual([
       "foto",

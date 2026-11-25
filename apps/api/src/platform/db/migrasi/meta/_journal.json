@@ -183,6 +183,13 @@
       "when": 1793555820178,
       "tag": "0025_huruf_kecil",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1795641213216,
+      "tag": "0026_tenor_harian_25",
+      "breakpoints": true
     }
   ]
 }
