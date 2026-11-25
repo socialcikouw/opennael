@@ -14,10 +14,13 @@ import { Tekan } from "@/komponen/ui/tekan";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 
 /**
- * LEMBAR BAWAH — naik dari bawah di atas tirai gelap; ketuk tirai, tombol X,
+ * LEMBAR BAWAH — naik (slide) dari bawah di atas tirai gelap; ketuk tirai, tombol X,
  * atau tombol kembali Android untuk menutup. Isinya bergulir bila panjang dan
- * terdorong naik oleh keyboard. Satu rupa untuk semua lembar (Ganti Mode,
- * Setor, Bayar, Gulung, Lompat Rute).
+ * terdorong naik oleh keyboard. Satu rupa untuk semua lembar (Ganti Mode, Alasan Libur).
+ *
+ * Menempel RAPAT ke tepi bawah layar: Modal menembus status bar & bilah navigasi Android
+ * (layar penuh/edge-to-edge), dan bantalan bawah hanya selebar area aman HP (home indicator
+ * iPhone / bilah gestur Android) — tanpa ruang kosong tambahan di bawah isi.
  */
 export function LembarBawah(props: {
   terbuka: boolean;
@@ -27,7 +30,8 @@ export function LembarBawah(props: {
   onSelesaiTutup?: () => void;
   children: ReactNode;
 }) {
-  const bawah = useSafeAreaInsets().bottom;
+  // Area aman bawah saja; HP tanpa area aman (tombol navigasi) tetap diberi sedikit napas.
+  const bawah = Math.max(useSafeAreaInsets().bottom, RUANG[3]);
   return (
     <Modal
       visible={props.terbuka}
@@ -36,10 +40,11 @@ export function LembarBawah(props: {
       onRequestClose={props.onTutup}
       onDismiss={props.onSelesaiTutup}
       statusBarTranslucent
+      navigationBarTranslucent
     >
       <Tekan style={gaya.tirai} onPress={props.onTutup} accessibilityLabel="Tutup" />
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined}>
-        <View style={[gaya.lembar, { paddingBottom: bawah + RUANG[4] }]}>
+        <View style={[gaya.lembar, { paddingBottom: bawah }]}>
           <View style={gaya.pegangan} />
           {props.judul ? (
             <View style={gaya.kepala}>
@@ -101,5 +106,10 @@ const gaya = StyleSheet.create({
     backgroundColor: WARNA.isiNetralTegas,
   },
   gulir: { flexGrow: 0 },
-  isi: { gap: RUANG[4], paddingHorizontal: RUANG[5], paddingTop: RUANG[4] },
+  isi: {
+    gap: RUANG[4],
+    paddingHorizontal: RUANG[5],
+    paddingTop: RUANG[4],
+    paddingBottom: RUANG[2],
+  },
 });
