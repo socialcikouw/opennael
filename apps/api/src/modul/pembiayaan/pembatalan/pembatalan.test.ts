@@ -48,8 +48,8 @@ describe.skipIf(!URL_DB)("pembatalan bos", () => {
             asal, tanggal_akad, tanggal_disalin, pokok, potongan_admin, tabungan_masuk, pencairan,
             total_kembali, angsuran, saldo_awal, drop_baru, saldo, status, tanggal_macet)
           values (${kantorId}, ${andiId}, ${bos.pengguna.id}, ${n?.id}, 1, ${isi.jenis ?? "harian"},
-            ${isi.tenor ?? 24}, 'migrasi', '2026-08-01', '2026-09-01', 1000000, 0, ${isi.tabungan ?? 0}, 0,
-            1200000, ${isi.angsuran ?? 50_000}, ${isi.saldo}, 0, ${isi.saldo}, ${isi.status ?? "berjalan"},
+            ${isi.tenor ?? 25}, 'migrasi', '2026-08-01', '2026-09-01', 1000000, 0, ${isi.tabungan ?? 0}, 0,
+            ${(isi.angsuran ?? 50_000) * (isi.tenor ?? 25)}, ${isi.angsuran ?? 50_000}, ${isi.saldo}, 0, ${isi.saldo}, ${isi.status ?? "berjalan"},
             ${isi.tanggalMacet ?? null})
           returning id`);
         return { pinjamanId: p?.id as string, nasabahId: n?.id as string };

@@ -190,6 +190,13 @@
       "when": 1795641213216,
       "tag": "0026_tenor_harian_25",
       "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "7",
+      "when": 1795642681152,
+      "tag": "0027_tenor_harian_hanya_25",
+      "breakpoints": true
     }
   ]
 }

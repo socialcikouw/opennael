@@ -31,9 +31,8 @@ pembagian per tenor selalu bulat.)
 **A3. Harian & mingguan:** potongan admin 5% pokok + potongan tabungan 5% pokok
 (dicairkan 90%); total kembali **harian 125%**, mingguan 120% pokok; angsuran =
 total kembali ÷ tenor (harian: 5% pokok). *Keputusan pemilik, 26 Nov 2026* —
-sebelumnya harian 24 kali, kembali 120% (angsuran sama, 5% pokok). Pinjaman
-harian 24 kali yang sudah tercatat tetap apa adanya (A6); akad baru, gulung, dan
-salinan migrasi memakai 25 kali.
+sebelumnya harian 24 kali, kembali 120% (angsuran sama, 5% pokok); tidak ada lagi
+pinjaman 24 kali (data uji lama dihapus).
 
 **A4. Tempoan:** tanpa potongan; total kembali 125% pokok; angsuran = total
 kembali (sekali bayar); jatuh tempo = tanggal akad + tenor hari.

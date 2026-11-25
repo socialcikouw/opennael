@@ -27,8 +27,8 @@ describe.skipIf(!url)("skema database", () => {
               insert into pinjaman (kantor_id, pencair_id, dibuat_oleh, nasabah_id, pinjaman_ke, jenis, tenor,
                 asal, tanggal_akad, tanggal_disalin, pokok, potongan_admin, tabungan_masuk, pencairan,
                 total_kembali, angsuran, saldo_awal, drop_baru, saldo)
-              values (${k?.id}, ${kol?.id}, ${bos?.id}, ${n?.id}, 1, 'harian', 24, 'migrasi', '2026-10-02',
-                '2026-10-02', 1000000, 0, 0, 0, 1200000, 50000, 1200000, 0, 1200000) returning id`;
+              values (${k?.id}, ${kol?.id}, ${bos?.id}, ${n?.id}, 1, 'harian', 25, 'migrasi', '2026-10-02',
+                '2026-10-02', 1000000, 0, 0, 0, 1250000, 50000, 1250000, 0, 1250000) returning id`;
             return p?.id as string;
           };
           const pAkad = await pinjamanBaru("budi");

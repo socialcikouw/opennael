@@ -37,7 +37,7 @@ function pembuat(tx: Db, kantorId: string, bosId: string) {
       } = {},
     ) {
       const pokok = isi.pokok ?? 1_000_000;
-      const total = pokok * 1.2;
+      const total = pokok * 1.25;
       const saldo = isi.saldo ?? (isi.status === "lunas" ? 0 : total);
       let foto: string | null = null;
       if (isi.baru) {
@@ -51,10 +51,10 @@ function pembuat(tx: Db, kantorId: string, bosId: string) {
         insert into pinjaman (kantor_id, pencair_id, dibuat_oleh, nasabah_id, pinjaman_ke, jenis, tenor,
           asal, tanggal_akad, tanggal_disalin, foto_serah_terima_id, pokok, potongan_admin, tabungan_masuk,
           pencairan, total_kembali, angsuran, saldo_awal, drop_baru, saldo, status, tanggal_selesai, tanggal_macet)
-        values (${kantorId}, ${kolektorId}, ${bosId}, ${nasabahId}, 1, 'harian', 24,
+        values (${kantorId}, ${kolektorId}, ${bosId}, ${nasabahId}, 1, 'harian', 25,
           ${isi.baru ? "baru" : "migrasi"}, ${isi.baru ?? "2026-08-01"}, ${isi.baru ? null : "2026-09-01"}, ${foto},
           ${pokok}, ${isi.baru ? pokok * 0.05 : 0}, ${isi.baru ? pokok * 0.05 : 0}, ${isi.baru ? pokok * 0.9 : 0},
-          ${total}, ${total / 24}, ${total}, ${isi.baru ? pokok : 0}, ${saldo}, ${isi.status ?? "berjalan"},
+          ${total}, ${total / 25}, ${total}, ${isi.baru ? pokok : 0}, ${saldo}, ${isi.status ?? "berjalan"},
           ${isi.tanggalSelesai ?? null}, ${isi.tanggalMacet ?? null})
         returning id`);
       return p?.id as string;
@@ -192,18 +192,18 @@ describe.skipIf(!URL_DB)("ringkasan & layar baca bos", () => {
       expect(kode(await kirim("/kas/posisi-modal", { token: pengawas.tokenAkses }))).toBe(
         "PERAN_DILARANG",
       );
-      // Tunai 5 jt + (1.980.000 − 1 jt − 50 rb) = 5.930.000; piutang berjalan = 12 jt (Budi) + 1,2 jt (Rina);
-      // macet = 1,2 jt (Dedi); tabungan = 50 rb (akad Rina).
+      // Tunai 5 jt + (1.980.000 − 1 jt − 50 rb) = 5.930.000; piutang berjalan = 12,5 jt (Budi) + 1,25 jt (Rina);
+      // macet = 1,25 jt (Dedi); tabungan = 50 rb (akad Rina).
       expect((await kirim("/kas/posisi-modal", { token: b })).isi).toEqual({
         tanggal: hari,
         saldoTunai: 5_930_000,
         kasDiLapangan: 0,
         diBrankas: 5_930_000,
         saldoBank: 1_000_000,
-        piutangBerjalan: 13_200_000,
-        piutangMacet: 1_200_000,
+        piutangBerjalan: 13_750_000,
+        piutangMacet: 1_250_000,
         tabunganNasabah: 50_000,
-        posisiModal: 5_930_000 + 1_000_000 + 13_200_000 + 1_200_000 - 50_000,
+        posisiModal: 5_930_000 + 1_000_000 + 13_750_000 + 1_250_000 - 50_000,
       });
       // Kemarin: piutang dari potret; kas di lapangan hanya untuk hari ini.
       expect((await kirim(`/kas/posisi-modal?tanggal=${kemarin}`, { token: b })).isi).toMatchObject(

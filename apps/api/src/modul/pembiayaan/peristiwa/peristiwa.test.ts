@@ -44,8 +44,8 @@ describe.skipIf(!URL_DB)("peristiwa & buku nasabah", () => {
           insert into pinjaman (kantor_id, pencair_id, dibuat_oleh, nasabah_id, pinjaman_ke, jenis, tenor,
             asal, tanggal_akad, tanggal_disalin, pokok, potongan_admin, tabungan_masuk, pencairan,
             total_kembali, angsuran, saldo_awal, drop_baru, saldo, status, tanggal_selesai)
-          values (${kantorId}, ${pemegang}, ${bos.pengguna.id}, ${nasabahId}, ${ke}, 'harian', 24,
-            'migrasi', ${t(-40)}, ${t(-40)}, 1000000, 0, 0, 0, 1200000, 50000, 1200000, 0,
+          values (${kantorId}, ${pemegang}, ${bos.pengguna.id}, ${nasabahId}, ${ke}, 'harian', 25,
+            'migrasi', ${t(-40)}, ${t(-40)}, 1000000, 0, 0, 0, 1250000, 50000, 1250000, 0,
             ${lunas ? 0 : 1_100_000}, ${lunas ? "lunas" : "berjalan"}, ${lunas ? t(-10) : null})
           returning id`);
         return p?.id as string;

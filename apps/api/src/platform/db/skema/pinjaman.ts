@@ -163,11 +163,9 @@ export const pinjaman = pgTable(
 
     check("pinjaman_ke_check", sql`${t.pinjamanKe} >= 1`),
     check("pinjaman_pokok_check", sql`${t.pokok} > 0 AND ${t.pokok} % 100000 = 0`),
-    // Harian 25 kali sejak 26 Nov 2026; 24 hanya untuk pinjaman yang sudah tercatat sebelumnya
-    // (syarat dibekukan, A6) — akad baru dijaga `syaratAkad`. Lihat docs/keputusan.md.
     check(
       "pinjaman_tenor_check",
-      sql`(${t.jenis} = 'harian' AND ${t.tenor} IN (24, 25))
+      sql`(${t.jenis} = 'harian' AND ${t.tenor} = 25)
         OR (${t.jenis} = 'mingguan' AND ${t.tenor} IN (6, 8, 10))
         OR (${t.jenis} = 'tempoan' AND ${t.tenor} IN (7, 10, 14))`,
     ),

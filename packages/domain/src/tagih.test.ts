@@ -3,11 +3,11 @@ import { type BahanTagih, posisiTagih, wajibDitagihHariIni } from "./tagih";
 
 const harian: BahanTagih = {
   jenis: "harian",
-  tenor: 24,
+  tenor: 25,
   angsuran: 50_000,
-  totalKembali: 1_200_000,
-  saldoAwal: 1_200_000,
-  saldo: 1_050_000,
+  totalKembali: 1_250_000,
+  saldoAwal: 1_250_000,
+  saldo: 1_100_000,
   tanggalAkad: "2026-06-01",
   tanggalDisalin: null,
   jatuhTempo: null,

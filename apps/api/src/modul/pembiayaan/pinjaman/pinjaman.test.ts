@@ -50,14 +50,14 @@ describe.skipIf(!URL_DB)("pinjaman", () => {
         status?: "berjalan" | "lunas";
       }) => {
         const tempoan = isi.jenis === "tempoan";
-        const total = tempoan ? 1_250_000 : 1_200_000;
+        const total = 1_250_000;
         const lunas = isi.status === "lunas";
         const [p] = await baris<{ id: string }>(sql`
           insert into pinjaman (kantor_id, pencair_id, dibuat_oleh, nasabah_id, pinjaman_ke, jenis, tenor,
             asal, tanggal_akad, tanggal_disalin, pokok, potongan_admin, tabungan_masuk, pencairan,
             total_kembali, angsuran, saldo_awal, drop_baru, saldo, status, tanggal_selesai)
           values (${kantorId}, ${isi.pemegang ?? andiId}, ${bos.pengguna.id}, ${isi.nasabahId},
-            ${isi.ke ?? 1}, ${isi.jenis ?? "harian"}, ${tempoan ? 14 : 24}, 'migrasi', ${isi.tanggalAkad},
+            ${isi.ke ?? 1}, ${isi.jenis ?? "harian"}, ${tempoan ? 14 : 25}, 'migrasi', ${isi.tanggalAkad},
             ${isi.tanggalAkad}, 1000000, 0, 0, 0, ${total}, ${tempoan ? total : 50_000}, ${total}, 0,
             ${lunas ? 0 : isi.saldo}, ${isi.status ?? "berjalan"}, ${lunas ? t(-10) : null})
           returning id`);
@@ -77,14 +77,14 @@ describe.skipIf(!URL_DB)("pinjaman", () => {
         nasabahId: a,
         ke: 2,
         tanggalAkad: t(-5),
-        saldo: 1_050_000,
+        saldo: 1_100_000,
       });
       await tx.execute(sql`
         insert into libur_nasabah (kantor_id, pencatat_id, pinjaman_id, tanggal)
         values (${kantorId}, ${andiId}, ${aAktif}, ${t(-2)})`);
       await tx.execute(sql`
         insert into transaksi (kantor_id, pencatat_id, pinjaman_id, tanggal, jenis, setoran_murni, saldo_sesudah)
-        values (${kantorId}, ${andiId}, ${aAktif}, ${t(-1)}, 'angsuran', 150000, 1050000)`);
+        values (${kantorId}, ${andiId}, ${aAktif}, ${t(-1)}, 'angsuran', 150000, 1100000)`);
 
       // B: tempoan jatuh tempo T−6 → seluruh saldo tertunggak; gulung dikunci bos.
       const bNasabah = await orang("budi");
@@ -106,7 +106,7 @@ describe.skipIf(!URL_DB)("pinjaman", () => {
         nasabahId: await orang("citra", dedi?.id),
         pemegang: dedi?.id,
         tanggalAkad: t(-3),
-        saldo: 1_200_000,
+        saldo: 1_250_000,
       });
 
       // Daftar aktif (bos): A-aktif, B, C — urut nama.

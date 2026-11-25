@@ -7,10 +7,7 @@ import { wajib } from "./galat";
  */
 export type JenisPinjaman = "harian" | "mingguan" | "tempoan";
 
-/**
- * A2. Harian & mingguan = jumlah kali bayar; tempoan = jangka HARI. Harian 25 kali sejak
- * 26 Nov 2026 (sebelumnya 24); pinjaman 24 kali yang sudah ada tetap apa adanya (A6).
- */
+/** A2. Harian & mingguan = jumlah kali bayar; tempoan = jangka HARI. */
 export const TENOR_PINJAMAN: Record<JenisPinjaman, readonly number[]> = {
   harian: [25],
   mingguan: [6, 8, 10],

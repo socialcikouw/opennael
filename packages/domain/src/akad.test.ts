@@ -37,7 +37,6 @@ describe("A. akad", () => {
     expect(kode(() => syaratAkad("harian", 150_000, 25))).toBe("POKOK_TIDAK_SAH");
     expect(kode(() => syaratAkad("harian", 0, 25))).toBe("POKOK_TIDAK_SAH");
     expect(kode(() => syaratAkad("harian", 1_000_000, 20))).toBe("TENOR_TIDAK_BERLAKU");
-    // Harian 24 kali hanya untuk pinjaman lama (A6); akad baru & salinan memakai 25.
     expect(kode(() => syaratAkad("harian", 1_000_000, 24))).toBe("TENOR_TIDAK_BERLAKU");
     expect(kode(() => syaratAkad("tempoan", 1_000_000, 30))).toBe("TENOR_TIDAK_BERLAKU");
   });
@@ -45,8 +44,6 @@ describe("A. akad", () => {
   test("angsuran ke = angsuran yang sudah lunas", () => {
     expect(angsuranKe({ totalKembali: 1_250_000, saldo: 650_000, angsuran: 50_000 })).toBe(12);
     expect(angsuranKe({ totalKembali: 1_250_000, saldo: 675_000, angsuran: 50_000 })).toBe(11);
-    // Pinjaman lama 24 kali (dibekukan, A6) tetap terhitung dari angkanya sendiri.
-    expect(angsuranKe({ totalKembali: 1_200_000, saldo: 600_000, angsuran: 50_000 })).toBe(12);
   });
 });
 

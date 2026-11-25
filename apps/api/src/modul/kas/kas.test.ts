@@ -114,8 +114,8 @@ describe.skipIf(!URL_DB)("kas kantor & tabungan", () => {
         insert into pinjaman (kantor_id, pencair_id, dibuat_oleh, nasabah_id, pinjaman_ke, jenis, tenor,
           asal, tanggal_akad, tanggal_disalin, pokok, potongan_admin, tabungan_masuk, pencairan,
           total_kembali, angsuran, saldo_awal, drop_baru, saldo)
-        values (${kantorId}, ${andiId}, ${bos.pengguna.id}, ${n?.id}, 1, 'harian', 24, 'migrasi',
-          '2026-09-01', '2026-10-01', 1000000, 0, 600000, 0, 1200000, 50000, 1000000, 0, 1000000)
+        values (${kantorId}, ${andiId}, ${bos.pengguna.id}, ${n?.id}, 1, 'harian', 25, 'migrasi',
+          '2026-09-01', '2026-10-01', 1000000, 0, 600000, 0, 1250000, 50000, 1000000, 0, 1000000)
         returning id`)) as unknown as { id: string }[];
       await kirim("/lapangan/absen", {
         isi: { absensi: "masuk_kerja", kasLapangan: 1_000_000, uangJalan: 50_000 },

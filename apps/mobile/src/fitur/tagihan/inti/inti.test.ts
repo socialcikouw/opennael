@@ -15,7 +15,7 @@ function kartu(isi: Partial<KartuTagih> = {}): KartuTagih {
     nasabah: { id: crypto.randomUUID(), nama: "sari", kampung: "pule barat" },
     pinjamanKe: 1,
     jenis: "harian",
-    tenor: 24,
+    tenor: 25,
     asal: "baru",
     status: "berjalan",
     tanggalAkad: "2026-10-01",
@@ -25,9 +25,9 @@ function kartu(isi: Partial<KartuTagih> = {}): KartuTagih {
     potonganAdmin: 50_000,
     tabunganMasuk: 50_000,
     pencairan: 900_000,
-    totalKembali: 1_200_000,
+    totalKembali: 1_250_000,
     angsuran: 50_000,
-    saldo: 600_000,
+    saldo: 650_000,
     angsuranKe: 12,
     fotoSerahTerimaId: null,
     dropBaru: 1_000_000,
@@ -119,7 +119,7 @@ describe("kartu nasabah", () => {
     expect(vm.akadTeks).toBe("1 Okt • 15.00");
     expect([vm.pokokRp, vm.saldoRp, vm.angsuranRp, vm.tabunganRp]).toEqual([
       "Rp 1.000.000",
-      "Rp 600.000",
+      "Rp 650.000",
       "Rp 50.000",
       "Rp 60.000",
     ]);

@@ -10,7 +10,7 @@ function kartu(nama: string, kampung: string, isi: Partial<KartuTagih> = {}): Ka
     nasabah: { id: `n-${nama}`, nama, kampung },
     pinjamanKe: 1,
     jenis: "harian",
-    tenor: 24,
+    tenor: 25,
     asal: "baru",
     status: "berjalan",
     tanggalAkad: "2026-10-01",

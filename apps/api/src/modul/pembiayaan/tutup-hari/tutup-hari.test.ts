@@ -41,7 +41,7 @@ describe.skipIf(!URL_DB)("tutup hari", () => {
           insert into nasabah (kantor_id, kolektor_id, nama, wilayah_id)
           values (${kantorId}, ${pemegang}, ${isi.nama}, ${w?.id}) returning id`);
         const angsuran = isi.angsuran ?? 50_000;
-        const tenor = isi.tenor ?? 24;
+        const tenor = isi.tenor ?? 25;
         const saldo = isi.jenis === "tempoan" ? angsuran : 1_000_000;
         const [p] = await baris<{ id: string }>(sql`
           insert into pinjaman (kantor_id, pencair_id, dibuat_oleh, nasabah_id, pinjaman_ke, jenis, tenor,
@@ -49,7 +49,7 @@ describe.skipIf(!URL_DB)("tutup hari", () => {
             total_kembali, angsuran, saldo_awal, drop_baru, saldo, status, tanggal_macet)
           values (${kantorId}, ${pemegang}, ${bos.pengguna.id}, ${n?.id}, 1, ${isi.jenis ?? "harian"},
             ${tenor}, 'migrasi', ${isi.tanggalAkad ?? "2026-08-01"}, ${isi.tanggalDisalin ?? "2026-09-01"},
-            1000000, 0, 0, 0, ${isi.jenis === "tempoan" ? angsuran : 1_200_000}, ${angsuran},
+            1000000, 0, 0, 0, ${isi.jenis === "tempoan" ? angsuran : angsuran * tenor}, ${angsuran},
             ${saldo}, 0, ${saldo}, ${isi.status ?? "berjalan"}, ${isi.tanggalMacet ?? null})
           returning id`);
         return p?.id as string;

@@ -42,8 +42,8 @@ describe.skipIf(!URL_DB)("koreksi bos: hari kolektor & libur nasabah", () => {
           insert into pinjaman (kantor_id, pencair_id, dibuat_oleh, nasabah_id, pinjaman_ke, jenis, tenor,
             asal, tanggal_akad, tanggal_disalin, pokok, potongan_admin, tabungan_masuk, pencairan,
             total_kembali, angsuran, saldo_awal, drop_baru, saldo)
-          values (${kantorId}, ${andiId}, ${bos.pengguna.id}, ${n?.id}, 1, 'harian', 24, 'migrasi',
-            ${geserTanggal(T, -30)}, ${geserTanggal(T, -30)}, 2000000, 0, 0, 0, 2400000, 100000,
+          values (${kantorId}, ${andiId}, ${bos.pengguna.id}, ${n?.id}, 1, 'harian', 25, 'migrasi',
+            ${geserTanggal(T, -30)}, ${geserTanggal(T, -30)}, 2000000, 0, 0, 0, 2500000, 100000,
             2000000, 0, 2000000)
           returning id`);
         return p?.id as string;

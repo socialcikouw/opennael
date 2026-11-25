@@ -50,8 +50,8 @@ describe.skipIf(!URL_DB)("aktivitas & riwayat", () => {
         insert into pinjaman (kantor_id, pencair_id, dibuat_oleh, nasabah_id, pinjaman_ke, jenis, tenor,
           asal, tanggal_akad, foto_serah_terima_id, pokok, potongan_admin, tabungan_masuk, pencairan,
           total_kembali, angsuran, saldo_awal, drop_baru, saldo)
-        values (${kantorId}, ${andiId}, ${bosId}, ${n?.id}, 1, 'harian', 24, 'baru', ${hari}, ${f?.id},
-          1000000, 50000, 50000, 900000, 1200000, 50000, 1200000, 1000000, 1200000)`);
+        values (${kantorId}, ${andiId}, ${bosId}, ${n?.id}, 1, 'harian', 25, 'baru', ${hari}, ${f?.id},
+          1000000, 50000, 50000, 900000, 1250000, 50000, 1250000, 1000000, 1250000)`);
 
       // ---- bos: semua kejadian, terbaru dulu --------------------------------------------
       const semua = (await kirim("/aktivitas", { token: b })).isi as unknown as Aktivitas[];

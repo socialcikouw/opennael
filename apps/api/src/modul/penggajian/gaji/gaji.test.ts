@@ -40,8 +40,8 @@ describe.skipIf(!URL_DB)("gaji kolektor", () => {
           insert into pinjaman (kantor_id, pencair_id, dibuat_oleh, nasabah_id, pinjaman_ke, jenis, tenor,
             asal, tanggal_akad, tanggal_disalin, pokok, potongan_admin, tabungan_masuk, pencairan,
             total_kembali, angsuran, saldo_awal, drop_baru, saldo)
-          values (${kantorId}, ${andiId}, ${bosId}, ${n?.id}, 1, 'harian', 24, 'migrasi', '2026-09-01',
-            '2026-09-01', 10000000, 0, 0, 0, 12000000, 500000, 12000000, 0, 12000000)
+          values (${kantorId}, ${andiId}, ${bosId}, ${n?.id}, 1, 'harian', 25, 'migrasi', '2026-09-01',
+            '2026-09-01', 10000000, 0, 0, 0, 12500000, 500000, 12500000, 0, 12500000)
           returning id`)) as unknown as { id: string }[];
         return p?.id as string;
       };

@@ -28,8 +28,8 @@ describe.skipIf(!URL_DB)("pemutihan", () => {
             insert into pinjaman (kantor_id, pencair_id, dibuat_oleh, nasabah_id, pinjaman_ke, jenis, tenor,
               asal, tanggal_akad, tanggal_disalin, pokok, potongan_admin, tabungan_masuk, pencairan,
               total_kembali, angsuran, saldo_awal, drop_baru, saldo, status, tanggal_macet)
-            values (${kantorId}, ${andiId}, ${bos.pengguna.id}, ${nasabahId}, ${ke}, 'harian', 24, 'migrasi',
-              '2026-08-01', '2026-09-01', 1000000, 0, 0, 0, 1200000, 50000, 800000, 0, 800000,
+            values (${kantorId}, ${andiId}, ${bos.pengguna.id}, ${nasabahId}, ${ke}, 'harian', 25, 'migrasi',
+              '2026-08-01', '2026-09-01', 1000000, 0, 0, 0, 1250000, 50000, 800000, 0, 800000,
               ${tanggalMacet ? "macet" : "berjalan"}, ${tanggalMacet})
             returning id`)
         )[0]?.id as string;

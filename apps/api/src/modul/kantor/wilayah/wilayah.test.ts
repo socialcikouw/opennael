@@ -40,8 +40,8 @@ describe.skipIf(!URL_DB)("kampung", () => {
         insert into pinjaman (kantor_id, pencair_id, dibuat_oleh, nasabah_id, pinjaman_ke, jenis, tenor,
           asal, tanggal_akad, tanggal_disalin, pokok, potongan_admin, tabungan_masuk, pencairan,
           total_kembali, angsuran, saldo_awal, drop_baru, saldo)
-        values (${kantorId}, ${andiId}, ${bos.pengguna.id}, ${citra}, 1, 'harian', 24, 'migrasi',
-          '2026-09-01', '2026-09-01', 1000000, 0, 0, 0, 1200000, 50000, 1200000, 0, 1200000)`);
+        values (${kantorId}, ${andiId}, ${bos.pengguna.id}, ${citra}, 1, 'harian', 25, 'migrasi',
+          '2026-09-01', '2026-09-01', 1000000, 0, 0, 0, 1250000, 50000, 1250000, 0, 1250000)`);
       // Rute Andi: Puleh, Sawah, Pule.
       const simpan = await kirim("/rute-kolektor", {
         metode: "PUT",
