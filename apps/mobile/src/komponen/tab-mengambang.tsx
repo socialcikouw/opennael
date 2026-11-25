@@ -163,7 +163,7 @@ export function TabMengambang({
                     <Ikon nama={ikonTab} ukuran={22} warna={warnaTab} tebal={aktif} />
                     {menunggu > 0 ? (
                       <View style={gaya.lencana}>
-                        <Text style={gaya.lencanaTeks}>{menunggu > 99 ? "99+" : menunggu}</Text>
+                        <Text style={gaya.lencanaTeks}>{menunggu > 9 ? "9+" : menunggu}</Text>
                       </View>
                     ) : null}
                   </View>
