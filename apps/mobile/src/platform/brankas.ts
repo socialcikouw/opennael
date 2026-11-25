@@ -30,3 +30,14 @@ export const mediumKunciTertunda: MediumKunci = {
     else await SecureStore.deleteItemAsync(KUNCI_TERTUNDA);
   },
 };
+
+const KUNCI_GETAR = "nael.pengaturan.getar";
+
+/** Pengaturan HP ini (Mode Akun › Pengaturan): getar nyala / mati; null = belum pernah diatur. */
+export const pengaturanHp = {
+  async bacaGetar(): Promise<boolean | null> {
+    const teks = await SecureStore.getItemAsync(KUNCI_GETAR);
+    return teks === null ? null : teks === "1";
+  },
+  simpanGetar: (nyala: boolean) => SecureStore.setItemAsync(KUNCI_GETAR, nyala ? "1" : "0"),
+};

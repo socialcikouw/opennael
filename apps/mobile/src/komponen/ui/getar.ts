@@ -14,11 +14,24 @@ import * as Haptics from "expo-haptics";
  * - `galat`    — transaksi gagal (otomatis, di tempat yang sama), bersama pesan di layar.
  *
  * Satu getar per tindakan, selalu bersama tanda visual (banyak HP mematikan getar). Gagal
- * (perangkat tanpa motor getar) diabaikan diam-diam.
+ * (perangkat tanpa motor getar) diabaikan diam-diam. Kolektor bisa mematikan semua getar di
+ * Mode Akun › Pengaturan (`aturGetar`; pilihannya disimpan di HP).
  */
 export type JenisGetar = "ketuk" | "pilih" | "tegas" | "tahan" | "berhasil" | "galat";
 
+let nyala = true;
+
+/** Getar nyala / mati untuk seluruh aplikasi (Mode Akun › Pengaturan; disimpan di HP). */
+export function aturGetar(aktif: boolean) {
+  nyala = aktif;
+}
+
+export function getarNyala(): boolean {
+  return nyala;
+}
+
 export function getar(jenis: JenisGetar = "ketuk"): void {
+  if (!nyala) return;
   const janji =
     jenis === "berhasil"
       ? Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)

@@ -4,6 +4,7 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
+import { muatPengaturanHp } from "@/fitur/akun";
 import { getar } from "@/komponen/ui/getar";
 import { sesi, useSesi } from "@/lib/sesi";
 import { WARNA } from "@/tema";
@@ -23,6 +24,8 @@ export default function TataLetakAkar() {
 
   useEffect(() => {
     void sesi.muat();
+    // Pengaturan HP ini (getar nyala/mati) — berlaku untuk semua peran.
+    void muatPengaturanHp();
   }, []);
 
   return (

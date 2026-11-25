@@ -34,8 +34,11 @@ import FileText from "lucide-react-native/icons/file-text";
 import HandCoins from "lucide-react-native/icons/hand-coins";
 import ImageIcon from "lucide-react-native/icons/image";
 import Images from "lucide-react-native/icons/images";
+import Info from "lucide-react-native/icons/info";
 import LayoutDashboard from "lucide-react-native/icons/layout-dashboard";
+import LifeBuoy from "lucide-react-native/icons/life-buoy";
 import Lock from "lucide-react-native/icons/lock";
+import LockOpen from "lucide-react-native/icons/lock-open";
 import LogOut from "lucide-react-native/icons/log-out";
 import MapPin from "lucide-react-native/icons/map-pin";
 import Maximize2 from "lucide-react-native/icons/maximize-2";
@@ -50,6 +53,7 @@ import Repeat from "lucide-react-native/icons/repeat";
 import Search from "lucide-react-native/icons/search";
 import SearchX from "lucide-react-native/icons/search-x";
 import Settings from "lucide-react-native/icons/settings";
+import Smartphone from "lucide-react-native/icons/smartphone";
 import TrendingDown from "lucide-react-native/icons/trending-down";
 import TrendingUp from "lucide-react-native/icons/trending-up";
 import TriangleAlert from "lucide-react-native/icons/triangle-alert";
@@ -57,6 +61,7 @@ import UserPlus from "lucide-react-native/icons/user-plus";
 import UserRound from "lucide-react-native/icons/user-round";
 import Users from "lucide-react-native/icons/users";
 import UsersRound from "lucide-react-native/icons/users-round";
+import Vibrate from "lucide-react-native/icons/vibrate";
 import Wallet from "lucide-react-native/icons/wallet";
 import X from "lucide-react-native/icons/x";
 
@@ -128,6 +133,11 @@ export const IKON = {
   users: Users,
   wallet: Wallet,
   x: X,
+  info: Info,
+  "life-buoy": LifeBuoy,
+  "lock-open": LockOpen,
+  smartphone: Smartphone,
+  vibrate: Vibrate,
 } as const satisfies Record<string, LucideIcon>;
 
 export type NamaIkon = keyof typeof IKON;

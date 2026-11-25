@@ -1,6 +1,6 @@
-import { LayarSetelan } from "@/fitur/akun/layar-setelan";
+import { LayarProfil } from "@/fitur/akun";
 
-/** Tab Profil (Mode Akun). Sementara: layar Setelan lama (tahap 8 rencana). */
+/** Tab Profil (Mode Akun). */
 export default function Profil() {
-  return <LayarSetelan />;
+  return <LayarProfil />;
 }
