@@ -150,13 +150,11 @@ export function LangkahPeriksa(props: {
           nilai={`${rupiah(h.angsuran)}${satuan}`}
           ket={`Total kembali ${rupiah(h.totalKembali)}`}
         />
-        {tempo ? null : (
-          <BarisPeriksa
-            garis
-            label="Potongan"
-            nilai={`Admin ${rupiah(h.potonganAdmin)} · Tabungan ${rupiah(h.tabunganMasuk)}`}
-          />
-        )}
+        <BarisPeriksa
+          garis
+          label="Potongan"
+          nilai={`Admin ${rupiah(h.potonganAdmin)} · Tabungan ${rupiah(h.tabunganMasuk)}`}
+        />
         <View style={[gaya.baris, gaya.garis]}>
           <StatusTitikRumah titik={props.titik} lama={props.siapa === "pernah-melunasi"} />
         </View>

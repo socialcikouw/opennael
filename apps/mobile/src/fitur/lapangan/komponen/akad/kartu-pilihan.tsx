@@ -9,6 +9,8 @@ import { HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
  * KARTU PILIHAN — satu pilihan besar di langkah akad (siapa nasabahnya, tenor, kampung,
  * nasabah yang pernah melunasi). Ketuk = memilih DAN langsung lanjut ke langkah berikutnya;
  * pilihan yang sedang dipakai bertepi terakota. `kanan` mengganti panah (mis. angsuran).
+ * `nonaktif` = pilihan yang tak berlaku (mis. tenor yang tak cocok dengan pokok): redup,
+ * tak bisa diketuk; `ket` menjelaskan sebabnya.
  */
 export function KartuPilihan(props: {
   judul: string;
@@ -19,17 +21,21 @@ export function KartuPilihan(props: {
   huruf?: string;
   kanan?: ReactNode;
   terpilih?: boolean;
+  nonaktif?: boolean;
   onPress: () => void;
 }) {
   const terpilih = props.terpilih ?? false;
+  const nonaktif = props.nonaktif ?? false;
   return (
     <Tekan
       onPress={props.onPress}
+      disabled={nonaktif}
       accessibilityRole="button"
-      accessibilityState={{ selected: terpilih }}
+      accessibilityState={{ selected: terpilih, disabled: nonaktif }}
       style={({ pressed }) => [
         gaya.kartu,
         terpilih ? gaya.terpilih : null,
+        nonaktif ? gaya.nonaktif : null,
         pressed ? gaya.ditekan : null,
       ]}
     >
@@ -47,7 +53,7 @@ export function KartuPilihan(props: {
         </View>
       ) : null}
       <View style={gaya.teks}>
-        <Text style={gaya.judul} numberOfLines={2}>
+        <Text style={[gaya.judul, nonaktif ? gaya.judulNonaktif : null]} numberOfLines={2}>
           {props.judul}
         </Text>
         {props.ket ? <Text style={gaya.ket}>{props.ket}</Text> : null}
@@ -77,6 +83,8 @@ const gaya = StyleSheet.create({
   },
   terpilih: { borderColor: WARNA.utama, backgroundColor: WARNA.utamaLembut },
   ditekan: { transform: [{ scale: 0.98 }], opacity: 0.9 },
+  nonaktif: { backgroundColor: WARNA.isiNetral, borderColor: WARNA.garis },
+  judulNonaktif: { color: WARNA.samar },
   ikon: {
     width: 48,
     height: 48,

@@ -66,8 +66,8 @@ describe.skipIf(!URL_DB)("pembatalan bos", () => {
         nama: "c",
         jenis: "mingguan",
         tenor: 10,
-        angsuran: 120_000,
-        saldo: 600_000,
+        angsuran: 125_000,
+        saldo: 625_000,
       });
       const f = await pinjamanLama({ nama: "f", saldo: 1_200_000 });
 
@@ -169,7 +169,7 @@ describe.skipIf(!URL_DB)("pembatalan bos", () => {
       const bC = await batal(`/transaksi/${gulung.isi.transaksi.id}/batal`);
       expect(bC.isi).toMatchObject({
         jenis: "gulung",
-        pinjaman: { status: "berjalan", saldo: 600_000 },
+        pinjaman: { status: "berjalan", saldo: 625_000 },
         penerusDibatalkanId: gulung.isi.pinjamanBaru.id,
       });
       expect((await status(gulung.isi.pinjamanBaru.id))?.status).toBe("batal");

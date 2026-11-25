@@ -42,13 +42,11 @@ import { ringkasTitikLatar, useTitikRumahLatar } from "./titik-rumah-latar";
 const TAMPIL_BERHASIL_MS = 1200;
 
 /**
- * AKAD BARU (A) — orang baru, atau nasabah pegangan yang pernah melunasi lalu pinjam lagi;
- * SATU PERTANYAAN PER LAYAR (urutan & alasannya: `inti/langkah-akad.ts`; tiap langkah satu
- * berkas di `komponen/akad/`). Dibuka (+) Mode Kerja di tab mana pun — jenis dipilih di
- * langkahnya sendiri. ← = langkah sebelumnya, ✕ = batalkan (ditanya dulu); "Ubah" di Periksa
- * membuka langkahnya dan tombol lanjut di sana kembali ke Periksa. GPS dipantau di latar
- * sejak layar terbuka; titik terbaiknya direkam sebagai titik rumah begitu akad tersimpan.
- * Sesudah tersimpan: stempel Berhasil, lalu tab jenisnya di segmen Droping.
+ * AKAD BARU (A) — orang baru, atau nasabah yang pernah melunasi; SATU PERTANYAAN PER LAYAR
+ * (urutan: `inti/langkah-akad.ts`; langkah di `komponen/akad/`). Dibuka (+) di tab mana pun.
+ * ← = langkah sebelumnya, ✕ = batalkan (ditanya dulu); "Ubah" di Periksa membuka langkahnya
+ * lalu kembali ke Periksa. GPS dipantau di latar; titik terbaiknya jadi titik rumah begitu
+ * akad tersimpan. Sesudahnya: stempel Berhasil, lalu tab jenisnya di segmen Droping.
  */
 export function LayarAkad() {
   const [jenis, setJenis] = useState<JenisPinjaman | null>(null);
@@ -73,12 +71,17 @@ export function LayarAkad() {
   const urutan = urutanLangkah(siapa, jenis);
   const pokok = jumlahKetukan(ketukan);
   const tenor = jenis === "harian" ? (TENOR_PINJAMAN.harian[0] ?? null) : tenorDipilih;
+  // Pasangan pokok + tenor masih berlaku? (mingguan 6 kali hanya pokok kelipatan 300 rb, A2)
+  const syaratSah =
+    jenis !== null && tenor !== null && cobaAturan(() => syaratAkad(jenis, pokok, tenor)).hasil;
 
   const ke = (l: LangkahAkad) => {
     if (l === "foto") setKamera(true);
     else setLangkah(l);
   };
   const lanjut = () => {
+    // Pokok diubah dari Periksa sampai tenornya tak berlaku lagi: pilih tenor dulu.
+    if (kePeriksa && langkah === "pokok" && tenor !== null && !syaratSah) return ke("tenor");
     if (kePeriksa) {
       setKePeriksa(false);
       setLangkah("periksa");
@@ -98,9 +101,8 @@ export function LayarAkad() {
     ke(l);
   };
 
-  // Tombol kembali Android = ← (langkah sebelumnya), bukan menutup akad diam-diam. Dipasang
-  // ulang tiap render supaya selalu memakai langkah terkini; lembar & kamera (Modal)
-  // menangani tombol kembali sendiri lebih dulu.
+  // Tombol kembali Android = ← (bukan menutup akad); dipasang ulang tiap render supaya
+  // memakai langkah terkini. Lembar & kamera (Modal) menanganinya sendiri lebih dulu.
   useEffect(() => {
     const tahan = BackHandler.addEventListener("hardwareBackPress", () => {
       if (!akad.isPending && !berhasil) mundur();
@@ -109,7 +111,6 @@ export function LayarAkad() {
     return () => tahan.remove();
   });
 
-  // Akad tersimpan: stempel Berhasil sebentar, lalu ke tab jenisnya — pinjaman baru di Droping.
   useEffect(() => {
     if (!berhasil) return;
     const t = setTimeout(
@@ -161,7 +162,7 @@ export function LayarAkad() {
       nik,
       nomorHp,
     });
-    if (!nasabah || !cobaAturan(() => syaratAkad(jenis, pokok, tenor)).hasil) return;
+    if (!nasabah || !syaratSah) return;
     akad.mutate(
       {
         akad: { nasabah, jenis, pokok, tenor, fotoSerahTerimaId: foto.id },
@@ -240,7 +241,7 @@ export function LayarAkad() {
           />
         );
       case "periksa":
-        return jenis && foto && siapa && tenor !== null ? (
+        return jenis && foto && siapa && tenor !== null && syaratSah ? (
           <LangkahPeriksa
             k={k}
             jenis={jenis}

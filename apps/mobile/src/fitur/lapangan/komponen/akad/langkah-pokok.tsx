@@ -1,5 +1,5 @@
 import type { NasabahLama } from "@opennael/contracts";
-import { type JenisPinjaman, syaratAkad, TENOR_PINJAMAN } from "@opennael/domain";
+import { type JenisPinjaman, rincianPokok } from "@opennael/domain";
 import { LABEL_JENIS, rupiah } from "@opennael/format";
 import { StyleSheet, Text, View } from "react-native";
 import { Baris } from "@/komponen/ui/kartu";
@@ -23,10 +23,8 @@ export function LangkahPokok(props: {
   onTekan: (kunci: string) => void;
   onLanjut: () => void;
 }) {
-  // Pencairan tak bergantung tenor; tenor pertama hanya agar rumusnya bisa dihitung.
-  const tenorContoh = TENOR_PINJAMAN[props.jenis][0] ?? 0;
-  const syarat =
-    props.pokok > 0 ? cobaAturan(() => syaratAkad(props.jenis, props.pokok, tenorContoh)) : null;
+  // Potongan & pencairan sama untuk semua jenis dan tak bergantung tenor (A3).
+  const syarat = props.pokok > 0 ? cobaAturan(() => rincianPokok(props.pokok)) : null;
   const h = syarat?.hasil ?? null;
   const terakhir = props.lama?.terakhir ?? null;
 
@@ -65,14 +63,8 @@ export function LangkahPokok(props: {
       {syarat?.galat ? <Text style={gaya.galat}>{syarat.galat}</Text> : null}
       {h ? (
         <View style={gaya.rincian}>
-          {props.jenis === "tempoan" ? (
-            <Baris label="Potongan" nilai="Tanpa potongan" />
-          ) : (
-            <>
-              <Baris label="Admin 5%" nilai={`− ${rupiah(h.potonganAdmin)}`} />
-              <Baris label="Tabungan 5%" nilai={`− ${rupiah(h.tabunganMasuk)}`} />
-            </>
-          )}
+          <Baris label="Admin 5%" nilai={`− ${rupiah(h.potonganAdmin)}`} />
+          <Baris label="Tabungan 5%" nilai={`− ${rupiah(h.tabunganMasuk)}`} />
           <View style={gaya.garis} />
           <Baris label="Dicairkan ke Nasabah" nilai={rupiah(h.pencairan)} tebal />
         </View>

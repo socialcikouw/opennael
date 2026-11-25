@@ -81,15 +81,15 @@ describe.skipIf(!URL_DB)("tutup hari", () => {
         tanggalAkad: "2026-09-20",
         tanggalDisalin: "2026-09-20",
       });
-      // E: mingguan dipegang Dedi, satu angsuran (120.000) dalam jendela → tetap berjalan.
+      // E: mingguan dipegang Dedi, satu angsuran (125.000) dalam jendela → tetap berjalan.
       const pE = await pinjamanLama({
         nama: "e",
         pemegang: dedi?.id,
         jenis: "mingguan",
         tenor: 10,
-        angsuran: 120_000,
+        angsuran: 125_000,
       });
-      await setor(pE, "2026-10-06", 120_000, dedi?.id);
+      await setor(pE, "2026-10-06", 125_000, dedi?.id);
 
       const layanan = buatLayananTutupHari({ db: tx });
       const hasil = await layanan.tutupHari(kantorId, "2026-10-20");
@@ -136,7 +136,7 @@ describe.skipIf(!URL_DB)("tutup hari", () => {
           jumlah_macet: 0,
           saldo_berjalan: 1_000_000,
           saldo_macet: 0,
-          angsuran_berjalan: 120_000,
+          angsuran_berjalan: 125_000,
           angsuran_macet: 0,
         },
         {

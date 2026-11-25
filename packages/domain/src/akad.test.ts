@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { angsuranKe, syaratAkad, syaratMigrasi } from "./akad";
+import { angsuranKe, rincianPokok, syaratAkad, syaratMigrasi } from "./akad";
 import { kode } from "./uji";
 
 /** Contoh angka = docs/aturan-usaha.md, apa adanya. */
@@ -15,22 +15,37 @@ describe("A. akad", () => {
     });
     expect(syaratAkad("mingguan", 1_000_000, 8)).toMatchObject({
       pencairan: 900_000,
-      totalKembali: 1_200_000,
-      angsuran: 150_000,
+      totalKembali: 1_250_000,
+      angsuran: 156_250,
     });
     expect(syaratAkad("mingguan", 100_000, 10)).toMatchObject({
       potonganAdmin: 5_000,
       pencairan: 90_000,
-      totalKembali: 120_000,
-      angsuran: 12_000,
+      totalKembali: 125_000,
+      angsuran: 12_500,
+    });
+    expect(syaratAkad("mingguan", 1_200_000, 6)).toMatchObject({
+      pencairan: 1_080_000,
+      totalKembali: 1_500_000,
+      angsuran: 250_000,
     });
     expect(syaratAkad("tempoan", 1_000_000, 14)).toMatchObject({
-      potonganAdmin: 0,
-      tabunganMasuk: 0,
-      pencairan: 1_000_000,
+      potonganAdmin: 50_000,
+      tabunganMasuk: 50_000,
+      pencairan: 900_000,
       totalKembali: 1_250_000,
       angsuran: 1_250_000,
     });
+  });
+
+  test("rincian pokok sama untuk semua jenis, tanpa tenor", () => {
+    expect(rincianPokok(1_000_000)).toEqual({
+      potonganAdmin: 50_000,
+      tabunganMasuk: 50_000,
+      pencairan: 900_000,
+      totalKembali: 1_250_000,
+    });
+    expect(kode(() => rincianPokok(150_000))).toBe("POKOK_TIDAK_SAH");
   });
 
   test("A1 & A2 menolak pokok dan tenor tak sah", () => {
@@ -39,6 +54,9 @@ describe("A. akad", () => {
     expect(kode(() => syaratAkad("harian", 1_000_000, 20))).toBe("TENOR_TIDAK_BERLAKU");
     expect(kode(() => syaratAkad("harian", 1_000_000, 24))).toBe("TENOR_TIDAK_BERLAKU");
     expect(kode(() => syaratAkad("tempoan", 1_000_000, 30))).toBe("TENOR_TIDAK_BERLAKU");
+    // Mingguan 6 kali: pokok kelipatan Rp 300.000 (125% ÷ 6 bulat).
+    expect(kode(() => syaratAkad("mingguan", 1_000_000, 6))).toBe("POKOK_TIDAK_SAH");
+    expect(syaratAkad("mingguan", 300_000, 6).angsuran).toBe(62_500);
   });
 
   test("angsuran ke = angsuran yang sudah lunas", () => {

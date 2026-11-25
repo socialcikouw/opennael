@@ -17,8 +17,8 @@ Istilah: lihat [`produk.md`](produk.md#istilah). Semua uang dalam rupiah bulat.
 
 ## A. Akad pinjaman
 
-**A1. Pokok** kelipatan Rp 100.000. (Itulah yang membuat 5%, 120%, 125%, dan
-pembagian per tenor selalu bulat.)
+**A1. Pokok** kelipatan Rp 100.000. (Itulah yang membuat 5%, 125%, dan
+pembagian per tenor selalu bulat — kecuali mingguan 6 kali, lihat A2.)
 
 **A2. Tenor** per jenis:
 
@@ -28,14 +28,18 @@ pembagian per tenor selalu bulat.)
 | Mingguan | 6, 8, atau 10 kali |
 | Tempoan | 7, 10, atau 14 hari (sekali bayar) |
 
-**A3. Harian & mingguan:** potongan admin 5% pokok + potongan tabungan 5% pokok
-(dicairkan 90%); total kembali **harian 125%**, mingguan 120% pokok; angsuran =
-total kembali ÷ tenor (harian: 5% pokok). *Keputusan pemilik, 26 Nov 2026* —
-sebelumnya harian 24 kali, kembali 120% (angsuran sama, 5% pokok); tidak ada lagi
-pinjaman 24 kali (data uji lama dihapus).
+Mingguan **6 kali hanya untuk pokok kelipatan Rp 300.000** (300.000, 600.000,
+900.000, 1.200.000, …): 125% ÷ 6 baru bulat pada kelipatan itu. Pokok lain
+memilih 8 atau 10 kali. *Keputusan pemilik, 26 Nov 2026.*
 
-**A4. Tempoan:** tanpa potongan; total kembali 125% pokok; angsuran = total
-kembali (sekali bayar); jatuh tempo = tanggal akad + tenor hari.
+**A3. Semua jenis sama:** potongan admin 5% pokok + potongan tabungan 5% pokok
+(**dicairkan 90%**); total kembali **125% pokok**; angsuran = total kembali ÷
+tenor (harian: 5% pokok). *Keputusan pemilik, 26 Nov 2026* — sebelumnya harian
+24 kali & mingguan kembali 120%, tempoan tanpa potongan (dicairkan 100%).
+Data uji lama dihapus; tidak ada pinjaman dengan rumus lama.
+
+**A4. Tempoan:** potongan & total kembali seperti A3; angsuran = total kembali
+(sekali bayar); jatuh tempo = tanggal akad + tenor hari.
 
 **A5. Pencairan** (uang yang dicairkan ke nasabah) = pokok − admin − tabungan − saldo pinjaman
 lama (hanya gulung).
@@ -43,9 +47,10 @@ lama (hanya gulung).
 | Contoh | Pokok | Admin | Tabungan | Pencairan | Total kembali | Angsuran |
 |---|---|---|---|---|---|---|
 | Harian, 25× | 1.000.000 | 50.000 | 50.000 | 900.000 | 1.250.000 | 50.000 |
-| Mingguan, 8× | 1.000.000 | 50.000 | 50.000 | 900.000 | 1.200.000 | 150.000 |
-| Mingguan, 10× | 100.000 | 5.000 | 5.000 | 90.000 | 120.000 | 12.000 |
-| Tempoan, 14 hari | 1.000.000 | 0 | 0 | 1.000.000 | 1.250.000 | 1.250.000 |
+| Mingguan, 8× | 1.000.000 | 50.000 | 50.000 | 900.000 | 1.250.000 | 156.250 |
+| Mingguan, 10× | 100.000 | 5.000 | 5.000 | 90.000 | 125.000 | 12.500 |
+| Mingguan, 6× | 1.200.000 | 60.000 | 60.000 | 1.080.000 | 1.500.000 | 250.000 |
+| Tempoan, 14 hari | 1.000.000 | 50.000 | 50.000 | 900.000 | 1.250.000 | 1.250.000 |
 
 **A6. Syarat akad dibekukan** di pinjaman pada hari akad: mengubah rumus hanya
 berlaku untuk akad berikutnya.
@@ -218,7 +223,8 @@ nasabah.
 
 **E5.** Mingguan & tempoan boleh digulung kapan saja, termasuk saat macet dan
 naik pada pinjaman pertama. (Tempoan praktis selalu naik: pencairan bersih
-baru positif bila pokok penerus lebih dari 1,25× pokok asal.)
+baru positif bila pencairan penerus — 90% pokoknya — melebihi seluruh saldo
+asal, yaitu pokok penerus lebih dari ±1,39× pokok asal yang belum dicicil.)
 
 **E6. Pencairan bersih** = pencairan akad penerus − saldo pinjaman asal, **harus
 lebih dari nol**.

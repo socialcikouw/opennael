@@ -1,6 +1,13 @@
-import { geserTanggal, type JenisPinjaman, syaratAkad, TENOR_PINJAMAN } from "@opennael/domain";
+import {
+  geserTanggal,
+  type JenisPinjaman,
+  rincianPokok,
+  syaratAkad,
+  TENOR_PINJAMAN,
+} from "@opennael/domain";
 import { namaTenor, rupiah, tanggalBertahun } from "@opennael/format";
 import { StyleSheet, Text, View } from "react-native";
+import { cobaAturan } from "@/lib/aturan";
 import { HURUF, RUANG, TEBAL, WARNA } from "@/tema";
 import { KartuPilihan } from "./kartu-pilihan";
 import { type Kerangka, KerangkaLangkah } from "./kerangka-langkah";
@@ -8,7 +15,9 @@ import { type Kerangka, KerangkaLangkah } from "./kerangka-langkah";
 /**
  * Langkah TENOR (mingguan & tempoan; harian selalu 25 kali dan dilewati) — tiap pilihan
  * menampilkan angsurannya untuk pokok yang sudah diisi, tempoan juga tanggal jatuh
- * temponya (tanggal akad + tenor hari, A4). Ketuk = langsung lanjut.
+ * temponya (tanggal akad + tenor hari, A4). Ketuk = langsung lanjut. Tenor yang tak
+ * berlaku untuk pokok ini (mingguan 6 kali: pokok kelipatan Rp 300.000, A2) tampil
+ * redup dengan sebabnya, tak bisa dipilih.
  */
 export function LangkahTenor(props: {
   k: Kerangka;
@@ -21,33 +30,39 @@ export function LangkahTenor(props: {
 }) {
   const tempo = props.jenis === "tempoan";
   const pilihan = TENOR_PINJAMAN[props.jenis];
-  const contoh = syaratAkad(props.jenis, props.pokok, pilihan[0] ?? 0);
+  const total = cobaAturan(() => rincianPokok(props.pokok)).hasil?.totalKembali ?? 0;
   return (
     <KerangkaLangkah
       k={props.k}
       tanya={tempo ? "Berapa hari temponya?" : "Berapa kali angsurannya?"}
-      sub={`Pokok ${rupiah(props.pokok)} · total kembali ${rupiah(contoh.totalKembali)}.`}
+      sub={`Pokok ${rupiah(props.pokok)} · total kembali ${rupiah(total)}.`}
     >
       {pilihan.map((t) => {
-        const s = syaratAkad(props.jenis, props.pokok, t);
+        const { hasil: s, galat } = cobaAturan(() => syaratAkad(props.jenis, props.pokok, t));
         return (
           <KartuPilihan
             key={t}
             judul={tempo ? namaTenor(props.jenis, t) : `${t} kali`}
             ket={
-              tempo
+              galat ??
+              (tempo
                 ? props.hariIni
                   ? `Jatuh tempo ${tanggalBertahun(geserTanggal(props.hariIni, t))}`
                   : undefined
-                : "Seminggu sekali"
+                : "Seminggu sekali")
             }
+            nonaktif={s === null}
             terpilih={props.nilai === t}
             onPress={() => props.onPilih(t)}
             kanan={
-              <View style={gaya.kanan}>
-                <Text style={gaya.angka}>{rupiah(s.angsuran)}</Text>
-                <Text style={gaya.satuan}>{tempo ? "sekali bayar" : "per minggu"}</Text>
-              </View>
+              s ? (
+                <View style={gaya.kanan}>
+                  <Text style={gaya.angka}>{rupiah(s.angsuran)}</Text>
+                  <Text style={gaya.satuan}>{tempo ? "sekali bayar" : "per minggu"}</Text>
+                </View>
+              ) : (
+                <View />
+              )
             }
           />
         );
