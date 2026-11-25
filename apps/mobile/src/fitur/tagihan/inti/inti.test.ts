@@ -3,6 +3,7 @@ import type { KartuTagih, Peristiwa } from "@opennael/contracts";
 import { jumlahSegmen, lipatKelompok, pilah, ringkasDroping, susunBaris } from "./daftar";
 import { nominalK, susunBahanGrid, susunGrid, susunKerangka } from "./grid";
 import { kartuVM } from "./kartu";
+import { sisaWajibPerJenis } from "./sisa-wajib";
 
 // Kamis 29 Okt 2026.
 const KAMIS = "2026-10-29";
@@ -281,5 +282,20 @@ describe("daftar tagihan", () => {
     expect(lipat.map((b) => b.jenis)).toEqual(["judul", "judul", "kartu"]);
     expect(lipat[0]).toMatchObject({ nama: "PULE", terlipat: true, jumlah: 2 });
     expect(lipat[1]).toMatchObject({ nama: "SAWAH", terlipat: false });
+  });
+});
+
+describe("sisa wajib per jenis (angka tab Mode Kerja)", () => {
+  test("yang sudah dicatat hari ini tak dihitung; tiap jenis terpisah", () => {
+    const daftar = [
+      kartu(),
+      kartu({ hariIni: { jenis: "angsuran", storting: 50_000 } }),
+      kartu({ hariIni: { jenis: "libur", alasan: null } }),
+      kartu({ jenis: "tempoan", jatuhTempo: KAMIS, tenor: 1 }),
+    ];
+    const r = sisaWajibPerJenis(daftar, KAMIS);
+    expect(r.harian).toBe(1);
+    expect(r.tempoan).toBe(1);
+    expect(r.mingguan).toBe(0);
   });
 });

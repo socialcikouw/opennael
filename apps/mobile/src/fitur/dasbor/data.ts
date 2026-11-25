@@ -1,7 +1,8 @@
+import type { JenisPinjaman } from "@opennael/domain";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { rasioMode, useHariIni, useKalenderBulan, useTagihan } from "@/fitur/lapangan";
-import { jatuhTempoDari, jenisDariMode, useMode } from "@/fitur/tagihan";
+import { jatuhTempoDari } from "@/fitur/tagihan";
 import { kueri } from "@/lib/api";
 import { susunPerforma } from "./inti/performa";
 import { portofolioUntuk } from "./inti/portofolio";
@@ -14,9 +15,8 @@ import { portofolioUntuk } from "./inti/portofolio";
  * transaksi lapangan dan tarik-segarkan menyegarkannya bersama; performa
  * berkunci per jenis, jadi pindah mode memakai cache jenis itu sendiri.
  */
-export function useDataDasbor() {
-  const mode = useMode();
-  const jenis = jenisDariMode(mode);
+/** `jenis` null = semua jenis. */
+export function useDataDasbor(jenis: JenisPinjaman | null) {
   const hariIni = useHariIni();
   const tagihan = useTagihan();
   const tanggal = hariIni.data?.kalender.tanggal;
@@ -33,8 +33,8 @@ export function useDataDasbor() {
     [pinjaman, tanggal, jenis],
   );
   const jatuhTempo = useMemo(
-    () => (mode === "tempoan" && pinjaman && tanggal ? jatuhTempoDari(pinjaman, tanggal) : null),
-    [mode, pinjaman, tanggal],
+    () => (pinjaman && tanggal ? jatuhTempoDari(pinjaman, tanggal) : null),
+    [pinjaman, tanggal],
   );
   const baris = deret.data;
   const hariTagih = kalender.data?.hariTagih;
@@ -48,7 +48,6 @@ export function useDataDasbor() {
     [dataPortofolio, jenis],
   );
   return {
-    mode,
     hariIni,
     tagihan,
     deret,

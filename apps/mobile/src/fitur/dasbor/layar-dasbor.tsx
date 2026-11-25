@@ -4,7 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { useCallback } from "react";
 import { RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
-import { KartuJatuhTempo, MODE } from "@/fitur/tagihan";
+import { KartuJatuhTempo } from "@/fitur/tagihan";
 import { useRuangTab } from "@/komponen/tab-mengambang";
 import { g } from "@/komponen/ui/gaya-bersama";
 import { PesanGalat } from "@/komponen/ui/isian";
@@ -35,19 +35,10 @@ export function LayarDasbor() {
   const s = useSesi();
   const ruangTab = useRuangTab();
   const klien = useQueryClient();
-  const {
-    mode,
-    hariIni,
-    tagihan,
-    deret,
-    portofolioSemua,
-    portofolio,
-    rasio,
-    jatuhTempo,
-    performa,
-  } = useDataDasbor();
+  const { hariIni, tagihan, deret, portofolioSemua, portofolio, rasio, jatuhTempo, performa } =
+    useDataDasbor(null);
   const aksen = AKSEN;
-  const namaMode = MODE[mode].label;
+  const namaMode = "Semua Jenis";
 
   // Semua bacaan Dasbor berawalan `lapangan`: satu invalidasi menyegarkan semuanya, dan
   // pemutarnya hanya menyala karena ditarik (bukan karena penyegaran di latar).
@@ -103,26 +94,18 @@ export function LayarDasbor() {
         />
       ) : null}
 
-      {mode === "tempoan" ? (
-        // Tempoan tak ditagih setiap hari: jatuh tempo menggantikan rasio bayar (seperti di Tagihan).
-        jatuhTempo ? (
-          <KartuJatuhTempo r={jatuhTempo} aksen={aksen} />
-        ) : null
-      ) : (
-        <KartuRasio
-          r={rasio}
-          gagal={tagihan.isError && !tagihan.data}
-          aksen={aksen}
-          // Mode Laporan tak punya tab Notifikasi: buka laporan dari Mutasi.
-          onLaporan={() =>
-            router.navigate(mode === "laporan" ? "/kolektor/mutasi" : "/kolektor/notifikasi")
-          }
-        />
-      )}
+      <KartuRasio
+        r={rasio}
+        gagal={tagihan.isError && !tagihan.data}
+        aksen={aksen}
+        // Laporan sore dibuka dari Ringkasan › Mutasi Kas (Mode Rekap).
+        onLaporan={() => router.navigate("/kolektor/ringkasan")}
+      />
+      {jatuhTempo ? <KartuJatuhTempo r={jatuhTempo} aksen={aksen} /> : null}
       <KartuPerforma
         p={performa}
         gagal={deret.isError && !deret.data}
-        jenis={mode === "laporan" ? "semua jenis" : `pinjaman ${namaMode.toLowerCase()}`}
+        jenis="semua jenis"
         aksen={aksen}
       />
 

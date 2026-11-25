@@ -47,7 +47,7 @@ export function LayarAkad({ jenis: param }: { jenis?: string }) {
   const [nik, setNik] = useState("");
   const [nomorHp, setNomorHp] = useState("");
   const [lama, setLama] = useState<NasabahLama | null>(null);
-  // Dibuka dari tombol + mode Harian/Mingguan/Tempoan: jenisnya mengikuti mode, tanpa pilihan.
+  // Dibuka dari tombol + Mode Kerja: jenisnya = tab yang sedang dibuka (Harian/Mingguan/Tempoan).
   const jenisTetap = param && param in TENOR_PINJAMAN ? (param as JenisPinjaman) : null;
   const [jenis, setJenis] = useState<JenisPinjaman>(jenisTetap ?? "harian");
   const [tenor, setTenor] = useState<number>(TENOR_PINJAMAN[jenisTetap ?? "harian"][0] ?? 0);

@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { AccessibilityInfo, StyleSheet, Text, View } from "react-native";
@@ -14,9 +15,9 @@ import Animated, {
 } from "react-native-reanimated";
 import { KURVA } from "@/komponen/ui/gerak";
 import { HURUF, RUANG, TEBAL, WARNA } from "@/tema";
-import { MODE, type ModeApp, modeAktif } from "../mode";
-import { pasangTirai, selesaiBeralih, usePermintaanMode } from "../transisi-mode";
-import { HurufMode } from "./lembar-mode";
+import { MODE, type Mode } from "../mode";
+import { pasangPengarah, selesaiBeralih, usePermintaanMode } from "../transisi-mode";
+import { HurufMode } from "./huruf-mode";
 
 /** Layar menghitam. */
 const MASUK_MS = 220;
@@ -29,30 +30,45 @@ const KELUAR_MS = 260;
 
 /**
  * TIRAI MODE — layar transisi saat beralih mode (permintaan pemilik 24 Nov 2026): layar
- * menghitam, muncul huruf mode + "Beralih ke / Mode Harian" + tiga titik muat yang melompat
- * bergantian, mode diganti DI BALIK tirai (pergantian tab & isi tak terlihat patah), lalu
- * tirai memudar dan mode baru tampil. Total ±1,2 dtk; menahan sentuhan selama tampil.
- * Pengumuman pembaca layar saat mode berganti (getar sudah diberikan tombol pemicunya, `Tekan`). Dipasang sekali di tata
- * letak tab kolektor; pemicu: `beralihMode` (bukan `modeAktif.ganti` langsung).
+ * menghitam, muncul huruf mode + "Beralih ke / Mode Rekap" + tiga titik muat yang melompat
+ * bergantian, grup rute mode diganti DI BALIK tirai (pergantian tab & isi tak terlihat
+ * patah), lalu tirai memudar dan mode baru tampil. Total ±1,2 dtk; menahan sentuhan selama
+ * tampil. Pengumuman pembaca layar saat mode berganti (getar sudah diberikan tombol
+ * pemicunya, `Tekan`).
+ *
+ * Dipasang sekali di `app/kolektor/_layout.tsx` (di atas semua grup mode) dan memasang
+ * PENGARAH untuk `beralihMode`: pindah dalam mode = `router.navigate`; ganti mode = tutup
+ * layar bertumpuk (`dismissAll`) lalu `router.replace` grup mode tujuan.
  */
 export function TiraiMode() {
   const permintaan = usePermintaanMode();
-  const [tampil, setTampil] = useState<{ mode: ModeApp; ke: number } | null>(null);
+  const [tampil, setTampil] = useState<{ mode: Mode; nomor: number } | null>(null);
 
-  useEffect(() => pasangTirai(), []);
+  useEffect(
+    () =>
+      pasangPengarah({
+        // Rute tujuan berasal dari `MODE[…].awal` & rute tab yang ditulis di kode (bukan masukan).
+        pindah: (ke) => router.navigate(ke as never),
+        gantiMode: (ke) => {
+          if (router.canDismiss()) router.dismissAll();
+          router.replace(ke as never);
+        },
+      }),
+    [],
+  );
 
   useEffect(() => {
     if (!permintaan) return;
-    const { mode, lalu, ke } = permintaan;
-    setTampil({ mode, ke });
+    const { mode, ke, nomor } = permintaan;
+    setTampil({ mode, nomor });
     const ganti = setTimeout(() => {
-      modeAktif.ganti(mode);
-      lalu?.();
+      if (router.canDismiss()) router.dismissAll();
+      router.replace(ke as never);
       AccessibilityInfo.announceForAccessibility(`Mode ${MODE[mode].label}`);
     }, GANTI_MS);
     const tutup = setTimeout(() => {
       setTampil(null);
-      selesaiBeralih(ke);
+      selesaiBeralih(nomor);
     }, TUTUP_MS);
     return () => {
       clearTimeout(ganti);
@@ -63,7 +79,7 @@ export function TiraiMode() {
   if (!tampil) return null;
   return (
     <Animated.View
-      key={tampil.ke}
+      key={tampil.nomor}
       entering={FadeIn.duration(MASUK_MS).easing(KURVA.keluar)}
       exiting={FadeOut.duration(KELUAR_MS).easing(KURVA.keluar)}
       style={gaya.tirai}

@@ -22,7 +22,7 @@ type Aksi = "setor" | "lunas" | "libur" | "gulung";
 
 /** KARTU PINJAMAN — rincian lalu satu catatan hari ini: setor, lunas, libur, atau gulung. */
 export function LayarPinjaman({ id, lihat }: { id: string; lihat?: string }) {
-  // lihat=1: dibuka dari mode Laporan — rincian saja, tanpa transaksi.
+  // lihat=1: dibuka dari Mode Rekap (Storting, Droping) — rincian saja, tanpa transaksi.
   const tagihan = useTagihan();
   const hariIni = useHariIni();
   const segarkan = useSegarkanLapangan();

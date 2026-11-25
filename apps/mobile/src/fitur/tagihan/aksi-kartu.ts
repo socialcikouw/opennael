@@ -86,7 +86,7 @@ export function useAksiKartu(hariIni: ReturnType<typeof useHariIni>) {
     Alert.alert(
       gerbang.perluAbsen ? "Absen Dulu" : judul(gerbang.judul ?? "lapangan tutup"),
       gerbang.perluAbsen
-        ? "Transaksi bisa dicatat sesudah absen pagi di tab Notifikasi."
+        ? "Transaksi bisa dicatat sesudah absen pagi (lonceng Notifikasi)."
         : gerbang.isi,
     );
     return true;

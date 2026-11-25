@@ -43,9 +43,10 @@ export function useRuangTab(): number {
  * - Ganti mode: tab baru memudar masuk, tab lama memudar keluar, yang tetap bergeser
  *   (`GESER`); kapsul ikut ke tempat tab aktif yang baru.
  *
- * Judul dari `title` tiap layar; ikon Lucide per nama rute. `tampil` = rute yang tampil di
- * pil, urut (bawaan: semua rute); bila tab yang sedang dibuka tak lagi tampil (ganti mode),
- * pindah ke tab tampil pertama. Tombol kiri & + tak tampil bila tak diberikan.
+ * Dipakai tata letak tiap grup mode (`app/kolektor/(kerja)`, `(rekap)`, `(akun)`): satu
+ * navigator Tabs per mode, jadi pil memuat semua rute navigatornya. Judul dari `title` tiap
+ * layar; ikon Lucide per nama rute. Tombol kiri (huruf mode) & kanan (aksi utama mode: +
+ * akad, Foto Nasabah) tak tampil bila tak diberikan.
  */
 export function TabMengambang({
   state,
@@ -56,17 +57,16 @@ export function TabMengambang({
   ikon,
   warna,
   kiri,
-  tambah,
+  kanan,
   lencana,
-  tampil,
 }: BottomTabBarProps & {
   ikon: Record<string, NamaIkon>;
-  tampil?: readonly string[];
   /** Penanda angka di ikon tab menurut nama rute (mis. pengingat yang menunggu); 0 = tanpa penanda. */
   lencana?: Record<string, number>;
   warna?: WarnaAksen;
   kiri?: { isi: ReactNode; label: string; onPress: () => void };
-  tambah?: { label: string; onPress: () => void };
+  /** Aksi utama mode (bulat pekat di kanan pil). */
+  kanan?: { ikon: NamaIkon; label: string; onPress: () => void };
 }) {
   const aksen = warna ?? {
     teks: WARNA.utama,
@@ -74,15 +74,8 @@ export function TabMengambang({
     isi: WARNA.utamaIsi,
     teksIsi: WARNA.teksAtasUtama,
   };
-  const rute = tampil
-    ? tampil.flatMap((nama) => state.routes.filter((r) => r.name === nama))
-    : state.routes;
+  const rute = state.routes;
   const kunciAktif = state.routes[state.index]?.key;
-  const tersembunyi = !rute.some((r) => r.key === kunciAktif);
-  const kunciPertama = rute[0]?.key;
-  useEffect(() => {
-    if (tersembunyi && kunciPertama) navigateToTab(kunciPertama);
-  }, [tersembunyi, kunciPertama, navigateToTab]);
 
   // Kapsul tab aktif: posisi & lebar tiap slot tab dicatat dari tata letak, kapsul
   // menuju slot aktif. Lebar boleh dianimasikan: kapsul absolut & tanpa anak.
@@ -185,19 +178,19 @@ export function TabMengambang({
             );
           })}
         </Animated.View>
-        {tambah ? (
+        {kanan ? (
           <Animated.View entering={MUNCUL} exiting={HILANG}>
             <Tekan
               accessibilityRole="button"
-              accessibilityLabel={tambah.label}
-              onPress={tambah.onPress}
+              accessibilityLabel={kanan.label}
+              onPress={kanan.onPress}
               style={({ pressed }) => [
                 gaya.bulat,
                 { backgroundColor: aksen.isi },
                 pressed ? gaya.ditekan : null,
               ]}
             >
-              <Ikon nama="plus" ukuran={28} warna={aksen.teksIsi} tebal />
+              <Ikon nama={kanan.ikon} ukuran={26} warna={aksen.teksIsi} tebal />
             </Tekan>
           </Animated.View>
         ) : null}

@@ -88,3 +88,11 @@ Gerbang tiap tahap: `bun run typecheck && bun run lint && bun run cek:arsitektur
    Bantuan; `layar-setelan` dihapus.
 9. **Dokumen & sapu bersih** — `AGENTS.md`, `arsitektur/struktur.md`, `tema.md`,
    pencarian nama lama yang tersisa, hapus dokumen ini.
+
+## Kemajuan
+
+| Tahap | Commit | Catatan |
+|---|---|---|
+| 1 | `c33c429` | Rencana & keputusan. |
+| 2 | `9e57804` | `AKSEN`, `WarnaAksen`. |
+| 3 | (tahap ini) | `fitur/mode` (mode dari grup rute, `beralihMode` + pengarah, `TabBarMode`, `LembarMode` tiga pilihan, `TiraiMode`, `HurufMode`, `RUTE_JENIS`); grup `(kerja)` · `(rekap)` · `(akun)`; `(tab)` dihapus. **Ikut tahap ini** (supaya tiap commit tetap aplikasi utuh): Notifikasi jadi layar bertumpuk + lonceng berangka di kepala Tagihan + tombol "Buka Tab …" / "Buka Mutasi Kas". Sementara: Ringkasan = Mutasi Kas, Performa = Dasbor semua jenis, Profil = Setelan. |

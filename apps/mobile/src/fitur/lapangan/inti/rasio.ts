@@ -46,7 +46,7 @@ export function rasioHariIni(
 }
 
 /**
- * Rasio untuk satu mode: `jenis` menyaring pinjaman (null = mode Laporan, ketiganya).
+ * Rasio untuk satu jenis: `jenis` menyaring pinjaman (null = semua jenis).
  * Mode mengubah ISI, bukan hanya tampilan — Dasbor Harian, Mingguan, dan Tempoan
  * tidak pernah memakai angka yang sama.
  */

@@ -10,9 +10,9 @@ import { rupiah } from "@opennael/format";
 import type { GerbangMutasi } from "../../lapangan/inti/gerbang-mutasi";
 
 /**
- * PENGINGAT KOLEKTOR — pemberitahuan rinci yang SAMA di ketiga mode kerja
- * (Harian · Mingguan · Tempoan), begitu pula angka di lonceng: laporan kas
- * menunggu semua jenis, jadi kolektor di mode mana pun perlu tahu siapa saja
+ * PENGINGAT KOLEKTOR — pemberitahuan rinci untuk ketiga jenis (Harian · Mingguan ·
+ * Tempoan) sekaligus, begitu pula angka di lonceng (Mode Kerja): laporan kas
+ * menunggu semua jenis, jadi kolektor di tab mana pun perlu tahu siapa saja
  * yang masih menahannya. Diturunkan dari gerbang lapangan (C4), daftar tagih,
  * dan hari kas kolektor; bukan notifikasi dari server (belum ada). PURE.
  *
@@ -46,7 +46,7 @@ export interface Pengingat {
   nada: "kuning" | "merah" | "hijau";
   judul: string;
   isi: string | null;
-  /** Jenis pinjaman yang dituju tombol "Tagih di mode …"; null = tanpa tombol mode. */
+  /** Jenis yang dituju tombol "Buka Tab …" (Mode Kerja); null = tanpa tombol. */
   jenisPinjaman: JenisPinjaman | null;
   nasabah: NasabahPengingat[];
   /** Menunggu tindakan kolektor (dihitung di lonceng); false = hanya kabar. */
@@ -229,6 +229,6 @@ export function susunPengingat(b: BahanPengingat): Pengingat[] {
   return hasil;
 }
 
-/** Banyaknya pengingat yang menunggu tindakan — angka di lonceng, sama di semua mode kerja. */
+/** Banyaknya pengingat yang menunggu tindakan — angka di lonceng (sama di ketiga tab Kerja). */
 export const jumlahTindakan = (pengingat: readonly Pengingat[]): number =>
   pengingat.filter((p) => p.tindakan).length;

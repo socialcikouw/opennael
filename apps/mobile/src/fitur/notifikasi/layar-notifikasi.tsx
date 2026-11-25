@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { RefreshControl, StyleSheet, View } from "react-native";
-import { useRuangTab } from "@/komponen/tab-mengambang";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { g } from "@/komponen/ui/gaya-bersama";
 import { PesanGalat } from "@/komponen/ui/isian";
 import { Kerangka } from "@/komponen/ui/kerangka";
@@ -14,7 +14,8 @@ import { usePengingat } from "./data";
 import { ItemPengingat } from "./komponen/item-pengingat";
 
 /**
- * NOTIFIKASI — SATU untuk ketiga mode kerja (isi & angka lonceng sama):
+ * NOTIFIKASI — layar bertumpuk yang dibuka lonceng di kepala tab Harian · Mingguan ·
+ * Tempoan (Mode Kerja; isi & angka lonceng sama di ketiganya):
  * belum absen, kabar gerbang lapangan, yang belum ditagih dirinci per jenis
  * (harian · mingguan · tempoan jatuh tempo sekarang · tempoan lewat jatuh
  * tempo) beserta nama & nominalnya, tempoan jatuh tempo besok, Mutasi kas yang
@@ -22,7 +23,7 @@ import { ItemPengingat } from "./komponen/item-pengingat";
  * lapangan di HP; notifikasi kiriman server belum ada.
  */
 export function LayarNotifikasi() {
-  const ruangTab = useRuangTab();
+  const bawah = useSafeAreaInsets().bottom + RUANG[6];
   const { hariIni, tagihan, kas, pengingat } = usePengingat();
 
   const { refetch: segarHariIni } = hariIni;
@@ -49,7 +50,7 @@ export function LayarNotifikasi() {
     // Formulir absen (kas lapangan, uang jalan) ada di sini: isian naik di atas papan ketik.
     <GulirKeyboard
       style={g.layar}
-      contentContainerStyle={[gaya.isi, { paddingBottom: ruangTab }]}
+      contentContainerStyle={[gaya.isi, { paddingBottom: bawah }]}
       refreshControl={<RefreshControl refreshing={menarik} onRefresh={tarik} />}
     >
       {hariIni.isError ? (

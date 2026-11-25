@@ -1,3 +1,4 @@
+import type { JenisPinjaman } from "@opennael/domain";
 import { useMemo } from "react";
 import {
   useHariIni,
@@ -11,13 +12,12 @@ import { pilah, ringkasDroping, susunBaris, type TabKerja } from "./inti/daftar"
 import { susunBahanGrid } from "./inti/grid";
 import { kartuVM } from "./inti/kartu";
 import { ringkasJatuhTempo } from "./inti/khusus";
-import type { jenisDariMode, useMode } from "./mode";
 
 /**
  * Bacaan lapangan layar Tagihan: hari ini (tanggal & gerbang), kartu pinjaman,
  * kalender bulan, peristiwa bulan, dan riwayat pinjaman mingguan.
  */
-export function useDataTagihan(jenis: ReturnType<typeof jenisDariMode>) {
+export function useDataTagihan(jenis: JenisPinjaman) {
   const hariIni = useHariIni();
   const tanggal = hariIni.data?.kalender.tanggal;
   const tagihan = useTagihan();
@@ -25,7 +25,7 @@ export function useDataTagihan(jenis: ReturnType<typeof jenisDariMode>) {
   const peristiwa = usePeristiwaBulan(tanggal);
   const idMingguan = useMemo(
     () =>
-      jenis === null || jenis === "mingguan"
+      jenis === "mingguan"
         ? (tagihan.data ?? []).filter((p) => p.jenis === "mingguan").map((p) => p.id)
         : [],
     [tagihan.data, jenis],
@@ -36,7 +36,6 @@ export function useDataTagihan(jenis: ReturnType<typeof jenisDariMode>) {
 
 /** Turunan bacaan itu: bahan grid → kartu → segmen → baris, beserta ringkasannya. */
 export function useDaftarTagihan({
-  mode,
   jenis,
   tab,
   kunciCari,
@@ -46,8 +45,7 @@ export function useDaftarTagihan({
   peristiwa,
   riwayat,
 }: {
-  mode: ReturnType<typeof useMode>;
-  jenis: ReturnType<typeof jenisDariMode>;
+  jenis: JenisPinjaman;
   tab: TabKerja;
   kunciCari: string;
   tanggal: string | undefined;
@@ -65,7 +63,7 @@ export function useDaftarTagihan({
   const semua = useMemo(() => {
     if (!tagihan.data || !tanggal || !bahan) return [];
     return tagihan.data
-      .filter((p) => jenis === null || p.jenis === jenis)
+      .filter((p) => p.jenis === jenis)
       .map((p) => kartuVM(p, tanggal, bahan, zona));
   }, [tagihan.data, tanggal, bahan, jenis, zona]);
   const partisi = useMemo(() => pilah(semua, kunciCari), [semua, kunciCari]);
@@ -75,10 +73,10 @@ export function useDaftarTagihan({
   );
   const jatuhTempo = useMemo(
     () =>
-      mode === "tempoan"
+      jenis === "tempoan"
         ? ringkasJatuhTempo(semua.flatMap((vm) => (vm.tempo ? [vm.tempo] : [])))
         : null,
-    [mode, semua],
+    [jenis, semua],
   );
   const droping = useMemo(
     () => ringkasDroping(semua.filter((vm) => vm.ember === "droping")),

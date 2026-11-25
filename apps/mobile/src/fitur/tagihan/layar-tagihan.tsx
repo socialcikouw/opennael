@@ -1,11 +1,13 @@
 import { kunci } from "@opennael/api-client";
+import type { JenisPinjaman } from "@opennael/domain";
 import { kunciWilayah } from "@opennael/domain";
 import { useQueryClient } from "@tanstack/react-query";
-import { router } from "expo-router";
+import { type Href, router } from "expo-router";
 import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
 import { RefreshControl, StyleSheet, View } from "react-native";
-import Animated, { FadeIn } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useJumlahPengingat } from "@/fitur/notifikasi";
 import { useRuangTab } from "@/komponen/tab-mengambang";
 import { PesanGalat } from "@/komponen/ui/isian";
 import { Tombol } from "@/komponen/ui/tombol";
@@ -23,35 +25,33 @@ import { KepalaTagihan } from "./komponen/kepala-tagihan";
 import { LembarAlasanLibur } from "./komponen/lembar-alasan-libur";
 import { KartuJatuhTempo } from "./komponen/ringkasan";
 import { useLipatKelompok } from "./lipat-kelompok";
-import { jenisDariMode, MODE, useMode } from "./mode";
+
+const JUDUL: Record<JenisPinjaman, string> = {
+  harian: "Tagihan Harian",
+  mingguan: "Tagihan Mingguan",
+  tempoan: "Tagihan Tempoan",
+};
 
 /**
- * TAGIHAN — klon layar Kerja aplikasi lama (naelcapital): kepala melayang
- * yang melipat, segmen Aktif · Macet · Droping, daftar per kampung (urut rute), kartu
- * nasabah lengkap, dan transaksi langsung dari kartu. Isinya mengikuti mode
- * aplikasi (Harian · Mingguan · Tempoan). Mode Laporan tak punya tab Tagihan
- * (tab pantau di `fitur/pantau`); tab bar memindahkan kolektor ke Dasbor.
+ * TAGIHAN — isi tab Harian · Mingguan · Tempoan (Mode Kerja; rute `app/kolektor/(kerja)/
+ * harian.tsx` dst. memberi `jenis`): kepala melayang yang melipat (judul "Tagihan Harian",
+ * cari, lonceng Notifikasi), segmen Berjalan · Macet · Droping, daftar per kampung (urut
+ * rute), kartu nasabah lengkap, dan transaksi langsung dari kartu.
  *
- * Data tetap satu sumber (`lib/lapangan`): sesudah transaksi kartu
- * menampilkan stempel sebentar, lalu data disegarkan dan kartunya turun ke
- * "Sudah ditagih".
+ * Data tetap satu sumber (`fitur/lapangan`): sesudah transaksi kartu menampilkan stempel
+ * sebentar, lalu data disegarkan dan kartunya turun ke "Sudah ditagih".
  */
-export function LayarTagihan({ segmen }: { segmen?: string }) {
-  const mode = useMode();
-  // Ganti mode = seluruh wajah berganti: dipasang ulang dengan pudar singkat.
-  return (
-    <Animated.View key={mode} entering={FadeIn.duration(200)} style={{ flex: 1 }}>
-      {mode === "laporan" ? null : <LayarTagihanKerja segmenAwal={segmen} />}
-    </Animated.View>
-  );
-}
-
-function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
+export function LayarTagihan({
+  jenis,
+  segmen: segmenAwal,
+}: {
+  jenis: JenisPinjaman;
+  segmen?: string;
+}) {
   const insets = useSafeAreaInsets();
   const ruangTab = useRuangTab();
-  const mode = useMode();
-  const jenis = jenisDariMode(mode);
   const aksen = AKSEN;
+  const pengingat = useJumlahPengingat();
 
   const { hariIni, tanggal, tagihan, kalender, peristiwa, riwayat } = useDataTagihan(jenis);
 
@@ -71,7 +71,6 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
 
   // ---- data → kartu → segmen → baris -------------------------------------
   const { bahan, partisi, baris, jatuhTempo, droping } = useDaftarTagihan({
-    mode,
     jenis,
     tab,
     kunciCari,
@@ -165,7 +164,7 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
       ? gerbang.perluAbsen
         ? {
             judul: "Belum absen",
-            isi: "Absen pagi di tab Notifikasi dulu supaya transaksi bisa dicatat.",
+            isi: "Absen pagi dulu lewat lonceng Notifikasi supaya transaksi bisa dicatat.",
           }
         : { judul: gerbang.judul ?? "Lapangan tutup", isi: gerbang.isi }
       : null;
@@ -219,7 +218,12 @@ function LayarTagihanKerja({ segmenAwal }: { segmenAwal?: string }) {
         terangkat={terangkat}
         onUkurLipat={(t) => tinggiLipat.set(t)}
         onUkur={setTinggiKepala}
-        mode={{ label: MODE[mode].label, warna: aksen }}
+        judul={JUDUL[jenis]}
+        aksen={aksen}
+        lonceng={{
+          jumlah: pengingat,
+          onPress: () => router.push("/kolektor/notifikasi" as Href),
+        }}
         kartuAtas={jatuhTempo ? <KartuJatuhTempo r={jatuhTempo} aksen={aksen} /> : null}
         tab={tab}
         jumlah={jumlahSegmen(partisi)}

@@ -1,8 +1,7 @@
 import { judul, tampilKampung, tampilNama } from "@opennael/format";
-import { router } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { beralihMode, MODE, useMode } from "@/fitur/tagihan";
+import { beralihMode, ruteJenis } from "@/fitur/mode";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Tekan } from "@/komponen/ui/tekan";
@@ -53,25 +52,20 @@ const NADA = {
  *        penjelasan
  *   ┌ nama · KAMPUNG ............ nominal ┐           ← daftar nasabah (5 teratas, "Lihat semua")
  *   └──────────────────────────────────────┘
- *   [ tindakan ]                                      ← formulir absen · "Tagih di mode …" · "Buka Mutasi kas"
+ *   [ tindakan ]                                      ← formulir absen · "Buka Tab Harian" · "Buka Mutasi Kas"
  * `tanpaMutasi` menyembunyikan tombol Mutasi (dipakai di layar Mutasi sendiri).
  */
 export function ItemPengingat({ p, tanpaMutasi = false }: { p: Pengingat; tanpaMutasi?: boolean }) {
-  const mode = useMode();
   const [semua, setSemua] = useState(false);
   const nada = NADA[p.nada];
   const tampil = semua ? p.nasabah : p.nasabah.slice(0, RINGKAS);
   const sisa = p.nasabah.length - tampil.length;
 
-  const keTagihan = () => {
-    const keLayar = () => router.navigate("/kolektor/tagihan");
-    // Pindah tab terjadi di balik tirai transisi, sesudah mode berganti.
-    if (p.jenisPinjaman) beralihMode(p.jenisPinjaman, keLayar);
-    else keLayar();
+  // Dari Mode Kerja langsung pindah tab; dari mode lain lewat tirai transisi.
+  const keTab = () => {
+    if (p.jenisPinjaman) beralihMode("kerja", ruteJenis(p.jenisPinjaman));
   };
-  const keMutasi = () => {
-    beralihMode("laporan", () => router.navigate("/kolektor/mutasi"));
-  };
+  const keMutasi = () => beralihMode("rekap", "/kolektor/ringkasan");
 
   return (
     <View style={gaya.wadah}>
@@ -125,23 +119,26 @@ export function ItemPengingat({ p, tanpaMutasi = false }: { p: Pengingat; tanpaM
 
       {p.jenis === "absen" ? <FormulirAbsen /> : null}
       {p.jenis === "belum" && p.jenisPinjaman ? (
-        <TombolMode jenis={p.jenisPinjaman} aktif={mode === p.jenisPinjaman} onPress={keTagihan} />
+        <TombolTab jenis={p.jenisPinjaman} onPress={keTab} />
       ) : null}
       {p.jenis === "mutasi-siap" && !tanpaMutasi ? (
-        <Tombol judul="Buka Mutasi kas" ikon="arrow-left-right" onPress={keMutasi} />
+        <Tombol judul="Buka Mutasi Kas" ikon="arrow-left-right" onPress={keMutasi} />
       ) : null}
     </View>
   );
 }
 
-/** "Tagih di mode Harian" (pindah mode) atau "Buka Tagihan" (sudah di mode itu), warna mode jenisnya. */
-function TombolMode(props: {
-  jenis: NonNullable<Pengingat["jenisPinjaman"]>;
-  aktif: boolean;
-  onPress: () => void;
-}) {
+const LABEL_JENIS: Record<NonNullable<Pengingat["jenisPinjaman"]>, string> = {
+  harian: "Harian",
+  mingguan: "Mingguan",
+  tempoan: "Tempoan",
+};
+
+/** "Buka Tab Harian" — ke tab jenis itu di Mode Kerja (nama tombol = nama tab tujuan). */
+function TombolTab(props: { jenis: NonNullable<Pengingat["jenisPinjaman"]>; onPress: () => void }) {
   const w = AKSEN;
-  const judul = props.aktif ? "Buka Tagihan" : `Tagih di mode ${MODE[props.jenis].label}`;
+  const label = LABEL_JENIS[props.jenis];
+  const judul = `Buka Tab ${label}`;
   return (
     <Tekan
       accessibilityRole="button"
@@ -154,7 +151,7 @@ function TombolMode(props: {
       ]}
     >
       <Text style={[gaya.tombolModeHuruf, { color: w.teksIsi, borderColor: w.teksIsi }]}>
-        {MODE[props.jenis].huruf}
+        {label.charAt(0)}
       </Text>
       <Text style={[gaya.tombolModeTeks, { color: w.teksIsi }]}>{judul}</Text>
       <Ikon nama="chevron-right" ukuran={18} warna={w.teksIsi} />

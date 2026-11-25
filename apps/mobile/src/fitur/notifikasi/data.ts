@@ -12,8 +12,8 @@ import { jumlahTindakan, susunPengingat } from "./inti/pengingat";
 
 /**
  * Pengingat kolektor dari bacaan lapangan yang SUDAH dimuat layar lain (hari
- * ini, daftar tagih, hari kas — cache yang sama). SATU untuk ketiga mode kerja:
- * tak membaca mode, jadi isi & angka lonceng sama di Harian, Mingguan, Tempoan.
+ * ini, daftar tagih, hari kas — cache yang sama). SATU untuk ketiga jenis: isi & angka
+ * lonceng sama di tab Harian, Mingguan, Tempoan.
  * `pengingat` null selama keadaan hari ini belum ada.
  */
 export function usePengingat() {
@@ -42,7 +42,7 @@ export function usePengingat() {
   return { hariIni, tagihan, kas, pengingat };
 }
 
-/** Angka lonceng: pengingat yang menunggu tindakan — sama di semua mode kerja. */
+/** Angka lonceng: pengingat yang menunggu tindakan — sama di ketiga tab Kerja. */
 export function useJumlahPengingat(): number {
   const { pengingat } = usePengingat();
   return pengingat ? jumlahTindakan(pengingat) : 0;

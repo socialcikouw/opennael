@@ -8,8 +8,9 @@ import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaAksen } from "@/tema";
 import { TAB_KERJA, type TabKerja } from "../inti/daftar";
 
 /**
- * KEPALA layar Tagihan — melayang di atas daftar. Bagian LIPAT (merek +
- * lencana mode, tombol cari, kartu atas) terangkat & memudar saat daftar
+ * KEPALA layar Tagihan (tab Harian · Mingguan · Tempoan, Mode Kerja) — melayang di atas
+ * daftar. Bagian LIPAT (alis "MODE KERJA", judul "Tagihan Harian", tombol cari & lonceng
+ * Notifikasi berangka, kartu atas) terangkat & memudar saat daftar
  * digulung; bagian MENEMPEL (segmen, penanda lapangan tutup) tetap
  * di puncak. Gulir balik memunculkan bagian lipat lagi (`lipat` dikendalikan
  * layar). Selama kolom cari terbuka, kepala tidak melipat.
@@ -21,7 +22,11 @@ export function KepalaTagihan(props: {
   terangkat: SharedValue<number>;
   onUkurLipat: (tinggi: number) => void;
   onUkur: (tinggi: number) => void;
-  mode: { label: string; warna: WarnaAksen };
+  /** Mis. "Tagihan Harian". */
+  judul: string;
+  aksen: WarnaAksen;
+  /** Lonceng Notifikasi: angka merah = pengingat yang menunggu tindakan. */
+  lonceng: { jumlah: number; onPress: () => void };
   kartuAtas: ReactNode;
   tab: TabKerja;
   jumlah: Record<TabKerja, number>;
@@ -86,18 +91,27 @@ export function KepalaTagihan(props: {
         ) : (
           <View style={gaya.barisJudul}>
             <View style={gaya.merek}>
-              <Text style={gaya.merekTeks}>OpenNael</Text>
-              <View style={[gaya.lencanaMode, { backgroundColor: props.mode.warna.lembut }]}>
-                <Text style={[gaya.lencanaModeTeks, { color: props.mode.warna.teks }]}>
-                  {props.mode.label}
-                </Text>
-              </View>
+              <Text style={gaya.alis}>MODE KERJA</Text>
+              <Text style={gaya.merekTeks} numberOfLines={1}>
+                {props.judul}
+              </Text>
             </View>
             <TombolBulat
               ikon="search"
               label="Cari nasabah"
-              warna={props.mode.warna.teks}
+              warna={props.aksen.teks}
               onPress={() => props.onCariTerbuka(true)}
+            />
+            <TombolBulat
+              ikon="bell"
+              label={
+                props.lonceng.jumlah > 0
+                  ? `Notifikasi, ${props.lonceng.jumlah} menunggu`
+                  : "Notifikasi"
+              }
+              warna={props.aksen.teks}
+              angka={props.lonceng.jumlah}
+              onPress={props.lonceng.onPress}
             />
           </View>
         )}
@@ -121,9 +135,11 @@ export function KepalaTagihan(props: {
 }
 
 function TombolBulat(props: {
-  ikon: "search" | "x";
+  ikon: "search" | "x" | "bell";
   label: string;
   warna?: string;
+  /** Angka merah di pojok (lonceng); 0 / kosong = tanpa angka. */
+  angka?: number;
   onPress: () => void;
 }) {
   return (
@@ -135,6 +151,11 @@ function TombolBulat(props: {
       style={({ pressed }) => [gaya.tombolBulat, pressed ? gaya.ditekan : null]}
     >
       <Ikon nama={props.ikon} ukuran={19} warna={props.warna ?? WARNA.teksKedua} />
+      {props.angka ? (
+        <View style={gaya.angkaMerah}>
+          <Text style={gaya.angkaMerahTeks}>{props.angka > 9 ? "9+" : props.angka}</Text>
+        </View>
+      ) : null}
     </Tekan>
   );
 }
@@ -187,10 +208,29 @@ const gaya = StyleSheet.create({
     paddingBottom: RUANG[3],
   },
   barisJudul: { flexDirection: "row", alignItems: "center", gap: RUANG[3], minHeight: 40 },
-  merek: { flex: 1, flexDirection: "row", alignItems: "center", gap: RUANG[2] },
+  merek: { flex: 1, minWidth: 0 },
+  alis: { ...HURUF["3xs"], fontWeight: TEBAL.ekstra, letterSpacing: 0.6, color: WARNA.samar },
   merekTeks: { ...HURUF["2xl"], fontWeight: TEBAL.ekstra, color: WARNA.teks },
-  lencanaMode: { paddingHorizontal: RUANG[2.5], paddingVertical: 2, borderRadius: SUDUT.bulat },
-  lencanaModeTeks: { ...HURUF.xs, fontWeight: TEBAL.tebal },
+  angkaMerah: {
+    position: "absolute",
+    top: -4,
+    right: -4,
+    minWidth: 18,
+    height: 18,
+    paddingHorizontal: RUANG[1],
+    borderRadius: SUDUT.bulat,
+    borderWidth: 2,
+    borderColor: WARNA.latar,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: WARNA.bahayaBingkai,
+  },
+  angkaMerahTeks: {
+    ...HURUF["3xs"],
+    fontWeight: TEBAL.ekstra,
+    color: WARNA.teksAtasBahaya,
+    fontVariant: ["tabular-nums"],
+  },
   barisCari: { flexDirection: "row", alignItems: "center", gap: RUANG[2], minHeight: 40 },
   kolomCari: {
     flex: 1,

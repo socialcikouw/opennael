@@ -9,6 +9,9 @@ import BanknoteArrowUp from "lucide-react-native/icons/banknote-arrow-up";
 import Bell from "lucide-react-native/icons/bell";
 import Calculator from "lucide-react-native/icons/calculator";
 import Calendar from "lucide-react-native/icons/calendar";
+import CalendarClock from "lucide-react-native/icons/calendar-clock";
+import CalendarDays from "lucide-react-native/icons/calendar-days";
+import CalendarRange from "lucide-react-native/icons/calendar-range";
 import Camera from "lucide-react-native/icons/camera";
 import ChartColumnIncreasing from "lucide-react-native/icons/chart-column-increasing";
 import Check from "lucide-react-native/icons/check";
@@ -39,6 +42,7 @@ import Moon from "lucide-react-native/icons/moon";
 import Phone from "lucide-react-native/icons/phone";
 import PiggyBank from "lucide-react-native/icons/piggy-bank";
 import Plus from "lucide-react-native/icons/plus";
+import ReceiptText from "lucide-react-native/icons/receipt-text";
 import RefreshCw from "lucide-react-native/icons/refresh-cw";
 import Repeat from "lucide-react-native/icons/repeat";
 import Search from "lucide-react-native/icons/search";
@@ -48,6 +52,7 @@ import TrendingDown from "lucide-react-native/icons/trending-down";
 import TrendingUp from "lucide-react-native/icons/trending-up";
 import TriangleAlert from "lucide-react-native/icons/triangle-alert";
 import UserPlus from "lucide-react-native/icons/user-plus";
+import UserRound from "lucide-react-native/icons/user-round";
 import Users from "lucide-react-native/icons/users";
 import UsersRound from "lucide-react-native/icons/users-round";
 import Wallet from "lucide-react-native/icons/wallet";
@@ -64,6 +69,11 @@ export const IKON = {
   eraser: Eraser,
   eye: Eye,
   calendar: Calendar,
+  "calendar-clock": CalendarClock,
+  "calendar-days": CalendarDays,
+  "calendar-range": CalendarRange,
+  "receipt-text": ReceiptText,
+  "user-round": UserRound,
   camera: Camera,
   "chart-column-increasing": ChartColumnIncreasing,
   "circle-pause": CirclePause,

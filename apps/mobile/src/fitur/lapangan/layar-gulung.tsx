@@ -3,6 +3,7 @@ import { LABEL_JENIS, rupiah, tampilKampung } from "@opennael/format";
 import { router, Stack } from "expo-router";
 import { useState } from "react";
 import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ruteJenis } from "@/fitur/mode";
 import { Gulir } from "@/komponen/ui/layar";
 import { SelubungMencatat } from "@/komponen/ui/selubung-mencatat";
 import { Keterangan } from "@/komponen/ui/teks";
@@ -90,7 +91,7 @@ export function LayarGulung({ id }: { id: string }) {
               // Penerusnya cair hari ini: kolektor dibawa ke segmen Droping.
               onSuccess: () =>
                 router.dismissTo({
-                  pathname: "/kolektor/tagihan",
+                  pathname: ruteJenis(p.jenis),
                   params: { segmen: "droping" },
                 }),
             },

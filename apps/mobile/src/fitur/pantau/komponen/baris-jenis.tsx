@@ -2,9 +2,14 @@ import type { JenisPinjaman } from "@opennael/domain";
 import { tampilNama } from "@opennael/format";
 import { memo } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { MODE } from "@/fitur/tagihan";
 import { Tekan } from "@/komponen/ui/tekan";
 import { AKSEN, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
+
+const JENIS: Record<JenisPinjaman, { label: string; huruf: string }> = {
+  harian: { label: "Harian", huruf: "H" },
+  mingguan: { label: "Mingguan", huruf: "M" },
+  tempoan: { label: "Tempoan", huruf: "T" },
+};
 
 /**
  * Satu baris uang di tab pantau (setoran / akad): pita & huruf jenis pinjaman
@@ -27,14 +32,14 @@ export const BarisJenis = memo(function BarisJenis(props: {
   return (
     <Tekan
       accessibilityRole={props.onPress ? "button" : undefined}
-      accessibilityLabel={`${nama}, ${MODE[props.jenis].label}, ${props.sub}, ${props.nilai}`}
+      accessibilityLabel={`${nama}, ${JENIS[props.jenis].label}, ${props.sub}, ${props.nilai}`}
       disabled={!props.onPress}
       onPress={props.onPress}
       style={({ pressed }) => [gaya.baris, pressed ? gaya.ditekan : null]}
     >
       <View style={[gaya.pita, { backgroundColor: w.teks }]} />
       <View style={[gaya.huruf, { backgroundColor: w.lembut }]}>
-        <Text style={[gaya.hurufTeks, { color: w.teks }]}>{MODE[props.jenis].huruf}</Text>
+        <Text style={[gaya.hurufTeks, { color: w.teks }]}>{JENIS[props.jenis].huruf}</Text>
       </View>
       <View style={gaya.tengah}>
         <View style={gaya.deret}>
