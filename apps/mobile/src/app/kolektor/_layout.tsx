@@ -20,7 +20,17 @@ export default function TataLetakKolektor() {
         <Stack.Screen name="pinjaman/[id]" options={{ title: "Pinjaman" }} />
         <Stack.Screen name="gulung/[id]" options={{ title: "Gulung" }} />
         <Stack.Screen name="bayar/[id]" options={{ title: "Bayar" }} />
-        <Stack.Screen name="akad" options={{ title: "Akad Baru", presentation: "modal" }} />
+        {/* Akad bertahap: kepala & bilah kemajuan sendiri; usap-tutup dimatikan supaya isian
+            tak hilang tak sengaja (✕ menanyakan dulu). */}
+        <Stack.Screen
+          name="akad"
+          options={{
+            title: "Akad",
+            presentation: "fullScreenModal",
+            headerShown: false,
+            gestureEnabled: false,
+          }}
+        />
       </Stack>
       <TiraiMode />
     </>

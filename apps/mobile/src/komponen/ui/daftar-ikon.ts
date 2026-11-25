@@ -59,6 +59,8 @@ import TrendingUp from "lucide-react-native/icons/trending-up";
 import TriangleAlert from "lucide-react-native/icons/triangle-alert";
 import UserPlus from "lucide-react-native/icons/user-plus";
 import UserRound from "lucide-react-native/icons/user-round";
+import UserRoundCheck from "lucide-react-native/icons/user-round-check";
+import UserRoundPlus from "lucide-react-native/icons/user-round-plus";
 import Users from "lucide-react-native/icons/users";
 import UsersRound from "lucide-react-native/icons/users-round";
 import Vibrate from "lucide-react-native/icons/vibrate";
@@ -81,6 +83,8 @@ export const IKON = {
   "calendar-range": CalendarRange,
   "receipt-text": ReceiptText,
   "user-round": UserRound,
+  "user-round-check": UserRoundCheck,
+  "user-round-plus": UserRoundPlus,
   camera: Camera,
   "chart-column-increasing": ChartColumnIncreasing,
   "chart-pie": ChartPie,

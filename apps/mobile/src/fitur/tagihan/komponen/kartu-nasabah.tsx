@@ -2,6 +2,7 @@ import { memo } from "react";
 import { StyleSheet, View } from "react-native";
 import type { Stempel } from "@/fitur/lapangan";
 import { SelubungMencatat } from "@/komponen/ui/selubung-mencatat";
+import { StempelBerhasil } from "@/komponen/ui/stempel-berhasil";
 import { Tekan } from "@/komponen/ui/tekan";
 import { RUANG, SUDUT, WARNA, type WarnaAksen } from "@/tema";
 import type { KartuVM } from "../inti/kartu";
@@ -11,7 +12,13 @@ import { CABANG_INFO, InfoKartu, ISIAN_KOTAK, TAHAN_LUNASI_MS } from "./info-kar
 import { KakiKartu } from "./kaki-kartu";
 import { BarisRel, JARAK_KARTU } from "./rel-kartu";
 import { BlokMinggu, BlokTempo } from "./slot-khusus";
-import { StempelBerhasil } from "./stempel-berhasil";
+
+/** Tulisan di bawah "Berhasil" pada stempel kartu. */
+const KETERANGAN_STEMPEL: Record<Stempel, string> = {
+  bayar: "Dibayar",
+  libur: "Libur Dicatat",
+  lunas: "Lunas",
+};
 
 /** Aksi kartu — SATU objek stabil dari layar, diteruskan ke kartu-kartu ber-memo. */
 export interface AksiKartu {
@@ -70,7 +77,7 @@ export const KartuNasabah = memo(function KartuNasabah(props: {
       <AngkaKartu vm={vm} tanpaAngsuran={bisaAksi} />
       {bisaAksi ? <KakiKartu vm={vm} aksi={props.aksi} aksen={props.aksen} /> : null}
       {props.stempel ? (
-        <StempelBerhasil jenis={props.stempel} />
+        <StempelBerhasil keterangan={KETERANGAN_STEMPEL[props.stempel]} />
       ) : props.sibuk ? (
         // Selama tulisan berjalan: menutup kartu (tombol tak terjangkau sentuhan).
         <SelubungMencatat warna={props.aksen.teks} />

@@ -3,13 +3,12 @@ import { useRef, useState } from "react";
 import { Image, Modal, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { g } from "@/komponen/ui/gaya-bersama";
-import { Ikon } from "@/komponen/ui/ikon";
 import { PesanGalat } from "@/komponen/ui/isian";
 import { Tekan } from "@/komponen/ui/tekan";
 import { Keterangan } from "@/komponen/ui/teks";
 import { Tombol } from "@/komponen/ui/tombol";
 import { unggahFotoSerahTerima } from "@/platform/foto";
-import { HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
+import { HURUF, RUANG, SUDUT, WARNA } from "@/tema";
 
 interface Potret {
   uri: string;
@@ -21,11 +20,17 @@ interface Potret {
  * KAMERA SERAH TERIMA (A7) — nasabah memegang uang pencairan. Hanya dari
  * kamera (bukan galeri), diperiksa dulu, lalu dikompres & diunggah. Foto
  * berlaku 1 jam: potret sesaat sebelum menyimpan akad / gulung.
+ *
+ * Sesudah memotret: "Potret ulang" di atas, tombol utama di bawah (dalam jangkauan jempol;
+ * sketsa pemilik 26 Nov 2026). `judulPakai` = tulisan tombol utama (akad: "Selanjutnya");
+ * `keterangan` = satu baris kecil di bawah petunjuk (akad: keadaan GPS titik rumah).
  */
 export function KameraSerahTerima(props: {
   terbuka: boolean;
   onTutup: () => void;
   onSelesai: (fotoId: string, pratinjauUri: string) => void;
+  judulPakai?: string;
+  keterangan?: string | undefined;
 }) {
   const [izin, mintaIzin] = useCameraPermissions();
   const kamera = useRef<CameraView>(null);
@@ -86,12 +91,17 @@ export function KameraSerahTerima(props: {
             <Image source={{ uri: potret.uri }} style={g.isi} resizeMode="contain" />
             <View style={[gaya.panel, gaya.panelTerang]}>
               <PesanGalat pesan={galat} />
-              <Tombol judul="Pakai foto ini" memuat={mengunggah} onPress={() => void pakai()} />
               <Tombol
                 judul="Potret ulang"
+                ikon="refresh-cw"
                 jenis="kedua"
                 nonaktif={mengunggah}
                 onPress={() => setPotret(null)}
+              />
+              <Tombol
+                judul={props.judulPakai ?? "Pakai foto ini"}
+                memuat={mengunggah}
+                onPress={() => void pakai()}
               />
             </View>
           </View>
@@ -108,6 +118,7 @@ export function KameraSerahTerima(props: {
               <Text style={gaya.petunjuk}>
                 Nasabah memegang uang pencairan, wajah terlihat jelas.
               </Text>
+              {props.keterangan ? <Text style={gaya.keterangan}>{props.keterangan}</Text> : null}
               <PesanGalat pesan={galat} />
               <View style={gaya.kendali}>
                 <Tekan onPress={tutup} style={gaya.sisi}>
@@ -142,57 +153,6 @@ export function fotoMasihBerlaku(f: FotoSerahTerima | null): f is FotoSerahTerim
   return !!f && Date.now() - f.diambilAt < 55 * 60 * 1000;
 }
 
-/** Isian foto di formulir akad / gulung: tombol potret + pratinjau kecil. */
-export function IsianFotoSerahTerima(props: {
-  nilai: FotoSerahTerima | null;
-  onUbah: (f: FotoSerahTerima | null) => void;
-}) {
-  const [terbuka, setTerbuka] = useState(false);
-  const berlaku = fotoMasihBerlaku(props.nilai);
-
-  return (
-    <View style={g.tumpuk2}>
-      {props.nilai && berlaku ? (
-        <View style={g.baris3}>
-          <Image source={{ uri: props.nilai.uri }} style={gaya.pratinjau} />
-          <View style={[g.isi, gaya.keteranganFoto]}>
-            <View style={g.baris1}>
-              <Ikon nama="circle-check" ukuran={16} warna={WARNA.sukses} />
-              <Text style={gaya.siap}>Foto siap dipakai</Text>
-            </View>
-            <Text style={gaya.diambil}>
-              Diambil{" "}
-              {new Date(props.nilai.diambilAt).toLocaleTimeString("id-ID", {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}{" "}
-              · berlaku 1 jam
-            </Text>
-            <Tekan onPress={() => setTerbuka(true)} hitSlop={10}>
-              <Text style={g.tautan}>Potret ulang</Text>
-            </Tekan>
-          </View>
-        </View>
-      ) : (
-        <>
-          {props.nilai ? (
-            <Text style={g.galat}>Foto sudah lebih dari 1 jam — potret ulang.</Text>
-          ) : null}
-          <Tombol judul="Potret serah terima" jenis="kedua" onPress={() => setTerbuka(true)} />
-        </>
-      )}
-      <KameraSerahTerima
-        terbuka={terbuka}
-        onTutup={() => setTerbuka(false)}
-        onSelesai={(id, uri) => {
-          props.onUbah({ id, uri, diambilAt: Date.now() });
-          setTerbuka(false);
-        }}
-      />
-    </View>
-  );
-}
-
 const gaya = StyleSheet.create({
   latar: { flex: 1, backgroundColor: WARNA.latarMedia },
   izin: {
@@ -210,6 +170,7 @@ const gaya = StyleSheet.create({
   },
   panelTerang: { backgroundColor: WARNA.permukaan },
   petunjuk: { ...HURUF.sm, textAlign: "center", color: WARNA.diAtasFoto },
+  keterangan: { ...HURUF.xs, textAlign: "center", color: WARNA.diAtasFoto, opacity: 0.8 },
   kendali: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   sisi: { width: 80, paddingVertical: RUANG[3] },
   batal: { ...HURUF.base, color: WARNA.diAtasFoto },
@@ -229,13 +190,4 @@ const gaya = StyleSheet.create({
     borderRadius: SUDUT.bulat,
     backgroundColor: WARNA.diAtasFoto,
   },
-  pratinjau: {
-    width: 64,
-    height: 80,
-    borderRadius: SUDUT.kecil,
-    backgroundColor: WARNA.isiNetral,
-  },
-  keteranganFoto: { gap: RUANG[1] },
-  siap: { ...HURUF.sm, fontWeight: TEBAL.semi, color: WARNA.sukses },
-  diambil: { ...HURUF.sm, color: WARNA.teksLabel },
 });

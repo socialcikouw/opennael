@@ -269,6 +269,7 @@ apps/mobile/src/
 │   ├── tautan/                  layar-tautkan · komponen/
 │   ├── lapangan/                data.ts · gerbang.ts · kabar-tercatat.ts · inti/papan.ts · index.ts
 │   │                            layar-akad · layar-bayar · layar-gulung · layar-nasabah · layar-pinjaman · komponen/
+│   │                            komponen/akad/ (kerangka-langkah · langkah-* · lembar-batal-akad) · inti/langkah-akad.ts
 │   ├── mode/                    mode.ts (mode = grup rute) · transisi-mode.ts · rute.ts · komponen/{lembar, tirai, huruf, tab-bar}-mode
 │   ├── tagihan/                 layar-tagihan (tab Harian · Mingguan · Tempoan) · inti/ · komponen/ · index.ts
 │   ├── notifikasi/              layar-notifikasi (lonceng Mode Kerja)

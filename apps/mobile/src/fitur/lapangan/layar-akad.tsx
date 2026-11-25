@@ -1,220 +1,296 @@
 import type { NasabahLama } from "@opennael/contracts";
-import { type JenisPinjaman, syaratAkad, TENOR_PINJAMAN } from "@opennael/domain";
-import { LABEL_JENIS, namaTenor, rupiah } from "@opennael/format";
-import { router, Stack } from "expo-router";
-import { useState } from "react";
-import { Alert, StyleSheet, View } from "react-native";
-import { Isian, IsianUang, PesanGalat } from "@/komponen/ui/isian";
-import { Bagian } from "@/komponen/ui/kartu";
-import { Gulir } from "@/komponen/ui/layar";
-import { Pilihan } from "@/komponen/ui/pilihan";
-import { Tombol } from "@/komponen/ui/tombol";
+import { geserTanggal, type JenisPinjaman, syaratAkad, TENOR_PINJAMAN } from "@opennael/domain";
+import { LABEL_JENIS, tanggalBertahun } from "@opennael/format";
+import { router } from "expo-router";
+import { useEffect, useState } from "react";
+import { BackHandler, View } from "react-native";
+import { ruteJenis } from "@/fitur/mode";
+import { g } from "@/komponen/ui/gaya-bersama";
+import { SelubungMencatat } from "@/komponen/ui/selubung-mencatat";
+import { StempelBerhasil } from "@/komponen/ui/stempel-berhasil";
 import { cobaAturan } from "@/lib/aturan";
-import { WARNA } from "@/tema";
-import { useAkad } from "./data";
+import { useAkad, useHariIni } from "./data";
+import {
+  type LangkahAkad,
+  langkahBerikut,
+  langkahSebelum,
+  nomorLangkah,
+  type SiapaNasabah,
+  urutanLangkah,
+} from "./inti/langkah-akad";
+import { jumlahKetukan, tekanPokok } from "./inti/papan";
+import type { Kerangka } from "./komponen/akad/kerangka-langkah";
+import { type KampungAkad, LangkahKampung } from "./komponen/akad/langkah-kampung";
+import { LangkahKontak, nikSah } from "./komponen/akad/langkah-kontak";
+import { LangkahNama } from "./komponen/akad/langkah-nama";
+import { LangkahPeriksa } from "./komponen/akad/langkah-periksa";
+import { LangkahPernahMelunasi } from "./komponen/akad/langkah-pernah-melunasi";
+import { LangkahPokok } from "./komponen/akad/langkah-pokok";
+import { LangkahSiapa } from "./komponen/akad/langkah-siapa";
+import { LangkahTenor } from "./komponen/akad/langkah-tenor";
+import { LembarBatalAkad } from "./komponen/akad/lembar-batal-akad";
 import {
   type FotoSerahTerima,
   fotoMasihBerlaku,
-  IsianFotoSerahTerima,
   KameraSerahTerima,
 } from "./komponen/kamera-serah-terima";
-import { PilihKampung } from "./komponen/pilih-kampung";
-import { PilihNasabahLama } from "./komponen/pilih-nasabah-lama";
-import { RincianAkad } from "./komponen/rincian-akad";
-import { StatusTitikRumah } from "./komponen/status-titik-rumah";
 import { useTitikRumahLatar } from "./titik-rumah-latar";
 
-const POKOK_CEPAT = [500_000, 1_000_000, 1_500_000, 2_000_000];
+/** Lama stempel Berhasil tampil sebelum kembali ke tab jenisnya. */
+const TAMPIL_BERHASIL_MS = 1200;
 
 /**
- * AKAD BARU (A) — orang baru, atau nasabah lama pegangan sendiri yang pinjam
- * lagi. Angka pratinjau = rumus server (`syaratAkad`).
+ * AKAD BARU (A) — orang baru, atau nasabah pegangan yang pernah melunasi lalu pinjam lagi.
+ * Dibuka dari tombol (+) Mode Kerja; jenisnya = tab yang sedang dibuka (Harian/Mingguan/
+ * Tempoan).
  *
- * Dua tahap (keputusan pemilik, 15 Nov 2026): (+) langsung membuka KAMERA
- * serah terima — batal = kembali tanpa mengisi apa pun — baru sesudah foto
- * terpakai formulir tampil (foto berlaku 1 jam, A7). Sejak layar terbuka GPS
- * dipantau di latar (`useTitikRumahLatar`); titik terbaiknya direkam sebagai
- * titik rumah begitu akad tersimpan, tanpa langkah tambahan kolektor.
+ * SATU PERTANYAAN PER LAYAR (keputusan pemilik lewat simulasi, 26 Nov 2026; menggantikan
+ * formulir penuh): kamera serah terima (A7) langsung terbuka → siapa nasabahnya → data
+ * nasabah → pokok → tenor → periksa → "Cairkan Rp …". Urutannya `inti/langkah-akad.ts`;
+ * tiap langkah satu berkas di `komponen/akad/`. ← = langkah sebelumnya, ✕ = batalkan
+ * (ditanya dulu). Tombol "Ubah" di Periksa membuka langkahnya; tombol lanjut di sana
+ * kembali ke Periksa.
  *
- * Formulir dibagi tiga bagian bernama — BUKTI SERAH TERIMA (foto + status GPS),
- * NASABAH, PINJAMAN — lalu rincian pencairan (angka terbesar di layar) dan tombol simpan.
+ * Sejak layar terbuka GPS dipantau di latar (`useTitikRumahLatar`); titik terbaiknya
+ * direkam sebagai titik rumah begitu akad tersimpan, tanpa langkah tambahan. Sesudah
+ * tersimpan: stempel Berhasil, lalu kembali ke tab jenisnya di segmen Droping.
  */
 export function LayarAkad({ jenis: param }: { jenis?: string }) {
-  const [siapa, setSiapa] = useState<"baru" | "lama">("baru");
+  const jenis: JenisPinjaman =
+    param && param in TENOR_PINJAMAN ? (param as JenisPinjaman) : "harian";
+  const [langkah, setLangkah] = useState<LangkahAkad>("siapa");
+  const [kePeriksa, setKePeriksa] = useState(false);
+  const [kamera, setKamera] = useState(true);
+  const [foto, setFoto] = useState<FotoSerahTerima | null>(null);
+  const [siapa, setSiapa] = useState<SiapaNasabah | null>(null);
   const [nama, setNama] = useState("");
-  const [kampungTeks, setKampungTeks] = useState("");
-  const [kampungId, setKampungId] = useState<string | null>(null);
+  const [kampung, setKampung] = useState<KampungAkad | null>(null);
   const [nik, setNik] = useState("");
   const [nomorHp, setNomorHp] = useState("");
   const [lama, setLama] = useState<NasabahLama | null>(null);
-  // Dibuka dari tombol + Mode Kerja: jenisnya = tab yang sedang dibuka (Harian/Mingguan/Tempoan).
-  const jenisTetap = param && param in TENOR_PINJAMAN ? (param as JenisPinjaman) : null;
-  const [jenis, setJenis] = useState<JenisPinjaman>(jenisTetap ?? "harian");
-  const [tenor, setTenor] = useState<number>(TENOR_PINJAMAN[jenisTetap ?? "harian"][0] ?? 0);
-  const [pokok, setPokok] = useState(1_000_000);
-  const [foto, setFoto] = useState<FotoSerahTerima | null>(null);
+  const [ketukan, setKetukan] = useState<readonly number[]>([]);
+  const [tenorDipilih, setTenor] = useState<number | null>(null);
+  const [batal, setBatal] = useState(false);
+  const [berhasil, setBerhasil] = useState(false);
   const akad = useAkad();
-  const titikLatar = useTitikRumahLatar();
+  const titik = useTitikRumahLatar();
+  const hariIni = useHariIni().data?.kalender.tanggal ?? null;
 
-  const pilihJenis = (j: JenisPinjaman) => {
-    setJenis(j);
-    setTenor(TENOR_PINJAMAN[j][0] ?? 0);
+  const urutan = urutanLangkah(siapa, jenis);
+  const pokok = jumlahKetukan(ketukan);
+  const tenor = jenis === "harian" ? (TENOR_PINJAMAN.harian[0] ?? 24) : tenorDipilih;
+
+  const ke = (l: LangkahAkad) => {
+    if (l === "foto") setKamera(true);
+    else setLangkah(l);
   };
-  const pilihLama = (n: NasabahLama | null) => {
-    setLama(n);
-    if (n?.terakhir && (!jenisTetap || n.terakhir.jenis === jenisTetap)) {
-      pilihJenis(n.terakhir.jenis);
-      setPokok(n.terakhir.pokok);
+  const lanjut = () => {
+    if (kePeriksa) {
+      setKePeriksa(false);
+      setLangkah("periksa");
+    } else ke(langkahBerikut(urutan, langkah));
+  };
+  const mundur = () => {
+    if (kePeriksa) {
+      setKePeriksa(false);
+      setLangkah("periksa");
+      return;
     }
+    const sebelum = langkahSebelum(urutan, langkah);
+    if (sebelum) ke(sebelum);
+  };
+  const ubah = (l: LangkahAkad) => {
+    if (l !== "foto") setKePeriksa(true);
+    ke(l);
   };
 
-  const syarat = cobaAturan(() => syaratAkad(jenis, pokok, tenor));
-  const namaNasabah = siapa === "lama" ? lama?.nama : nama.trim();
-  const nasabahLengkap = siapa === "lama" ? !!lama : !!nama.trim() && !!kampungTeks.trim();
-  const fotoSah = fotoMasihBerlaku(foto);
+  // Tombol kembali Android = ← (langkah sebelumnya), bukan menutup akad diam-diam. Dipasang
+  // ulang tiap render supaya selalu memakai langkah terkini; lembar & kamera (Modal)
+  // menangani tombol kembali sendiri lebih dulu.
+  useEffect(() => {
+    const tahan = BackHandler.addEventListener("hardwareBackPress", () => {
+      if (!akad.isPending && !berhasil) mundur();
+      return true;
+    });
+    return () => tahan.remove();
+  });
 
-  // Tahap 1: kamera dulu, tanpa formulir. Batal = kembali ke layar asal.
-  if (!foto) {
-    return (
-      <KameraSerahTerima
-        terbuka
-        onTutup={() => router.back()}
-        onSelesai={(id, uri) => setFoto({ id, uri, diambilAt: Date.now() })}
-      />
+  // Akad tersimpan: stempel Berhasil sebentar, lalu ke tab jenisnya — pinjaman baru di Droping.
+  useEffect(() => {
+    if (!berhasil) return;
+    const t = setTimeout(
+      () => router.dismissTo({ pathname: ruteJenis(jenis), params: { segmen: "droping" } }),
+      TAMPIL_BERHASIL_MS,
     );
-  }
+    return () => clearTimeout(t);
+  }, [berhasil, jenis]);
 
-  const simpan = () => {
-    if (!syarat.hasil || !fotoMasihBerlaku(foto)) return;
+  const pilihSiapa = (s: SiapaNasabah) => {
+    if (s !== siapa) {
+      setSiapa(s);
+      setLama(null);
+    }
+    setLangkah(langkahBerikut(urutanLangkah(s, jenis), "siapa"));
+  };
+  const pilihLama = (n: NasabahLama) => {
+    setLama(n);
+    // Pinjaman terakhir berjenis sama = patokan pokok (hanya bila pokok belum diisi).
+    if (ketukan.length === 0 && n.terakhir?.jenis === jenis) setKetukan([n.terakhir.pokok]);
+    lanjut();
+  };
+  const tekanPapan = (kunci: string) => {
+    if (akad.error) akad.reset();
+    setKetukan((k) => tekanPokok(k, kunci));
+  };
+
+  const cairkan = () => {
+    if (!foto || !fotoMasihBerlaku(foto) || tenor === null) return;
+    const syarat = cobaAturan(() => syaratAkad(jenis, pokok, tenor));
+    if (!syarat.hasil) return;
     const nasabah =
-      siapa === "lama" && lama
+      siapa === "pernah-melunasi" && lama
         ? { nasabahId: lama.id }
         : {
             nama: nama.trim(),
-            kampung: kampungId ? { wilayahId: kampungId } : { nama: kampungTeks.trim() },
+            kampung: kampung?.id ? { wilayahId: kampung.id } : { nama: kampung?.nama.trim() ?? "" },
             ...(nik ? { nik } : {}),
             ...(nomorHp ? { nomorHp } : {}),
           };
-    Alert.alert("Simpan Akad?", `Cairkan ${rupiah(syarat.hasil.pencairan)} ke ${namaNasabah}.`, [
-      { text: "Batal", style: "cancel" },
+    akad.mutate(
       {
-        text: "Simpan",
-        onPress: () =>
-          akad.mutate(
-            {
-              akad: { nasabah, jenis, pokok, tenor, fotoSerahTerimaId: foto.id },
-              titik: titikLatar.status === "siap" ? titikLatar.titik : null,
-            },
-            { onSuccess: () => router.back() },
-          ),
+        akad: { nasabah, jenis, pokok, tenor, fotoSerahTerimaId: foto.id },
+        titik: titik.status === "siap" ? titik.titik : null,
       },
-    ]);
+      { onSuccess: () => setBerhasil(true) },
+    );
   };
 
+  const k: Kerangka = {
+    judul: `Akad ${LABEL_JENIS[jenis]}`,
+    nomor: nomorLangkah(urutan, langkah),
+    jumlah: urutan.length,
+    kePeriksa,
+    onMundur: mundur,
+    onTutup: () => setBatal(true),
+  };
+
+  const isi = (() => {
+    switch (langkah) {
+      case "siapa":
+        return <LangkahSiapa k={k} nilai={siapa} onPilih={pilihSiapa} />;
+      case "nama":
+        return <LangkahNama k={k} nilai={nama} onUbah={setNama} onLanjut={lanjut} />;
+      case "kampung":
+        return (
+          <LangkahKampung
+            k={k}
+            nilai={kampung}
+            onPilih={(kp) => {
+              setKampung(kp);
+              lanjut();
+            }}
+          />
+        );
+      case "kontak":
+        return (
+          <LangkahKontak
+            k={k}
+            nik={nik}
+            nomorHp={nomorHp}
+            onNik={setNik}
+            onNomorHp={setNomorHp}
+            onLanjut={() => {
+              if (nikSah(nik)) lanjut();
+            }}
+          />
+        );
+      case "pernah-melunasi":
+        return <LangkahPernahMelunasi k={k} nilai={lama} onPilih={pilihLama} />;
+      case "pokok":
+        return (
+          <LangkahPokok
+            k={k}
+            jenis={jenis}
+            pokok={pokok}
+            lama={lama}
+            onTekan={tekanPapan}
+            onLanjut={lanjut}
+          />
+        );
+      case "tenor":
+        return jenis === "harian" ? null : (
+          <LangkahTenor
+            k={k}
+            jenis={jenis}
+            pokok={pokok}
+            hariIni={hariIni}
+            nilai={tenorDipilih}
+            onPilih={(t) => {
+              setTenor(t);
+              lanjut();
+            }}
+          />
+        );
+      case "periksa":
+        return foto && siapa && tenor !== null ? (
+          <LangkahPeriksa
+            k={k}
+            jenis={jenis}
+            foto={foto}
+            siapa={siapa}
+            nama={nama}
+            kampung={kampung}
+            nik={nik}
+            nomorHp={nomorHp}
+            lama={lama}
+            pokok={pokok}
+            tenor={tenor}
+            jatuhTempo={
+              jenis === "tempoan" && hariIni ? tanggalBertahun(geserTanggal(hariIni, tenor)) : null
+            }
+            titik={titik}
+            memuat={akad.isPending}
+            galat={akad.error?.message}
+            onUbah={ubah}
+            onCairkan={cairkan}
+          />
+        ) : null;
+      default:
+        return null;
+    }
+  })();
+
   return (
-    <Gulir>
-      <Bagian judul="BUKTI SERAH TERIMA">
-        <IsianFotoSerahTerima nilai={foto} onUbah={setFoto} />
-        <View style={gaya.garis} />
-        <StatusTitikRumah titik={titikLatar} lama={siapa === "lama"} />
-      </Bagian>
+    <View style={g.layar}>
+      {isi}
 
-      <Bagian judul="NASABAH">
-        <Pilihan
-          segmen
-          pilihan={[
-            { nilai: "baru", teks: "Orang Baru" },
-            { nilai: "lama", teks: "Nasabah Lama" },
-          ]}
-          nilai={siapa}
-          onPilih={setSiapa}
-        />
-        {siapa === "baru" ? (
-          <>
-            <Isian
-              label="Nama Nasabah"
-              value={nama}
-              onChangeText={setNama}
-              maxLength={50}
-              autoCapitalize="words"
-            />
-            <PilihKampung
-              teks={kampungTeks}
-              terpilih={kampungId}
-              onUbah={(teks, id) => {
-                setKampungTeks(teks);
-                setKampungId(id);
-              }}
-            />
-            <Isian
-              label="NIK (boleh kosong)"
-              value={nik}
-              onChangeText={(t) => setNik(t.replace(/\D/g, "").slice(0, 16))}
-              keyboardType="number-pad"
-              galat={nik && nik.length !== 16 ? "NIK 16 digit" : undefined}
-            />
-            <Isian
-              label="Nomor HP (boleh kosong)"
-              value={nomorHp}
-              onChangeText={setNomorHp}
-              keyboardType="phone-pad"
-              maxLength={16}
-            />
-          </>
-        ) : (
-          <PilihNasabahLama terpilih={lama} onPilih={pilihLama} />
-        )}
-      </Bagian>
-
-      <Bagian judul="PINJAMAN">
-        {jenisTetap ? (
-          <Stack.Screen options={{ title: `Akad ${LABEL_JENIS[jenisTetap]}` }} />
-        ) : (
-          <Pilihan
-            segmen
-            label="Jenis Pinjaman"
-            pilihan={(["harian", "mingguan", "tempoan"] as const).map((j) => ({
-              nilai: j,
-              teks: LABEL_JENIS[j],
-            }))}
-            nilai={jenis}
-            onPilih={pilihJenis}
-          />
-        )}
-        {TENOR_PINJAMAN[jenis].length > 1 ? (
-          <Pilihan
-            label="Tenor"
-            pilihan={TENOR_PINJAMAN[jenis].map((t) => ({ nilai: t, teks: namaTenor(jenis, t) }))}
-            nilai={tenor}
-            onPilih={setTenor}
-          />
-        ) : null}
-        <IsianUang label="Pokok" nilai={pokok} onUbah={setPokok} />
-        <Pilihan
-          pilihan={POKOK_CEPAT.map((n) => ({ nilai: n, teks: rupiah(n) }))}
-          nilai={pokok}
-          onPilih={setPokok}
-        />
-      </Bagian>
-
-      {syarat.hasil ? (
-        <RincianAkad hasil={syarat.hasil} sekali={jenis === "tempoan"} />
-      ) : (
-        <PesanGalat pesan={syarat.galat} />
-      )}
-
-      <PesanGalat pesan={akad.error?.message} />
-      <Tombol
-        judul="Simpan akad"
-        ikon="circle-check"
-        memuat={akad.isPending}
-        nonaktif={!nasabahLengkap || !syarat.hasil || !fotoSah || (!!nik && nik.length !== 16)}
-        onPress={simpan}
+      <KameraSerahTerima
+        terbuka={kamera}
+        judulPakai={langkah === "periksa" ? "Kembali ke periksa" : "Selanjutnya"}
+        keterangan={
+          titik.status === "siap"
+            ? `Titik rumah terdeteksi (±${titik.titik.akurasiMeter} m)`
+            : titik.status === "mencari"
+              ? "Titik rumah: mencari sinyal GPS…"
+              : undefined
+        }
+        onTutup={() => {
+          setKamera(false);
+          // Akad dimulai dari kamera: batal sebelum ada foto = batal akad.
+          if (!foto) router.back();
+        }}
+        onSelesai={(id, uri) => {
+          setFoto({ id, uri, diambilAt: Date.now() });
+          setKamera(false);
+        }}
       />
-    </Gulir>
+      <LembarBatalAkad
+        terbuka={batal}
+        onTutup={() => setBatal(false)}
+        onBatalkan={() => router.back()}
+      />
+      {akad.isPending ? <SelubungMencatat judul="Mencatat akad…" layar /> : null}
+      {berhasil ? <StempelBerhasil keterangan="Akad tercatat" layar /> : null}
+    </View>
   );
 }
-
-const gaya = StyleSheet.create({
-  garis: { height: 1, backgroundColor: WARNA.garis },
-});

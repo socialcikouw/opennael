@@ -7,8 +7,8 @@ import type { Papan } from "../inti/papan";
 import { PapanTombol, tinggiTombolPapan } from "./papan-tombol";
 
 /**
- * PANEL PAPAN — bagian bawah layar transaksi (Bayar & Gulung): papan angka dan tombol
- * KONFIRMASI (aktif bila `sah`) dalam jangkauan jempol. Panel naik satu tingkat dari
+ * PANEL PAPAN — bagian bawah layar transaksi (Bayar, Gulung, langkah Pokok akad): papan angka
+ * dan tombol KONFIRMASI (atau `judul` lain, mis. SELANJUTNYA; aktif bila `sah`) dalam jangkauan jempol. Panel naik satu tingkat dari
  * latar (`permukaan`), tombol papan satu tingkat lagi (`isiNetral`).
  * `sisaTinggi` = tinggi (pt) layar yang dipakai bagian atas, supaya papan selalu muat.
  */
@@ -18,6 +18,7 @@ export function PanelPapan({
   sah,
   memuat,
   aksen,
+  judul = "KONFIRMASI",
   onTekan,
   onKonfirmasi,
 }: {
@@ -27,6 +28,8 @@ export function PanelPapan({
   /** Sedang menyimpan: tombol mati dan berlabel "MENYIMPAN…". */
   memuat: boolean;
   aksen: WarnaAksen;
+  /** Tulisan tombol (huruf besar seperti papan); bawaan KONFIRMASI. */
+  judul?: string;
   onTekan: (kunci: string) => void;
   onKonfirmasi: () => void;
 }) {
@@ -59,7 +62,7 @@ export function PanelPapan({
           tebal
         />
         <Text style={[gaya.konfirmasiTeks, { color: sah ? aksen.teksIsi : WARNA.samar }]}>
-          {memuat ? "MENYIMPAN…" : "KONFIRMASI"}
+          {memuat ? "MENYIMPAN…" : judul}
         </Text>
       </Tekan>
     </View>
