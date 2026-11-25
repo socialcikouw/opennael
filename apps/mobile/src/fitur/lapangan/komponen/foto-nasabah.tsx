@@ -13,7 +13,7 @@ import { CapAlamat } from "./cap-alamat";
  * Berkas `GET /foto/:id` bertoken. Disimpan di disk HP per id foto — tiap foto
  * diunduh sekali per HP, walau tokennya sudah berganti.
  */
-function sumberFoto(id: string): ImageSource {
+export function sumberFoto(id: string): ImageSource {
   const token = sesi.ambil()?.tokenAkses;
   return {
     uri: `${ALAMAT_API}/foto/${id}`,

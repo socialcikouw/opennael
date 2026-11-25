@@ -33,6 +33,7 @@ import EyeOff from "lucide-react-native/icons/eye-off";
 import FileText from "lucide-react-native/icons/file-text";
 import HandCoins from "lucide-react-native/icons/hand-coins";
 import ImageIcon from "lucide-react-native/icons/image";
+import Images from "lucide-react-native/icons/images";
 import LayoutDashboard from "lucide-react-native/icons/layout-dashboard";
 import Lock from "lucide-react-native/icons/lock";
 import LogOut from "lucide-react-native/icons/log-out";
@@ -110,6 +111,7 @@ export const IKON = {
   "file-text": FileText,
   "layout-dashboard": LayoutDashboard,
   image: ImageIcon,
+  images: Images,
   "log-out": LogOut,
   "map-pin": MapPin,
   "maximize-2": Maximize2,
