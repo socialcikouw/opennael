@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Tekan } from "@/komponen/ui/tekan";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaAksen } from "@/tema";
-import { TAB_KERJA, type TabKerja } from "../inti/daftar";
+import { SEGMEN_TAGIHAN, type SegmenTagihan } from "../inti/daftar";
 
 /**
  * KEPALA layar Tagihan (tab Harian · Mingguan · Tempoan, Mode Kerja) — melayang di atas
@@ -28,9 +28,9 @@ export function KepalaTagihan(props: {
   /** Lonceng Notifikasi: angka merah = pengingat yang menunggu tindakan. */
   lonceng: { jumlah: number; onPress: () => void };
   kartuAtas: ReactNode;
-  tab: TabKerja;
-  jumlah: Record<TabKerja, number>;
-  onGantiTab: (tab: TabKerja) => void;
+  segmen: SegmenTagihan;
+  jumlah: Record<SegmenTagihan, number>;
+  onGantiSegmen: (segmen: SegmenTagihan) => void;
   cari: string;
   onCari: (teks: string) => void;
   cariTerbuka: boolean;
@@ -119,7 +119,7 @@ export function KepalaTagihan(props: {
       </Animated.View>
 
       <View style={gaya.menempel}>
-        <SegmenTab tab={props.tab} jumlah={props.jumlah} onGanti={props.onGantiTab} />
+        <Segmen segmen={props.segmen} jumlah={props.jumlah} onGanti={props.onGantiSegmen} />
         {props.tutup ? (
           <View style={gaya.tutup}>
             <Ikon nama="clock" ukuran={14} warna={WARNA.waspada} />
@@ -164,15 +164,15 @@ function TombolBulat(props: {
  * Segmen bergaya iOS: alas abu, segmen aktif keping putih yang timbul. Jumlah
  * berupa lencana kecil di samping label, supaya lebar label tak bergoyang.
  */
-function SegmenTab(props: {
-  tab: TabKerja;
-  jumlah: Record<TabKerja, number>;
-  onGanti: (tab: TabKerja) => void;
+function Segmen(props: {
+  segmen: SegmenTagihan;
+  jumlah: Record<SegmenTagihan, number>;
+  onGanti: (segmen: SegmenTagihan) => void;
 }) {
   return (
     <View style={gaya.segmen}>
-      {TAB_KERJA.map((t) => {
-        const aktif = t.nilai === props.tab;
+      {SEGMEN_TAGIHAN.map((t) => {
+        const aktif = t.nilai === props.segmen;
         const angka = props.jumlah[t.nilai];
         return (
           <Tekan

@@ -8,7 +8,7 @@ import {
   useTagihan,
 } from "@/fitur/lapangan";
 import { useZonaKantor } from "@/lib/kantor";
-import { pilah, ringkasDroping, susunBaris, type TabKerja } from "./inti/daftar";
+import { pilah, ringkasDroping, type SegmenTagihan, susunBaris } from "./inti/daftar";
 import { susunBahanGrid } from "./inti/grid";
 import { kartuVM } from "./inti/kartu";
 import { ringkasJatuhTempo } from "./inti/khusus";
@@ -37,7 +37,7 @@ export function useDataTagihan(jenis: JenisPinjaman) {
 /** Turunan bacaan itu: bahan grid → kartu → segmen → baris, beserta ringkasannya. */
 export function useDaftarTagihan({
   jenis,
-  tab,
+  segmen,
   kunciCari,
   tanggal,
   tagihan,
@@ -46,7 +46,7 @@ export function useDaftarTagihan({
   riwayat,
 }: {
   jenis: JenisPinjaman;
-  tab: TabKerja;
+  segmen: SegmenTagihan;
   kunciCari: string;
   tanggal: string | undefined;
   tagihan: ReturnType<typeof useTagihan>;
@@ -68,8 +68,8 @@ export function useDaftarTagihan({
   }, [tagihan.data, tanggal, bahan, jenis, zona]);
   const partisi = useMemo(() => pilah(semua, kunciCari), [semua, kunciCari]);
   const baris = useMemo(
-    () => susunBaris(partisi[tab], tab === "droping" ? [] : partisi.sudah[tab]),
-    [partisi, tab],
+    () => susunBaris(partisi[segmen], segmen === "droping" ? [] : partisi.sudah[segmen]),
+    [partisi, segmen],
   );
   const jatuhTempo = useMemo(
     () =>

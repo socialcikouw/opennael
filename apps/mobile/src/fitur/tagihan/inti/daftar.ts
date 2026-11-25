@@ -4,32 +4,37 @@ import type { KartuVM } from "./kartu";
 /**
  * DAFTAR TAGIHAN — pemilahan kartu ke segmen & baris daftar. PURE.
  *
- * Segmen tetap sepanjang hari: Aktif (berjalan) · Macet · Droping (akad hari
+ * Segmen tetap sepanjang hari: Berjalan · Macet · Droping (akad hari
  * ini, tanpa tombol). Kartu yang sudah ditagih hari ini (bayar/libur) turun
  * ringkas ke dasar segmen asalnya di bawah judul "Sudah ditagih"; Droping tak
  * punya. Di atasnya kartu dikelompokkan per kampung, urut rute kolektor.
  */
-export type TabKerja = "aktif" | "macet" | "droping";
+export type SegmenTagihan = "berjalan" | "macet" | "droping";
 
-export const TAB_KERJA: readonly { nilai: TabKerja; label: string }[] = [
-  { nilai: "aktif", label: "Berjalan" },
+export const SEGMEN_TAGIHAN: readonly { nilai: SegmenTagihan; label: string }[] = [
+  { nilai: "berjalan", label: "Berjalan" },
   { nilai: "macet", label: "Macet" },
   { nilai: "droping", label: "Droping" },
 ];
 
 export interface Partisi {
-  aktif: KartuVM[];
+  berjalan: KartuVM[];
   macet: KartuVM[];
   droping: KartuVM[];
-  sudah: { aktif: KartuVM[]; macet: KartuVM[] };
+  sudah: { berjalan: KartuVM[]; macet: KartuVM[] };
 }
 
 /** Satu lintasan: saring kata kunci + bagi ke ember segmen. Urutan masukan (rute) dipertahankan. */
 export function pilah(semua: readonly KartuVM[], kunci: string): Partisi {
-  const hasil: Partisi = { aktif: [], macet: [], droping: [], sudah: { aktif: [], macet: [] } };
+  const hasil: Partisi = {
+    berjalan: [],
+    macet: [],
+    droping: [],
+    sudah: { berjalan: [], macet: [] },
+  };
   for (const vm of semua) {
     if (kunci && !vm.cari.includes(kunci)) continue;
-    const segmen = vm.p.status === "macet" ? "macet" : "aktif";
+    const segmen = vm.p.status === "macet" ? "macet" : "berjalan";
     if (vm.ember === "droping") hasil.droping.push(vm);
     else if (vm.ember === "sudah") hasil.sudah[segmen].push(vm);
     else hasil[segmen].push(vm);
@@ -37,9 +42,9 @@ export function pilah(semua: readonly KartuVM[], kunci: string): Partisi {
   return hasil;
 }
 
-/** Jumlah di lencana segmen: yang masih perlu ditagih (Aktif, Macet) & droping hari ini. */
-export function jumlahSegmen(p: Partisi): Record<TabKerja, number> {
-  return { aktif: p.aktif.length, macet: p.macet.length, droping: p.droping.length };
+/** Jumlah di lencana segmen: yang masih perlu ditagih (Berjalan, Macet) & droping hari ini. */
+export function jumlahSegmen(p: Partisi): Record<SegmenTagihan, number> {
+  return { berjalan: p.berjalan.length, macet: p.macet.length, droping: p.droping.length };
 }
 
 export type Baris =

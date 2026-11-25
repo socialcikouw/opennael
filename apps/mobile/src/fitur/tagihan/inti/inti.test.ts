@@ -240,14 +240,14 @@ describe("daftar tagihan", () => {
       vm({ hariIni: { jenis: "libur", alasan: null } }),
     ];
     const p = pilah(semua, "");
-    expect(jumlahSegmen(p)).toEqual({ aktif: 3, macet: 1, droping: 1 });
-    const baris = susunBaris(p.aktif, p.sudah.aktif);
+    expect(jumlahSegmen(p)).toEqual({ berjalan: 3, macet: 1, droping: 1 });
+    const baris = susunBaris(p.berjalan, p.sudah.berjalan);
     expect(
       baris.filter((b) => b.jenis === "judul").map((b) => b.jenis === "judul" && b.nama),
     ).toEqual(["PULE", "SAWAH", "SUDAH DITAGIH"]);
     expect(baris[0]).toMatchObject({ jumlah: 2, total: 90_000 });
     expect(ringkasDroping(p.droping)).toEqual({ baru: 1_000_000, gulung: 0 });
-    expect(pilah(semua, "sawah").aktif).toHaveLength(1);
+    expect(pilah(semua, "sawah").berjalan).toHaveLength(1);
   });
 
   test("judul kelompok: nama, jumlah, total; kartu terakhir bertanda; Sudah ditagih tanpa uang", () => {
@@ -258,7 +258,7 @@ describe("daftar tagihan", () => {
       vm({ hariIni: { jenis: "libur", alasan: null } }),
     ];
     const p = pilah(semua, "");
-    const baris = susunBaris(p.aktif, p.sudah.aktif);
+    const baris = susunBaris(p.berjalan, p.sudah.berjalan);
     expect(baris.filter((b) => b.jenis === "judul")).toMatchObject([
       { nama: "PULE", jumlah: 2, total: 90_000, terlipat: false, sudah: false },
       { nama: "SAWAH", jumlah: 1, total: 50_000, terlipat: false, sudah: false },
@@ -275,7 +275,7 @@ describe("daftar tagihan", () => {
       vm({ nasabah: { id: "b", nama: "budi", kampung: "pule" } }),
       vm({ nasabah: { id: "c", nama: "citra", kampung: "sawah" } }),
     ];
-    const baris = susunBaris(pilah(semua, "").aktif, []);
+    const baris = susunBaris(pilah(semua, "").berjalan, []);
     expect(lipatKelompok(baris, new Set())).toEqual(baris);
 
     const lipat = lipatKelompok(baris, new Set(["judul:pule"]));

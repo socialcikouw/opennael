@@ -207,7 +207,7 @@ function susun(p: KartuTagih, hariIni: string, bahan: BahanGrid, zona: ZonaWaktu
 /**
  * Cache per OBJEK data pinjaman + bahan grid + tanggal: VM yang masukannya tak
  * berubah dipakai ulang, jadi kartu `memo` melewati render saat mengetik di
- * kolom cari, ganti tab, atau transaksi di kartu lain.
+ * kolom cari, ganti segmen, atau transaksi di kartu lain.
  */
 const simpanan = new WeakMap<
   KartuTagih,

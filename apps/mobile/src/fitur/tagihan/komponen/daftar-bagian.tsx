@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Tekan } from "@/komponen/ui/tekan";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaAksen } from "@/tema";
-import type { Baris, TabKerja } from "../inti/daftar";
+import type { Baris, SegmenTagihan } from "../inti/daftar";
 import { LEBAR_REL, TEBAL_REL, TENGAH_REL } from "./rel-kartu";
 
 /** Tinggi lencana jumlah; rel turun dari bawahnya. */
@@ -71,8 +71,8 @@ export function KerangkaKartu() {
   );
 }
 
-const PESAN_KOSONG: Record<TabKerja, { judul: string; isi: string }> = {
-  aktif: {
+const PESAN_KOSONG: Record<SegmenTagihan, { judul: string; isi: string }> = {
+  berjalan: {
     judul: "Tidak ada tagihan aktif",
     isi: "Semua nasabah berjalan sudah ditagih hari ini.",
   },
@@ -84,15 +84,15 @@ const PESAN_KOSONG: Record<TabKerja, { judul: string; isi: string }> = {
 };
 
 export function Kosong({
-  tab,
+  segmen,
   mencari,
   aksen,
 }: {
-  tab: TabKerja;
+  segmen: SegmenTagihan;
   mencari: boolean;
   aksen: WarnaAksen;
 }) {
-  const pesan = PESAN_KOSONG[tab];
+  const pesan = PESAN_KOSONG[segmen];
   return (
     <View style={gaya.kosong}>
       <View style={[gaya.kosongIkon, { backgroundColor: aksen.lembut }]}>

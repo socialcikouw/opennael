@@ -15,7 +15,7 @@ import { useTarikSegarkan } from "@/lib/tarik-segarkan";
 import { AKSEN, RUANG, WARNA } from "@/tema";
 import { useAksiKartu } from "./aksi-kartu";
 import { useDaftarTagihan, useDataTagihan } from "./data-tagihan";
-import { type Baris, jumlahSegmen, type TabKerja } from "./inti/daftar";
+import { type Baris, jumlahSegmen, type SegmenTagihan } from "./inti/daftar";
 import { useKepalaMelayang } from "./kepala-melayang";
 import { JudulKelompok, KerangkaKartu, Kosong } from "./komponen/daftar-bagian";
 import { GagalSegar } from "./komponen/gagal-segar";
@@ -67,12 +67,14 @@ export function LayarTagihan({
   const [cari, setCari] = useState("");
   const [cariTerbuka, setCariTerbuka] = useState(false);
   const kunciCari = kunciWilayah(useDeferredValue(cari));
-  const [tab, setTab] = useState<TabKerja>(segmenAwal === "droping" ? "droping" : "aktif");
+  const [segmen, setSegmen] = useState<SegmenTagihan>(
+    segmenAwal === "droping" ? "droping" : "berjalan",
+  );
 
   // ---- data → kartu → segmen → baris -------------------------------------
   const { bahan, partisi, baris, jatuhTempo, droping } = useDaftarTagihan({
     jenis,
-    tab,
+    segmen,
     kunciCari,
     tanggal,
     tagihan,
@@ -82,7 +84,7 @@ export function LayarTagihan({
   });
 
   // Kelompok kampung bisa dilipat; baris yang tampil (bukan `baris`) jadi data daftar.
-  const { tampil, ubah: ubahLipat } = useLipatKelompok(baris, tab, kunciCari !== "");
+  const { tampil, ubah: ubahLipat } = useLipatKelompok(baris, segmen, kunciCari !== "");
 
   // ---- transaksi ----------------------------------------------------------
   const { stempel, sibuk, aksi, gerbang, lembarLibur } = useAksiKartu(hariIni);
@@ -91,9 +93,9 @@ export function LayarTagihan({
   // ---- gulungan & kepala melayang ---------------------------------------
   const { lipat, terangkat, tinggiLipat, onScroll, tinggiKepala, setTinggiKepala, daftar, keAtas } =
     useKepalaMelayang(cariTerbuka);
-  const gantiTab = useCallback(
-    (t: TabKerja) => {
-      setTab(t);
+  const gantiSegmen = useCallback(
+    (s: SegmenTagihan) => {
+      setSegmen(s);
       keAtas();
     },
     [keAtas],
@@ -104,7 +106,7 @@ export function LayarTagihan({
   // (layar dipasang ulang) membuka Droping lagi.
   useEffect(() => {
     if (segmenAwal !== "droping") return;
-    setTab("droping");
+    setSegmen("droping");
     keAtas();
     router.setParams({ segmen: undefined });
   }, [segmenAwal, keAtas]);
@@ -158,7 +160,7 @@ export function LayarTagihan({
   }
 
   const memuat = hariIni.isPending || tagihan.isPending;
-  const tampilDroping = !memuat && tab === "droping" && droping.baru + droping.gulung > 0;
+  const tampilDroping = !memuat && segmen === "droping" && droping.baru + droping.gulung > 0;
   const tutup =
     gerbang && !gerbang.buka
       ? gerbang.perluAbsen
@@ -208,7 +210,7 @@ export function LayarTagihan({
               <KerangkaKartu />
             </>
           ) : (
-            <Kosong tab={tab} mencari={kunciCari !== ""} aksen={aksen} />
+            <Kosong segmen={segmen} mencari={kunciCari !== ""} aksen={aksen} />
           )
         }
       />
@@ -225,9 +227,9 @@ export function LayarTagihan({
           onPress: () => router.push("/kolektor/notifikasi" as Href),
         }}
         kartuAtas={jatuhTempo ? <KartuJatuhTempo r={jatuhTempo} aksen={aksen} /> : null}
-        tab={tab}
+        segmen={segmen}
         jumlah={jumlahSegmen(partisi)}
-        onGantiTab={gantiTab}
+        onGantiSegmen={gantiSegmen}
         cari={cari}
         onCari={setCari}
         cariTerbuka={cariTerbuka}
