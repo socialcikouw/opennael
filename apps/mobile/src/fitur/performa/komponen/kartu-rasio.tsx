@@ -8,7 +8,7 @@ import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaAksen } from "@/tema";
 /**
  * RASIO BAYAR hari ini atas seluruh pegangan: bayar ÷ (bayar + libur), bilah,
  * dan rincian Bayar · Libur · Sisa wajib. Hanya jumlah nasabah. Sisa nol →
- * ajakan membuka laporan (di tab Notifikasi).
+ * ajakan membuka laporan (Ringkasan › Mutasi Kas).
  */
 export function KartuRasio(props: {
   r: RasioHariIni | null;

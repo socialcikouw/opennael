@@ -66,7 +66,7 @@ function susunUbin(data: DataPortofolio | undefined, gagal: boolean): Ubin[] {
  * aktif (berjalan + macet, aturan-usaha M). Macet yang ada berwarna merah;
  * diputihkan sudah dihapus bos, jadi diredupkan.
  */
-export function Portofolio(props: { data: DataPortofolio | undefined; gagal: boolean }) {
+export function GridPortofolio(props: { data: DataPortofolio | undefined; gagal: boolean }) {
   const ubin = susunUbin(props.data, props.gagal);
   return (
     <View style={gaya.grid}>

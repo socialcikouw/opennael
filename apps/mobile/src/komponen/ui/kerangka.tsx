@@ -74,7 +74,7 @@ function KartuKerangka() {
 /**
  * KERANGKA MUAT — pengganti pemuat berputar di layar penuh: bentuk layar yang
  * akan datang, supaya terasa lebih cepat dan isinya tak melompat. `daftar` =
- * deretan kartu (Dasbor, Notifikasi, Mutasi, Storting, Droping); `rincian` =
+ * deretan kartu (Performa, Notifikasi, Ringkasan); `rincian` =
  * foto besar + kartu (Pinjaman, Detail Nasabah). Satu animasi untuk semua balok.
  */
 export function Kerangka({

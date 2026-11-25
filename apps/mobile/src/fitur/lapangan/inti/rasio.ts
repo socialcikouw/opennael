@@ -47,10 +47,10 @@ export function rasioHariIni(
 
 /**
  * Rasio untuk satu jenis: `jenis` menyaring pinjaman (null = semua jenis).
- * Mode mengubah ISI, bukan hanya tampilan — Dasbor Harian, Mingguan, dan Tempoan
- * tidak pernah memakai angka yang sama.
+ * Saringan jenis mengubah ISI, bukan hanya tampilan — Performa Harian, Mingguan, dan
+ * Tempoan tidak pernah memakai angka yang sama.
  */
-export function rasioMode(
+export function rasioJenis(
   pinjaman: readonly Pick<KartuTagih, "jenis" | "tanggalAkad" | "jatuhTempo" | "hariIni">[],
   tanggal: string,
   jenis: KartuTagih["jenis"] | null,

@@ -14,6 +14,7 @@ import CalendarDays from "lucide-react-native/icons/calendar-days";
 import CalendarRange from "lucide-react-native/icons/calendar-range";
 import Camera from "lucide-react-native/icons/camera";
 import ChartColumnIncreasing from "lucide-react-native/icons/chart-column-increasing";
+import ChartPie from "lucide-react-native/icons/chart-pie";
 import Check from "lucide-react-native/icons/check";
 import CheckCheck from "lucide-react-native/icons/check-check";
 import ChevronDown from "lucide-react-native/icons/chevron-down";
@@ -76,6 +77,7 @@ export const IKON = {
   "user-round": UserRound,
   camera: Camera,
   "chart-column-increasing": ChartColumnIncreasing,
+  "chart-pie": ChartPie,
   "circle-pause": CirclePause,
   "user-plus": UserPlus,
   "trending-up": TrendingUp,

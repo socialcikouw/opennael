@@ -1,6 +1,6 @@
-import { LayarDasbor } from "@/fitur/dasbor/layar-dasbor";
+import { LayarPerforma } from "@/fitur/performa";
 
-/** Tab Performa (Mode Rekap). Sementara: layar Dasbor semua jenis (tahap 6 rencana). */
+/** Tab Performa (Mode Rekap): rasio bayar & performa tagihan, saring jenis. */
 export default function Performa() {
-  return <LayarDasbor />;
+  return <LayarPerforma />;
 }

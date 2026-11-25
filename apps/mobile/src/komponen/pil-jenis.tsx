@@ -1,12 +1,26 @@
+import type { JenisPinjaman } from "@opennael/domain";
+import { LABEL_JENIS } from "@opennael/format";
 import { ScrollView, StyleSheet, Text } from "react-native";
 import { Tekan } from "@/komponen/ui/tekan";
 import { AKSEN, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
-import { SARING_JENIS, type SaringJenis } from "../inti/jenis";
 
-/** Pil saringan jenis pinjaman berangka (Semua · Harian · Mingguan · Tempoan). */
+/** Saringan jenis pinjaman: Semua atau satu jenis. */
+export type SaringJenis = "semua" | JenisPinjaman;
+
+const SARING_JENIS: readonly { nilai: SaringJenis; label: string }[] = [
+  { nilai: "semua", label: "Semua" },
+  { nilai: "harian", label: LABEL_JENIS.harian },
+  { nilai: "mingguan", label: LABEL_JENIS.mingguan },
+  { nilai: "tempoan", label: LABEL_JENIS.tempoan },
+];
+
+/**
+ * PIL JENIS — saringan Semua · Harian · Mingguan · Tempoan (Ringkasan › Storting & Droping,
+ * Performa). `jumlah` (opsional) = angka di tiap pil.
+ */
 export function PilJenis(props: {
   nilai: SaringJenis;
-  jumlah: Record<SaringJenis, number>;
+  jumlah?: Record<SaringJenis, number>;
   onPilih: (s: SaringJenis) => void;
 }) {
   const aksen = AKSEN;
@@ -24,7 +38,7 @@ export function PilJenis(props: {
             key={s.nilai}
             accessibilityRole="tab"
             accessibilityState={{ selected: aktif }}
-            accessibilityLabel={`${s.label}, ${props.jumlah[s.nilai]}`}
+            accessibilityLabel={props.jumlah ? `${s.label}, ${props.jumlah[s.nilai]}` : s.label}
             onPress={() => props.onPilih(s.nilai)}
             style={[
               gaya.keping,
@@ -32,9 +46,11 @@ export function PilJenis(props: {
             ]}
           >
             <Text style={[gaya.teks, aktif ? { color: aksen.teksIsi } : null]}>{s.label}</Text>
-            <Text style={[gaya.angka, aktif ? { color: aksen.teksIsi } : null]}>
-              {props.jumlah[s.nilai]}
-            </Text>
+            {props.jumlah ? (
+              <Text style={[gaya.angka, aktif ? { color: aksen.teksIsi } : null]}>
+                {props.jumlah[s.nilai]}
+              </Text>
+            ) : null}
           </Tekan>
         );
       })}

@@ -164,8 +164,8 @@ export function ringkasJatuhTempo(tempo: readonly TempoVM[]): {
 
 /**
  * Ringkasan jatuh tempo dari daftar tagih mentah: hanya yang bertempoan dihitung.
- * Dasbor mode Tempoan memakainya sebagai ganti rasio bayar (tempoan tak ditagih
- * setiap hari).
+ * Tab Tempoan (Mode Kerja) dan Performa saringan Tempoan memakainya sebagai ganti rasio
+ * bayar (tempoan tak ditagih setiap hari).
  */
 export function jatuhTempoDari(
   pinjaman: readonly Pick<

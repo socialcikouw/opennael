@@ -14,5 +14,5 @@ export { useGerbangMutasi, useKasHariIni } from "./data-gerbang";
 export { bacaGerbang } from "./gerbang";
 export { belumDicatat } from "./inti/belum-dicatat";
 export type { GerbangMutasi } from "./inti/gerbang-mutasi";
-export { type RasioHariIni, rasioHariIni, rasioMode } from "./inti/rasio";
+export { type RasioHariIni, rasioHariIni, rasioJenis } from "./inti/rasio";
 export { kabarTercatat, type Stempel } from "./kabar-tercatat";

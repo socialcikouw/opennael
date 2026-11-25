@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import type { Portofolio } from "@opennael/contracts";
-import { portofolioUntuk } from "./portofolio";
+import { piutangAktif, portofolioUntuk } from "./portofolio";
 
 const nol = { jumlah: 0, saldo: 0 };
 const DATA: Portofolio = {
@@ -39,5 +39,11 @@ describe("portofolioUntuk", () => {
       macet: { jumlah: 4, saldo: 2_750_000 },
       diputihkan: { jumlah: 3, saldo: 2_800_000 },
     });
+  });
+});
+
+describe("piutang aktif per jenis", () => {
+  test("berjalan + macet; diputihkan tak dihitung", () => {
+    expect(piutangAktif(DATA.harian)).toEqual({ jumlah: 43, saldo: 21_500_000, macet: 3 });
   });
 });

@@ -1,5 +1,5 @@
 /**
- * PERFORMA TAGIHAN MURNI di Dasbor — deret harian dari `GET /ringkasan/performa`
+ * PERFORMA TAGIHAN MURNI di layar Performa (Mode Rekap) — deret harian dari `GET /ringkasan/performa`
  * (aturan-usaha N: setoran murni harian ÷ patokan; hanya pinjaman harian)
  * disaring ke HARI TAGIH. Server memberi satu baris untuk setiap tanggal, termasuk
  * Minggu dan libur kantor — di sana setoran memang nol, dan menampilkannya sebagai

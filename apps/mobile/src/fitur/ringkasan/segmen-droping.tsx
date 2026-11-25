@@ -4,6 +4,7 @@ import { router } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
 import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
 import { useHariIni, useTagihan } from "@/fitur/lapangan";
+import { PilJenis } from "@/komponen/pil-jenis";
 import { useRuangTab } from "@/komponen/tab-mengambang";
 import { g } from "@/komponen/ui/gaya-bersama";
 import { PesanGalat } from "@/komponen/ui/isian";
@@ -18,7 +19,6 @@ import { type BarisDroping, barisDroping, dropingHariIni, ringkasDroping } from 
 import { hitungPerJenis, type SaringJenis, saringJenis } from "./inti/jenis";
 import { BarisJenis } from "./komponen/baris-jenis";
 import { KartuTotal } from "./komponen/kartu-total";
-import { PilJenis } from "./komponen/pil-jenis";
 
 const jenisDari = (p: KartuTagih) => p.jenis;
 

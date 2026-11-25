@@ -2,8 +2,8 @@ import { StyleSheet, Text, View } from "react-native";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaAksen } from "@/tema";
 
 /**
- * Kartu JATUH TEMPO di kepala mode Tempoan — jumlah nasabah saja. (Rasio bayar hari
- * ini pindah ke Dasbor; tempoan memang tak ditagih setiap hari.)
+ * Kartu JATUH TEMPO di kepala tab Tempoan (Mode Kerja) dan di Performa saringan Tempoan —
+ * jumlah nasabah saja (tempoan memang tak ditagih setiap hari).
  */
 export function KartuJatuhTempo(props: {
   r: { lewat: number; hariIni: number; pekan: number; berjalan: number };

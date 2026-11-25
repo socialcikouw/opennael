@@ -1,17 +1,11 @@
 import type { JenisPinjaman } from "@opennael/domain";
+import type { SaringJenis } from "../../../komponen/pil-jenis";
 
 /**
- * Saringan jenis pinjaman di segmen Storting & Droping (Ringkasan, Mode Rekap):
- * Semua atau satu jenis. PURE.
+ * Saringan jenis pinjaman di segmen Storting & Droping (Ringkasan, Mode Rekap): Semua atau
+ * satu jenis (pil `PilJenis`, `komponen/pil-jenis.tsx`). PURE.
  */
-export type SaringJenis = "semua" | JenisPinjaman;
-
-export const SARING_JENIS: readonly { nilai: SaringJenis; label: string }[] = [
-  { nilai: "semua", label: "Semua" },
-  { nilai: "harian", label: "Harian" },
-  { nilai: "mingguan", label: "Mingguan" },
-  { nilai: "tempoan", label: "Tempoan" },
-];
+export type { SaringJenis };
 
 /** Banyaknya butir per saringan — angka di pil. */
 export function hitungPerJenis<T>(

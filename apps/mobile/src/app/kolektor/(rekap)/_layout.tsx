@@ -5,6 +5,7 @@ import { OPSI_TAB } from "@/tema";
 const IKON = {
   ringkasan: "receipt-text",
   performa: "chart-column-increasing",
+  portofolio: "chart-pie",
 } as const;
 
 /** MODE REKAP — tab Ringkasan · Performa · Portofolio, tombol Foto Nasabah (bertahap). */
@@ -18,6 +19,7 @@ export default function TataLetakRekap() {
     >
       <Tabs.Screen name="ringkasan" options={{ title: "Ringkasan" }} />
       <Tabs.Screen name="performa" options={{ title: "Performa" }} />
+      <Tabs.Screen name="portofolio" options={{ title: "Portofolio" }} />
     </Tabs>
   );
 }
