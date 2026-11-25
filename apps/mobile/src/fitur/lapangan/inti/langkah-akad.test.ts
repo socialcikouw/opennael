@@ -2,13 +2,14 @@ import { describe, expect, test } from "bun:test";
 import { langkahBerikut, langkahSebelum, nomorLangkah, urutanLangkah } from "./langkah-akad";
 
 describe("urutanLangkah", () => {
-  test("nasabah baru mingguan: nama, kampung, kontak, lalu pokok sebelum tenor", () => {
+  test("nasabah baru mingguan: nama, kampung, kontak, jenis, lalu pokok sebelum tenor", () => {
     expect(urutanLangkah("baru", "mingguan")).toEqual([
       "foto",
       "siapa",
       "nama",
       "kampung",
       "kontak",
+      "jenis",
       "pokok",
       "tenor",
       "periksa",
@@ -20,6 +21,7 @@ describe("urutanLangkah", () => {
       "foto",
       "siapa",
       "pernah-melunasi",
+      "jenis",
       "pokok",
       "tenor",
       "periksa",
@@ -32,13 +34,15 @@ describe("urutanLangkah", () => {
       "foto",
       "siapa",
       "pernah-melunasi",
+      "jenis",
       "pokok",
       "periksa",
     ]);
   });
 
-  test("sebelum memilih siapa, hitungan memakai jalur nasabah baru", () => {
+  test("sebelum memilih, hitungan memakai jalur terpanjang (nasabah baru, bertenor)", () => {
     expect(urutanLangkah(null, "harian")).toEqual(urutanLangkah("baru", "harian"));
+    expect(urutanLangkah("baru", null)).toEqual(urutanLangkah("baru", "mingguan"));
   });
 });
 
@@ -47,6 +51,8 @@ describe("pindah langkah", () => {
 
   test("berikut & sebelum", () => {
     expect(langkahBerikut(urutan, "siapa")).toBe("nama");
+    expect(langkahBerikut(urutan, "kontak")).toBe("jenis");
+    expect(langkahBerikut(urutan, "jenis")).toBe("pokok");
     expect(langkahBerikut(urutan, "pokok")).toBe("tenor");
     expect(langkahSebelum(urutan, "nama")).toBe("siapa");
     expect(langkahSebelum(urutan, "siapa")).toBe("foto");

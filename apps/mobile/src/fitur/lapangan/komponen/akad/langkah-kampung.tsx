@@ -5,14 +5,9 @@ import { ActivityIndicator } from "react-native";
 import { Isian, PesanGalat } from "@/komponen/ui/isian";
 import { WARNA } from "@/tema";
 import { useKampung } from "../../data";
+import type { KampungAkad } from "../../inti/isi-akad";
 import { KartuPilihan } from "./kartu-pilihan";
 import { type Kerangka, KerangkaLangkah } from "./kerangka-langkah";
-
-/** Kampung terpilih: dari daftar kantor (`id`), atau kampung baru yang diketik (`id` null). */
-export interface KampungAkad {
-  nama: string;
-  id: string | null;
-}
 
 /**
  * Langkah KAMPUNG (nasabah baru) — cari di daftar kampung kantor supaya ejaannya sama dengan

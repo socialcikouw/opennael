@@ -8,6 +8,13 @@ export type TitikLatar =
   | { status: "siap"; titik: TitikRumah }
   | { status: "tak-ada"; alasan: string };
 
+/** Satu baris pendek keadaan GPS untuk layar kamera akad; undefined = tak bisa (diam saja). */
+export function ringkasTitikLatar(titik: TitikLatar): string | undefined {
+  if (titik.status === "siap") return `Titik rumah terdeteksi (±${titik.titik.akurasiMeter} m)`;
+  if (titik.status === "mencari") return "Titik rumah: mencari sinyal GPS…";
+  return undefined;
+}
+
 /**
  * TITIK RUMAH DI LATAR — dari layar dipasang sampai dilepas, GPS HP dipantau tanpa
  * mengganggu kolektor (memotret, mengisi formulir). Yang disimpan titik paling akurat

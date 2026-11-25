@@ -6,11 +6,13 @@ import type { JenisPinjaman } from "@opennael/domain";
  *
  *   foto → siapa → [nasabah baru: nama → kampung → kontak]
  *                  [pernah melunasi: pernah-melunasi]
- *        → pokok → [mingguan & tempoan: tenor] → periksa
+ *        → jenis → pokok → [mingguan & tempoan: tenor] → periksa
  *
- * `foto` = kamera serah terima (A7) yang terbuka begitu (+) diketuk. Harian tak punya
- * langkah tenor (hanya 24 kali, A2). Pokok sebelum tenor: tiap pilihan tenor langsung
- * menampilkan angsurannya.
+ * `foto` = kamera serah terima (A7) yang terbuka begitu (+) diketuk. JENIS dipilih dengan
+ * sadar di langkahnya sendiri, tak mengikuti tab yang kebetulan dibuka (koreksi pemilik
+ * 26 Nov 2026: takut salah input); letaknya sesudah nasabah supaya pinjaman terakhir
+ * nasabah yang pernah melunasi bisa ditampilkan. Harian tak punya langkah tenor (hanya
+ * 24 kali, A2). Pokok sebelum tenor: tiap pilihan tenor langsung menampilkan angsurannya.
  */
 export type LangkahAkad =
   | "foto"
@@ -19,6 +21,7 @@ export type LangkahAkad =
   | "kampung"
   | "kontak"
   | "pernah-melunasi"
+  | "jenis"
   | "pokok"
   | "tenor"
   | "periksa";
@@ -26,12 +29,15 @@ export type LangkahAkad =
 /** Siapa penerima uangnya: orang yang belum terdaftar, atau nasabah pegangan yang sudah lunas. */
 export type SiapaNasabah = "baru" | "pernah-melunasi";
 
-export function urutanLangkah(siapa: SiapaNasabah | null, jenis: JenisPinjaman): LangkahAkad[] {
+export function urutanLangkah(
+  siapa: SiapaNasabah | null,
+  jenis: JenisPinjaman | null,
+): LangkahAkad[] {
   const urutan: LangkahAkad[] = ["foto", "siapa"];
-  // Sebelum dipilih, hitungan langkah memakai jalur terpanjang (nasabah baru).
+  // Sebelum dipilih, hitungan langkah memakai jalur terpanjang (nasabah baru, bertenor).
   if (siapa === "pernah-melunasi") urutan.push("pernah-melunasi");
   else urutan.push("nama", "kampung", "kontak");
-  urutan.push("pokok");
+  urutan.push("jenis", "pokok");
   if (jenis !== "harian") urutan.push("tenor");
   urutan.push("periksa");
   return urutan;

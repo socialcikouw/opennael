@@ -1,6 +1,6 @@
 import type { NasabahLama } from "@opennael/contracts";
 import { type JenisPinjaman, syaratAkad } from "@opennael/domain";
-import { jam, rupiah, tampilKampung, tampilNama } from "@opennael/format";
+import { jam, LABEL_JENIS, rupiah, tampilKampung, tampilNama } from "@opennael/format";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { Ikon } from "@/komponen/ui/ikon";
 import { PesanGalat } from "@/komponen/ui/isian";
@@ -9,12 +9,12 @@ import { Tekan } from "@/komponen/ui/tekan";
 import { Tombol } from "@/komponen/ui/tombol";
 import { useZonaKantor } from "@/lib/kantor";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
+import type { KampungAkad } from "../../inti/isi-akad";
 import type { LangkahAkad, SiapaNasabah } from "../../inti/langkah-akad";
 import type { TitikLatar } from "../../titik-rumah-latar";
 import { type FotoSerahTerima, fotoMasihBerlaku } from "../kamera-serah-terima";
 import { StatusTitikRumah } from "../status-titik-rumah";
 import { KakiTombol, type Kerangka, KerangkaLangkah } from "./kerangka-langkah";
-import type { KampungAkad } from "./langkah-kampung";
 
 /**
  * Langkah PERIKSA — ringkasan sebelum uang keluar; menggantikan pertanyaan "Simpan akad?".
@@ -128,6 +128,12 @@ export function LangkahPeriksa(props: {
 
       <View style={gaya.blok}>
         <BarisPeriksa
+          label="Jenis Pinjaman"
+          nilai={LABEL_JENIS[props.jenis]}
+          onUbah={() => props.onUbah("jenis")}
+        />
+        <BarisPeriksa
+          garis
           label="Pokok Pinjaman"
           nilai={rupiah(props.pokok)}
           onUbah={() => props.onUbah("pokok")}

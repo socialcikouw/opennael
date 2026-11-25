@@ -14,12 +14,11 @@ const IKON = {
   tempoan: "calendar-clock",
 } as const;
 
-type RuteKerja = keyof typeof IKON;
-
 /**
  * MODE KERJA — tab Harian · Mingguan · Tempoan (nama rute = nama tab; isinya
  * `fitur/tagihan` berjenis tab itu). Angka merah di tab = sisa nasabah wajib ditagih hari
- * ini jenis itu. Tombol + = akad baru BERJENIS TAB YANG SEDANG DIBUKA. Lonceng Notifikasi
+ * ini jenis itu. Tombol + = akad baru (jenisnya dipilih di dalam akad, bukan ikut tab —
+ * koreksi pemilik 26 Nov 2026). Lonceng Notifikasi
  * ada di kepala tiap tab (`KepalaTagihan`).
  */
 export default function TataLetakKerja() {
@@ -33,10 +32,10 @@ export default function TataLetakKerja() {
   );
 
   // Gerbang (C4) hanya untuk menjelaskan lebih awal — server tetap memutuskan.
-  const akad = (jenis: RuteKerja) => {
+  const akad = () => {
     const gerbang = hariIni.data ? bacaGerbang(hariIni.data) : null;
     if (!gerbang || gerbang.buka) {
-      router.push({ pathname: "/kolektor/akad", params: { jenis } });
+      router.push("/kolektor/akad");
     } else if (gerbang.perluAbsen) {
       Alert.alert("Absen Dulu", "Akad baru bisa dicatat sesudah absen pagi (lonceng Notifikasi).");
     } else {
@@ -47,18 +46,15 @@ export default function TataLetakKerja() {
   return (
     <Tabs
       backBehavior="none"
-      tabBar={(p) => {
-        const jenis = (p.state.routes[p.state.index]?.name ?? "harian") as RuteKerja;
-        return (
-          <TabBarMode
-            {...p}
-            mode="kerja"
-            ikon={IKON}
-            lencana={lencana}
-            kanan={{ ikon: "plus", label: `Akad baru ${jenis}`, onPress: () => akad(jenis) }}
-          />
-        );
-      }}
+      tabBar={(p) => (
+        <TabBarMode
+          {...p}
+          mode="kerja"
+          ikon={IKON}
+          lencana={lencana}
+          kanan={{ ikon: "plus", label: "Akad baru", onPress: akad }}
+        />
+      )}
       screenOptions={{ ...OPSI_TAB, headerShown: false }}
     >
       <Tabs.Screen name="harian" options={{ title: "Harian" }} />
