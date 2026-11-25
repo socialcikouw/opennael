@@ -165,8 +165,13 @@ export function LayarTagihan({
     gerbang && !gerbang.buka
       ? gerbang.perluAbsen
         ? {
-            judul: "Belum absen",
-            isi: "Absen pagi dulu lewat lonceng Notifikasi supaya transaksi bisa dicatat.",
+            judul: "Absen pagi dulu",
+            isi: "Kas lapangan & uang jalan. Transaksi terbuka sesudah absen.",
+            tombol: {
+              judul: "Absen Sekarang",
+              // Formulir absen ada di layar Notifikasi (paling atas selama belum absen).
+              onPress: () => router.push("/kolektor/notifikasi" as Href),
+            },
           }
         : { judul: gerbang.judul ?? "Lapangan tutup", isi: gerbang.isi }
       : null;

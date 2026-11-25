@@ -11,7 +11,7 @@ import { SEGMEN_TAGIHAN, type SegmenTagihan } from "../inti/daftar";
  * KEPALA layar Tagihan (tab Harian · Mingguan · Tempoan, Mode Kerja) — melayang di atas
  * daftar. Bagian LIPAT (alis "MODE KERJA", judul "Tagihan Harian", tombol cari & lonceng
  * Notifikasi berangka, kartu atas) terangkat & memudar saat daftar
- * digulung; bagian MENEMPEL (segmen, penanda lapangan tutup) tetap
+ * digulung; bagian MENEMPEL (segmen, spanduk absen / lapangan tutup) tetap
  * di puncak. Gulir balik memunculkan bagian lipat lagi (`lipat` dikendalikan
  * layar). Selama kolom cari terbuka, kepala tidak melipat.
  */
@@ -35,7 +35,15 @@ export function KepalaTagihan(props: {
   onCari: (teks: string) => void;
   cariTerbuka: boolean;
   onCariTerbuka: (buka: boolean) => void;
-  tutup: { judul: string; isi?: string | undefined } | null;
+  /**
+   * Spanduk kuning di bawah segmen: belum absen (dengan tombol "Absen Sekarang") atau kabar
+   * gerbang lapangan tutup; null = tanpa spanduk.
+   */
+  tutup: {
+    judul: string;
+    isi?: string | undefined;
+    tombol?: { judul: string; onPress: () => void } | undefined;
+  } | null;
 }) {
   const atas = useSafeAreaInsets().top;
   const [tinggiLipat, setTinggiLipat] = useState(0);
@@ -122,11 +130,23 @@ export function KepalaTagihan(props: {
         <Segmen segmen={props.segmen} jumlah={props.jumlah} onGanti={props.onGantiSegmen} />
         {props.tutup ? (
           <View style={gaya.tutup}>
-            <Ikon nama="clock" ukuran={14} warna={WARNA.waspada} />
+            <View style={gaya.tutupIkon}>
+              <Ikon nama="clock" ukuran={16} warna={WARNA.waspada} />
+            </View>
             <View style={gaya.isi}>
               <Text style={gaya.tutupJudul}>{props.tutup.judul}</Text>
               {props.tutup.isi ? <Text style={gaya.tutupIsi}>{props.tutup.isi}</Text> : null}
             </View>
+            {props.tutup.tombol ? (
+              <Tekan
+                accessibilityRole="button"
+                onPress={props.tutup.tombol.onPress}
+                hitSlop={6}
+                style={({ pressed }) => [gaya.tutupTombol, pressed ? gaya.ditekan : null]}
+              >
+                <Text style={gaya.tutupTombolTeks}>{props.tutup.tombol.judul}</Text>
+              </Tekan>
+            ) : null}
           </View>
         ) : null}
       </View>
@@ -290,7 +310,8 @@ const gaya = StyleSheet.create({
   angkaTeksAktif: { color: WARNA.permukaan },
   tutup: {
     flexDirection: "row",
-    gap: RUANG[2],
+    alignItems: "center",
+    gap: RUANG[2.5],
     padding: RUANG[2.5],
     borderRadius: SUDUT.sedang,
     borderWidth: 1,
@@ -298,6 +319,21 @@ const gaya = StyleSheet.create({
     backgroundColor: WARNA.waspadaLembut,
   },
   isi: { flex: 1 },
-  tutupJudul: { ...HURUF.xs, fontWeight: TEBAL.tebal, color: WARNA.waspadaTua },
-  tutupIsi: { ...HURUF.xs, color: WARNA.waspada },
+  tutupIkon: {
+    width: 32,
+    height: 32,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: SUDUT.bulat,
+    backgroundColor: WARNA.waspadaMuda,
+  },
+  tutupJudul: { ...HURUF.sm, fontWeight: TEBAL.tebal, color: WARNA.waspadaTua },
+  tutupIsi: { ...HURUF["2xs"], color: WARNA.teksKedua },
+  tutupTombol: {
+    paddingHorizontal: RUANG[3],
+    paddingVertical: RUANG[2],
+    borderRadius: SUDUT.bulat,
+    backgroundColor: WARNA.utamaIsi,
+  },
+  tutupTombolTeks: { ...HURUF.xs, fontWeight: TEBAL.ekstra, color: WARNA.teksAtasUtama },
 });
