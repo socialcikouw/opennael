@@ -25,7 +25,7 @@ export function KepalaTagihan(props: {
   /** Mis. "Tagihan Harian". */
   judul: string;
   aksen: WarnaAksen;
-  /** Lonceng Notifikasi: angka merah = pengingat yang menunggu tindakan. */
+  /** Lonceng Notifikasi: angka merah 1 = kolektor belum absen (`useAngkaLonceng`). */
   lonceng: { jumlah: number; onPress: () => void };
   kartuAtas: ReactNode;
   segmen: SegmenTagihan;

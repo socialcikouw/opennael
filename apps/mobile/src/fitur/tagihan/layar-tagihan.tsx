@@ -7,7 +7,7 @@ import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "rea
 import { RefreshControl, StyleSheet, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useJumlahPengingat } from "@/fitur/notifikasi";
+import { useAngkaLonceng } from "@/fitur/notifikasi";
 import { useRuangTab } from "@/komponen/tab-mengambang";
 import { PesanGalat } from "@/komponen/ui/isian";
 import { Tombol } from "@/komponen/ui/tombol";
@@ -51,7 +51,7 @@ export function LayarTagihan({
   const insets = useSafeAreaInsets();
   const ruangTab = useRuangTab();
   const aksen = AKSEN;
-  const pengingat = useJumlahPengingat();
+  const lonceng = useAngkaLonceng();
 
   const { hariIni, tanggal, tagihan, kalender, peristiwa, riwayat } = useDataTagihan(jenis);
 
@@ -228,7 +228,7 @@ export function LayarTagihan({
         judul={JUDUL[jenis]}
         aksen={aksen}
         lonceng={{
-          jumlah: pengingat,
+          jumlah: lonceng,
           onPress: () => router.push("/kolektor/notifikasi" as Href),
         }}
         kartuAtas={jatuhTempo ? <KartuJatuhTempo r={jatuhTempo} aksen={aksen} /> : null}

@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import type { KartuTagih } from "@opennael/contracts";
-import { type BahanPengingat, jumlahTindakan, type Pengingat, susunPengingat } from "./pengingat";
+import { angkaLonceng, type BahanPengingat, type Pengingat, susunPengingat } from "./pengingat";
 
 const T = "2026-11-02"; // Senin
 const BUKA = { buka: true, perluAbsen: false };
@@ -61,7 +61,7 @@ describe("susunPengingat", () => {
       bahan({ gerbang: { buka: false, perluAbsen: true }, gerbangMutasi: "belum-absen" }),
     );
     expect(kunci(hasil)).toEqual(["absen"]);
-    expect(jumlahTindakan(hasil)).toBe(1);
+    expect(angkaLonceng(hasil)).toBe(1);
   });
 
   test("gerbang tertutup (libur kantor): kabar saja, daftar tagihan tak diributkan", () => {
@@ -121,7 +121,8 @@ describe("susunPengingat", () => {
     expect(lewat?.judul).toBe("Nasabah tempoan lewat jatuh tempo: 1");
     expect(lewat?.nada).toBe("merah");
     expect(lewat?.nasabah[0]?.keterangan).toBe("Lewat 3 hari · Rp 1.250.000");
-    expect(jumlahTindakan(hasil)).toBe(4);
+    // Sudah absen: belum ditagih ditandai lencana tab jenisnya, lonceng diam.
+    expect(angkaLonceng(hasil)).toBe(0);
   });
 
   test("tempoan jatuh tempo besok: kabar sehari lebih awal, tak dihitung lonceng", () => {
@@ -133,7 +134,7 @@ describe("susunPengingat", () => {
       judul: "Nasabah tempoan jatuh tempo besok: 1",
       tindakan: false,
     });
-    expect(jumlahTindakan(hasil)).toBe(1);
+    expect(angkaLonceng(hasil)).toBe(0);
   });
 
   test("tempoan yang sudah diliburkan hari ini tak lagi menahan", () => {
@@ -151,7 +152,7 @@ describe("susunPengingat", () => {
   test("belum punya nasabah: kabar tanpa ajakan membuka Mutasi", () => {
     const hasil = susunPengingat(bahan({ gerbangMutasi: "belum-ada-nasabah" }));
     expect(kunci(hasil)).toEqual(["tanpa-nasabah"]);
-    expect(jumlahTindakan(hasil)).toBe(0);
+    expect(angkaLonceng(hasil)).toBe(0);
   });
 
   test("daftar tagih belum dimuat: tak ada rincian maupun ajakan", () => {

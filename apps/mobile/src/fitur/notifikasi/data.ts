@@ -8,7 +8,7 @@ import {
   useTagihan,
 } from "@/fitur/lapangan";
 import { useZonaKantor } from "@/lib/kantor";
-import { jumlahTindakan, susunPengingat } from "./inti/pengingat";
+import { angkaLonceng, susunPengingat } from "./inti/pengingat";
 
 /**
  * Pengingat kolektor dari bacaan lapangan yang SUDAH dimuat layar lain (hari
@@ -42,8 +42,8 @@ export function usePengingat() {
   return { hariIni, tagihan, kas, pengingat };
 }
 
-/** Angka lonceng: pengingat yang menunggu tindakan — sama di ketiga tab Kerja. */
-export function useJumlahPengingat(): number {
+/** Angka lonceng: 1 selama kolektor belum absen, selain itu 0 — sama di ketiga tab Kerja. */
+export function useAngkaLonceng(): number {
   const { pengingat } = usePengingat();
-  return pengingat ? jumlahTindakan(pengingat) : 0;
+  return pengingat ? angkaLonceng(pengingat) : 0;
 }

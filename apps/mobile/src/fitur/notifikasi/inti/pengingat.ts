@@ -229,6 +229,10 @@ export function susunPengingat(b: BahanPengingat): Pengingat[] {
   return hasil;
 }
 
-/** Banyaknya pengingat yang menunggu tindakan — angka di lonceng (sama di ketiga tab Kerja). */
-export const jumlahTindakan = (pengingat: readonly Pengingat[]): number =>
-  pengingat.filter((p) => p.tindakan).length;
+/**
+ * Angka lonceng (sama di ketiga tab Kerja): HANYA menandai kolektor belum absen — 1 atau 0
+ * (keputusan pemilik 26 Nov 2026). Nasabah yang belum dicatat sudah ditandai lencana tab
+ * jenisnya (Harian, Mingguan, Tempoan); pengingat lain tetap terbaca di layar Notifikasi.
+ */
+export const angkaLonceng = (pengingat: readonly Pengingat[]): number =>
+  pengingat.some((p) => p.jenis === "absen") ? 1 : 0;
