@@ -59,7 +59,7 @@ export function StatusTitikRumah({
       {ikon}
       <View style={g.isi}>
         <Text style={gaya.judul}>Perbarui titik rumah</Text>
-        <Text style={g.teksRedup}>{ket}</Text>
+        <Text style={g.teksMini}>{ket}</Text>
       </View>
       <Switch
         value={perbarui.nyala}
