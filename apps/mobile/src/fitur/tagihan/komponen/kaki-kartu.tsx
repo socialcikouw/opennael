@@ -13,8 +13,9 @@ import type { AksiKartu } from "./kartu-nasabah";
  *   [ BAYAR                  Rp 15.000 ]
  * Libur & Gulung tonal; mati beserta alasannya bila belum boleh (tetap bisa
  * diketuk untuk membacanya). Bayar — satu-satunya bidang berwarna pekat,
- * selebar kartu — mencetak nominalnya (tempoan: Lunasi seharga saldo; Libur
- * hanya sejak jatuh tempo, beralasan — G1). Lunasi nasabah lain: tahan lama kartunya.
+ * selebar kartu — mencetak nominalnya. Tempoan hanya Libur & Lunasi (keputusan pemilik
+ * 26 Nov 2026): Lunasi seharga saldo, Libur hanya sejak jatuh tempo, beralasan (G1), dan
+ * tanpa Gulung (E5). Lunasi nasabah lain: tahan lama kartunya.
  */
 export function KakiKartu({
   vm,
@@ -25,31 +26,37 @@ export function KakiKartu({
   aksi: AksiKartu;
   aksen: WarnaAksen;
 }) {
-  const status = vm.progres?.status ?? (vm.sekaliBayar ? "boleh" : "terkunci");
+  const status = vm.progres?.status ?? "terkunci";
+  // Tempoan tak bisa digulung (E5); sebelum jatuh tempo tak ada Libur juga — baris tonal hilang.
+  const gulung = !vm.sekaliBayar;
   return (
     <View style={gaya.kaki}>
-      <View style={gaya.barisTonal}>
-        {vm.tampilkanLibur ? (
-          <TombolTonal
-            label="LIBUR"
-            ikon="circle-pause"
-            sorot={false}
-            mati={vm.alasanLibur ? "merah" : null}
-            alasan={vm.alasanLibur}
-            sinyal={null}
-            onPress={() => aksi.libur(vm)}
-          />
-        ) : null}
-        <TombolTonal
-          label="GULUNG"
-          ikon="repeat"
-          sorot={status === "boleh"}
-          mati={status === "belum" ? "merah" : status === "terkunci" ? "abu" : null}
-          alasan={vm.progres?.petunjuk ?? null}
-          sinyal={vm.progres?.sinyal ?? null}
-          onPress={() => aksi.gulung(vm)}
-        />
-      </View>
+      {vm.tampilkanLibur || gulung ? (
+        <View style={gaya.barisTonal}>
+          {vm.tampilkanLibur ? (
+            <TombolTonal
+              label="LIBUR"
+              ikon="circle-pause"
+              sorot={false}
+              mati={vm.alasanLibur ? "merah" : null}
+              alasan={vm.alasanLibur}
+              sinyal={null}
+              onPress={() => aksi.libur(vm)}
+            />
+          ) : null}
+          {gulung ? (
+            <TombolTonal
+              label="GULUNG"
+              ikon="repeat"
+              sorot={status === "boleh"}
+              mati={status === "belum" ? "merah" : status === "terkunci" ? "abu" : null}
+              alasan={vm.progres?.petunjuk ?? null}
+              sinyal={vm.progres?.sinyal ?? null}
+              onPress={() => aksi.gulung(vm)}
+            />
+          ) : null}
+        </View>
+      ) : null}
       <Tekan
         accessibilityRole="button"
         accessibilityLabel={

@@ -29,8 +29,8 @@ describe("A. akad", () => {
     });
     expect(syaratAkad("tempoan", 1_000_000, 14)).toMatchObject({
       potonganAdmin: 50_000,
-      tabunganMasuk: 50_000,
-      pencairan: 900_000,
+      tabunganMasuk: 0,
+      pencairan: 950_000,
       totalKembali: 1_250_000,
       angsuran: 1_250_000,
     });
@@ -44,7 +44,12 @@ describe("A. akad", () => {
       totalKembali: 1_250_000,
     };
     expect(rincianPokok("harian", 1_000_000)).toEqual(biasa);
-    expect(rincianPokok("tempoan", 1_000_000)).toEqual(biasa);
+    expect(rincianPokok("tempoan", 1_000_000)).toEqual({
+      potonganAdmin: 50_000,
+      tabunganMasuk: 0,
+      pencairan: 950_000,
+      totalKembali: 1_250_000,
+    });
     expect(rincianPokok("mingguan", 1_000_000)).toEqual({
       potonganAdmin: 100_000,
       tabunganMasuk: 0,

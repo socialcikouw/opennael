@@ -44,9 +44,9 @@ export function tenorTunggal(jenis: JenisPinjaman): number | null {
 
 /**
  * A1, A3 & A5. Potongan, pencairan, dan total kembali per jenis (keputusan pemilik 26 Nov
- * 2026): harian & tempoan admin 5% + tabungan 5%, kembali 125%; mingguan admin 10% tanpa
- * tabungan, kembali 120%. Semua dicairkan 90%. Tak bergantung tenor, jadi layar pokok bisa
- * menampilkannya sebelum tenor dipilih.
+ * 2026): harian admin 5% + tabungan 5% (dicairkan 90%), kembali 125%; mingguan admin 10%
+ * tanpa tabungan (90%), kembali 120%; tempoan admin 5% tanpa tabungan (95%), kembali 125%.
+ * Tak bergantung tenor, jadi layar pokok bisa menampilkannya sebelum tenor dipilih.
  */
 export function rincianPokok(
   jenis: JenisPinjaman,
@@ -64,7 +64,7 @@ export function rincianPokok(
     "Pinjaman mingguan: pokok paling sedikit Rp 500.000",
   );
   const potonganAdmin = mingguan ? pokok / 10 : pokok / 20;
-  const tabunganMasuk = mingguan ? 0 : pokok / 20;
+  const tabunganMasuk = jenis === "harian" ? pokok / 20 : 0;
   return {
     potonganAdmin,
     tabunganMasuk,

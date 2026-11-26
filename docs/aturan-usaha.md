@@ -36,11 +36,11 @@ Berlaku juga untuk gulung dan salinan migrasi.
 |---|---|---|---|---|
 | Harian | admin 5% + tabungan 5% | 90% | 125% pokok | 5% pokok |
 | Mingguan | **admin 10%, tanpa tabungan** | 90% | **120% pokok** | 15% pokok |
-| Tempoan | admin 5% + tabungan 5% | 90% | 125% pokok | sekali bayar (A4) |
+| Tempoan | **admin 5%, tanpa tabungan** | **95%** | 125% pokok | sekali bayar (A4) |
 
-Angsuran = total kembali ÷ tenor. Mingguan tidak memotong tabungan, jadi
-pinjaman mingguan tidak menambah tabungan nasabah (yang dikembalikan saat
-lunas hanya tabungan yang sudah ada). Sebelumnya (26 Nov 2026 pagi) semua jenis
+Angsuran = total kembali ÷ tenor. Mingguan & tempoan tidak memotong tabungan,
+jadi pinjamannya tidak menambah tabungan nasabah (yang dikembalikan saat lunas
+hanya tabungan yang sudah ada). Sebelumnya (26 Nov 2026 pagi) semua jenis
 125% dengan mingguan 6/8/10 kali — 125% ÷ 8 tidak bulat ribuan (Rp 156.250 per
 Rp 1 juta) sehingga tak bisa dibayar pas (C1: kelipatan Rp 1.000). Data uji lama
 dihapus; tidak ada pinjaman dengan rumus lama.
@@ -56,7 +56,7 @@ lama (hanya gulung).
 | Harian, 25× | 1.000.000 | 50.000 | 50.000 | 900.000 | 1.250.000 | 50.000 |
 | Mingguan, 8× | 1.000.000 | 100.000 | 0 | 900.000 | 1.200.000 | 150.000 |
 | Mingguan, 8× | 500.000 | 50.000 | 0 | 450.000 | 600.000 | 75.000 |
-| Tempoan, 14 hari | 1.000.000 | 50.000 | 50.000 | 900.000 | 1.250.000 | 1.250.000 |
+| Tempoan, 14 hari | 1.000.000 | 50.000 | 0 | 950.000 | 1.250.000 | 1.250.000 |
 
 **A6. Syarat akad dibekukan** di pinjaman pada hari akad: mengubah rumus hanya
 berlaku untuk akad berikutnya.
@@ -227,10 +227,10 @@ nasabah.
   seterusnya **mulai angsuran ke-10** (angka yang sama dengan nomor angsuran di
   kartu).
 
-**E5.** Mingguan & tempoan boleh digulung kapan saja, termasuk saat macet dan
-naik pada pinjaman pertama. (Tempoan praktis selalu naik: pencairan bersih
-baru positif bila pencairan penerus — 90% pokoknya — melebihi seluruh saldo
-asal, yaitu pokok penerus lebih dari ±1,39× pokok asal yang belum dicicil.)
+**E5.** Mingguan boleh digulung kapan saja, termasuk saat macet dan naik pada
+pinjaman pertama. **Tempoan tidak bisa digulung** — nasabah melunasi dulu, lalu
+akad baru (*keputusan pemilik, 26 Nov 2026*; kartu tempoan hanya punya Libur &
+Lunasi).
 
 **E6. Pencairan bersih** = pencairan akad penerus − saldo pinjaman asal, **harus
 lebih dari nol**.

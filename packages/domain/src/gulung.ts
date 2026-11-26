@@ -58,7 +58,8 @@ export function statusGulung(p: {
   angsuranKe: number;
 }): StatusGulung {
   const aktif = p.status === "berjalan" || p.status === "macet";
-  if (p.jenis !== "harian") return aktif ? "boleh" : "terkunci"; // E5
+  if (p.jenis === "tempoan") return "terkunci"; // E5: tempoan tidak bisa digulung
+  if (p.jenis === "mingguan") return aktif ? "boleh" : "terkunci"; // E5
   if (p.status !== "berjalan") return "terkunci";
   return p.angsuranKe >= nomorGulungMinimal(p.pinjamanKe) ? "boleh" : "belum";
 }
@@ -73,6 +74,11 @@ export function hitungGulung(
   tenorBaru: number,
   rem: RemGulung,
 ): RencanaGulung {
+  wajib(
+    asal.jenis !== "tempoan",
+    "GULUNG_TEMPOAN",
+    "Pinjaman tempoan tidak bisa digulung — lunasi dulu",
+  );
   wajib(
     asal.status === "berjalan" || asal.status === "macet",
     "PINJAMAN_SUDAH_SELESAI",

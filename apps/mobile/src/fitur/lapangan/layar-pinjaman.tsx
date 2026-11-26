@@ -20,7 +20,10 @@ import { PanelSetor } from "./komponen/panel-setor";
 
 type Aksi = "setor" | "lunas" | "libur" | "gulung";
 
-/** KARTU PINJAMAN — rincian lalu satu catatan hari ini: setor, lunas, libur, atau gulung. */
+/**
+ * KARTU PINJAMAN — rincian lalu satu catatan hari ini: setor, lunas, libur, atau gulung
+ * (tempoan: libur atau lunas saja).
+ */
 export function LayarPinjaman({ id, lihat }: { id: string; lihat?: string }) {
   // lihat=1: dibuka dari Mode Rekap (Storting, Droping) — rincian saja, tanpa transaksi.
   const tagihan = useTagihan();
@@ -45,10 +48,11 @@ export function LayarPinjaman({ id, lihat }: { id: string; lihat?: string }) {
     ? bacaGerbang(hariIni.data)
     : { buka: false, judul: undefined, isi: undefined };
   const bisaCatat = lihat !== "1" && gerbang.buka && !p.hariIni;
+  // Tempoan hanya Libur & Lunas: tak bisa dicicil (C1) dan tak bisa digulung (E5).
   const pilihanAksi: { nilai: Aksi; teks: string }[] = tempoan
     ? [
+        { nilai: "libur", teks: "Libur" },
         { nilai: "lunas", teks: "Lunas" },
-        { nilai: "gulung", teks: "Gulung" },
       ]
     : [
         { nilai: "setor", teks: "Setor" },

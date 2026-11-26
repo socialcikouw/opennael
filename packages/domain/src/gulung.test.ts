@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { hitungGulung, type PinjamanAsal } from "./gulung";
+import { hitungGulung, type PinjamanAsal, statusGulung } from "./gulung";
 import { kode } from "./uji";
 
 /** Contoh angka = docs/aturan-usaha.md, apa adanya. */
@@ -87,6 +87,20 @@ describe("E. gulung", () => {
       angsuranKe: 2,
     };
     expect(hitungGulung(mingguan, 2_000_000, 8, terbuka).pencairan).toBe(900_000);
+  });
+
+  test("tempoan tidak bisa digulung (E5)", () => {
+    const tempoan: PinjamanAsal = {
+      jenis: "tempoan",
+      status: "berjalan",
+      pokok: 1_000_000,
+      saldo: 1_250_000,
+      pinjamanKe: 1,
+      angsuranKe: 0,
+    };
+    expect(kode(() => hitungGulung(tempoan, 3_000_000, 14, terbuka))).toBe("GULUNG_TEMPOAN");
+    expect(statusGulung(tempoan)).toBe("terkunci");
+    expect(statusGulung({ ...tempoan, status: "macet" })).toBe("terkunci");
   });
 
   test("pencairan bersih harus lebih dari nol (E6) & asal masih ditagih (E2)", () => {

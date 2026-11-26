@@ -42,10 +42,10 @@ describe("E. sinyal gulung kartu", () => {
     expect(statusGulung({ ...harian, status: "macet", angsuranKe: 20 })).toBe("terkunci");
   });
 
-  test("E5 mingguan & tempoan boleh kapan saja, termasuk macet; selesai terkunci", () => {
+  test("E5 mingguan boleh kapan saja, termasuk macet; tempoan & yang selesai terkunci", () => {
     const p = { pinjamanKe: 1, angsuranKe: 0 };
     expect(statusGulung({ ...p, jenis: "mingguan", status: "macet" })).toBe("boleh");
-    expect(statusGulung({ ...p, jenis: "tempoan", status: "berjalan" })).toBe("boleh");
-    expect(statusGulung({ ...p, jenis: "tempoan", status: "lunas" })).toBe("terkunci");
+    expect(statusGulung({ ...p, jenis: "mingguan", status: "lunas" })).toBe("terkunci");
+    expect(statusGulung({ ...p, jenis: "tempoan", status: "berjalan" })).toBe("terkunci");
   });
 });

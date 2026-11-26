@@ -50,7 +50,7 @@ Tiga jenis: **harian** (25 × bayar), **mingguan** (6/8/10 × bayar),
 |---|---|---|
 | `pokok` | `bigint` | Kelipatan Rp 100.000 — membuat potongan, total kembali, dan ÷ tenor selalu bulat. Mingguan paling sedikit Rp 500.000. |
 | `potongan_admin` | `bigint` | Potongan jasa/admin, pendapatan kantor saat pencairan: harian & tempoan 5%, mingguan 10% pokok; migrasi 0. |
-| `tabungan_masuk` | `bigint` | Yang masuk tabungan nasabah lewat akad ini: potongan tabungan 5% (baru/gulung harian & tempoan; mingguan 0) atau tabungan pembuka (migrasi). |
+| `tabungan_masuk` | `bigint` | Yang masuk tabungan nasabah lewat akad ini: potongan tabungan 5% (baru/gulung harian; mingguan & tempoan 0) atau tabungan pembuka (migrasi). |
 | `saldo_lama` | `bigint` | Gulung: sisa saldo pinjaman asal yang dipotong dari pencairan. |
 | `pencairan` | `bigint` | Tunai yang benar-benar diterima nasabah. |
 | `total_kembali` | `bigint` | Seluruh kewajiban (pokok + jasa): harian & tempoan 125%, mingguan 120% pokok. |
@@ -207,9 +207,10 @@ Field API lama (`collectorId`, `admin`, `tabunganAwal`, `macetSejak`,
 ## Service / logika nantinya
 
 - **Syarat akad** dari satu rumus (`packages/domain` `syaratAkad`, aturan-usaha A3):
-  dicairkan 90% — harian & tempoan potong 5% admin + 5% tabungan, kembali 125%;
-  mingguan potong 10% admin tanpa tabungan, kembali 120%, 8 kali.
-- **Gulung**: asal harus masih ditagih; rem `kebijakan` diperiksa lebih dulu
+  harian potong 5% admin + 5% tabungan (dicairkan 90%), kembali 125%; mingguan
+  potong 10% admin tanpa tabungan (90%), kembali 120%, 8 kali; tempoan potong
+  5% admin tanpa tabungan (95%), kembali 125%.
+- **Gulung**: tempoan tidak bisa digulung (`GULUNG_TEMPOAN`); asal harus masih ditagih; rem `kebijakan` diperiksa lebih dulu
   (`gulung_pinjaman_dikunci`, `naik_pinjaman_dikunci`); harian: tidak macet,
   pinjaman pertama tak boleh naik, ambang angsuran (ke-1–3 mulai angsuran 12,
   ke-4 dst mulai 10); pencairan bersih > 0. Urutan tulis: transaksi gulung →
