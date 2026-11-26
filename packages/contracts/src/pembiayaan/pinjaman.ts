@@ -63,13 +63,24 @@ export const kartuTagihSchema = pinjamanSchema.extend({
 });
 export type KartuTagih = z.infer<typeof kartuTagihSchema>;
 
-const bilahPortofolioSchema = z.object({ jumlah: z.number(), saldo: z.number() });
+const bilahPortofolioSchema = z.object({
+  jumlah: z.number(),
+  saldo: z.number(),
+  /** Σ angsuran (harian per hari, mingguan per minggu, tempoan sekali bayar) — 27 Nov 2026. */
+  angsuran: z.number(),
+  /** Σ saldo tabungan nasabahnya (nasabah hanya punya satu pinjaman aktif) — 27 Nov 2026. */
+  tabungan: z.number(),
+});
 
-/** Pegangan satu jenis pinjaman per status: banyaknya pinjaman dan Σ saldo. */
+/**
+ * Pegangan satu jenis pinjaman per status: banyaknya pinjaman, Σ saldo, Σ angsuran, Σ
+ * tabungan nasabah; `lunas` = banyaknya pinjaman lunas sepanjang masa (27 Nov 2026).
+ */
 export const portofolioJenisSchema = z.object({
   berjalan: bilahPortofolioSchema,
   macet: bilahPortofolioSchema,
   diputihkan: bilahPortofolioSchema,
+  lunas: z.object({ jumlah: z.number() }),
 });
 export type PortofolioJenis = z.infer<typeof portofolioJenisSchema>;
 

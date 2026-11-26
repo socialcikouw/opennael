@@ -6,6 +6,10 @@ import { useGerbangMutasi } from "@/fitur/lapangan";
 import { usePengingat } from "@/fitur/notifikasi";
 import { PilGulir } from "@/komponen/pil-gulir";
 import { PilJenis, type SaringJenis } from "@/komponen/pil-jenis";
+import { KartuRincian } from "@/komponen/statistik/kartu-rincian";
+import { KartuSorot } from "@/komponen/statistik/kartu-sorot";
+import { KepalaJudulBesar } from "@/komponen/statistik/kepala-judul-besar";
+import { KerangkaStatistik } from "@/komponen/statistik/kerangka-statistik";
 import { useRuangTab } from "@/komponen/tab-mengambang";
 import { g } from "@/komponen/ui/gaya-bersama";
 import { PesanGalat } from "@/komponen/ui/isian";
@@ -17,10 +21,6 @@ import { useBiayaHariIni, useGajiPeriode, useRingkasanPeriode } from "./data";
 import { susunKartu } from "./inti/kartu";
 import { daftarPeriode } from "./inti/periode";
 import { sorotGaji, sorotStortingJenis } from "./inti/sorot";
-import { KartuRincian } from "./komponen/kartu-rincian";
-import { KartuSorot } from "./komponen/kartu-sorot";
-import { KepalaRingkasan } from "./komponen/kepala-ringkasan";
-import { KerangkaRingkasan } from "./komponen/kerangka-ringkasan";
 import { SorotMutasiKas } from "./komponen/sorot-mutasi-kas";
 
 /**
@@ -112,7 +112,7 @@ export function LayarRingkasan() {
           <Tombol judul="Coba lagi" ikon="refresh-cw" onPress={() => void segarkan()} />
         </View>
       ) : (
-        <KerangkaRingkasan />
+        <KerangkaStatistik />
       );
   } else {
     const sorot =
@@ -168,7 +168,7 @@ export function LayarRingkasan() {
         />
       }
     >
-      <KepalaRingkasan periode={periode?.judul ?? " "} />
+      <KepalaJudulBesar overline={periode?.judul ?? " "} judul="Ringkasan" />
       <View style={g.tumpuk2}>
         <PilGulir
           opsi={daftar.map((p) => ({ nilai: p.kunci, label: p.pil }))}

@@ -17,6 +17,7 @@ export interface BarisPerforma {
 
 export interface TitikPerforma {
   tanggal: string;
+  setoranMurni: number;
   persentase: number | null;
   /** Hari ini belum selesai — digambar beda dari hari-hari yang sudah lewat. */
   hariIni: boolean;
@@ -29,6 +30,12 @@ export interface RingkasPerforma {
   titik: TitikPerforma[];
   /** Rata-rata persentase hari tagih yang SUDAH lewat (tanpa hari ini); null = belum ada. */
   rataRata: number | null;
+  /** Rata-rata setoran murni per hari yang ikut rata-rata (rupiah bulat); null = belum ada. */
+  rataMurni: number | null;
+  /** Banyaknya hari yang ikut rata-rata (hari tagih lewat yang bernilai). */
+  hariDinilai: number;
+  /** Hari terbaik & terendah, dan banyaknya hari ≥ 90% (Sempurna & Luar Biasa) — hari lewat. */
+  sorotan: { terbaik: TitikPerforma | null; terendah: TitikPerforma | null; hariTarget: number };
 }
 
 export function susunPerforma(
@@ -36,17 +43,38 @@ export function susunPerforma(
   hariTagih: readonly string[] | undefined,
   hariIni: string,
 ): RingkasPerforma {
-  if (!hariTagih) return { hariIni: null, titik: [], rataRata: null };
+  if (!hariTagih) {
+    return {
+      hariIni: null,
+      titik: [],
+      rataRata: null,
+      rataMurni: null,
+      hariDinilai: 0,
+      sorotan: { terbaik: null, terendah: null, hariTarget: 0 },
+    };
+  }
   const tagih = new Set(hariTagih);
   const baris = deret.filter((b) => b.tanggal <= hariIni && tagih.has(b.tanggal));
   // Hari tanpa patokan (0: tak ada angsuran jatuh tagih, lazim untuk mingguan dan tempoan)
   // tak jadi batang; patokan null (harian belum berpotret) tetap tampil sebagai tonggak kosong.
   const titik = baris
     .filter((b) => b.patokan !== 0)
-    .map((b) => ({ tanggal: b.tanggal, persentase: b.persentase, hariIni: b.tanggal === hariIni }))
+    .map((b) => ({
+      tanggal: b.tanggal,
+      setoranMurni: b.setoranMurni,
+      persentase: b.persentase,
+      hariIni: b.tanggal === hariIni,
+    }))
     .sort((a, b) => a.tanggal.localeCompare(b.tanggal));
 
-  const lalu = titik.flatMap((t) => (!t.hariIni && t.persentase !== null ? [t.persentase] : []));
+  const dinilai = titik.filter((t) => !t.hariIni && t.persentase !== null);
+  const lalu = dinilai.map((t) => t.persentase ?? 0);
+  let terbaik: TitikPerforma | null = null;
+  let terendah: TitikPerforma | null = null;
+  for (const t of dinilai) {
+    if (!terbaik || (t.persentase ?? 0) > (terbaik.persentase ?? 0)) terbaik = t;
+    if (!terendah || (t.persentase ?? 0) < (terendah.persentase ?? 0)) terendah = t;
+  }
   const sekarang = baris.find((b) => b.tanggal === hariIni);
   return {
     hariIni: sekarang
@@ -58,5 +86,15 @@ export function susunPerforma(
       : null,
     titik,
     rataRata: lalu.length > 0 ? Math.round(lalu.reduce((a, b) => a + b, 0) / lalu.length) : null,
+    rataMurni:
+      dinilai.length > 0
+        ? Math.round(dinilai.reduce((a, t) => a + t.setoranMurni, 0) / dinilai.length)
+        : null,
+    hariDinilai: dinilai.length,
+    sorotan: {
+      terbaik,
+      terendah,
+      hariTarget: dinilai.filter((t) => Math.round(t.persentase ?? 0) >= 90).length,
+    },
   };
 }

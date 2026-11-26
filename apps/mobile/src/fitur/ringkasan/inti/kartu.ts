@@ -1,8 +1,10 @@
 import type { Ringkasan } from "@opennael/contracts";
 import type { JenisPinjaman } from "@opennael/domain";
 import { LABEL_JENIS, rupiah } from "@opennael/format";
-import type { NamaIkon } from "../../../komponen/ui/daftar-ikon";
-import { type SegmenVM, type SelisihVM, selisih, susunSegmen } from "./komposisi";
+import { selisih, susunSegmen } from "../../../komponen/statistik/komposisi";
+import type { KartuVM, RincianVM } from "../../../komponen/statistik/tipe";
+
+export type { KartuVM, RincianVM };
 
 /**
  * KARTU RINCIAN RINGKASAN — satu kartu per pos uang, dari `GET /ringkasan` satu periode:
@@ -21,33 +23,7 @@ import { type SegmenVM, type SelisihVM, selisih, susunSegmen } from "./komposisi
  * (rupiah) — komponen memformat. PURE.
  */
 
-export interface RincianVM {
-  ikon: NamaIkon;
-  label: string;
-  nilai: number;
-  /** Warna nilai: bahaya (tekor, minus) / sukses (lebih setor). */
-  nada?: "bahaya" | "sukses";
-}
-
 export type KunciKartu = "storting" | "droping" | "potongan" | "operasional" | "setoran";
-
-export interface KartuVM {
-  kunci: KunciKartu;
-  judul: string;
-  ikon: NamaIkon;
-  nilai: number;
-  rumus: string | null;
-  /** Keterangan kecil di bawah rumus: "12 setoran · rata-rata Rp 410.000 per hari kerja". */
-  meta: string | null;
-  selisih: SelisihVM | null;
-  segmen: SegmenVM[] | null;
-  rincian: RincianVM[];
-  /** 2×2 keping (4 rincian) atau daftar baris. */
-  grid: boolean;
-  kaki: RincianVM | null;
-  /** Bisa diketuk → daftar per nasabah (hanya periode Hari Ini). */
-  daftar: "storting" | "droping" | null;
-}
 
 export interface BahanKartu {
   data: Ringkasan;

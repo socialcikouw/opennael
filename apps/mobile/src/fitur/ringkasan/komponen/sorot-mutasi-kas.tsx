@@ -3,11 +3,11 @@ import { jam, rupiah } from "@opennael/format";
 import { StyleSheet, Text, View } from "react-native";
 import type { GerbangMutasi } from "@/fitur/lapangan";
 import { AksiLaporan, ItemPengingat, type usePengingat } from "@/fitur/notifikasi";
+import { AngkaSorot, BingkaiSorot, DeretKeping, gayaSorot } from "@/komponen/statistik/kartu-sorot";
 import { g } from "@/komponen/ui/gaya-bersama";
 import { useZonaKantor } from "@/lib/kantor";
 import { HURUF, RUANG, TEBAL, WARNA } from "@/tema";
 import { barisArusKas, type KeadaanKas, keadaanKas } from "../inti/arus-kas";
-import { AngkaSorot, BingkaiSorot, DeretKeping, gayaSorot } from "./kartu-sorot";
 
 const LABEL_KEADAAN: Record<KeadaanKas, string> = {
   "belum-absen": "Belum Absen",

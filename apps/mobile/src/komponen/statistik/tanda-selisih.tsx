@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Ikon } from "@/komponen/ui/ikon";
 import { HURUF, RUANG, TEBAL, WARNA } from "@/tema";
-import type { SelisihVM } from "../inti/komposisi";
+import type { SelisihVM } from "./komposisi";
 
 /**
  * Naik/turun terhadap periode pembanding sepadan: "▲ 12% dari Oktober 1–27". Naik hijau,

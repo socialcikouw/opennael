@@ -1,27 +1,32 @@
 import type { JenisPinjaman } from "@opennael/domain";
-import { useQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
-import { rasioJenis, useHariIni, useKalenderBulan, useTagihan } from "@/fitur/lapangan";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useMemo, useRef } from "react";
+import { rasioJenis, useHariIni, useTagihan } from "@/fitur/lapangan";
 import { jatuhTempoDari } from "@/fitur/tagihan";
 import { kueri } from "@/lib/api";
-import { susunPerforma } from "./inti/performa";
+import type { BulanPerforma } from "./inti/bulan";
+import { type RingkasPerforma, susunPerforma } from "./inti/performa";
 
 /**
- * Bacaan layar PERFORMA (Mode Rekap) untuk saringan jenis (`null` = semua jenis): rasio bayar
- * hari ini dari pinjaman jenis itu, jatuh tempo tempoan, dan performa tagihan murni bulan ini
- * (aturan-usaha N: N1 harian, N3 mingguan & tempoan, N4 semua). Semua kueri berawalan kunci
- * `lapangan`, jadi tiap transaksi lapangan & tarik-segarkan menyegarkannya bersama;
- * performa berkunci per jenis, jadi pindah saringan memakai cache jenis itu sendiri.
+ * Bacaan layar PERFORMA (Mode Rekap) untuk satu bulan & saringan jenis (`null` = semua
+ * jenis): deret performa tagihan murni bulan itu (aturan-usaha N: N1 harian, N3 mingguan &
+ * tempoan, N4 semua) disaring ke hari tagih kalender kantor; dan — untuk Bulan Ini — rasio
+ * bayar hari ini & jatuh tempo tempoan. Semua kueri berawalan kunci `lapangan`, jadi tiap
+ * transaksi lapangan & tarik-segarkan menyegarkannya bersama. Ganti bulan/jenis menahan
+ * angka lama (`keepPreviousData`, layar meredupkannya) sampai yang baru tiba.
  */
-export function useDataPerforma(jenis: JenisPinjaman | null) {
+export function useDataPerforma(bulan: BulanPerforma | null, jenis: JenisPinjaman | null) {
   const hariIni = useHariIni();
   const tagihan = useTagihan();
   const tanggal = hariIni.data?.kalender.tanggal;
-  const bulan = tanggal?.slice(0, 7);
-  const kalender = useKalenderBulan(bulan);
-  const deret = useQuery(
-    kueri.lapangan.performa(bulan ? `${bulan}-01` : undefined, tanggal, jenis ?? "semua"),
-  );
+  const kalender = useQuery({
+    ...kueri.lapangan.kalender(bulan?.kunci),
+    placeholderData: keepPreviousData,
+  });
+  const deret = useQuery({
+    ...kueri.lapangan.performa(bulan?.mulai, bulan?.selesai, jenis ?? "semua"),
+    placeholderData: keepPreviousData,
+  });
 
   const pinjaman = tagihan.data;
   const rasio = useMemo(
@@ -34,9 +39,26 @@ export function useDataPerforma(jenis: JenisPinjaman | null) {
   );
   const baris = deret.data;
   const hariTagih = kalender.data?.hariTagih;
-  const performa = useMemo(
-    () => (baris && tanggal ? susunPerforma(baris, hariTagih, tanggal) : null),
-    [baris, hariTagih, tanggal],
+  // Dihitung hanya bila deret & kalender milik bulan yang sama (bukan sisa bulan sebelumnya
+  // yang ditahan); selama itu angka terakhir tetap tampil (diredupkan layar).
+  const cocok = !deret.isPlaceholderData && !kalender.isPlaceholderData;
+  const baru = useMemo(
+    () =>
+      baris && tanggal && hariTagih && cocok ? susunPerforma(baris, hariTagih, tanggal) : null,
+    [baris, hariTagih, tanggal, cocok],
   );
-  return { hariIni, tagihan, deret, rasio, jatuhTempo, performa };
+  const terakhir = useRef<RingkasPerforma | null>(null);
+  if (baru) terakhir.current = baru;
+  const performa = baru ?? terakhir.current;
+  return {
+    hariIni,
+    tagihan,
+    kalender,
+    deret,
+    rasio,
+    jatuhTempo,
+    performa,
+    /** Bulan/jenis baru sedang dimuat; yang tampil masih angka lama. */
+    ganti: baru === null && performa !== null,
+  };
 }

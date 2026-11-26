@@ -1,8 +1,10 @@
 import type { PratinjauGaji, Ringkasan } from "@opennael/contracts";
 import type { JenisPinjaman } from "@opennael/domain";
 import { LABEL_JENIS } from "@opennael/format";
-import type { NamaIkon } from "../../../komponen/ui/daftar-ikon";
-import { type SegmenVM, type SelisihVM, selisih, susunSegmen } from "./komposisi";
+import { selisih, susunSegmen } from "../../../komponen/statistik/komposisi";
+import type { SorotVM } from "../../../komponen/statistik/tipe";
+
+export type { SorotVM };
 
 /**
  * KARTU SOROT RINGKASAN — satu bidang pekat di puncak layar untuk angka yang paling
@@ -13,20 +15,6 @@ import { type SegmenVM, type SelisihVM, selisih, susunSegmen } from "./komposisi
  * Rumusnya dicetak kecil di bawah angka dan bahannya di keping kaki, supaya angka besar
  * bisa dicek dengan mata. PURE.
  */
-
-export interface SorotVM {
-  label: string;
-  ikon: NamaIkon;
-  nilai: number;
-  /** Keping kecil di samping angka: "Perkiraan", "Sudah Dibayar", "Minus". */
-  lencana: string | null;
-  rumus: string;
-  selisih: SelisihVM | null;
-  segmen: SegmenVM[] | null;
-  keping: { label: string; nilai: number }[];
-  /** Satu keping di bawah, di tengah (mis. Tabungan keluar). */
-  kepingBawah: { label: string; nilai: number } | null;
-}
 
 /** "5% storting − tekor" bila satu tarif sepanjang periode; selain itu rumus umumnya. */
 function rumusGaji(hari: readonly { tarifBp: number }[]): string {

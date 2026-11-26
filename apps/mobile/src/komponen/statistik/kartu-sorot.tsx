@@ -4,13 +4,13 @@ import { StyleSheet, Text, View } from "react-native";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
-import type { SorotVM } from "../inti/sorot";
 import { BarKomposisi } from "./bar-komposisi";
 import { TandaSelisih } from "./tanda-selisih";
+import type { SorotVM } from "./tipe";
 
 /**
- * KARTU SOROT — satu-satunya bidang pekat (`latarSorot`) di layar Ringkasan, untuk angka
- * yang paling dicari (gaji, storting satu jenis, mutasi kas hari ini). Rumus dicetak kecil
+ * KARTU SOROT — satu-satunya bidang pekat (`latarSorot`) di layar Rekap (Ringkasan,
+ * Portofolio), untuk angka yang paling dicari (gaji, mutasi kas, saldo akhir). Rumus dicetak kecil
  * di bawah angka dan bahannya di keping kaki, jadi angka besar bisa dicek dengan mata.
  * Nilai minus tetap terang (merah di atas hitam sulit terbaca), ditandai lencana.
  *

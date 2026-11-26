@@ -1,45 +1,85 @@
 import { kunci } from "@opennael/api-client";
-import type { JenisPinjaman } from "@opennael/domain";
-import { LABEL_JENIS, rupiah } from "@opennael/format";
+import { tanggal as formatTanggal } from "@opennael/format";
 import { useQueryClient } from "@tanstack/react-query";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useHariIni } from "@/fitur/lapangan";
+import { PilJenis, type SaringJenis } from "@/komponen/pil-jenis";
+import { KartuRincian } from "@/komponen/statistik/kartu-rincian";
+import { KartuSorot } from "@/komponen/statistik/kartu-sorot";
+import { KepalaJudulBesar } from "@/komponen/statistik/kepala-judul-besar";
+import { KerangkaStatistik } from "@/komponen/statistik/kerangka-statistik";
 import { useRuangTab } from "@/komponen/tab-mengambang";
 import { g } from "@/komponen/ui/gaya-bersama";
+import { PesanGalat } from "@/komponen/ui/isian";
 import { Spanduk } from "@/komponen/ui/spanduk";
+import { Tombol } from "@/komponen/ui/tombol";
 import { useTarikSegarkan } from "@/lib/tarik-segarkan";
-import { HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
+import { AKSEN, RUANG } from "@/tema";
 import { useDataPortofolio } from "./data";
-import { piutangAktif, portofolioUntuk } from "./inti/portofolio";
-import { GridPortofolio } from "./komponen/grid-portofolio";
-
-const URUTAN_JENIS: readonly JenisPinjaman[] = ["harian", "mingguan", "tempoan"];
+import { portofolioUntuk, sorotSaldoAkhir, susunKartuPortofolio } from "./inti/portofolio";
 
 /**
- * PORTOFOLIO (tab ketiga Mode Rekap) — pegangan kolektor: ubin Semua Jenis (saldo berjalan,
- * macet, diputihkan, piutang aktif), lalu rincian piutang aktif per jenis.
+ * PORTOFOLIO (tab ketiga Mode Rekap; rupa aplikasi lama, 27 Nov 2026) — pegangan kolektor
+ * saat ini, satu gulungan:
+ *
+ *   PEGANGAN · JUMAT, 27 NOV 2026
+ *   Portofolio                          ← judul besar (kepala tab disembunyikan)
+ *   [Semua][Harian][Mingguan][Tempoan]  ← pil jenis (tanpa permintaan baru)
+ *   ███ SALDO AKHIR ███                 ← piutang di lapangan, bar berjalan vs macet
+ *   Per Jenis · Nasabah Aktif · Target Angsuran · Tabungan Nasabah · Diputihkan
+ *
+ * Isi & urutan di `inti/portofolio.ts` (diuji); komponen kartu bersama `komponen/statistik`.
  */
 export function LayarPortofolio() {
+  const atas = useSafeAreaInsets().top;
   const ruangTab = useRuangTab();
   const klien = useQueryClient();
   const data = useDataPortofolio();
+  const hariIni = useHariIni();
+  const [saring, setSaring] = useState<SaringJenis>("semua");
+  const jenis = saring === "semua" ? null : saring;
+
   const segarkan = useCallback(
     () => klien.invalidateQueries({ queryKey: kunci.lapangan }),
     [klien],
   );
   const { aktif: menarik, tarik } = useTarikSegarkan(segarkan);
-  const semua = useMemo(
-    () => (data.data ? portofolioUntuk(data.data, null) : undefined),
-    [data.data],
+
+  const vm = useMemo(
+    () =>
+      data.data
+        ? {
+            sorot: sorotSaldoAkhir(portofolioUntuk(data.data, jenis)),
+            kartu: susunKartuPortofolio(data.data, jenis),
+          }
+        : null,
+    [data.data, jenis],
   );
-  const gagal = data.isError && !data.data;
+  const tanggal = hariIni.data?.kalender.tanggal;
 
   return (
     <ScrollView
       style={g.layar}
-      contentContainerStyle={[gaya.isi, { paddingBottom: ruangTab }]}
-      refreshControl={<RefreshControl refreshing={menarik} onRefresh={tarik} />}
+      contentContainerStyle={[gaya.isi, { paddingTop: atas + RUANG[3], paddingBottom: ruangTab }]}
+      showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl
+          refreshing={menarik}
+          onRefresh={tarik}
+          tintColor={AKSEN.teks}
+          colors={[AKSEN.teks]}
+          progressViewOffset={atas}
+        />
+      }
     >
+      <KepalaJudulBesar
+        overline={tanggal ? `Pegangan · ${formatTanggal(tanggal, "panjang")}` : "Pegangan"}
+        judul="Portofolio"
+      />
+      <PilJenis nilai={saring} onPilih={setSaring} />
+
       {data.isError && data.data ? (
         <Spanduk
           judul="Gagal menyegarkan"
@@ -47,61 +87,29 @@ export function LayarPortofolio() {
         />
       ) : null}
 
-      <View style={g.bagian}>
-        <Text style={g.judulBagian}>SEMUA JENIS</Text>
-        <GridPortofolio data={semua} gagal={gagal} />
-      </View>
-
-      {data.data ? (
-        <View style={g.bagian}>
-          <Text style={g.judulBagian}>PIUTANG AKTIF PER JENIS</Text>
-          <View style={gaya.tabel}>
-            {URUTAN_JENIS.map((jenis, i) => {
-              const p = piutangAktif(data.data[jenis]);
-              return (
-                <View key={jenis} style={[gaya.baris, i > 0 ? gaya.garisAtas : null]}>
-                  <View style={gaya.kiri}>
-                    <Text style={gaya.jenis}>{LABEL_JENIS[jenis]}</Text>
-                    <Text style={gaya.sub}>
-                      {p.jumlah} pinjaman{p.macet > 0 ? ` · ${p.macet} macet` : ""}
-                    </Text>
-                  </View>
-                  <Text
-                    style={gaya.nilai}
-                    numberOfLines={1}
-                    adjustsFontSizeToFit
-                    minimumFontScale={0.75}
-                  >
-                    {rupiah(p.saldo)}
-                  </Text>
-                </View>
-              );
-            })}
-          </View>
+      {vm ? (
+        <View style={gaya.kartu}>
+          <KartuSorot vm={vm.sorot} />
+          {vm.kartu.map((k) => (
+            <KartuRincian key={k.kunci} vm={k} />
+          ))}
+          <Text style={g.teksMini}>
+            Nasabah yang kini Anda pegang. Pinjaman lunas, digulung, dan batal tidak masuk saldo.
+          </Text>
         </View>
-      ) : null}
+      ) : data.isError ? (
+        <View style={g.tumpuk3}>
+          <PesanGalat pesan={data.error.message} />
+          <Tombol judul="Coba lagi" ikon="refresh-cw" onPress={() => void segarkan()} />
+        </View>
+      ) : (
+        <KerangkaStatistik kartu={3} />
+      )}
     </ScrollView>
   );
 }
 
 const gaya = StyleSheet.create({
-  isi: { gap: RUANG[5], paddingHorizontal: RUANG[5], paddingTop: RUANG[2] },
-  tabel: {
-    borderRadius: SUDUT.besar,
-    borderWidth: 1,
-    borderColor: WARNA.garis,
-    backgroundColor: WARNA.permukaan,
-    paddingHorizontal: RUANG[4],
-  },
-  baris: { flexDirection: "row", alignItems: "center", gap: RUANG[3], paddingVertical: RUANG[3] },
-  garisAtas: { borderTopWidth: 1, borderTopColor: WARNA.garis },
-  kiri: { flex: 1, minWidth: 0, gap: 2 },
-  jenis: { ...HURUF.base, fontWeight: TEBAL.tebal, color: WARNA.teks },
-  sub: { ...HURUF.xs, color: WARNA.redup },
-  nilai: {
-    ...HURUF.base,
-    fontWeight: TEBAL.ekstra,
-    color: WARNA.teks,
-    fontVariant: ["tabular-nums"],
-  },
+  isi: { gap: RUANG[4], paddingHorizontal: RUANG[5] },
+  kartu: { gap: RUANG[3] },
 });

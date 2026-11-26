@@ -8,7 +8,7 @@ import { dalamTransaksi, siapkanKantor, URL_DB } from "../../../uji/bantu";
  * pemegangnya yang dihitung; lunas dan pegangan kolektor lain tidak.
  */
 describe.skipIf(!URL_DB)("portofolio kolektor", () => {
-  test("jumlah & saldo per jenis dan status, hanya pegangan sendiri, mengikuti pemutihan", async () => {
+  test("jumlah, saldo, angsuran, tabungan per jenis & status, lunas, hanya pegangan sendiri, mengikuti pemutihan", async () => {
     await dalamTransaksi(async (tx) => {
       const { kirim, bos, kolektor: andi, kantorId } = await siapkanKantor(tx);
       const b = bos.tokenAkses;
@@ -23,11 +23,11 @@ describe.skipIf(!URL_DB)("portofolio kolektor", () => {
       const [w] = await baris<{ id: string }>(sql`
         insert into wilayah (kantor_id, nama, dibuat_oleh) values (${kantorId}, 'pule', ${andiId})
         returning id`);
-      const nasabahBaru = async (nama: string, pemegang: string) =>
+      const nasabahBaru = async (nama: string, pemegang: string, tabungan = 0) =>
         (
           await baris<{ id: string }>(sql`
-            insert into nasabah (kantor_id, kolektor_id, nama, wilayah_id)
-            values (${kantorId}, ${pemegang}, ${nama}, ${w?.id}) returning id`)
+            insert into nasabah (kantor_id, kolektor_id, nama, wilayah_id, saldo_tabungan)
+            values (${kantorId}, ${pemegang}, ${nama}, ${w?.id}, ${tabungan}) returning id`)
         )[0]?.id as string;
       /** Tenor & angsuran tiap jenis: harian 25 × 50.000, mingguan 8 × 150.000, tempoan 6 hari kerja sekali bayar. */
       const BENTUK = {
@@ -61,7 +61,7 @@ describe.skipIf(!URL_DB)("portofolio kolektor", () => {
         )[0]?.id as string;
       };
 
-      const ani = await nasabahBaru("ani", andiId);
+      const ani = await nasabahBaru("ani", andiId, 70_000);
       const budi = await nasabahBaru("budi", andiId);
       const citra = await nasabahBaru("citra", andiId);
       const dewi = await nasabahBaru("dewi", andiId);
@@ -106,20 +106,30 @@ describe.skipIf(!URL_DB)("portofolio kolektor", () => {
       });
 
       const baca = async () => (await kirim("/lapangan/portofolio", { token: k })).isi;
-      const nol = { jumlah: 0, saldo: 0 };
+      const nol = { jumlah: 0, saldo: 0, angsuran: 0, tabungan: 0 };
+      const belumLunas = { jumlah: 0 };
 
       // Tanpa masuk ditolak; bos bukan kolektor: ringkasan ini milik pegangan, bukan kantor.
       expect(kode(await kirim("/lapangan/portofolio"))).toBe("BELUM_MASUK");
       expect(kode(await kirim("/lapangan/portofolio", { token: b }))).toBe("PERAN_DILARANG");
 
+      // Angsuran per bentuk jenis; tabungan dari nasabahnya (Ani 70.000); lunas Ani dihitung.
+      const hBerjalan = { jumlah: 1, saldo: 800_000, angsuran: 50_000, tabungan: 70_000 };
+      const hMacet = { jumlah: 1, saldo: 300_000, angsuran: 50_000, tabungan: 0 };
       expect(await baca()).toEqual({
-        harian: {
-          berjalan: { jumlah: 1, saldo: 800_000 },
-          macet: { jumlah: 1, saldo: 300_000 },
+        harian: { berjalan: hBerjalan, macet: hMacet, diputihkan: nol, lunas: { jumlah: 1 } },
+        mingguan: {
+          berjalan: { jumlah: 1, saldo: 400_000, angsuran: 150_000, tabungan: 0 },
+          macet: nol,
           diputihkan: nol,
+          lunas: belumLunas,
         },
-        mingguan: { berjalan: { jumlah: 1, saldo: 400_000 }, macet: nol, diputihkan: nol },
-        tempoan: { berjalan: nol, macet: { jumlah: 1, saldo: 500_000 }, diputihkan: nol },
+        tempoan: {
+          berjalan: nol,
+          macet: { jumlah: 1, saldo: 500_000, angsuran: 1_250_000, tabungan: 0 },
+          diputihkan: nol,
+          lunas: belumLunas,
+        },
       });
 
       // Pemutihan memindahkan pinjaman macet ke diputihkan; saldonya tak disentuh.
@@ -129,9 +139,10 @@ describe.skipIf(!URL_DB)("portofolio kolektor", () => {
       });
       expect(putih.isi).toMatchObject({ status: "diputihkan", saldo: 300_000 });
       expect((await baca()).harian).toEqual({
-        berjalan: { jumlah: 1, saldo: 800_000 },
+        berjalan: hBerjalan,
         macet: nol,
-        diputihkan: { jumlah: 1, saldo: 300_000 },
+        diputihkan: hMacet,
+        lunas: { jumlah: 1 },
       });
 
       // Batal pemutihan: kembali macet.
@@ -140,9 +151,10 @@ describe.skipIf(!URL_DB)("portofolio kolektor", () => {
         token: b,
       });
       expect((await baca()).harian).toEqual({
-        berjalan: { jumlah: 1, saldo: 800_000 },
-        macet: { jumlah: 1, saldo: 300_000 },
+        berjalan: hBerjalan,
+        macet: hMacet,
         diputihkan: nol,
+        lunas: { jumlah: 1 },
       });
     });
   }, 60_000);

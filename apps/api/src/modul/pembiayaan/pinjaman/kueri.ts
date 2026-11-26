@@ -62,6 +62,8 @@ export function buatKueriPinjaman(deps: { db: Db; sekarang?: (() => Date) | unde
           status: pinjaman.status,
           jumlah: count(),
           saldo: sql<number>`coalesce(sum(${pinjaman.saldo}), 0)`.mapWith(Number),
+          angsuran: sql<number>`coalesce(sum(${pinjaman.angsuran}), 0)`.mapWith(Number),
+          tabungan: sql<number>`coalesce(sum(${nasabah.saldoTabungan}), 0)`.mapWith(Number),
         })
         .from(pinjaman)
         .innerJoin(nasabah, eq(nasabah.id, pinjaman.nasabahId))
@@ -69,19 +71,23 @@ export function buatKueriPinjaman(deps: { db: Db; sekarang?: (() => Date) | unde
           and(
             eq(pinjaman.kantorId, aktor.kantorId),
             eq(nasabah.kolektorId, aktor.penggunaId),
-            inArray(pinjaman.status, ["berjalan", "macet", "diputihkan"]),
+            inArray(pinjaman.status, ["berjalan", "macet", "diputihkan", "lunas"]),
           ),
         )
         .groupBy(pinjaman.jenis, pinjaman.status);
+      const nol = () => ({ jumlah: 0, saldo: 0, angsuran: 0, tabungan: 0 });
       const kosong = () => ({
-        berjalan: { jumlah: 0, saldo: 0 },
-        macet: { jumlah: 0, saldo: 0 },
-        diputihkan: { jumlah: 0, saldo: 0 },
+        berjalan: nol(),
+        macet: nol(),
+        diputihkan: nol(),
+        lunas: { jumlah: 0 },
       });
       const hasil: Portofolio = { harian: kosong(), mingguan: kosong(), tempoan: kosong() };
       for (const b of baris) {
-        if (b.status === "berjalan" || b.status === "macet" || b.status === "diputihkan") {
-          hasil[b.jenis][b.status] = { jumlah: b.jumlah, saldo: b.saldo };
+        if (b.status === "lunas") hasil[b.jenis].lunas = { jumlah: b.jumlah };
+        else if (b.status === "berjalan" || b.status === "macet" || b.status === "diputihkan") {
+          const { jumlah, saldo, angsuran, tabungan } = b;
+          hasil[b.jenis][b.status] = { jumlah, saldo, angsuran, tabungan };
         }
       }
       return hasil;

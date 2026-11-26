@@ -3,20 +3,28 @@ import { StyleSheet, Text, View } from "react-native";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Tekan } from "@/komponen/ui/tekan";
 import { AKSEN, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
-import type { KartuVM, RincianVM } from "../inti/kartu";
 import { BarKomposisi } from "./bar-komposisi";
 import { TandaSelisih } from "./tanda-selisih";
+import { type KartuVM, type RincianVM, teksNilai } from "./tipe";
 
 const warnaNada = (r: RincianVM) =>
   r.nada === "bahaya" ? WARNA.bahaya : r.nada === "sukses" ? WARNA.sukses : WARNA.teks;
 
 /**
- * KARTU RINCIAN satu pos (Storting, Droping, Potongan Akad, Operasional, Setoran Sore):
+ * KARTU RINCIAN satu pos (Ringkasan: Storting, Droping, …; Portofolio: Nasabah Aktif, …):
  * ikon & judul · naik/turun · angka besar · rumus · keterangan · bar komposisi · rincian
- * 2×2 atau baris · kaki. Satu komponen untuk semua pos — bedanya di VM (`inti/kartu.ts`).
+ * 2×2 atau baris · kaki. Satu komponen untuk semua pos — bedanya di VM (`inti/` fiturnya).
  * Kartu yang punya daftar per nasabah (hari ini) bisa diketuk: "Lihat N setoran ›".
  */
-export function KartuRincian({ vm, onBuka }: { vm: KartuVM; onBuka?: (() => void) | undefined }) {
+export function KartuRincian({
+  vm,
+  onBuka,
+  teksBuka = "Lihat per nasabah",
+}: {
+  vm: KartuVM;
+  onBuka?: (() => void) | undefined;
+  teksBuka?: string;
+}) {
   const aksen = AKSEN;
   const isi = (
     <>
@@ -39,7 +47,7 @@ export function KartuRincian({ vm, onBuka }: { vm: KartuVM; onBuka?: (() => void
           adjustsFontSizeToFit
           minimumFontScale={0.75}
         >
-          {rupiah(vm.nilai)}
+          {teksNilai(vm.nilai, vm.satuan, rupiah)}
         </Text>
         {vm.rumus ? <Text style={gaya.rumus}>{vm.rumus}</Text> : null}
         {vm.meta ? <Text style={gaya.meta}>{vm.meta}</Text> : null}
@@ -65,14 +73,14 @@ export function KartuRincian({ vm, onBuka }: { vm: KartuVM; onBuka?: (() => void
         <View style={gaya.kaki}>
           <Text style={gaya.kakiLabel}>{vm.kaki.label}</Text>
           <Text style={[gaya.kakiNilai, { color: warnaNada(vm.kaki) }]}>
-            {rupiah(vm.kaki.nilai)}
+            {teksNilai(vm.kaki.nilai, vm.kaki.satuan, rupiah)}
           </Text>
         </View>
       ) : null}
 
       {onBuka ? (
         <View style={gaya.buka}>
-          <Text style={[gaya.bukaTeks, { color: aksen.teks }]}>Lihat per nasabah</Text>
+          <Text style={[gaya.bukaTeks, { color: aksen.teks }]}>{teksBuka}</Text>
           <Ikon nama="chevron-right" ukuran={16} warna={aksen.teks} />
         </View>
       ) : null}
@@ -83,7 +91,7 @@ export function KartuRincian({ vm, onBuka }: { vm: KartuVM; onBuka?: (() => void
   return (
     <Tekan
       accessibilityRole="button"
-      accessibilityLabel={`${vm.judul} ${rupiah(vm.nilai)}, lihat per nasabah`}
+      accessibilityLabel={`${vm.judul} ${teksNilai(vm.nilai, vm.satuan, rupiah)}, ${teksBuka}`}
       onPress={onBuka}
       style={({ pressed }) => [gaya.kartu, pressed ? gaya.ditekan : null]}
     >
@@ -107,7 +115,7 @@ function Keping({ r }: { r: RincianVM }) {
         adjustsFontSizeToFit
         minimumFontScale={0.8}
       >
-        {rupiah(r.nilai)}
+        {teksNilai(r.nilai, r.satuan, rupiah)}
       </Text>
     </View>
   );
@@ -123,7 +131,7 @@ function Baris({ r, pertama }: { r: RincianVM; pertama: boolean }) {
         {r.label}
       </Text>
       <Text style={[gaya.barisNilai, { color: warnaNada(r) }]} numberOfLines={1}>
-        {rupiah(r.nilai)}
+        {teksNilai(r.nilai, r.satuan, rupiah)}
       </Text>
     </View>
   );

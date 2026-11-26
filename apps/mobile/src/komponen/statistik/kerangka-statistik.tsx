@@ -2,13 +2,16 @@ import { type DimensionValue, StyleSheet, View } from "react-native";
 import { RUANG, SUDUT, WARNA } from "@/tema";
 
 /**
- * Kerangka muatan PERTAMA Ringkasan — kartu sorot lalu dua kartu rincian berkeping 2×2,
+ * Kerangka muatan PERTAMA layar Rekap — kartu sorot lalu `kartu` kartu rincian berkeping 2×2,
  * bentuknya sama dengan susunan nyata supaya layar tak melompat saat data tiba. Balok diam:
  * ganti periode/jenis tak memakainya (angka lama ditahan & diredupkan).
  */
-export function KerangkaRingkasan() {
+/** Kunci tetap balok kartu (paling banyak empat). */
+const KUNCI_KARTU = ["a", "b", "c", "d"] as const;
+
+export function KerangkaStatistik({ kartu = 2 }: { kartu?: number }) {
   return (
-    <View style={gaya.isi} accessibilityLabel="Memuat ringkasan">
+    <View style={gaya.isi} accessibilityLabel="Memuat">
       <View style={[gaya.kartu, gaya.sorot]}>
         <Balok lebar={110} tinggi={14} gelap />
         <Balok lebar={200} tinggi={30} gelap />
@@ -17,8 +20,8 @@ export function KerangkaRingkasan() {
           <View style={[gaya.keping, gaya.balokGelap]} />
         </View>
       </View>
-      {[0, 1].map((i) => (
-        <View key={i} style={[gaya.kartu, gaya.putih]}>
+      {KUNCI_KARTU.slice(0, kartu).map((k) => (
+        <View key={k} style={[gaya.kartu, gaya.putih]}>
           <Balok lebar={120} tinggi={14} />
           <Balok lebar={170} tinggi={24} />
           <View style={gaya.deret}>

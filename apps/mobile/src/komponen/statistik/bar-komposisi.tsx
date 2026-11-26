@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import { HURUF, RUANG, TEBAL, WARNA } from "@/tema";
-import type { SegmenVM } from "../inti/komposisi";
+import type { SegmenVM } from "./komposisi";
 
 const WARNA_TERANG = [WARNA.komposisi1, WARNA.komposisi2, WARNA.komposisi3];
 const WARNA_SOROT = [WARNA.komposisiSorot1, WARNA.komposisiSorot2, WARNA.komposisiSorot3];
