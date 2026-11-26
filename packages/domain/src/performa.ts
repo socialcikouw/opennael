@@ -63,10 +63,10 @@ export interface BahanPatokan {
 
 /**
  * Hari tagih pinjaman ini: mingguan akad + 7k (1 ≤ k ≤ tenor, B3), tempoan
- * pada jatuh tempo (akad + tenor bila tak tersimpan).
+ * pada jatuh tempo (hari masuk kerja ke-6, A4; null = belum sampai).
  */
 export function jatuhTagihPada(b: BahanPatokan, hari: string): boolean {
-  if (b.jenis === "tempoan") return hari === (b.jatuhTempo ?? geserTanggal(b.tanggalAkad, b.tenor));
+  if (b.jenis === "tempoan") return b.jatuhTempo !== null && hari === b.jatuhTempo;
   const selisih = selisihHari(b.tanggalAkad, hari);
   return selisih > 0 && selisih % 7 === 0 && selisih / 7 <= b.tenor;
 }

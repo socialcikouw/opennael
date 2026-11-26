@@ -1,6 +1,7 @@
 import { wajibDitagihHariIni } from "@opennael/domain";
 import { and, asc, eq, inArray, isNull } from "drizzle-orm";
 import { hariKolektor, nasabah, pinjaman } from "../../../../platform/db/skema";
+import { batasTempoTempoan, jatuhTempoTempoan } from "../../../../platform/db/tempo";
 import type { Aktor } from "../../../../platform/http/aktor";
 import { melanggar } from "../../../../platform/http/galat";
 import { wajibPeran } from "../../../../platform/http/peran";
@@ -46,7 +47,8 @@ export function buatBukaLaporan(deps: GerbangDeps) {
           id: pinjaman.id,
           jenis: pinjaman.jenis,
           tanggalAkad: pinjaman.tanggalAkad,
-          jatuhTempo: pinjaman.jatuhTempo,
+          jatuhTempo: jatuhTempoTempoan(),
+          batasTempo: batasTempoTempoan(),
           nama: nasabah.nama,
         })
         .from(pinjaman)

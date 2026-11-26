@@ -28,7 +28,7 @@ Berlaku juga untuk gulung dan salinan migrasi.
 |---|---|
 | Harian | 25 kali |
 | Mingguan | 8 kali |
-| Tempoan | 7, 10, atau 14 hari (sekali bayar) |
+| Tempoan | 6 hari kerja (sekali bayar, A4) |
 
 **A3. Potongan & total kembali** per jenis (*keputusan pemilik, 26 Nov 2026*):
 
@@ -36,7 +36,7 @@ Berlaku juga untuk gulung dan salinan migrasi.
 |---|---|---|---|---|
 | Harian | admin 5% + tabungan 5% | 90% | 125% pokok | 5% pokok |
 | Mingguan | **admin 10%, tanpa tabungan** | 90% | **120% pokok** | 15% pokok |
-| Tempoan | **admin 5%, tanpa tabungan** | **95%** | 125% pokok | sekali bayar (A4) |
+| Tempoan | **tanpa potongan** | **100%** | 125% pokok | sekali bayar (A4) |
 
 Angsuran = total kembali ÷ tenor. Mingguan & tempoan tidak memotong tabungan,
 jadi pinjamannya tidak menambah tabungan nasabah (yang dikembalikan saat lunas
@@ -46,7 +46,27 @@ Rp 1 juta) sehingga tak bisa dibayar pas (C1: kelipatan Rp 1.000). Data uji lama
 dihapus; tidak ada pinjaman dengan rumus lama.
 
 **A4. Tempoan:** potongan & total kembali seperti A3; angsuran = total kembali
-(sekali bayar); jatuh tempo = tanggal akad + tenor hari.
+(sekali bayar). **Tenor dihitung dari hari kerja kolektor**, bukan kalender
+(*keputusan pemilik, 26 Nov 2026*): hari ke-N = jumlah hari kolektor **pemegang
+nasabah saat ini** absen *masuk kerja* sesudah hari akad (hari akad tak
+dihitung; Minggu, libur kantor, dan hari kolektor tidak kerja atau lupa absen
+pun tidak).
+
+- **Jatuh tempo** = hari masuk kerja ke-6.
+- **Janji besok** (G1) paling banyak 4 kali: hari ke-6 s/d ke-9.
+- **Batas lunas** = hari masuk kerja ke-10 (6 + 4): janji tak bisa lagi, wajib
+  lunas; belum lunas di akhir hari itu → macet (F3).
+
+Kolektor yang berminggu-minggu tidak bekerja tidak membuat nasabahnya jatuh
+tempo atau macet. Nasabah yang dipindah ke kolektor lain dihitung dengan absen
+pemegang barunya.
+
+> Contoh: Budi akad tempoan Rp 200.000 Kamis 26 Nov (dicairkan 200.000, kembali
+> 250.000). Kolektor masuk Jumat, Sabtu, Senin, Selasa, Rabu, Kamis → jatuh tempo
+> **Kamis 3 Des**. Bila Senin kolektor tidak kerja, jatuh tempo Jumat 4 Des.
+> Kamis 3 Des Budi belum bayar → Janji Besok (meleset 1); Jumat (2), Sabtu (3),
+> Senin (4); Selasa 8 Des = batas lunas — tak ada janji lagi; belum lunas sampai
+> tutup hari → macet.
 
 **A5. Pencairan** (uang yang dicairkan ke nasabah) = pokok − admin − tabungan − saldo pinjaman
 lama (hanya gulung).
@@ -56,7 +76,7 @@ lama (hanya gulung).
 | Harian, 25× | 1.000.000 | 50.000 | 50.000 | 900.000 | 1.250.000 | 50.000 |
 | Mingguan, 8× | 1.000.000 | 100.000 | 0 | 900.000 | 1.200.000 | 150.000 |
 | Mingguan, 8× | 500.000 | 50.000 | 0 | 450.000 | 600.000 | 75.000 |
-| Tempoan, 14 hari | 1.000.000 | 50.000 | 0 | 950.000 | 1.250.000 | 1.250.000 |
+| Tempoan, 6 hari kerja | 1.000.000 | 0 | 0 | 1.000.000 | 1.250.000 | 1.250.000 |
 
 **A6. Syarat akad dibekukan** di pinjaman pada hari akad: mengubah rumus hanya
 berlaku untuk akad berikutnya.
@@ -107,7 +127,8 @@ hari itu (bawaan Senin–Sabtu) dan bukan libur kantor.
 **B3. Mingguan:** pada hari akad + 7, 14, 21, … hari. **Libur nasabah menggeser**
 jadwal: minggu yang diliburkan tidak dihitung.
 
-**B4. Tempoan:** tidak berkala; dibayar sekali paling lambat jatuh tempo.
+**B4. Tempoan:** tidak berkala; dibayar sekali, paling lambat jatuh tempo (A4) —
+dengan janji besok paling lambat batas lunas.
 
 **B6. Wajib ditagih hari ini** (yang menahan laporan, C6) — pinjaman aktif
 (berjalan **atau macet**) yang sudah mulai ditagih (B1, jadi bukan akad hari
@@ -117,11 +138,12 @@ ini):
 - mingguan: hanya pada hari tagihnya (akad + 7, 14, … hari). Di hari lain ia
   tetap boleh dibayar, tetapi tidak wajib — libur pun hanya boleh pada hari
   tagihnya (G2);
-- tempoan: setiap hari kerja **sejak jatuh tempo** — jatuh tempo hari ini atau
-  sudah lewat dan belum lunas. Sebelum jatuh tempo tidak wajib (dibayar sekali
-  penuh kapan pun nasabahnya siap). Nasabah yang belum bisa membayar dicatat
-  libur beralasan (G1). *Keputusan pemilik, 1 Nov 2026* (sebelumnya: tempoan
-  tidak pernah wajib).
+- tempoan: setiap hari kerja **sejak jatuh tempo sampai sebelum batas lunas**
+  (hari masuk kerja ke-6 s/d ke-9, A4). Sebelum jatuh tempo tidak wajib (dibayar
+  sekali penuh kapan pun nasabahnya siap). Nasabah yang belum bisa membayar
+  dicatat **janji besok** (G1). Pada batas lunas nasabah tidak menahan laporan:
+  kartunya tampil "Wajib Lunas", dan bila belum lunas malamnya macet (F3).
+  *Keputusan pemilik, 1 & 26 Nov 2026.*
 
 **B5. Tertinggal & tunggakan** (yang tampil di kartu kolektor), dihitung menurut
 **jumlah angsuran yang sudah terbayar**, bukan tanggal tiap setoran; hari ini
@@ -186,8 +208,7 @@ selama gerbang ini belum terbuka.
 > Kamis), Citra (tempoan, jatuh tempo minggu depan), Eka (tempoan, jatuh tempo
 > kemarin), dan Dewi (harian, akad hari ini). Yang wajib Sari dan Eka. Sari
 > belum setor → laporan ditolak "Masih ada 2 nasabah yang belum dicatat: Eka,
-> Sari". Sari diliburkan dan Eka diliburkan dengan alasan "belum ada uang" →
-> laporan boleh dibuka.
+> Sari". Sari diliburkan dan Eka dicatat janji besok → laporan boleh dibuka.
 
 ---
 
@@ -229,8 +250,8 @@ nasabah.
 
 **E5.** Mingguan boleh digulung kapan saja, termasuk saat macet dan naik pada
 pinjaman pertama. **Tempoan tidak bisa digulung** — nasabah melunasi dulu, lalu
-akad baru (*keputusan pemilik, 26 Nov 2026*; kartu tempoan hanya punya Libur &
-Lunasi).
+akad baru (*keputusan pemilik, 26 Nov 2026*; kartu tempoan hanya punya Janji
+Besok & Lunasi).
 
 **E6. Pencairan bersih** = pencairan akad penerus − saldo pinjaman asal, **harus
 lebih dari nol**.
@@ -265,11 +286,13 @@ dinilai bila jendela memuat **paling sedikit 15 hari tagih**.
 **F2. Mingguan:** macet bila **setoran murni dalam jendela < 1 × angsuran**. Baru
 dinilai bila pinjaman sudah masuk pembukuan paling sedikit satu jendela penuh.
 
-**F3. Tempoan:** macet bila **sudah lewat 7 hari dari jatuh tempo** dan belum lunas.
+**F3. Tempoan:** macet bila **belum lunas pada tutup hari batas lunas** (hari
+masuk kerja ke-10 kolektor pemegang, A4) atau sesudahnya. *Keputusan pemilik,
+26 Nov 2026* (sebelumnya: lewat 7 hari kalender dari jatuh tempo).
 
 **F4. Dua arah** untuk harian & mingguan: pinjaman macet yang setorannya kembali
 mencapai ambang menjadi berjalan lagi. Tempoan hanya keluar dari macet lewat
-lunas atau gulung.
+lunas.
 
 **F5. Libur tidak memaafkan macet** — macet murni mengukur uang masuk.
 
@@ -286,13 +309,14 @@ tunggakan, bukan hanya setoran) diusulkan dan dikerjakan terpisah kelak.
 
 ## G. Libur nasabah
 
-**G1. Tempoan hanya boleh diliburkan sejak jatuh tempo** (jatuh tempo hari ini
-atau sudah lewat), **dengan alasan wajib** (mis. "belum ada uang"). Sebelum
-jatuh tempo ditolak (`LIBUR_TIDAK_BERLAKU`); tanpa alasan ditolak
-(`ALASAN_LIBUR_WAJIB`). Libur tempoan hanya catatan "sudah didatangi" untuk
-B6/C6 — jatuh tempo tidak bergeser, tunggakan (B5) dan macet (F3) tetap
-dihitung dari jatuh tempo. *Keputusan pemilik, 1 Nov 2026* (sebelumnya:
-tempoan tidak punya libur).
+**G1. Tempoan: "Janji Besok"** menggantikan libur (*keputusan pemilik, 26 Nov
+2026*; sebelumnya libur beralasan sejak jatuh tempo). Boleh **sejak jatuh tempo
+sampai sebelum batas lunas** (hari masuk kerja ke-6 s/d ke-9, A4) — jadi paling
+banyak 4 kali; tanpa alasan. Sebelum jatuh tempo ditolak (`LIBUR_TIDAK_BERLAKU`,
+"Janji besok baru bisa sejak jatuh tempo"); pada batas lunas ditolak
+(`JANJI_HABIS`, "Sudah janji 4 kali — wajib lunas hari ini"). Janji hanya
+catatan "sudah didatangi" untuk B6/C6 (disimpan sebagai libur nasabah) — tidak
+menggeser hari ke-N; yang menggeser hanya hari kolektor tidak masuk kerja.
 
 **G2.** Mingguan hanya bisa diliburkan **pada hari tagihnya**.
 
@@ -461,7 +485,7 @@ Patokan ≤ 0 → persentase kosong (pembagian tak bermakna).
 **N3. Mingguan & tempoan** *(ditambahkan 1 Nov 2026 atas permintaan pemilik,
 untuk Dasbor HP per mode; syarat (b) dan (c) dikonfirmasi pemilik 14 Nov 2026).* Patokan dihitung dari pinjaman yang **jatuh tagih
 pada D**: mingguan bila D = tanggal akad + 7k hari dengan 1 ≤ k ≤ tenor (B3);
-tempoan bila D = jatuh tempo (akad + tenor bila tak tersimpan).
+tempoan bila D = jatuh tempo (hari masuk kerja ke-6, A4).
 
 ```
 patokan(D)    = Σ angsuran pinjaman jenis itu yang

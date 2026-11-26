@@ -5,6 +5,7 @@ import {
   nomorGulungMinimal,
   type StatusGulung,
   statusGulung,
+  sudahJatuhTempo,
   tolakLibur,
   wajibDitagihHariIni,
   waktuKantor,
@@ -80,6 +81,8 @@ export interface KartuVM {
   bayarTeks: string;
   sekaliBayar: boolean;
   tampilkanLibur: boolean;
+  /** "LIBUR", atau "JANJI BESOK" untuk tempoan (G1). */
+  labelLibur: string;
   /** Alasan tombol Libur mati (G1–G3); null = boleh. */
   alasanLibur: string | null;
   /** Kartu ringkas ember sudah: "SUDAH BAYAR • 50K" / "LIBUR HARI INI". */
@@ -148,7 +151,7 @@ function tanggalAkadTeks(tanggalAkad: string, hariIni: string): string {
 }
 
 function judulSudah(p: KartuTagih): string | null {
-  if (p.hariIni?.jenis === "libur") return "LIBUR HARI INI";
+  if (p.hariIni?.jenis === "libur") return p.jenis === "tempoan" ? "JANJI BESOK" : "LIBUR HARI INI";
   if (p.hariIni?.jenis === "angsuran")
     return `SUDAH BAYAR • ${nominalK(p.hariIni.storting).toUpperCase()}`;
   return null;
@@ -162,7 +165,7 @@ function susun(p: KartuTagih, hariIni: string, bahan: BahanGrid, zona: ZonaWaktu
     p.jenis === "mingguan"
       ? ` · mingguan ${p.tenor}×`
       : tempoan
-        ? ` · tempoan ${p.tenor} hari`
+        ? ` · tempoan ${p.tenor} hari kerja`
         : "";
   const libur = tolakLibur(p, hariIni);
   return {
@@ -196,8 +199,10 @@ function susun(p: KartuTagih, hariIni: string, bahan: BahanGrid, zona: ZonaWaktu
     aksi: e === "belum",
     bayarTeks: rupiahPendek(tempoan ? p.saldo : p.angsuran),
     sekaliBayar: tempoan,
-    // Tempoan: Libur hanya sejak jatuh tempo (G1); sebelumnya tak ditampilkan sama sekali.
-    tampilkanLibur: !tempoan || libur === null,
+    // Tempoan: Janji Besok baru tampil sejak jatuh tempo (G1); pada batas lunas tetap tampil
+    // tetapi mati ("Sudah janji 4 kali — wajib lunas hari ini").
+    tampilkanLibur: !tempoan || sudahJatuhTempo(p, hariIni),
+    labelLibur: tempoan ? "JANJI BESOK" : "LIBUR",
     alasanLibur: libur?.pesan ?? null,
     judulSudah: e === "sudah" ? judulSudah(p) : null,
     cari: `${kunciWilayah(p.nasabah.nama)} ${kunciWilayah(p.nasabah.kampung)}`,

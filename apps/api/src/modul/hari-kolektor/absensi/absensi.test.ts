@@ -61,7 +61,7 @@ describe.skipIf(!URL_DB)("absensi kolektor", () => {
       const sari = await akadBaru("sari");
       const pSari = sari.isi.id as string;
       await kirim("/lapangan/bayar", { pinjamanId: pSari, setoranMurni: 50_000 }, k);
-      const wati = await akadBaru("wati", { jenis: "tempoan", tenor: 14 });
+      const wati = await akadBaru("wati", { jenis: "tempoan", tenor: 6 });
 
       const hariIni = await kirim("/lapangan/hari-ini", undefined, k);
       await tx.execute(sql`insert into libur_kantor (kantor_id, tanggal, alasan_libur, dibuat_oleh)

@@ -34,6 +34,8 @@ const kartu = (ubah: Partial<KartuTagih> = {}): KartuTagih => ({
   tanggalAkad: T,
   waktuAkad: `${T}T02:00:00.000Z`,
   jatuhTempo: null,
+  batasTempo: null,
+  hariTempo: 0,
   pokok: 1_000_000,
   potonganAdmin: 50_000,
   tabunganMasuk: 50_000,

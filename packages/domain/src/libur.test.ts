@@ -1,24 +1,32 @@
 import { describe, expect, test } from "bun:test";
 import { nomorGulungMinimal, statusGulung } from "./gulung";
-import { liburPerluAlasan, tolakLibur } from "./libur";
+import { tolakLibur } from "./libur";
 
 describe("G. libur nasabah", () => {
   const kamis = "2026-10-29";
 
-  test("G1 tempoan hanya sejak jatuh tempo (tanpa G3), wajib beralasan", () => {
-    const tempoan = { jenis: "tempoan" as const, tanggalAkad: "2026-10-15", angsuranKe: 0 };
-    expect(tolakLibur({ ...tempoan, jatuhTempo: "2026-10-30" }, kamis)?.kode).toBe(
+  test("G1 tempoan: janji besok sejak jatuh tempo sampai sebelum batas lunas (tanpa G3)", () => {
+    const tempoan = {
+      jenis: "tempoan" as const,
+      tanggalAkad: "2026-10-15",
+      angsuranKe: 0,
+      batasTempo: null,
+    };
+    // Jatuh tempo belum sampai (hari masuk kerja ke-6 belum ada).
+    expect(tolakLibur({ ...tempoan, jatuhTempo: null, batasTempo: null }, kamis)?.kode).toBe(
       "LIBUR_TIDAK_BERLAKU",
     );
     // Jatuh tempo hari ini & sudah lewat: boleh, walau angsuran terbayar 0 (G3 tak berlaku).
     expect(tolakLibur({ ...tempoan, jatuhTempo: kamis }, kamis)).toBeNull();
     expect(tolakLibur({ ...tempoan, jatuhTempo: "2026-10-22" }, kamis)).toBeNull();
-    expect(liburPerluAlasan(tempoan)).toBe(true);
-    expect(liburPerluAlasan({ jenis: "harian" })).toBe(false);
+    // Batas lunas (hari masuk kerja ke-10) hari ini: janji habis.
+    expect(
+      tolakLibur({ ...tempoan, jatuhTempo: "2026-10-22", batasTempo: kamis }, kamis)?.kode,
+    ).toBe("JANJI_HABIS");
   });
 
   test("G2 mingguan hanya di hari tagihnya", () => {
-    const mingguan = { jenis: "mingguan" as const, jatuhTempo: null };
+    const mingguan = { jenis: "mingguan" as const, jatuhTempo: null, batasTempo: null };
     expect(tolakLibur({ ...mingguan, tanggalAkad: "2026-10-26", angsuranKe: 5 }, kamis)?.kode).toBe(
       "LIBUR_BUKAN_HARI_TAGIH",
     );
@@ -26,7 +34,12 @@ describe("G. libur nasabah", () => {
   });
 
   test("G3 angsuran terbayar 0–1 belum boleh libur", () => {
-    const harian = { jenis: "harian" as const, tanggalAkad: "2026-10-01", jatuhTempo: null };
+    const harian = {
+      jenis: "harian" as const,
+      tanggalAkad: "2026-10-01",
+      jatuhTempo: null,
+      batasTempo: null,
+    };
     expect(tolakLibur({ ...harian, angsuranKe: 1 }, kamis)?.kode).toBe("LIBUR_BELUM_BOLEH");
     expect(tolakLibur({ ...harian, angsuranKe: 2 }, kamis)).toBeNull();
   });

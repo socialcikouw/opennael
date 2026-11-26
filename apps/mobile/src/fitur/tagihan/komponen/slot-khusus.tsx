@@ -61,7 +61,8 @@ export const BlokTempo = memo(function BlokTempo({ t, aksen }: { t: TempoVM; aks
     nanti: { teks: WARNA.teksKedua, latar: WARNA.isiNetral },
     segera: { teks: WARNA.waspada, latar: WARNA.waspadaLembut },
     hariini: { teks: aksen.teksIsi, latar: aksen.isi },
-    lewat: { teks: WARNA.bahayaTeks, latar: WARNA.bahayaLembut },
+    meleset: { teks: WARNA.bahayaTeks, latar: WARNA.bahayaLembut },
+    batas: { teks: WARNA.teksAtasBahaya, latar: WARNA.bahaya },
     macet: { teks: WARNA.teksAtasBahaya, latar: WARNA.bahaya },
   };
   const w = rupa[t.keadaan];

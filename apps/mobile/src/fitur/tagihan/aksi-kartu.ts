@@ -1,5 +1,5 @@
 import { kunci } from "@opennael/api-client";
-import { hitungLunas, liburPerluAlasan } from "@opennael/domain";
+import { hitungLunas } from "@opennael/domain";
 import { judul, rupiah } from "@opennael/format";
 import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
@@ -14,7 +14,6 @@ import {
   useSiapkanNasabah,
 } from "@/fitur/lapangan";
 import { getar } from "@/komponen/ui/getar";
-import type { KartuVM } from "./inti/kartu";
 import type { AksiKartu } from "./komponen/kartu-nasabah";
 
 /** Lama stempel "Berhasil" tampil di kartu (animasi ±0,45 dtk + waktu membaca) sebelum kartu turun ke "Sudah ditagih". */
@@ -92,27 +91,6 @@ export function useAksiKartu(hariIni: ReturnType<typeof useHariIni>) {
     return true;
   }, [gerbang]);
 
-  /** Kartu yang sedang meminta alasan libur (tempoan, G1); null = lembar tertutup. */
-  const [liburBeralasan, setLiburBeralasan] = useState<KartuVM | null>(null);
-  const lembarLibur = useMemo(
-    () => ({
-      vm: liburBeralasan,
-      tutup: () => setLiburBeralasan(null),
-      kirim: (alasan: string) => {
-        const vm = liburBeralasan;
-        if (!vm) return;
-        setLiburBeralasan(null);
-        void catat(
-          vm.id,
-          () => tulis.libur({ pinjamanId: vm.id, alasan }),
-          "libur",
-          "Gagal mencatat libur",
-        );
-      },
-    }),
-    [liburBeralasan, catat],
-  );
-
   const aksi: AksiKartu = useMemo(
     () => ({
       nasabah: (vm) =>
@@ -133,14 +111,27 @@ export function useAksiKartu(hariIni: ReturnType<typeof useHariIni>) {
       },
       libur: (vm) => {
         if (berjalan.current.has(vm.id)) return;
+        const janji = vm.sekaliBayar;
         if (vm.alasanLibur) {
-          Alert.alert("BELUM BISA LIBUR", vm.alasanLibur);
+          Alert.alert(janji ? "BELUM BISA JANJI" : "BELUM BISA LIBUR", vm.alasanLibur);
           return;
         }
         if (gerbangTutup()) return;
-        // G1: libur tempoan wajib beralasan → lembar alasan.
-        if (liburPerluAlasan(vm.p)) {
-          setLiburBeralasan(vm);
+        // G1: tempoan = janji besok (tanpa alasan, paling banyak 4 kali — A4).
+        if (janji) {
+          Alert.alert("Janji Besok", `Catat ${vm.nama} janji melunasi besok?`, [
+            { text: "Batal", style: "cancel" },
+            {
+              text: "Catat",
+              onPress: () =>
+                void catat(
+                  vm.id,
+                  () => tulis.libur({ pinjamanId: vm.id }),
+                  "janji",
+                  "Gagal mencatat janji",
+                ),
+            },
+          ]);
           return;
         }
         Alert.alert("Tandai Libur", `Yakin ${vm.nama} libur hari ini?`, [
@@ -184,5 +175,5 @@ export function useAksiKartu(hariIni: ReturnType<typeof useHariIni>) {
     [gerbangTutup, catat, siapkanNasabah],
   );
 
-  return { stempel, sibuk, aksi, gerbang, lembarLibur };
+  return { stempel, sibuk, aksi, gerbang };
 }

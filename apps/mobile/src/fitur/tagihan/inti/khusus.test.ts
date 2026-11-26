@@ -57,66 +57,99 @@ describe("kotak mingguan", () => {
   });
 });
 
-describe("tempoan", () => {
-  test("hitung mundur, keadaan, dan garis waktu", () => {
-    const t = susunTempo(
-      { tanggalAkad: "2026-10-01", tenor: 30, jatuhTempo: null, status: "berjalan" },
-      KAMIS,
-    );
-    expect(t).toMatchObject({
-      jatuhTempo: "2026-10-31",
-      sisaHari: 2,
-      keadaan: "segera",
-      hitungMundur: "H-2",
-      jatuhTempoHariTeks: "Sab 31 Okt",
-      akadTeks: "1 Okt",
-    });
-    expect(t.jalan).toBeCloseTo(28 / 30);
-    const macet = susunTempo(
-      { tanggalAkad: "2026-09-20", tenor: 30, jatuhTempo: "2026-10-20", status: "macet" },
-      KAMIS,
-    );
-    expect(macet.keadaan).toBe("macet");
-    expect(macet.hitungMundur).toBe("MACET · LEWAT 9 HARI");
-    expect(macet.jalan).toBe(1);
+describe("tempoan (hari masuk kerja, A4)", () => {
+  const tempo = (
+    hariTempo: number,
+    jatuhTempo: string | null = null,
+    batasTempo: string | null = null,
+  ) => ({
+    tanggalAkad: "2026-10-20",
+    jatuhTempo,
+    batasTempo,
+    hariTempo,
+    status: "berjalan" as const,
   });
 
-  test("ringkasan jatuh tempo: lewat, hari ini, 7 hari ke depan", () => {
-    const t = (jatuhTempo: string) =>
-      susunTempo({ tanggalAkad: "2026-10-01", tenor: 30, jatuhTempo, status: "berjalan" }, KAMIS);
+  test("sebelum jatuh tempo: hari ke-N dari 6, garis waktu sebagian", () => {
+    const t = susunTempo(tempo(3), KAMIS);
+    expect(t).toMatchObject({
+      jatuhTempo: null,
+      sisaHari: 3,
+      keadaan: "nanti",
+      hitungMundur: "HARI 3 DARI 6",
+      jatuhTempoTeks: "Hari Ke-6",
+      jatuhTempoHariTeks: "hari kerja ke-6",
+      akadTeks: "20 Okt",
+    });
+    expect(t.jalan).toBeCloseTo(0.5);
+    expect(susunTempo(tempo(5), KAMIS).keadaan).toBe("segera");
+  });
+
+  test("jatuh tempo hari ini, meleset, batas lunas, macet", () => {
+    expect(susunTempo(tempo(6, KAMIS), KAMIS)).toMatchObject({
+      sisaHari: 0,
+      keadaan: "hariini",
+      hitungMundur: "HARI INI",
+      jatuhTempoHariTeks: "Kam 29 Okt",
+      jalan: 1,
+    });
+    expect(susunTempo(tempo(8, "2026-10-27"), KAMIS)).toMatchObject({
+      sisaHari: -2,
+      keadaan: "meleset",
+      hitungMundur: "MELESET 2 HARI",
+    });
+    expect(susunTempo(tempo(10, "2026-10-23", KAMIS), KAMIS)).toMatchObject({
+      keadaan: "batas",
+      hitungMundur: "WAJIB LUNAS",
+    });
+    const macet = susunTempo({ ...tempo(11, "2026-10-22", "2026-10-28"), status: "macet" }, KAMIS);
+    expect(macet).toMatchObject({ keadaan: "macet", hitungMundur: "MACET" });
+  });
+
+  test("ringkasan jatuh tempo: meleset, hari ini, belum jatuh tempo", () => {
     expect(
-      ringkasJatuhTempo([t("2026-10-20"), t(KAMIS), t("2026-11-05"), t("2026-11-20")]),
-    ).toEqual({ lewat: 1, hariIni: 1, pekan: 1, berjalan: 4 });
+      ringkasJatuhTempo([
+        susunTempo(tempo(8, "2026-10-27"), KAMIS),
+        susunTempo(tempo(6, KAMIS), KAMIS),
+        susunTempo(tempo(2), KAMIS),
+        susunTempo(tempo(0), KAMIS),
+      ]),
+    ).toEqual({ meleset: 1, hariIni: 1, belum: 2, berjalan: 4 });
   });
 });
 
 describe("jatuhTempoDari — hanya tempoan yang dihitung", () => {
-  const p = (jenis: "harian" | "mingguan" | "tempoan", jatuhTempo: string | null) => ({
+  const p = (
+    jenis: "harian" | "mingguan" | "tempoan",
+    jatuhTempo: string | null,
+    hariTempo = 0,
+  ) => ({
     jenis,
     tanggalAkad: "2026-10-01",
-    tenor: 30,
     jatuhTempo,
+    batasTempo: null,
+    hariTempo,
     status: "berjalan" as const,
   });
-  test("harian & mingguan tak ikut; tempoan dipilah lewat/hari ini/pekan", () => {
+  test("harian & mingguan tak ikut; tempoan dipilah meleset/hari ini/belum", () => {
     expect(
       jatuhTempoDari(
         [
           p("harian", null),
           p("mingguan", null),
-          p("tempoan", "2026-10-20"),
-          p("tempoan", KAMIS),
-          p("tempoan", "2026-11-05"),
+          p("tempoan", "2026-10-20", 9),
+          p("tempoan", KAMIS, 6),
+          p("tempoan", null, 2),
         ],
         KAMIS,
       ),
-    ).toEqual({ lewat: 1, hariIni: 1, pekan: 1, berjalan: 3 });
+    ).toEqual({ meleset: 1, hariIni: 1, belum: 1, berjalan: 3 });
   });
   test("tanpa tempoan: semua nol", () => {
     expect(jatuhTempoDari([p("harian", null)], KAMIS)).toEqual({
-      lewat: 0,
+      meleset: 0,
       hariIni: 0,
-      pekan: 0,
+      belum: 0,
       berjalan: 0,
     });
   });

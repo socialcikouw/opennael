@@ -29,11 +29,11 @@ describe.skipIf(!URL_DB)("portofolio kolektor", () => {
             insert into nasabah (kantor_id, kolektor_id, nama, wilayah_id)
             values (${kantorId}, ${pemegang}, ${nama}, ${w?.id}) returning id`)
         )[0]?.id as string;
-      /** Tenor & angsuran tiap jenis: harian 25 × 50.000, mingguan 8 × 150.000, tempoan 14 hari sekali bayar. */
+      /** Tenor & angsuran tiap jenis: harian 25 × 50.000, mingguan 8 × 150.000, tempoan 6 hari kerja sekali bayar. */
       const BENTUK = {
         harian: { tenor: 25, angsuran: 50_000, total: 1_250_000 },
         mingguan: { tenor: 8, angsuran: 150_000, total: 1_200_000 },
-        tempoan: { tenor: 14, angsuran: 1_250_000, total: 1_250_000 },
+        tempoan: { tenor: 6, angsuran: 1_250_000, total: 1_250_000 },
       } as const;
       /** Salinan migrasi — jalan pintas data uji. */
       const pinjamanLama = async (isi: {

@@ -7,7 +7,7 @@ import { wajibDitagihHariIni } from "@opennael/domain";
  * menolaknya selama masih ada (`MASIH_ADA_TAGIHAN`).
  */
 export function belumDicatat<
-  P extends Pick<KartuTagih, "jenis" | "tanggalAkad" | "jatuhTempo" | "hariIni">,
+  P extends Pick<KartuTagih, "jenis" | "tanggalAkad" | "jatuhTempo" | "batasTempo" | "hariIni">,
 >(pinjaman: readonly P[], tanggal: string): P[] {
   return pinjaman.filter((p) => !p.hariIni && wajibDitagihHariIni(p, tanggal));
 }

@@ -48,10 +48,10 @@ export function LayarPinjaman({ id, lihat }: { id: string; lihat?: string }) {
     ? bacaGerbang(hariIni.data)
     : { buka: false, judul: undefined, isi: undefined };
   const bisaCatat = lihat !== "1" && gerbang.buka && !p.hariIni;
-  // Tempoan hanya Libur & Lunas: tak bisa dicicil (C1) dan tak bisa digulung (E5).
+  // Tempoan hanya Janji Besok & Lunas: tak bisa dicicil (C1) dan tak bisa digulung (E5).
   const pilihanAksi: { nilai: Aksi; teks: string }[] = tempoan
     ? [
-        { nilai: "libur", teks: "Libur" },
+        { nilai: "libur", teks: "Janji Besok" },
         { nilai: "lunas", teks: "Lunas" },
       ]
     : [
@@ -76,7 +76,11 @@ export function LayarPinjaman({ id, lihat }: { id: string; lihat?: string }) {
         </View>
         <Text style={g.teksKecil}>
           {tampilKampung(p.nasabah.kampung)} · akad {tanggalPendek(p.tanggalAkad)}
-          {p.jatuhTempo ? ` · jatuh tempo ${tanggalPendek(p.jatuhTempo)}` : ""}
+          {p.jatuhTempo
+            ? ` · jatuh tempo ${tanggalPendek(p.jatuhTempo)}`
+            : p.jenis === "tempoan"
+              ? ` · hari kerja ke-${p.hariTempo} dari 6`
+              : ""}
         </Text>
         <Baris label="Pokok" nilai={rupiah(p.pokok)} />
         <Baris label="Total Kembali" nilai={rupiah(p.totalKembali)} />

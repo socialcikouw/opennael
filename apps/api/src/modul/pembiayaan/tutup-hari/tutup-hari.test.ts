@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { sql } from "drizzle-orm";
-import { dalamTransaksi, siapkanKantor, URL_DB } from "../../../uji/bantu";
+import { dalamTransaksi, masukKerja, siapkanKantor, URL_DB } from "../../../uji/bantu";
 import { buatLayananTutupHari } from "./layanan";
 
 /**
@@ -72,15 +72,28 @@ describe.skipIf(!URL_DB)("tutup hari", () => {
       }
       // C: harian baru disalin 10 Okt — 9 hari tagih (< 15) → belum dinilai.
       const pC = await pinjamanLama({ nama: "c", tanggalDisalin: "2026-10-10" });
-      // D: tempoan akad 20 Sep tenor 14 → jatuh tempo 4 Okt, lewat 7 hari → macet.
+      // D: tempoan akad 20 Sep; Andi masuk kerja 10 hari (21 Sep – 1 Okt, tanpa Minggu 27) →
+      // batas lunas 1 Okt sudah lewat dan belum lunas → macet (F3, A4).
       const pD = await pinjamanLama({
         nama: "d",
         jenis: "tempoan",
-        tenor: 14,
+        tenor: 6,
         angsuran: 1_250_000,
         tanggalAkad: "2026-09-20",
         tanggalDisalin: "2026-09-20",
       });
+      await masukKerja(tx, kantorId, andiId, [
+        "2026-09-21",
+        "2026-09-22",
+        "2026-09-23",
+        "2026-09-24",
+        "2026-09-25",
+        "2026-09-26",
+        "2026-09-28",
+        "2026-09-29",
+        "2026-09-30",
+        "2026-10-01",
+      ]);
       // E: mingguan dipegang Dedi, satu angsuran (150.000) dalam jendela → tetap berjalan.
       const pE = await pinjamanLama({
         nama: "e",

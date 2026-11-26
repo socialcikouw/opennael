@@ -95,9 +95,9 @@ Respons: `bossId` → `kantorId`, `collectorId` → `pencatatId`, `keterangan` �
 ## Service / logika nantinya
 
 - **Menandai** (kolektor): gerbang lapangan (jam kerja, bukan libur kantor,
-  sudah absen); kunci baris pinjaman; pinjaman masih ditagih; tempoan hanya
-  sejak jatuh tempo (`LIBUR_TIDAK_BERLAKU`) dan wajib beralasan
-  (`ALASAN_LIBUR_WAJIB`) — aturan-usaha G1, 1 Nov 2026; mingguan hanya pada
+  sudah absen); kunci baris pinjaman; pinjaman masih ditagih; tempoan = **janji besok**,
+  hanya sejak jatuh tempo (`LIBUR_TIDAK_BERLAKU`) sampai sebelum batas lunas
+  (`JANJI_HABIS`), tanpa alasan — aturan-usaha G1, 26 Nov 2026; mingguan hanya pada
   hari tagihnya (`LIBUR_BUKAN_HARI_TAGIH`); angsuran terbayar minimal 2
   (`LIBUR_BELUM_BOLEH`, bukan untuk tempoan); belum ada peristiwa hari itu.
 - **Menghapus** (bos, hari yang sama, `BATAL_HANYA_HARI_INI`): hapus baris dan

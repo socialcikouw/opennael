@@ -64,9 +64,6 @@ export const pinjaman = pgTable(
     tanggalAkad: date({ mode: "string" }).notNull(),
     /** Hanya migrasi: hari disalin; sejak hari itu ia ditagih. */
     tanggalDisalin: date({ mode: "string" }),
-    jatuhTempo: date({ mode: "string" }).generatedAlwaysAs(
-      sql`CASE WHEN jenis = 'tempoan' THEN tanggal_akad + tenor END`,
-    ),
     tanggalMacet: date({ mode: "string" }),
     tanggalSelesai: date({ mode: "string" }),
 
@@ -170,7 +167,7 @@ export const pinjaman = pgTable(
       "pinjaman_tenor_check",
       sql`(${t.jenis} = 'harian' AND ${t.tenor} = 25)
         OR (${t.jenis} = 'mingguan' AND ${t.tenor} = 8)
-        OR (${t.jenis} = 'tempoan' AND ${t.tenor} IN (7, 10, 14))`,
+        OR (${t.jenis} = 'tempoan' AND ${t.tenor} = 6)`,
     ),
     check(
       "pinjaman_nominal_check",

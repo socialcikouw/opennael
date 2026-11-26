@@ -48,7 +48,7 @@ export function BagianPinjaman({ f }: { f: FormulirSalin }) {
         <PilihanAsli value={tenor} onChange={(e) => setTenor(Number(e.target.value))}>
           {TENOR_PINJAMAN[jenis].map((t) => (
             <option key={t} value={t}>
-              {t} {jenis === "tempoan" ? "hari" : "kali"}
+              {t} {jenis === "tempoan" ? "hari kerja" : "kali"}
             </option>
           ))}
         </PilihanAsli>

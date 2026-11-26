@@ -6,21 +6,21 @@ import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaAksen } from "@/tema";
  * jumlah nasabah saja (tempoan memang tak ditagih setiap hari).
  */
 export function KartuJatuhTempo(props: {
-  r: { lewat: number; hariIni: number; pekan: number; berjalan: number };
+  r: { meleset: number; hariIni: number; belum: number; berjalan: number };
   aksen: WarnaAksen;
 }) {
   const sel = [
     {
-      label: "Lewat",
-      angka: props.r.lewat,
-      warna: props.r.lewat > 0 ? WARNA.bahayaTeks : WARNA.teks,
+      label: "Meleset",
+      angka: props.r.meleset,
+      warna: props.r.meleset > 0 ? WARNA.bahayaTeks : WARNA.teks,
     },
     {
       label: "Hari Ini",
       angka: props.r.hariIni,
       warna: props.r.hariIni > 0 ? props.aksen.teks : WARNA.teks,
     },
-    { label: "7 hari ke depan", angka: props.r.pekan, warna: WARNA.teks },
+    { label: "Belum Jatuh Tempo", angka: props.r.belum, warna: WARNA.teks },
   ];
   return (
     <View style={gaya.kartu}>

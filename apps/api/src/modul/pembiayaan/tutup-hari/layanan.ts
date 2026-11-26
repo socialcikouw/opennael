@@ -8,6 +8,7 @@ import {
 import { and, between, eq, inArray, isNull, lte, sql } from "drizzle-orm";
 import type { Db } from "../../../platform/db/klien";
 import { kantor, nasabah, pinjaman, posisiHarian, transaksi } from "../../../platform/db/skema";
+import { batasTempoTempoan } from "../../../platform/db/tempo";
 import { hariTagihAntara, klaimTanggalTutup } from "../../kantor";
 
 /**
@@ -68,7 +69,7 @@ export function buatLayananTutupHari(deps: TutupHariDeps) {
         angsuran: pinjaman.angsuran,
         tanggalAkad: pinjaman.tanggalAkad,
         tanggalDisalin: pinjaman.tanggalDisalin,
-        jatuhTempo: pinjaman.jatuhTempo,
+        batasTempo: batasTempoTempoan(),
         setoranMurni: sql<number>`coalesce(${setoranJendela.murni}, 0)`.mapWith(Number),
       })
       .from(pinjaman)
@@ -93,7 +94,7 @@ export function buatLayananTutupHari(deps: TutupHariDeps) {
           status,
           angsuran: p.angsuran,
           tanggalMasuk: tanggalMasukPembukuan(p),
-          jatuhTempo: p.jatuhTempo,
+          batasTempo: p.batasTempo,
           hariTagih: hariTagih.filter((t) => t >= mulai).length,
           setoranMurni: p.setoranMurni,
         },

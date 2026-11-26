@@ -27,10 +27,10 @@ describe("A. akad", () => {
       totalKembali: 600_000,
       angsuran: 75_000,
     });
-    expect(syaratAkad("tempoan", 1_000_000, 14)).toMatchObject({
-      potonganAdmin: 50_000,
+    expect(syaratAkad("tempoan", 1_000_000, 6)).toMatchObject({
+      potonganAdmin: 0,
       tabunganMasuk: 0,
-      pencairan: 950_000,
+      pencairan: 1_000_000,
       totalKembali: 1_250_000,
       angsuran: 1_250_000,
     });
@@ -45,9 +45,9 @@ describe("A. akad", () => {
     };
     expect(rincianPokok("harian", 1_000_000)).toEqual(biasa);
     expect(rincianPokok("tempoan", 1_000_000)).toEqual({
-      potonganAdmin: 50_000,
+      potonganAdmin: 0,
       tabunganMasuk: 0,
-      pencairan: 950_000,
+      pencairan: 1_000_000,
       totalKembali: 1_250_000,
     });
     expect(rincianPokok("mingguan", 1_000_000)).toEqual({
@@ -70,20 +70,24 @@ describe("A. akad", () => {
     expect(kode(() => syaratAkad("harian", 0, 25))).toBe("POKOK_TIDAK_SAH");
     expect(kode(() => syaratAkad("harian", 1_000_000, 20))).toBe("TENOR_TIDAK_BERLAKU");
     expect(kode(() => syaratAkad("harian", 1_000_000, 24))).toBe("TENOR_TIDAK_BERLAKU");
-    expect(kode(() => syaratAkad("tempoan", 1_000_000, 30))).toBe("TENOR_TIDAK_BERLAKU");
+    expect(kode(() => syaratAkad("tempoan", 1_000_000, 7))).toBe("TENOR_TIDAK_BERLAKU");
+    expect(kode(() => syaratAkad("tempoan", 1_000_000, 14))).toBe("TENOR_TIDAK_BERLAKU");
     // Mingguan: pokok paling sedikit Rp 500.000; hanya 8 kali (keputusan pemilik 26 Nov 2026).
     expect(kode(() => syaratAkad("mingguan", 400_000, 8))).toBe("POKOK_TIDAK_SAH");
     expect(kode(() => syaratAkad("mingguan", 100_000, 8))).toBe("POKOK_TIDAK_SAH");
     expect(syaratAkad("harian", 100_000, 25).angsuran).toBe(5_000);
-    expect(syaratAkad("tempoan", 100_000, 7).angsuran).toBe(125_000);
+    expect(syaratAkad("tempoan", 200_000, 6)).toMatchObject({
+      pencairan: 200_000,
+      angsuran: 250_000,
+    });
     expect(kode(() => syaratAkad("mingguan", 1_000_000, 6))).toBe("TENOR_TIDAK_BERLAKU");
     expect(kode(() => syaratAkad("mingguan", 1_000_000, 10))).toBe("TENOR_TIDAK_BERLAKU");
   });
 
-  test("tenor tunggal: harian 25, mingguan 8; tempoan dipilih", () => {
+  test("tenor tunggal: harian 25, mingguan 8, tempoan 6 hari kerja", () => {
     expect(tenorTunggal("harian")).toBe(25);
     expect(tenorTunggal("mingguan")).toBe(8);
-    expect(tenorTunggal("tempoan")).toBeNull();
+    expect(tenorTunggal("tempoan")).toBe(6);
   });
 
   test("angsuran ke = angsuran yang sudah lunas", () => {
@@ -112,7 +116,7 @@ describe("A10. salinan migrasi", () => {
     expect(kode(() => syaratMigrasi("harian", 1_000_000, 25, 1_250_001, 0))).toBe(
       "SALDO_MIGRASI_TIDAK_SAH",
     );
-    expect(kode(() => syaratMigrasi("tempoan", 1_000_000, 14, 1_250_000, -1))).toBe(
+    expect(kode(() => syaratMigrasi("tempoan", 1_000_000, 6, 1_250_000, -1))).toBe(
       "TABUNGAN_MIGRASI_TIDAK_SAH",
     );
     expect(kode(() => syaratMigrasi("harian", 1_050_000, 25, 100_000, 0))).toBe("POKOK_TIDAK_SAH");

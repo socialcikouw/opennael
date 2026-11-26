@@ -20,7 +20,7 @@ const PANDUAN: readonly { ikon: NamaIkon; judul: string; isi: string }[] = [
   {
     ikon: "hand-coins",
     judul: "Mencatat bayar & libur",
-    isi: "Di kartu nasabah: BAYAR untuk setoran (ketik nominal, lalu KONFIRMASI), LIBUR bila nasabah tidak bayar hari ini. Angsuran ke-0 dan ke-1 wajib bayar, belum bisa libur. Tempoan baru bisa libur sejak jatuh tempo, dengan alasan.",
+    isi: "Di kartu nasabah: BAYAR untuk setoran (ketik nominal, lalu KONFIRMASI), LIBUR bila nasabah tidak bayar hari ini. Angsuran ke-0 dan ke-1 wajib bayar, belum bisa libur. Tempoan tidak punya Bayar & Gulung: sejak jatuh tempo (hari ke-6 Anda masuk kerja sesudah akad) ada JANJI BESOK, paling banyak 4 kali; sesudah itu wajib lunas.",
   },
   {
     ikon: "circle-check",

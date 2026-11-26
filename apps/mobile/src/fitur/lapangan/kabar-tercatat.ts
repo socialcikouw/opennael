@@ -1,5 +1,5 @@
 /** Stempel sementara di kartu yang baru dicatat. */
-export type Stempel = "bayar" | "libur" | "lunas";
+export type Stempel = "bayar" | "libur" | "janji" | "lunas";
 
 type Pendengar = (pinjamanId: string, stempel: Stempel) => void;
 const pendengar = new Set<Pendengar>();

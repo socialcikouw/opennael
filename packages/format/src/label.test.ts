@@ -5,7 +5,7 @@ describe("label", () => {
   test("jenis pinjaman & satuan tenor (A2)", () => {
     expect(LABEL_JENIS.tempoan).toBe("Tempoan");
     expect(namaTenor("harian", 25)).toBe("25×");
-    expect(namaTenor("tempoan", 14)).toBe("14 hari");
+    expect(namaTenor("tempoan", 6)).toBe("6 hari kerja");
   });
 
   test("peristiwa = jenis transaksi + libur", () => {

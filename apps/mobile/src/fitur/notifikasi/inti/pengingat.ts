@@ -1,11 +1,5 @@
 import type { KartuTagih } from "@opennael/contracts";
-import {
-  geserTanggal,
-  type JenisPinjaman,
-  selisihHari,
-  sudahJatuhTempo,
-  wajibDitagihHariIni,
-} from "@opennael/domain";
+import { type JenisPinjaman, sudahJatuhTempo, TEMPO, wajibDitagihHariIni } from "@opennael/domain";
 import { rupiah } from "@opennael/format";
 import type { GerbangMutasi } from "../../lapangan/inti/gerbang-mutasi";
 
@@ -77,8 +71,10 @@ const MUTASI_TERKUNCI = "Mutasi kas terkunci sampai semuanya dicatat.";
 
 function keterangan(p: KartuTagih, tanggal: string): string {
   if (p.jenis === "tempoan") {
-    const lewat = p.jatuhTempo ? selisihHari(p.jatuhTempo, tanggal) : 0;
-    return lewat > 0 ? `Lewat ${lewat} hari · ${rupiah(p.saldo)}` : rupiah(p.saldo);
+    // Meleset = hari masuk kerja sesudah jatuh tempo (A4), bukan hari kalender.
+    const meleset =
+      p.jatuhTempo && p.jatuhTempo < tanggal ? Math.max(1, p.hariTempo - TEMPO.jatuhTempoKe) : 0;
+    return meleset > 0 ? `Meleset ${meleset} hari · ${rupiah(p.saldo)}` : rupiah(p.saldo);
   }
   return p.status === "macet" ? `Macet · ${rupiah(p.angsuran)}` : rupiah(p.angsuran);
 }
@@ -164,18 +160,22 @@ export function susunPengingat(b: BahanPengingat): Pengingat[] {
       });
     }
 
-    // Kabar sehari lebih awal: tempoan yang jatuh tempo besok (belum wajib hari ini).
-    const besok = geserTanggal(b.tanggal, 1);
+    // Kabar sehari lebih awal: tempoan yang jatuh tempo di hari masuk kerja berikutnya
+    // (sudah 5 dari 6 hari kerja, A4) — belum wajib hari ini.
     const tempoBesok = b.pinjaman.filter(
-      (p) => p.jenis === "tempoan" && p.jatuhTempo === besok && !sudahJatuhTempo(p, b.tanggal),
+      (p) =>
+        p.jenis === "tempoan" &&
+        p.jatuhTempo === null &&
+        p.hariTempo === TEMPO.jatuhTempoKe - 1 &&
+        !sudahJatuhTempo(p, b.tanggal),
     );
     if (tempoBesok.length > 0) {
       hasil.push({
         kunci: "tempo-besok",
         jenis: "tempo-besok",
         nada: "kuning",
-        judul: `Nasabah tempoan jatuh tempo besok: ${tempoBesok.length}`,
-        isi: "Ingatkan mereka hari ini supaya pelunasannya siap besok.",
+        judul: `Nasabah tempoan jatuh tempo hari kerja berikutnya: ${tempoBesok.length}`,
+        isi: "Ingatkan mereka hari ini supaya pelunasannya siap di hari kerja berikutnya.",
         jenisPinjaman: "tempoan",
         nasabah: nasabahDari(tempoBesok, b.tanggal),
         tindakan: false,

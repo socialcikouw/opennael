@@ -88,7 +88,12 @@ describe("wajib ditagih hari ini (aturan-usaha B6)", () => {
     jenis: "harian" | "mingguan" | "tempoan",
     tanggalAkad: string,
     jatuhTempo?: string,
-  ) => wajibDitagihHariIni({ jenis, tanggalAkad, jatuhTempo: jatuhTempo ?? null }, kamis);
+    batasTempo?: string,
+  ) =>
+    wajibDitagihHariIni(
+      { jenis, tanggalAkad, jatuhTempo: jatuhTempo ?? null, batasTempo: batasTempo ?? null },
+      kamis,
+    );
 
   test("contoh C6: harian yang sudah mulai ditagih & tempoan yang sudah jatuh tempo", () => {
     expect(wajib("harian", "2026-10-20")).toBe(true);
@@ -106,6 +111,11 @@ describe("wajib ditagih hari ini (aturan-usaha B6)", () => {
     expect(wajib("tempoan", "2026-10-22", kamis)).toBe(true);
     expect(wajib("tempoan", "2026-10-01", "2026-10-08")).toBe(true);
     expect(wajib("tempoan", "2026-10-23", "2026-10-30")).toBe(false);
+  });
+
+  test("tempoan pada batas lunas tak lagi menahan laporan (A4, B6)", () => {
+    expect(wajib("tempoan", "2026-10-15", "2026-10-23", "2026-10-30")).toBe(true);
+    expect(wajib("tempoan", "2026-10-15", "2026-10-23", kamis)).toBe(false);
   });
 
   test("mingguan wajib tepat pada akad + 7k hari", () => {

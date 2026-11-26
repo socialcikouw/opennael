@@ -16,6 +16,8 @@ function kartu(nama: string, kampung: string, isi: Partial<KartuTagih> = {}): Ka
     tanggalAkad: "2026-10-01",
     waktuAkad: null,
     jatuhTempo: null,
+    batasTempo: null,
+    hariTempo: 0,
     pokok: 500_000,
     potonganAdmin: 0,
     tabunganMasuk: 0,

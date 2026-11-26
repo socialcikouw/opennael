@@ -21,7 +21,10 @@ export interface RasioHariIni {
  * lebih awal).
  */
 export function rasioHariIni(
-  pinjaman: readonly Pick<KartuTagih, "jenis" | "tanggalAkad" | "jatuhTempo" | "hariIni">[],
+  pinjaman: readonly Pick<
+    KartuTagih,
+    "jenis" | "tanggalAkad" | "jatuhTempo" | "batasTempo" | "hariIni"
+  >[],
   tanggal: string,
 ): RasioHariIni {
   let bayar = 0;
@@ -51,7 +54,10 @@ export function rasioHariIni(
  * Tempoan tidak pernah memakai angka yang sama.
  */
 export function rasioJenis(
-  pinjaman: readonly Pick<KartuTagih, "jenis" | "tanggalAkad" | "jatuhTempo" | "hariIni">[],
+  pinjaman: readonly Pick<
+    KartuTagih,
+    "jenis" | "tanggalAkad" | "jatuhTempo" | "batasTempo" | "hariIni"
+  >[],
   tanggal: string,
   jenis: KartuTagih["jenis"] | null,
 ): RasioHariIni {

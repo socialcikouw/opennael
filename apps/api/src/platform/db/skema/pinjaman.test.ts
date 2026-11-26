@@ -64,7 +64,6 @@ describe.skipIf(!url)("skema database", () => {
           })) as unknown as postgres.Row[];
           expect(p?.droping).toBe("1000000");
           expect(p?.angsuran_ke).toBe(0);
-          expect(p?.jatuh_tempo).toBeNull();
           const lahir = await tx`select status_sebelum, status_sesudah, tanggal::text as tanggal
                                  from riwayat_status_pinjaman where pinjaman_id = ${p?.id}`;
           expect([...lahir]).toEqual([
@@ -147,13 +146,12 @@ describe.skipIf(!url)("skema database", () => {
           })) as unknown as postgres.Row[];
           expect(m?.angsuran_ke).toBe(12);
 
-          // Tempoan: jatuh tempo = akad + tenor.
+          // Tempoan: 6 hari kerja, tanpa potongan (jatuh tempo dihitung dari absen — tempo.test.ts).
           const n3 = await nasabahBaru("tono");
           const fotoTempo = await fotoBaru();
-          const [tp] = (await masuk(tx, {
+          const tempoan = {
             nasabah_id: n3,
             jenis: "tempoan",
-            tenor: 14,
             potongan_admin: 0,
             tabungan_masuk: 0,
             pencairan: 1_000_000,
@@ -161,9 +159,16 @@ describe.skipIf(!url)("skema database", () => {
             angsuran: 1_250_000,
             saldo_awal: 1_250_000,
             saldo: 1_250_000,
-            foto_serah_terima_id: fotoTempo,
+          };
+          await tolak(tx, "pinjaman_tenor_check", (sp) =>
+            masuk(sp, { ...tempoan, tenor: 14, foto_serah_terima_id: fotoTempo }),
+          );
+          const [tp] = (await masuk(tx, {
+            ...tempoan,
+            tenor: 6,
+            foto_serah_terima_id: await fotoBaru(),
           })) as unknown as postgres.Row[];
-          expect(new Date(tp?.jatuh_tempo).toISOString().slice(0, 10)).toBe("2026-10-15");
+          expect(tp?.tenor).toBe(6);
 
           // ---- transaksi ---------------------------------------------------
           const setor = (sp: Tx, isi: Record<string, unknown>) =>

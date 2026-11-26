@@ -1,7 +1,13 @@
 import { describe, expect, test } from "bun:test";
 import { geserTanggal } from "@opennael/domain";
 import { sql } from "drizzle-orm";
-import { dalamTransaksi, type Jawaban, siapkanKantor, URL_DB } from "../../../uji/bantu";
+import {
+  dalamTransaksi,
+  type Jawaban,
+  masukKerja,
+  siapkanKantor,
+  URL_DB,
+} from "../../../uji/bantu";
 import { kode, siapkanLapangan } from "../../../uji/lapangan";
 
 /**
@@ -188,7 +194,7 @@ describe.skipIf(!URL_DB)("peristiwa & buku nasabah", () => {
 
   test("lapangan: bayar, lunas, libur — dan aturannya", async () => {
     await dalamTransaksi(async (tx) => {
-      const { kirim, k, absen, akadBaru } = await siapkanLapangan(tx);
+      const { kirim, k, andi, kantorId, absen, akadBaru } = await siapkanLapangan(tx);
       await absen();
       const sari = await akadBaru("sari");
 
@@ -236,31 +242,34 @@ describe.skipIf(!URL_DB)("peristiwa & buku nasabah", () => {
       expect(
         kode(await kirim("/lapangan/bayar", { pinjamanId: penerus, setoranMurni: 50_000 }, k)),
       ).toBe("PERISTIWA_SUDAH_ADA");
-      // G1: tempoan sebelum jatuh tempo tak boleh libur.
-      const wati = await akadBaru("wati", { jenis: "tempoan", tenor: 14 });
+      // G1: tempoan sebelum jatuh tempo tak bisa janji besok.
+      const wati = await akadBaru("wati", { jenis: "tempoan", tenor: 6 });
       const pWati = wati.isi.id as string;
-      expect(kode(await kirim("/lapangan/libur", { pinjamanId: pWati, alasan: "x" }, k))).toBe(
+      expect(kode(await kirim("/lapangan/libur", { pinjamanId: pWati }, k))).toBe(
         "LIBUR_TIDAK_BERLAKU",
       );
-      // Mundurkan akad 14 hari: jatuh tempo (kolom turunan) = hari ini.
-      await tx.execute(
-        sql`update pinjaman set tanggal_akad = tanggal_akad - 14 where id = ${pWati}`,
-      );
-      // B6: tempoan yang jatuh tempo wajib → laporan ditahan, menyebut Wati.
+      // Hari ke-N dari absen (A4): Andi masuk kerja 9 hari sebelum hari ini (+ hari ini).
+      // Wati akad 6 hari lalu → hari ini masuk kerja ke-6 = jatuh tempo; Tono akad 10 hari
+      // lalu → hari ini ke-10 = batas lunas.
+      const hari = (await kirim("/lapangan/hari-ini", undefined, k)).isi.kalender.tanggal as string;
+      const lalu = (n: number) => geserTanggal(hari, -n);
+      await masukKerja(tx, kantorId, andi.pengguna.id, [9, 8, 7, 6, 5, 4, 3, 2, 1].map(lalu));
+      await tx.execute(sql`update pinjaman set tanggal_akad = ${lalu(6)} where id = ${pWati}`);
+      const tono = await akadBaru("tono", { jenis: "tempoan", tenor: 6 });
+      const pTono = tono.isi.id as string;
+      await tx.execute(sql`update pinjaman set tanggal_akad = ${lalu(10)} where id = ${pTono}`);
+      // B6: tempoan yang jatuh tempo wajib → laporan ditahan, menyebut Wati (Tono di batas
+      // lunas tidak menahan).
       const tahan = await kirim("/lapangan/laporan", {}, k);
       expect(kode(tahan)).toBe("MASIH_ADA_TAGIHAN");
       expect(tahan.isi.pesan).toContain("wati");
-      // G1: sejak jatuh tempo boleh libur, tapi wajib beralasan.
-      expect(kode(await kirim("/lapangan/libur", { pinjamanId: pWati }, k))).toBe(
-        "ALASAN_LIBUR_WAJIB",
-      );
-      const liburWati = await kirim(
-        "/lapangan/libur",
-        { pinjamanId: pWati, alasan: "belum ada uang" },
-        k,
-      );
+      expect(tahan.isi.pesan).not.toContain("tono");
+      // Batas lunas: janji habis.
+      expect(kode(await kirim("/lapangan/libur", { pinjamanId: pTono }, k))).toBe("JANJI_HABIS");
+      // G1: sejak jatuh tempo janji besok boleh, tanpa alasan.
+      const liburWati = await kirim("/lapangan/libur", { pinjamanId: pWati }, k);
       expect(liburWati.status).toBe(201);
-      expect(liburWati.isi).toMatchObject({ alasanLibur: "belum ada uang" });
+      expect(liburWati.isi).toMatchObject({ alasanLibur: null });
       // Semua yang wajib sudah dicatat → laporan terbuka.
       expect((await kirim("/lapangan/laporan", {}, k)).status).toBe(200);
     });

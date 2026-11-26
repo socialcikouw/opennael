@@ -68,12 +68,12 @@ describe("jatuhTagihPada (N3)", () => {
     expect(jatuhTagihPada(b, "2026-11-04")).toBe(false); // k = 3 > tenor
     expect(jatuhTagihPada(b, "2026-10-22")).toBe(false); // hari lain
   });
-  test("tempoan: hari jatuh tempo; tanpa jatuh tempo tersimpan = akad + tenor", () => {
-    const t = mingguan({ jenis: "tempoan", tenor: 10, jatuhTempo: "2026-10-24" });
+  test("tempoan: hari jatuh tempo; belum sampai jatuh tempo = tak pernah", () => {
+    const t = mingguan({ jenis: "tempoan", tenor: 6, jatuhTempo: "2026-10-24" });
     expect(jatuhTagihPada(t, "2026-10-24")).toBe(true);
     expect(jatuhTagihPada(t, "2026-10-23")).toBe(false);
-    const tanpa = mingguan({ jenis: "tempoan", tenor: 10, jatuhTempo: null });
-    expect(jatuhTagihPada(tanpa, "2026-10-24")).toBe(true); // 14 Okt + 10
+    const tanpa = mingguan({ jenis: "tempoan", tenor: 6, jatuhTempo: null });
+    expect(jatuhTagihPada(tanpa, "2026-10-20")).toBe(false);
   });
 });
 
@@ -141,11 +141,17 @@ describe("patokanJatuhTagih (N3)", () => {
   });
 
   test("tempoan jatuh tempo hari D; macet kemarin tidak", () => {
-    const berjalan = mingguan({ jenis: "tempoan", angsuran: 1_250_000, tenor: 7 });
+    const berjalan = mingguan({
+      jenis: "tempoan",
+      angsuran: 1_250_000,
+      tenor: 6,
+      jatuhTempo: RABU,
+    });
     const macet = mingguan({
       jenis: "tempoan",
       angsuran: 900_000,
-      tenor: 7,
+      tenor: 6,
+      jatuhTempo: RABU,
       status: "macet",
       riwayat: [...lahir("2026-10-14"), { tanggal: "2026-10-20", sesudah: "macet" }],
     });

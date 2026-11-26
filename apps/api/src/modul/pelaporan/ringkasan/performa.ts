@@ -14,6 +14,7 @@ import {
   riwayatStatusPinjaman,
   transaksi,
 } from "../../../platform/db/skema";
+import { jatuhTempoTempoan } from "../../../platform/db/tempo";
 import type { Aktor } from "../../../platform/http/aktor";
 import { jumlah, type Konteks } from "./data";
 
@@ -124,7 +125,7 @@ export async function performaPeriodik(
       angsuran: pinjaman.angsuran,
       tanggalAkad: pinjaman.tanggalAkad,
       tenor: pinjaman.tenor,
-      jatuhTempo: pinjaman.jatuhTempo,
+      jatuhTempo: jatuhTempoTempoan(),
       status: pinjaman.status,
       tanggalSelesai: pinjaman.tanggalSelesai,
     })

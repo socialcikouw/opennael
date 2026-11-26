@@ -2,7 +2,6 @@ import type { RincianPinjaman } from "@opennael/contracts";
 import {
   ATURAN_MACET,
   awalJendelaMacet,
-  geserTanggal,
   mulaiDitagih,
   nilaiMacet,
   tanggalMasukPembukuan,
@@ -28,7 +27,7 @@ async function aturanMacet(
     angsuran: number;
     tanggalAkad: string;
     tanggalDisalin: string | null;
-    jatuhTempo: string | null;
+    batasTempo: string | null;
   },
 ): Promise<RincianPinjaman["aturanMacet"]> {
   const { tanggal: hariIni } = await bacaKalender(db, kantorId, k.sekarang());
@@ -55,16 +54,14 @@ async function aturanMacet(
       status: p.status,
       angsuran: p.angsuran,
       tanggalMasuk: tanggalMasukPembukuan(p),
-      jatuhTempo: p.jatuhTempo,
+      batasTempo: p.batasTempo,
       hariTagih: hariTagih ?? 0,
       setoranMurni: setoranJendela,
     },
     hariIni,
   );
-  const batasTempoan =
-    p.jenis === "tempoan"
-      ? geserTanggal(p.jatuhTempo ?? p.tanggalAkad, ATURAN_MACET.tempoan.tenggangHari)
-      : null;
+  // Tempoan: batas lunas (hari masuk kerja ke-10 pemegang, A4); null = belum sampai.
+  const batasTempoan = p.jenis === "tempoan" ? p.batasTempo : null;
   return {
     jendelaAwal: awal,
     jendelaAkhir: hariIni,

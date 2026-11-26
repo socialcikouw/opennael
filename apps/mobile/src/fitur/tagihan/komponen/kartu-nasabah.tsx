@@ -17,6 +17,7 @@ import { BlokMinggu, BlokTempo } from "./slot-khusus";
 const KETERANGAN_STEMPEL: Record<Stempel, string> = {
   bayar: "Dibayar",
   libur: "Libur Dicatat",
+  janji: "Janji Dicatat",
   lunas: "Lunas",
 };
 

@@ -1,5 +1,5 @@
 import type { NasabahLama } from "@opennael/contracts";
-import { type JenisPinjaman, syaratAkad, tenorTunggal } from "@opennael/domain";
+import { type JenisPinjaman, syaratAkad } from "@opennael/domain";
 import { jam, LABEL_JENIS, rupiah, tampilKampung, tampilNama } from "@opennael/format";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { Ikon } from "@/komponen/ui/ikon";
@@ -34,7 +34,7 @@ export function LangkahPeriksa(props: {
   lama: NasabahLama | null;
   pokok: number;
   tenor: number;
-  /** Tanggal jatuh tempo (tempoan), sudah diformat; null bila bukan tempoan / belum dimuat. */
+  /** Perkiraan jatuh tempo (tempoan, A4), sudah diformat; null bila bukan tempoan / belum dimuat. */
   jatuhTempo: string | null;
   titik: TitikLatar;
   memuat: boolean;
@@ -52,7 +52,7 @@ export function LangkahPeriksa(props: {
     props.jenis === "harian"
       ? `${props.tenor} kali · tiap hari tagih`
       : tempo
-        ? `${props.tenor} hari${props.jatuhTempo ? ` · jatuh tempo ${props.jatuhTempo}` : ""}`
+        ? `${props.tenor} hari kerja${props.jatuhTempo ? ` · perkiraan jatuh tempo ${props.jatuhTempo}` : ""}`
         : `${props.tenor} kali · seminggu sekali`;
 
   return (
@@ -142,7 +142,11 @@ export function LangkahPeriksa(props: {
           garis
           label="Tenor"
           nilai={tenorTeks}
-          onUbah={tenorTunggal(props.jenis) !== null ? undefined : () => props.onUbah("tenor")}
+          ket={
+            tempo
+              ? "Dihitung dari hari Anda masuk kerja; janji besok paling banyak 4 kali"
+              : undefined
+          }
         />
         <BarisPeriksa
           garis
@@ -154,9 +158,12 @@ export function LangkahPeriksa(props: {
           garis
           label="Potongan"
           nilai={
-            h.tabunganMasuk > 0
-              ? `Admin ${rupiah(h.potonganAdmin)} · Tabungan ${rupiah(h.tabunganMasuk)}`
-              : `Admin ${rupiah(h.potonganAdmin)}`
+            [
+              h.potonganAdmin > 0 ? `Admin ${rupiah(h.potonganAdmin)}` : null,
+              h.tabunganMasuk > 0 ? `Tabungan ${rupiah(h.tabunganMasuk)}` : null,
+            ]
+              .filter(Boolean)
+              .join(" · ") || "Tanpa potongan"
           }
         />
         <View style={[gaya.baris, gaya.garis]}>

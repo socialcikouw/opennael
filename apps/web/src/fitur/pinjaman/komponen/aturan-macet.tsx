@@ -13,7 +13,9 @@ export function AturanMacet({ p }: { p: RincianPinjaman }) {
       <p className="font-medium">Aturan Macet</p>
       {p.jenis === "tempoan" ? (
         <p>
-          Macet bila belum lunas sesudah {m.batasTempoan ? formatTanggal(m.batasTempoan) : "—"}.
+          {m.batasTempoan
+            ? `Macet bila belum lunas sampai tutup hari ${formatTanggal(m.batasTempoan)} (batas lunas).`
+            : `Macet bila belum lunas pada hari masuk kerja ke-10 kolektor sesudah akad — sekarang hari ke-${p.hariTempo}.`}
         </p>
       ) : (
         <p>

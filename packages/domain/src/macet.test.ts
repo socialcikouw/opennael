@@ -7,7 +7,7 @@ const harian = {
   status: "berjalan" as const,
   angsuran: 50_000,
   tanggalMasuk: "2026-09-01",
-  jatuhTempo: null,
+  batasTempo: null,
   hariTagih: 25,
   setoranMurni: 0,
 };
@@ -51,10 +51,12 @@ describe("macet (aturan-usaha F)", () => {
     ).toEqual({ dievaluasi: false, status: "berjalan" });
   });
 
-  test("F3/F4: tempoan macet lewat 7 hari dari jatuh tempo, tidak pulih lewat sapuan", () => {
-    const tempoan = { ...harian, jenis: "tempoan" as const, jatuhTempo: "2026-10-10" };
+  test("F3/F4: tempoan macet pada tutup hari batas lunas, tidak pulih lewat sapuan", () => {
+    const tempoan = { ...harian, jenis: "tempoan" as const, batasTempo: "2026-10-18" };
     expect(nilaiMacet(tempoan, "2026-10-17").status).toBe("berjalan");
     expect(nilaiMacet(tempoan, "2026-10-18").status).toBe("macet");
+    // Batas lunas belum sampai (kolektor belum 10 kali masuk kerja): tak pernah macet.
+    expect(nilaiMacet({ ...tempoan, batasTempo: null }, "2026-12-31").status).toBe("berjalan");
     expect(
       nilaiMacet({ ...tempoan, status: "macet", setoranMurni: 9_999_999 }, "2026-10-18").status,
     ).toBe("macet");

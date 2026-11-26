@@ -8,9 +8,9 @@ export const LABEL_JENIS: Record<JenisPinjaman, string> = {
   tempoan: "Tempoan",
 };
 
-/** Satuan tenor per jenis (A2): harian & mingguan = kali bayar, tempoan = hari. */
+/** Satuan tenor per jenis (A2): harian & mingguan = kali bayar, tempoan = hari kerja kolektor (A4). */
 export function namaTenor(jenis: JenisPinjaman, tenor: number): string {
-  return jenis === "tempoan" ? `${tenor} hari` : `${tenor}×`;
+  return jenis === "tempoan" ? `${tenor} hari kerja` : `${tenor}×`;
 }
 
 export const LABEL_STATUS_PINJAMAN = {

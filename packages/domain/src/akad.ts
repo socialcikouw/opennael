@@ -7,11 +7,11 @@ import { wajib } from "./galat";
  */
 export type JenisPinjaman = "harian" | "mingguan" | "tempoan";
 
-/** A2. Harian & mingguan = jumlah kali bayar; tempoan = jangka HARI. */
+/** A2. Harian & mingguan = jumlah kali bayar; tempoan = jangka HARI KERJA kolektor (A4). */
 export const TENOR_PINJAMAN: Record<JenisPinjaman, readonly number[]> = {
   harian: [25],
   mingguan: [8],
-  tempoan: [7, 10, 14],
+  tempoan: [6],
 };
 
 /** A1. */
@@ -45,7 +45,7 @@ export function tenorTunggal(jenis: JenisPinjaman): number | null {
 /**
  * A1, A3 & A5. Potongan, pencairan, dan total kembali per jenis (keputusan pemilik 26 Nov
  * 2026): harian admin 5% + tabungan 5% (dicairkan 90%), kembali 125%; mingguan admin 10%
- * tanpa tabungan (90%), kembali 120%; tempoan admin 5% tanpa tabungan (95%), kembali 125%.
+ * tanpa tabungan (90%), kembali 120%; tempoan tanpa potongan (100%), kembali 125%.
  * Tak bergantung tenor, jadi layar pokok bisa menampilkannya sebelum tenor dipilih.
  */
 export function rincianPokok(
@@ -63,7 +63,7 @@ export function rincianPokok(
     "POKOK_TIDAK_SAH",
     "Pinjaman mingguan: pokok paling sedikit Rp 500.000",
   );
-  const potonganAdmin = mingguan ? pokok / 10 : pokok / 20;
+  const potonganAdmin = mingguan ? pokok / 10 : jenis === "harian" ? pokok / 20 : 0;
   const tabunganMasuk = jenis === "harian" ? pokok / 20 : 0;
   return {
     potonganAdmin,

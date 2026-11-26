@@ -1,5 +1,5 @@
 import type { NasabahLama } from "@opennael/contracts";
-import { geserTanggal, type JenisPinjaman, syaratAkad, tenorTunggal } from "@opennael/domain";
+import { type JenisPinjaman, syaratAkad, tenorTunggal } from "@opennael/domain";
 import { LABEL_JENIS, tanggalBertahun } from "@opennael/format";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
@@ -16,6 +16,7 @@ import {
   langkahBerikut,
   langkahSebelum,
   nomorLangkah,
+  perkiraanJatuhTempo,
   type SiapaNasabah,
   urutanLangkah,
 } from "./inti/langkah-akad";
@@ -29,7 +30,6 @@ import { LangkahPeriksa } from "./komponen/akad/langkah-periksa";
 import { LangkahPernahMelunasi } from "./komponen/akad/langkah-pernah-melunasi";
 import { LangkahPokok } from "./komponen/akad/langkah-pokok";
 import { LangkahSiapa } from "./komponen/akad/langkah-siapa";
-import { LangkahTenor } from "./komponen/akad/langkah-tenor";
 import { LembarBatalAkad } from "./komponen/akad/lembar-batal-akad";
 import {
   type FotoSerahTerima,
@@ -61,16 +61,16 @@ export function LayarAkad() {
   const [nomorHp, setNomorHp] = useState("");
   const [lama, setLama] = useState<NasabahLama | null>(null);
   const [ketukan, setKetukan] = useState<readonly number[]>([]);
-  const [tenorDipilih, setTenor] = useState<number | null>(null);
   const [batal, setBatal] = useState(false);
   const [berhasil, setBerhasil] = useState(false);
   const akad = useAkad();
   const titik = useTitikRumahLatar();
   const hariIni = useHariIni().data?.kalender.tanggal ?? null;
 
-  const urutan = urutanLangkah(siapa, jenis);
+  const urutan = urutanLangkah(siapa);
   const pokok = jumlahKetukan(ketukan);
-  const tenor = jenis === null ? null : (tenorTunggal(jenis) ?? tenorDipilih);
+  // Semua jenis bertenor tunggal (A2) — tak ada langkah tenor.
+  const tenor = jenis === null ? null : tenorTunggal(jenis);
   const syaratSah =
     jenis !== null && tenor !== null && cobaAturan(() => syaratAkad(jenis, pokok, tenor)).hasil;
 
@@ -79,8 +79,6 @@ export function LayarAkad() {
     else setLangkah(l);
   };
   const lanjut = () => {
-    // Pokok diubah dari Periksa sampai tenornya tak berlaku lagi: pilih tenor dulu.
-    if (kePeriksa && langkah === "pokok" && tenor !== null && !syaratSah) return ke("tenor");
     if (kePeriksa) {
       setKePeriksa(false);
       setLangkah("periksa");
@@ -125,7 +123,7 @@ export function LayarAkad() {
       setSiapa(s);
       setLama(null);
     }
-    setLangkah(langkahBerikut(urutanLangkah(s, jenis), "siapa"));
+    setLangkah(langkahBerikut(urutanLangkah(s), "siapa"));
   };
   const pilihLama = (n: NasabahLama) => {
     setLama(n);
@@ -134,17 +132,14 @@ export function LayarAkad() {
   const pilihJenis = (j: JenisPinjaman) => {
     if (j !== jenis) {
       setJenis(j);
-      setTenor(null);
       // Pinjaman terakhir berjenis sama = patokan pokok (hanya bila pokok belum diisi).
       const terakhir = lama?.terakhir;
       if (ketukan.length === 0 && terakhir?.jenis === j) setKetukan([terakhir.pokok]);
-      // Diubah dari Periksa: tenor jenis lama tak berlaku — pilih tenornya dulu, lalu kembali.
-      if (kePeriksa && tenorTunggal(j) === null) return setLangkah("tenor");
     }
     if (kePeriksa) {
       setKePeriksa(false);
       setLangkah("periksa");
-    } else setLangkah(langkahBerikut(urutanLangkah(siapa, j), "jenis"));
+    } else setLangkah(langkahBerikut(urutanLangkah(siapa), "jenis"));
   };
   const tekanPapan = (kunci: string) => {
     if (akad.error) akad.reset();
@@ -225,20 +220,6 @@ export function LayarAkad() {
             onLanjut={lanjut}
           />
         );
-      case "tenor":
-        return jenis === null || tenorTunggal(jenis) !== null ? null : (
-          <LangkahTenor
-            k={k}
-            jenis={jenis}
-            pokok={pokok}
-            hariIni={hariIni}
-            nilai={tenorDipilih}
-            onPilih={(t) => {
-              setTenor(t);
-              lanjut();
-            }}
-          />
-        );
       case "periksa":
         return jenis && foto && siapa && tenor !== null && syaratSah ? (
           <LangkahPeriksa
@@ -254,7 +235,7 @@ export function LayarAkad() {
             pokok={pokok}
             tenor={tenor}
             jatuhTempo={
-              jenis === "tempoan" && hariIni ? tanggalBertahun(geserTanggal(hariIni, tenor)) : null
+              jenis === "tempoan" && hariIni ? tanggalBertahun(perkiraanJatuhTempo(hariIni)) : null
             }
             titik={titik}
             memuat={akad.isPending}

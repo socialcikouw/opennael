@@ -2,6 +2,7 @@ import type { PinjamanKartu } from "@opennael/contracts";
 import { and, eq, ne, sql } from "drizzle-orm";
 import type { Db } from "../../../platform/db/klien";
 import { nasabah, pinjaman, wilayah } from "../../../platform/db/skema";
+import { batasTempoTempoan, hariTempoTempoan, jatuhTempoTempoan } from "../../../platform/db/tempo";
 import type { Aktor } from "../../../platform/http/aktor";
 import { dilarang, melanggar, tidakDitemukan } from "../../../platform/http/galat";
 
@@ -17,7 +18,10 @@ export const kolomKartu = {
   status: pinjaman.status,
   tanggalAkad: pinjaman.tanggalAkad,
   dibuatAt: pinjaman.dibuatAt,
-  jatuhTempo: pinjaman.jatuhTempo,
+  // Tempoan (A4): dihitung dari absen pemegang, bukan disimpan.
+  jatuhTempo: jatuhTempoTempoan(),
+  batasTempo: batasTempoTempoan(),
+  hariTempo: hariTempoTempoan(),
   pokok: pinjaman.pokok,
   potonganAdmin: pinjaman.potonganAdmin,
   tabunganMasuk: pinjaman.tabunganMasuk,
@@ -76,7 +80,8 @@ export async function kunciPinjaman(tx: Db, aktor: Aktor, pinjamanId: string) {
       angsuran: pinjaman.angsuran,
       pinjamanKe: pinjaman.pinjamanKe,
       tanggalAkad: pinjaman.tanggalAkad,
-      jatuhTempo: pinjaman.jatuhTempo,
+      jatuhTempo: jatuhTempoTempoan(),
+      batasTempo: batasTempoTempoan(),
       tabungan: nasabah.saldoTabungan,
     })
     .from(pinjaman)

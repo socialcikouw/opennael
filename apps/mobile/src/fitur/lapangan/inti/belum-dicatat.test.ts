@@ -4,7 +4,7 @@ import { belumDicatat } from "./belum-dicatat";
 
 const T = "2026-11-01";
 
-type Bahan = Pick<KartuTagih, "jenis" | "tanggalAkad" | "jatuhTempo" | "hariIni"> & {
+type Bahan = Pick<KartuTagih, "jenis" | "tanggalAkad" | "jatuhTempo" | "batasTempo" | "hariIni"> & {
   nama: string;
 };
 const kartu = (
@@ -13,7 +13,7 @@ const kartu = (
   tanggalAkad: string,
   hariIni: Bahan["hariIni"] = null,
   jatuhTempo: string | null = null,
-): Bahan => ({ nama, jenis, tanggalAkad, hariIni, jatuhTempo });
+): Bahan => ({ nama, jenis, tanggalAkad, hariIni, jatuhTempo, batasTempo: null });
 
 describe("belumDicatat (B6 + C6)", () => {
   test("harian yang sudah mulai ditagih dan belum dicatat apa pun", () => {

@@ -21,6 +21,8 @@ function kartu(isi: Partial<KartuTagih> = {}): KartuTagih {
     tanggalAkad: "2026-10-01",
     waktuAkad: "2026-10-01T08:00:00.000Z",
     jatuhTempo: null,
+    batasTempo: null,
+    hariTempo: 0,
     pokok: 1_000_000,
     potonganAdmin: 50_000,
     tabunganMasuk: 50_000,

@@ -63,10 +63,14 @@ export function LangkahPokok(props: {
       {syarat?.galat ? <Text style={gaya.galat}>{syarat.galat}</Text> : null}
       {h ? (
         <View style={gaya.rincian}>
-          <Baris
-            label={`Admin ${persen(h.potonganAdmin, props.pokok)}`}
-            nilai={`− ${rupiah(h.potonganAdmin)}`}
-          />
+          {h.potonganAdmin > 0 ? (
+            <Baris
+              label={`Admin ${persen(h.potonganAdmin, props.pokok)}`}
+              nilai={`− ${rupiah(h.potonganAdmin)}`}
+            />
+          ) : (
+            <Baris label="Tanpa Potongan" nilai="Rp 0" />
+          )}
           {h.tabunganMasuk > 0 ? (
             <Baris
               label={`Tabungan ${persen(h.tabunganMasuk, props.pokok)}`}

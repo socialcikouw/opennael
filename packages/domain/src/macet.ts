@@ -7,17 +7,16 @@ import { geserTanggal } from "./kalender";
  *
  *   harian   : macet ⟺ setoran murni jendela < 5 × angsuran (F1)
  *   mingguan : macet ⟺ setoran murni jendela < 1 × angsuran (F2)
- *   tempoan  : macet ⟺ lewat 7 hari dari jatuh tempo (F3)
+ *   tempoan  : macet ⟺ belum lunas pada tutup hari batas lunas (F3, A4)
  *
- * Harian & mingguan dua arah (F4); tempoan keluar dari macet hanya lewat lunas
- * atau gulung. Libur tidak memaafkan (F5).
+ * Harian & mingguan dua arah (F4); tempoan keluar dari macet hanya lewat lunas.
+ * Libur tidak memaafkan (F5).
  */
 export const ATURAN_MACET = {
   /** Lebar jendela kalender (hari), termasuk hari yang dinilai. */
   jendelaHari: 30,
   harian: { ambangAngsuran: 5, minHariTagih: 15 },
   mingguan: { ambangAngsuran: 1 },
-  tempoan: { tenggangHari: 7 },
 } as const;
 
 export type StatusAktif = "berjalan" | "macet";
@@ -45,7 +44,8 @@ export interface BahanMacet {
   status: StatusAktif;
   angsuran: number;
   tanggalMasuk: string;
-  jatuhTempo: string | null;
+  /** Tempoan: batas lunas (hari masuk kerja ke-10, A4); null = belum sampai. Jenis lain: null. */
+  batasTempo: string | null;
   /** Harian: hari tagih dalam jendela sejak mulai ditagih. Jenis lain: diabaikan. */
   hariTagih: number;
   /** Σ setoran murni transaksi berlaku dalam jendela. */
@@ -62,11 +62,9 @@ export interface HasilMacet {
 /** Menilai satu pinjaman aktif pada penutupan hari `tanggal`. */
 export function nilaiMacet(bahan: BahanMacet, tanggal: string): HasilMacet {
   if (bahan.jenis === "tempoan") {
-    const batas = geserTanggal(
-      bahan.jatuhTempo ?? bahan.tanggalMasuk,
-      ATURAN_MACET.tempoan.tenggangHari,
-    );
-    if (tanggal > batas) return { dievaluasi: true, status: "macet" };
+    if (bahan.batasTempo !== null && tanggal >= bahan.batasTempo) {
+      return { dievaluasi: true, status: "macet" };
+    }
     // Tempoan tidak pulih lewat sapuan (F4).
     return { dievaluasi: true, status: bahan.status };
   }

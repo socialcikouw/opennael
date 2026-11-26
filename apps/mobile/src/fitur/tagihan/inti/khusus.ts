@@ -1,12 +1,12 @@
 import type { KartuTagih, Peristiwa } from "@opennael/contracts";
-import { geserTanggal, hariPekanDari, selisihHari } from "@opennael/domain";
+import { geserTanggal, hariPekanDari, TEMPO } from "@opennael/domain";
 import { nominalK } from "./grid";
 
 /**
  * ISI SLOT GRID kartu non-harian. Kartunya sama persis dengan kartu harian;
  * yang khas hanya slot di tengah:
  *   - mingguan: satu kotak per minggu sepanjang tenor + satu kabar;
- *   - tempoan: garis waktu akad → jatuh tempo + hitung mundur.
+ *   - tempoan: garis waktu akad → jatuh tempo (hari masuk kerja ke-6) + hitung mundur.
  */
 
 const BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
@@ -97,67 +97,89 @@ export function susunMingguan(
 
 // ---- tempoan ----------------------------------------------------------------
 
-/** nanti (> 3 hari) · segera (1–3 hari) · hari ini · lewat · macet. */
-export type KeadaanTempo = "nanti" | "segera" | "hariini" | "lewat" | "macet";
+/**
+ * Keadaan tempoan menurut HARI MASUK KERJA kolektor (aturan-usaha A4): nanti · segera
+ * (≤ 2 hari kerja lagi) · hariini (jatuh tempo) · meleset (janji besok, hari ke-7 s/d ke-9)
+ * · batas (hari ke-10: wajib lunas) · macet.
+ */
+export type KeadaanTempo = "nanti" | "segera" | "hariini" | "meleset" | "batas" | "macet";
 
 export interface TempoVM {
-  jatuhTempo: string;
-  /** Positif = belum, 0 = hari ini, negatif = lewat. */
+  /** Tanggal jatuh tempo bila sudah sampai; null = masih menghitung hari kerja. */
+  jatuhTempo: string | null;
+  /** Hari kerja tersisa sampai jatuh tempo; 0 = hari ini; negatif = meleset sekian hari. */
   sisaHari: number;
   keadaan: KeadaanTempo;
-  /** "H-5" / "HARI INI" / "LEWAT 2 HARI" (macet: "MACET · LEWAT 9 HARI"). */
+  /** "HARI 3 DARI 6" / "HARI INI" / "MELESET 2 HARI" / "WAJIB LUNAS" / "MACET". */
   hitungMundur: string;
-  /** Bagian jangka yang sudah berjalan, 0–1. */
+  /** Bagian 6 hari kerja yang sudah berjalan, 0–1. */
   jalan: number;
   akadTeks: string;
+  /** Ujung kanan garis waktu: tanggal jatuh tempo, atau "Hari Ke-6" bila belum sampai. */
   jatuhTempoTeks: string;
-  /** "Kam 5 Nov" */
+  /** "Kam 5 Nov", atau "hari kerja ke-6" bila belum sampai. */
   jatuhTempoHariTeks: string;
 }
 
 export function susunTempo(
-  p: Pick<KartuTagih, "tanggalAkad" | "tenor" | "jatuhTempo" | "status">,
+  p: Pick<KartuTagih, "tanggalAkad" | "jatuhTempo" | "batasTempo" | "hariTempo" | "status">,
   hariIni: string,
 ): TempoVM {
-  const jatuhTempo = p.jatuhTempo ?? geserTanggal(p.tanggalAkad, p.tenor);
-  const sisaHari = selisihHari(hariIni, jatuhTempo);
+  const meleset = Math.max(0, p.hariTempo - TEMPO.jatuhTempoKe);
+  const sisaHari =
+    p.jatuhTempo === null
+      ? Math.max(1, TEMPO.jatuhTempoKe - p.hariTempo)
+      : p.jatuhTempo === hariIni
+        ? 0
+        : -Math.max(1, meleset);
   const keadaan: KeadaanTempo =
     p.status === "macet"
       ? "macet"
-      : sisaHari < 0
-        ? "lewat"
-        : sisaHari === 0
-          ? "hariini"
-          : sisaHari <= 3
-            ? "segera"
-            : "nanti";
-  const mundur =
-    sisaHari > 0 ? `H-${sisaHari}` : sisaHari === 0 ? "HARI INI" : `LEWAT ${-sisaHari} HARI`;
-  const jangka = Math.max(1, selisihHari(p.tanggalAkad, jatuhTempo));
+      : p.batasTempo !== null && p.batasTempo <= hariIni
+        ? "batas"
+        : sisaHari < 0
+          ? "meleset"
+          : sisaHari === 0
+            ? "hariini"
+            : sisaHari <= 2
+              ? "segera"
+              : "nanti";
+  const hitungMundur =
+    keadaan === "macet"
+      ? "MACET"
+      : keadaan === "batas"
+        ? "WAJIB LUNAS"
+        : keadaan === "meleset"
+          ? `MELESET ${-sisaHari} HARI`
+          : keadaan === "hariini"
+            ? "HARI INI"
+            : `HARI ${p.hariTempo} DARI ${TEMPO.jatuhTempoKe}`;
   return {
-    jatuhTempo,
+    jatuhTempo: p.jatuhTempo,
     sisaHari,
     keadaan,
-    hitungMundur: keadaan === "macet" ? `MACET · ${mundur}` : mundur,
-    jalan: Math.max(0, Math.min(1, selisihHari(p.tanggalAkad, hariIni) / jangka)),
+    hitungMundur,
+    jalan: Math.max(0, Math.min(1, p.hariTempo / TEMPO.jatuhTempoKe)),
     akadTeks: ringkas(p.tanggalAkad),
-    jatuhTempoTeks: ringkas(jatuhTempo),
-    jatuhTempoHariTeks: hariRingkas(jatuhTempo),
+    jatuhTempoTeks: p.jatuhTempo ? ringkas(p.jatuhTempo) : `Hari Ke-${TEMPO.jatuhTempoKe}`,
+    jatuhTempoHariTeks: p.jatuhTempo
+      ? hariRingkas(p.jatuhTempo)
+      : `hari kerja ke-${TEMPO.jatuhTempoKe}`,
   };
 }
 
-/** Ringkasan JATUH TEMPO di kepala mode Tempoan (pengganti rasio bayar): jumlah nasabah saja. */
+/** Ringkasan JATUH TEMPO di kepala tab Tempoan (pengganti rasio bayar): jumlah nasabah saja. */
 export function ringkasJatuhTempo(tempo: readonly TempoVM[]): {
-  lewat: number;
+  meleset: number;
   hariIni: number;
-  pekan: number;
+  belum: number;
   berjalan: number;
 } {
-  const r = { lewat: 0, hariIni: 0, pekan: 0, berjalan: tempo.length };
+  const r = { meleset: 0, hariIni: 0, belum: 0, berjalan: tempo.length };
   for (const t of tempo) {
-    if (t.sisaHari < 0) r.lewat++;
+    if (t.sisaHari < 0) r.meleset++;
     else if (t.sisaHari === 0) r.hariIni++;
-    else if (t.sisaHari <= 7) r.pekan++;
+    else r.belum++;
   }
   return r;
 }
@@ -170,7 +192,7 @@ export function ringkasJatuhTempo(tempo: readonly TempoVM[]): {
 export function jatuhTempoDari(
   pinjaman: readonly Pick<
     KartuTagih,
-    "jenis" | "tanggalAkad" | "tenor" | "jatuhTempo" | "status"
+    "jenis" | "tanggalAkad" | "jatuhTempo" | "batasTempo" | "hariTempo" | "status"
   >[],
   hariIni: string,
 ) {

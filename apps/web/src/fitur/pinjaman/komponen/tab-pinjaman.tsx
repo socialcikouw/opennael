@@ -38,7 +38,7 @@ export function TabPinjaman({ nasabahId }: { nasabahId: string }) {
                 {p.jenis === "tempoan"
                   ? p.jatuhTempo
                     ? ` · jatuh tempo ${formatTanggal(p.jatuhTempo, "tanpa")}`
-                    : ""
+                    : ` · hari kerja ke-${p.hariTempo} dari 6`
                   : ` · angsuran ${rupiah(p.angsuran)} · ke-${p.angsuranKe}/${p.tenor}`}
                 {p.tanggalSelesai ? ` · selesai ${formatTanggal(p.tanggalSelesai, "tanpa")}` : ""}
               </span>

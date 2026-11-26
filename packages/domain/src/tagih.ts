@@ -2,6 +2,16 @@ import type { JenisPinjaman } from "./akad";
 import { hariTagihMingguan, selisihHari } from "./kalender";
 
 /**
+ * A4. Tempoan dihitung dari HARI MASUK KERJA kolektor pemegang sesudah akad: ke-6 =
+ * jatuh tempo, janji besok paling banyak 4 kali (ke-6 s/d ke-9), ke-10 = batas lunas.
+ * Tanggalnya dihitung server dari absen (`jatuhTempo`, `batasTempo` di kartu).
+ */
+export const TEMPO = { jatuhTempoKe: 6, janjiMaks: 4 } as const;
+
+/** A4. Hari masuk kerja ke-berapa yang menjadi batas lunas (6 + 4 = 10). */
+export const HARI_BATAS_TEMPO = TEMPO.jatuhTempoKe + TEMPO.janjiMaks;
+
+/**
  * POSISI TAGIH — docs/aturan-usaha.md B5. Tertinggal & tunggakan dihitung
  * menurut jumlah angsuran yang sudah terbayar, bukan tanggal tiap setoran;
  * hari ini belum dihitung lewat.
@@ -66,16 +76,30 @@ export function posisiTagih(b: BahanTagih, hariIni: string): PosisiTagih {
  * WAJIB DITAGIH HARI INI — docs/aturan-usaha.md B6 (yang menahan laporan, C6).
  * Pinjaman aktif yang sudah mulai ditagih (B1: bukan akad hari ini): harian
  * setiap hari kerja; mingguan hanya pada hari tagihnya (akad + 7k hari);
- * tempoan sejak jatuh tempo (hari ini atau sudah lewat). Hari kerja sendiri
- * dijaga gerbang lapangan.
+ * tempoan sejak jatuh tempo sampai sebelum batas lunas (A4 — pada batas lunas
+ * nasabah tak menahan laporan; malamnya macet bila belum lunas, F3). Hari kerja
+ * sendiri dijaga gerbang lapangan.
  */
 export function wajibDitagihHariIni(
-  p: { jenis: JenisPinjaman; tanggalAkad: string; jatuhTempo: string | null },
+  p: {
+    jenis: JenisPinjaman;
+    tanggalAkad: string;
+    jatuhTempo: string | null;
+    batasTempo: string | null;
+  },
   hariIni: string,
 ): boolean {
   if (p.jenis === "harian") return selisihHari(p.tanggalAkad, hariIni) > 0;
   if (p.jenis === "mingguan") return hariTagihMingguan(p.tanggalAkad, hariIni);
-  return sudahJatuhTempo(p, hariIni);
+  return sudahJatuhTempo(p, hariIni) && !batasLunasTempoan(p, hariIni);
+}
+
+/** A4. Tempoan yang sudah sampai batas lunas (hari masuk kerja ke-10): janji habis, wajib lunas. */
+export function batasLunasTempoan(
+  p: { jenis: JenisPinjaman; batasTempo: string | null },
+  hariIni: string,
+): boolean {
+  return p.jenis === "tempoan" && p.batasTempo !== null && p.batasTempo <= hariIni;
 }
 
 /**

@@ -13,9 +13,9 @@ import type { AksiKartu } from "./kartu-nasabah";
  *   [ BAYAR                  Rp 15.000 ]
  * Libur & Gulung tonal; mati beserta alasannya bila belum boleh (tetap bisa
  * diketuk untuk membacanya). Bayar — satu-satunya bidang berwarna pekat,
- * selebar kartu — mencetak nominalnya. Tempoan hanya Libur & Lunasi (keputusan pemilik
- * 26 Nov 2026): Lunasi seharga saldo, Libur hanya sejak jatuh tempo, beralasan (G1), dan
- * tanpa Gulung (E5). Lunasi nasabah lain: tahan lama kartunya.
+ * selebar kartu — mencetak nominalnya. Tempoan hanya Janji Besok & Lunasi (keputusan
+ * pemilik 26 Nov 2026): Lunasi seharga saldo; Janji Besok sejak jatuh tempo, mati pada batas
+ * lunas (G1); tanpa Gulung (E5). Lunasi nasabah lain: tahan lama kartunya.
  */
 export function KakiKartu({
   vm,
@@ -27,7 +27,7 @@ export function KakiKartu({
   aksen: WarnaAksen;
 }) {
   const status = vm.progres?.status ?? "terkunci";
-  // Tempoan tak bisa digulung (E5); sebelum jatuh tempo tak ada Libur juga — baris tonal hilang.
+  // Tempoan tak bisa digulung (E5); sebelum jatuh tempo tak ada Janji Besok — baris tonal hilang.
   const gulung = !vm.sekaliBayar;
   return (
     <View style={gaya.kaki}>
@@ -35,8 +35,8 @@ export function KakiKartu({
         <View style={gaya.barisTonal}>
           {vm.tampilkanLibur ? (
             <TombolTonal
-              label="LIBUR"
-              ikon="circle-pause"
+              label={vm.labelLibur}
+              ikon={vm.sekaliBayar ? "calendar-clock" : "circle-pause"}
               sorot={false}
               mati={vm.alasanLibur ? "merah" : null}
               alasan={vm.alasanLibur}

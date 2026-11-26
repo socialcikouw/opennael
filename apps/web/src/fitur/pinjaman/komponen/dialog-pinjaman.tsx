@@ -79,6 +79,8 @@ export function DialogPinjaman({
                   ) : null}
                   {p.jatuhTempo ? (
                     <BarisNilai label="Jatuh Tempo">{formatTanggal(p.jatuhTempo)}</BarisNilai>
+                  ) : p.jenis === "tempoan" ? (
+                    <BarisNilai label="Jatuh Tempo">Hari kerja ke-{p.hariTempo} dari 6</BarisNilai>
                   ) : null}
                   <BarisNilai label="Pokok">{rupiah(p.pokok)}</BarisNilai>
                   <BarisNilai label="Potongan Admin">{rupiah(p.potonganAdmin)}</BarisNilai>

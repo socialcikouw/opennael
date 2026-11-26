@@ -16,6 +16,8 @@ const kartu = (nama: string, ubah: Partial<KartuTagih> = {}): KartuTagih => ({
   tanggalAkad: "2026-10-20",
   waktuAkad: null,
   jatuhTempo: null,
+  batasTempo: null,
+  hariTempo: 0,
   pokok: 1_000_000,
   potonganAdmin: 0,
   tabunganMasuk: 0,
@@ -33,12 +35,19 @@ const kartu = (nama: string, ubah: Partial<KartuTagih> = {}): KartuTagih => ({
   hariIni: null,
   ...ubah,
 });
-const tempoan = (nama: string, jatuhTempo: string, ubah: Partial<KartuTagih> = {}) =>
+/** Tempoan: jatuh tempo & hari ke-N dari absen (A4). */
+const tempoan = (
+  nama: string,
+  jatuhTempo: string | null,
+  hariTempo: number,
+  ubah: Partial<KartuTagih> = {},
+) =>
   kartu(nama, {
     jenis: "tempoan",
-    tenor: 14,
-    tanggalAkad: "2026-10-01",
+    tenor: 6,
+    tanggalAkad: "2026-10-22",
     jatuhTempo,
+    hariTempo,
     saldo: 1_250_000,
     ...ubah,
   });
@@ -95,9 +104,9 @@ describe("susunPengingat", () => {
             angsuran: 150_000,
           }),
           kartu("Eko", { jenis: "mingguan", tenor: 8, tanggalAkad: "2026-10-27" }), // bukan hari tagih
-          tempoan("Fajar", T),
-          tempoan("Gita", "2026-10-30"),
-          tempoan("Hana", "2026-11-09"), // belum jatuh tempo
+          tempoan("Fajar", T, 6),
+          tempoan("Gita", "2026-10-30", 8), // jatuh tempo Jumat; masuk Sabtu & Senin
+          tempoan("Hana", null, 3), // belum jatuh tempo
         ],
       }),
     );
@@ -120,18 +129,18 @@ describe("susunPengingat", () => {
     expect(sekarang?.nasabah[0]?.keterangan).toBe("Rp 1.250.000");
     expect(lewat?.judul).toBe("Nasabah tempoan lewat jatuh tempo: 1");
     expect(lewat?.nada).toBe("merah");
-    expect(lewat?.nasabah[0]?.keterangan).toBe("Lewat 3 hari · Rp 1.250.000");
+    expect(lewat?.nasabah[0]?.keterangan).toBe("Meleset 2 hari · Rp 1.250.000");
     // Sudah absen: belum ditagih ditandai lencana tab jenisnya, lonceng diam.
     expect(angkaLonceng(hasil)).toBe(0);
   });
 
-  test("tempoan jatuh tempo besok: kabar sehari lebih awal, tak dihitung lonceng", () => {
+  test("tempoan jatuh tempo hari kerja berikutnya: kabar lebih awal, tak dihitung lonceng", () => {
     const hasil = susunPengingat(
-      bahan({ pinjaman: [tempoan("Indah", "2026-11-03")], gerbangMutasi: "siap" }),
+      bahan({ pinjaman: [tempoan("Indah", null, 5)], gerbangMutasi: "siap" }),
     );
     expect(kunci(hasil)).toEqual(["tempo-besok", "mutasi-siap"]);
     expect(hasil[0]).toMatchObject({
-      judul: "Nasabah tempoan jatuh tempo besok: 1",
+      judul: "Nasabah tempoan jatuh tempo hari kerja berikutnya: 1",
       tindakan: false,
     });
     expect(angkaLonceng(hasil)).toBe(0);
@@ -140,9 +149,7 @@ describe("susunPengingat", () => {
   test("tempoan yang sudah diliburkan hari ini tak lagi menahan", () => {
     const hasil = susunPengingat(
       bahan({
-        pinjaman: [
-          tempoan("Joko", "2026-10-30", { hariIni: { jenis: "libur", alasan: "belum ada uang" } }),
-        ],
+        pinjaman: [tempoan("Joko", "2026-10-30", 8, { hariIni: { jenis: "libur", alasan: null } })],
         gerbangMutasi: "siap",
       }),
     );

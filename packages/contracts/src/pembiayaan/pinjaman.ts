@@ -15,7 +15,15 @@ export const pinjamanSchema = z.object({
   tanggalAkad: z.string(),
   /** Waktu akad (ISO) untuk jam di kartu HP; null untuk salinan migrasi (jam akad aslinya tak diketahui). */
   waktuAkad: z.string().nullable(),
+  /**
+   * Tempoan (aturan-usaha A4): hari masuk kerja ke-6 kolektor pemegang sesudah akad;
+   * null = belum sampai, atau bukan tempoan. Dihitung dari absen, bukan disimpan.
+   */
   jatuhTempo: z.string().nullable(),
+  /** Tempoan: batas lunas = hari masuk kerja ke-10 (janji besok habis); null = belum sampai. */
+  batasTempo: z.string().nullable(),
+  /** Tempoan: hari masuk kerja pemegang sejak akad s/d hari ini (hari ke-N); jenis lain 0. */
+  hariTempo: z.number(),
   pokok: z.number(),
   potonganAdmin: z.number(),
   tabunganMasuk: z.number(),

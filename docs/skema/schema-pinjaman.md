@@ -11,7 +11,7 @@ berlaku untuk akad berikutnya. Yang berubah sesudah akad hanya **keadaan
 berjalan**: `saldo`, `status`, dan penanda selesai/macet/pemutihan.
 
 Tiga jenis: **harian** (25 × bayar), **mingguan** (6/8/10 × bayar),
-**tempoan** (sekali bayar pada jatuh tempo 7/10/14 hari). Tiga asal:
+**tempoan** (sekali bayar pada jatuh tempo = hari masuk kerja ke-6 kolektor). Tiga asal:
 **baru**, **gulung** (melunasi pinjaman asal, sisanya dicairkan), **migrasi**
 (disalin dari pembukuan lama, tanpa uang keluar).
 
@@ -27,7 +27,7 @@ Tiga jenis: **harian** (25 × bayar), **mingguan** (6/8/10 × bayar),
 | `nasabah_id` | `uuid` | — | Orangnya. |
 | `pinjaman_ke` | `integer` | — | Urutan pinjaman nasabah ini, berlanjut walau sempat lunas; yang batal tak memakan nomor. |
 | `jenis` | enum `jenis_pinjaman` (`harian`, `mingguan`, `tempoan`) | — | |
-| `tenor` | `integer` | — | Harian & mingguan: jumlah kali bayar. Tempoan: jangka hari. |
+| `tenor` | `integer` | — | Harian & mingguan: jumlah kali bayar. Tempoan: jangka **hari kerja kolektor** (6). |
 | `asal` | enum `asal_pinjaman` (`baru`, `gulung`, `migrasi`) | — | |
 | `pinjaman_asal_id` | `uuid` | ya | Gulung: pinjaman yang dilunasi penerus ini. |
 | `jenis_gulung` | enum `jenis_gulung` (`tetap`, `naik`, `turun`) | ya | Gulung: pokok baru dibanding pokok asal. |
@@ -40,7 +40,6 @@ Tiga jenis: **harian** (25 × bayar), **mingguan** (6/8/10 × bayar),
 |---|---|---|---|
 | `tanggal_akad` | `date` | — | Hari akad (kalender kantor) — sumbu laporan droping. |
 | `tanggal_disalin` | `date` | ya | Hanya migrasi: hari disalin; sejak hari itu ia ditagih. |
-| `jatuh_tempo` | `date`, **turunan** | ya | `CASE WHEN jenis = 'tempoan' THEN tanggal_akad + tenor END`. |
 | `tanggal_macet` | `date` | ya | Hari mulai macet. Tetap tersimpan saat diputihkan, supaya batal pemutihan mengembalikan status persis. |
 | `tanggal_selesai` | `date` | ya | Hari lunas / digulung / batal / diputihkan. |
 
@@ -49,7 +48,7 @@ Tiga jenis: **harian** (25 × bayar), **mingguan** (6/8/10 × bayar),
 | Kolom | Tipe | Penjelasan |
 |---|---|---|
 | `pokok` | `bigint` | Kelipatan Rp 100.000 — membuat potongan, total kembali, dan ÷ tenor selalu bulat. Mingguan paling sedikit Rp 500.000. |
-| `potongan_admin` | `bigint` | Potongan jasa/admin, pendapatan kantor saat pencairan: harian & tempoan 5%, mingguan 10% pokok; migrasi 0. |
+| `potongan_admin` | `bigint` | Potongan jasa/admin, pendapatan kantor saat pencairan: harian 5%, mingguan 10% pokok; tempoan & migrasi 0. |
 | `tabungan_masuk` | `bigint` | Yang masuk tabungan nasabah lewat akad ini: potongan tabungan 5% (baru/gulung harian; mingguan & tempoan 0) atau tabungan pembuka (migrasi). |
 | `saldo_lama` | `bigint` | Gulung: sisa saldo pinjaman asal yang dipotong dari pencairan. |
 | `pencairan` | `bigint` | Tunai yang benar-benar diterima nasabah. |
@@ -119,7 +118,7 @@ Tiga jenis: **harian** (25 × bayar), **mingguan** (6/8/10 × bayar),
 |---|---|
 | `pinjaman_ke_check` | `pinjaman_ke >= 1` |
 | `pinjaman_pokok_check` | `pokok > 0 AND pokok % 100000 = 0`; mingguan `pokok >= 500000` |
-| `pinjaman_tenor_check` | harian 25; mingguan 8; tempoan 7/10/14 |
+| `pinjaman_tenor_check` | harian 25; mingguan 8; tempoan 6 |
 | `pinjaman_nominal_check` | semua nominal ≥ 0; `total_kembali >= pokok` |
 | `pinjaman_angsuran_check` | `angsuran > 0`; tempoan `angsuran = total_kembali`; lainnya `angsuran × tenor = total_kembali` |
 | `pinjaman_saldo_check` | `0 <= saldo <= saldo_awal <= total_kembali` |
@@ -163,7 +162,7 @@ pengaman; service memeriksanya lebih dulu. *(Ditambahkan saat pembangunan,
 | `tabungan_awal` | `tabungan_masuk` | Tak tertukar dengan `saldo_awal`; berpasangan dengan `transaksi.tabungan_keluar` & `nasabah.saldo_tabungan`. |
 | `macet_sejak` | `tanggal_macet` | Konvensi #9. |
 | `catatan_pemutihan` | `keterangan_pemutihan` | Konvensi #6. |
-| `jatuh_tempo` diisi service, dijaga CHECK | kolom turunan | Satu sumber kebenaran; `pinjaman_jatuh_tempo_check` hilang. |
+| `jatuh_tempo` diisi service, dijaga CHECK | **tidak disimpan** — dihitung dari absen (lihat "Jatuh tempo tempoan") | Satu sumber kebenaran; `pinjaman_jatuh_tempo_check` hilang. (26 Nov 2026: kolom turunan `tanggal_akad + tenor` dibuang, migrasi 0030.) |
 | FK `pinjaman_asal_id` → `pinjaman(id)` | FK `(pinjaman_asal_id, nasabah_id)` → `pinjaman(id, nasabah_id)` | Gulung dari nasabah lain mustahil di database. |
 | FK `dibuat_oleh`, `diputihkan_oleh` → `users(id)` | FK gabungan dengan `kantor_id` | Pelaku pasti orang kantor itu. |
 | — | index `(kantor_id, tanggal_selesai)` parsial | Laporan harian tetap cepat bertahun-tahun ke depan. |
@@ -193,7 +192,7 @@ pengaman; service memeriksanya lebih dulu. *(Ditambahkan saat pembangunan,
 | `POST /lapangan/akad` | kolektor | Akad: nasabah lama (`nasabahId`) atau orang baru (`nasabah`), `jenis`, `pokok`, `tenor`, **`fotoSerahTerimaId`** (wajib; diunggah lebih dulu lewat `POST /foto`), `fotoKtpId` (opsional). Angka akad dihitung server. Wajib kunci idempoten. |
 | `POST /pinjaman/migrasi` | bos | Salin pinjaman berjalan dari pembukuan lama ([aturan-usaha A10](../aturan-usaha.md)): `{ nasabah: { nasabahId } \| { nama, kampung, nomorHp?, nik? }, kolektorId?, jenis, tenor, pokok, tanggalAkad, saldo, tabungan, pinjamanKe?, macet? }`. Orang baru wajib `kolektorId` (pemegang & `pencair_id`); nasabah lama tetap pada pemegangnya. `pinjamanKe` bawaan nomor berikutnya — boleh diisi sesuai buku, tidak boleh mundur. Pemeriksaan orang baru sama dengan akad lapangan (NIK terdaftar, mirip nasabah diblokir). |
 | `GET /pinjaman` | bos, pengawas: semua; kolektor: pegangannya | Kartu: pinjaman + identitas nasabah + pemegang + posisi tagih hari ini (`tagih` = `{ tertinggal, tunggakan }` menurut [aturan-usaha B5](../aturan-usaha.md); `null` bila tidak aktif) + kunci gulung yang berlaku (`kunciGulung` = `{ gulung, naik, alasan }`, gabungan lapis kantor, pemegang, dan nasabah). Saringan: `status` = `aktif` (bawaan: berjalan & macet) · `selesai` · `semua`; `nasabahId`; `kolektorId` (pemegang; bos & pengawas). Urut nama nasabah, lalu `pinjamanKe` menurun; paling banyak 500. |
-| `GET /pinjaman/:id` | sama | Kartu + kolom akad lengkap (asal, gulung, droping, tanggal selesai/macet, pemutihan, batal) + angka aturan macet (`aturanMacet`): jendela 30 hari yang berakhir **hari ini** — `setoranJendela`, `ambang`, `hariTagih` — dan status yang akan diberikan sapuan malam ini bila tak ada setoran lagi (`statusMalamIni`). Tempoan: `batasTempoan` (jatuh tempo + 7). `null` bila tidak aktif. |
+| `GET /pinjaman/:id` | sama | Kartu + kolom akad lengkap (asal, gulung, droping, tanggal selesai/macet, pemutihan, batal) + angka aturan macet (`aturanMacet`): jendela 30 hari yang berakhir **hari ini** — `setoranJendela`, `ambang`, `hariTagih` — dan status yang akan diberikan sapuan malam ini bila tak ada setoran lagi (`statusMalamIni`). Tempoan: `batasTempoan` (= `batasTempo`, batas lunas). `null` bila tidak aktif. |
 | `PATCH /pinjaman/:id` | bos | Hanya `pinjamanKe` (identitas nasabah pindah ke `PATCH /nasabah/:id`). Pinjaman batal tidak bisa disunting; nomor yang sudah dipakai pinjaman lain nasabah itu → `PINJAMAN_KE_DIPAKAI` (409). Tercatat di `riwayat_perubahan` (`ubah_pinjaman_ke`). |
 | `GET /lapangan/portofolio` | kolektor | Ringkasan portofolio **pegangan sendiri** (nasabah yang kini dipegangnya) untuk Dasbor HP (1 Nov 2026), dipecah per jenis supaya Dasbor mengikuti mode tanpa permintaan ulang: `{ harian, mingguan, tempoan }`, masing-masing `{ berjalan, macet, diputihkan }`, masing-masing `{ jumlah, saldo }` — Σ `saldo` pinjaman berstatus itu. Mode Semua = ketiga jenis dijumlah di HP. `diputihkan` = seluruh riwayat (piutang yang dihapus bos; saldonya tak disentuh pemutihan, jadi angkanya = nilai yang dihapus); lunas, digulung, dan batal tidak dihitung. Hanya hitungan: kolektor tak perlu mengunduh seluruh riwayat pinjaman selesai untuk melihatnya. |
 | `POST /pinjaman/:id/batal` | bos | `{ alasan }` — batal akad salah input: hanya hari akad, sebelum ada peristiwa, dan **sebelum kas pencairnya diterima** (`KAS_SUDAH_DITERIMA`). Salinan migrasi: hanya **hari disalin**, sebelum ada peristiwa (boleh berstatus macet; tanpa pemeriksaan kas). |
@@ -208,8 +207,8 @@ Field API lama (`collectorId`, `admin`, `tabunganAwal`, `macetSejak`,
 
 - **Syarat akad** dari satu rumus (`packages/domain` `syaratAkad`, aturan-usaha A3):
   harian potong 5% admin + 5% tabungan (dicairkan 90%), kembali 125%; mingguan
-  potong 10% admin tanpa tabungan (90%), kembali 120%, 8 kali; tempoan potong
-  5% admin tanpa tabungan (95%), kembali 125%.
+  potong 10% admin tanpa tabungan (90%), kembali 120%, 8 kali; tempoan tanpa
+  potongan (100%), kembali 125%, 6 hari kerja.
 - **Gulung**: tempoan tidak bisa digulung (`GULUNG_TEMPOAN`); asal harus masih ditagih; rem `kebijakan` diperiksa lebih dulu
   (`gulung_pinjaman_dikunci`, `naik_pinjaman_dikunci`); harian: tidak macet,
   pinjaman pertama tak boleh naik, ambang angsuran (ke-1–3 mulai angsuran 12,
@@ -217,7 +216,13 @@ Field API lama (`collectorId`, `admin`, `tabunganAwal`, `macetSejak`,
   asal `digulung` → penerus → tabungan masuk.
 - **Macet** dinilai sapuan tengah malam per kantor (`domain/evaluasi-macet.ts`):
   harian < 5× angsuran / mingguan < 1× angsuran setoran 30 hari terakhir
-  (dua arah, bisa pulih); tempoan lewat 7 hari dari jatuh tempo.
+  (dua arah, bisa pulih); tempoan belum lunas pada tutup hari batas lunas.
+- **Jatuh tempo tempoan** (aturan-usaha A4) tidak disimpan, dihitung dari
+  `hari_kolektor` setiap dibaca (`platform/db/tempo.ts`): hari ber-`absensi =
+  masuk_kerja` milik kolektor **pemegang saat ini** (`nasabah.kolektor_id`)
+  sesudah `tanggal_akad`, urut tanggal — ke-6 = `jatuhTempo`, ke-10 =
+  `batasTempo`, jumlahnya s/d hari ini = `hariTempo`. Semuanya ikut di kartu
+  pinjaman (`jatuhTempo`, `batasTempo`, `hariTempo`; null/0 untuk jenis lain).
 - **Batal akad**: status `batal` + kolom batal terisi, tabungan masuk ditarik
   lagi — di satu transaksi. Ditolak bila serah terima kas pencair hari itu
   sudah berlaku (droping menggeser tunai seharusnya). Tidak ditulis ke

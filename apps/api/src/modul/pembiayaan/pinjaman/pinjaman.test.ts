@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { geserTanggal } from "@opennael/domain";
 import { sql } from "drizzle-orm";
-import { dalamTransaksi, siapkanKantor, URL_DB } from "../../../uji/bantu";
+import { dalamTransaksi, masukKerja, siapkanKantor, URL_DB } from "../../../uji/bantu";
 import { kode, siapkanLapangan } from "../../../uji/lapangan";
 
 /**
@@ -57,7 +57,7 @@ describe.skipIf(!URL_DB)("pinjaman", () => {
             asal, tanggal_akad, tanggal_disalin, pokok, potongan_admin, tabungan_masuk, pencairan,
             total_kembali, angsuran, saldo_awal, drop_baru, saldo, status, tanggal_selesai)
           values (${kantorId}, ${isi.pemegang ?? andiId}, ${bos.pengguna.id}, ${isi.nasabahId},
-            ${isi.ke ?? 1}, ${isi.jenis ?? "harian"}, ${tempoan ? 14 : 25}, 'migrasi', ${isi.tanggalAkad},
+            ${isi.ke ?? 1}, ${isi.jenis ?? "harian"}, ${tempoan ? 6 : 25}, 'migrasi', ${isi.tanggalAkad},
             ${isi.tanggalAkad}, 1000000, 0, 0, 0, ${total}, ${tempoan ? total : 50_000}, ${total}, 0,
             ${lunas ? 0 : isi.saldo}, ${isi.status ?? "berjalan"}, ${lunas ? t(-10) : null})
           returning id`);
@@ -86,7 +86,8 @@ describe.skipIf(!URL_DB)("pinjaman", () => {
         insert into transaksi (kantor_id, pencatat_id, pinjaman_id, tanggal, jenis, setoran_murni, saldo_sesudah)
         values (${kantorId}, ${andiId}, ${aAktif}, ${t(-1)}, 'angsuran', 150000, 1100000)`);
 
-      // B: tempoan jatuh tempo T−6 → seluruh saldo tertunggak; gulung dikunci bos.
+      // B: tempoan jatuh tempo T−6 (hari masuk kerja ke-6 Andi, A4) → seluruh saldo
+      // tertunggak; gulung dikunci bos.
       const bNasabah = await orang("budi");
       const bPinjaman = await pinjamanLama({
         nasabahId: bNasabah,
@@ -94,6 +95,7 @@ describe.skipIf(!URL_DB)("pinjaman", () => {
         tanggalAkad: t(-20),
         saldo: 1_250_000,
       });
+      await masukKerja(tx, kantorId, andiId, [t(-11), t(-10), t(-9), t(-8), t(-7), t(-6)]);
       const rem = await kirim(`/kebijakan/nasabah/${bNasabah}`, {
         metode: "PUT",
         isi: { naikPinjamanDikunci: false, gulungPinjamanDikunci: true, alasanKunci: "tunggakan" },
@@ -163,7 +165,8 @@ describe.skipIf(!URL_DB)("pinjaman", () => {
       expect(rincianB.isi.aturanMacet).toMatchObject({
         ambang: null,
         hariTagih: null,
-        batasTempoan: t(1),
+        // Batas lunas = hari masuk kerja ke-10 (A4); Andi baru 6 kali masuk sesudah akad.
+        batasTempoan: null,
         statusMalamIni: "berjalan",
       });
       expect((await kirim(`/pinjaman/${aLunas}`, { token: b })).isi.aturanMacet).toBeNull();
@@ -202,7 +205,7 @@ describe.skipIf(!URL_DB)("pinjaman", () => {
       await absen();
       const sari = await akadBaru("sari");
       const tono = await akadBaru("tono");
-      await akadBaru("wati", { jenis: "tempoan", tenor: 14 });
+      await akadBaru("wati", { jenis: "tempoan", tenor: 6 });
       await kirim("/lapangan/bayar", { pinjamanId: sari.isi.id, setoranMurni: 50_000 }, k);
       await tx.execute(sql`update pinjaman set saldo = 1100000 where id = ${tono.isi.id}`);
       await kirim("/lapangan/libur", { pinjamanId: tono.isi.id, alasan: "sakit" }, k);

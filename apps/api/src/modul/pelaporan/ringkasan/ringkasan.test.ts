@@ -3,7 +3,7 @@ import type { Sesi } from "@opennael/contracts";
 import { geserTanggal } from "@opennael/domain";
 import { sql } from "drizzle-orm";
 import type { Db } from "../../../platform/db/klien";
-import { dalamTransaksi, siapkanKantor, URL_DB } from "../../../uji/bantu";
+import { dalamTransaksi, masukKerja, siapkanKantor, URL_DB } from "../../../uji/bantu";
 
 /** Pembantu data uji: pinjaman langsung lewat SQL (tanggal bebas). */
 function pembuat(tx: Db, kantorId: string, bosId: string) {
@@ -259,7 +259,7 @@ describe.skipIf(!URL_DB)("ringkasan & layar baca bos", () => {
         },
       ) => {
         const nasabahId = await d.nasabah(kolektorId, nama);
-        const tenor = isi.jenis === "mingguan" ? 8 : 14;
+        const tenor = isi.jenis === "mingguan" ? 8 : 6;
         const selesai = isi.status === "lunas" || isi.status === "digulung";
         const total = isi.jenis === "mingguan" ? isi.angsuran * tenor : isi.angsuran;
         const [p] = await d.baris<{ id: string }>(sql`
@@ -302,8 +302,15 @@ describe.skipIf(!URL_DB)("ringkasan & layar baca bos", () => {
       await d.setor(andiId, pA, hari, { murni: 150_000 });
       await d.setor(andiId, pB, hari, { murni: 70_000 });
 
-      // ---- tempoan: jatuh tempo hari ini; satu lunas hari ini (membayar), satu macet kemarin ----
+      // ---- tempoan: jatuh tempo hari ini (Andi masuk kerja ke-6 sesudah akad, A4); satu lunas
+      // hari ini (membayar), satu macet kemarin ----
       const akadTempo = geserTanggal(hari, -14);
+      await masukKerja(
+        tx,
+        kantorId,
+        andiId,
+        [5, 4, 3, 2, 1, 0].map((n) => geserTanggal(hari, -n)),
+      );
       const pT = await jenisLain(andiId, "t1", {
         jenis: "tempoan",
         akad: akadTempo,

@@ -27,6 +27,23 @@ export async function dalamTransaksi(uji: (tx: Db) => Promise<void>) {
   }
 }
 
+/**
+ * Absen MASUK KERJA kolektor pada tanggal-tanggal ini (kas lapangan & uang jalan
+ * 5.000, I0) — bahan hari ke-N tempoan (aturan-usaha A4).
+ */
+export async function masukKerja(
+  tx: Db,
+  kantorId: string,
+  kolektorId: string,
+  tanggal: readonly string[],
+) {
+  for (const t of tanggal) {
+    await tx.execute(sql`
+      insert into hari_kolektor (kantor_id, kolektor_id, tanggal, absensi, kas_lapangan, uang_jalan)
+      values (${kantorId}, ${kolektorId}, ${t}, 'masuk_kerja', 5000, 5000)`);
+  }
+}
+
 export type Jawaban = {
   status: number;
   // biome-ignore lint/suspicious/noExplicitAny: isi jawaban di uji dibaca bebas lalu diperiksa expect

@@ -1,9 +1,15 @@
 import { describe, expect, test } from "bun:test";
-import { langkahBerikut, langkahSebelum, nomorLangkah, urutanLangkah } from "./langkah-akad";
+import {
+  langkahBerikut,
+  langkahSebelum,
+  nomorLangkah,
+  perkiraanJatuhTempo,
+  urutanLangkah,
+} from "./langkah-akad";
 
 describe("urutanLangkah", () => {
-  test("nasabah baru tempoan: nama, kampung, kontak, jenis, lalu pokok sebelum tenor", () => {
-    expect(urutanLangkah("baru", "tempoan")).toEqual([
+  test("nasabah baru: nama, kampung, kontak, jenis, pokok, periksa (tanpa langkah tenor)", () => {
+    expect(urutanLangkah("baru")).toEqual([
       "foto",
       "siapa",
       "nama",
@@ -11,27 +17,12 @@ describe("urutanLangkah", () => {
       "kontak",
       "jenis",
       "pokok",
-      "tenor",
       "periksa",
     ]);
   });
 
   test("pernah melunasi: satu langkah memilih nasabah menggantikan tiga isian", () => {
-    expect(urutanLangkah("pernah-melunasi", "tempoan")).toEqual([
-      "foto",
-      "siapa",
-      "pernah-melunasi",
-      "jenis",
-      "pokok",
-      "tenor",
-      "periksa",
-    ]);
-  });
-
-  test("harian & mingguan tanpa langkah tenor (selalu 25 & 8 kali)", () => {
-    expect(urutanLangkah("baru", "harian")).not.toContain("tenor");
-    expect(urutanLangkah("baru", "mingguan")).not.toContain("tenor");
-    expect(urutanLangkah("pernah-melunasi", "harian")).toEqual([
+    expect(urutanLangkah("pernah-melunasi")).toEqual([
       "foto",
       "siapa",
       "pernah-melunasi",
@@ -41,20 +32,19 @@ describe("urutanLangkah", () => {
     ]);
   });
 
-  test("sebelum memilih, hitungan memakai jalur terpanjang (nasabah baru, bertenor)", () => {
-    expect(urutanLangkah(null, "harian")).toEqual(urutanLangkah("baru", "harian"));
-    expect(urutanLangkah("baru", null)).toEqual(urutanLangkah("baru", "tempoan"));
+  test("sebelum memilih, hitungan memakai jalur terpanjang (nasabah baru)", () => {
+    expect(urutanLangkah(null)).toEqual(urutanLangkah("baru"));
   });
 });
 
 describe("pindah langkah", () => {
-  const urutan = urutanLangkah("baru", "tempoan");
+  const urutan = urutanLangkah("baru");
 
   test("berikut & sebelum", () => {
     expect(langkahBerikut(urutan, "siapa")).toBe("nama");
     expect(langkahBerikut(urutan, "kontak")).toBe("jenis");
     expect(langkahBerikut(urutan, "jenis")).toBe("pokok");
-    expect(langkahBerikut(urutan, "pokok")).toBe("tenor");
+    expect(langkahBerikut(urutan, "pokok")).toBe("periksa");
     expect(langkahSebelum(urutan, "nama")).toBe("siapa");
     expect(langkahSebelum(urutan, "siapa")).toBe("foto");
   });
@@ -67,5 +57,14 @@ describe("pindah langkah", () => {
   test("nomor langkah untuk bilah kemajuan", () => {
     expect(nomorLangkah(urutan, "foto")).toBe(1);
     expect(nomorLangkah(urutan, "periksa")).toBe(urutan.length);
+  });
+});
+
+describe("perkiraan jatuh tempo tempoan (A4)", () => {
+  test("6 hari kerja Senin–Sabtu sesudah hari akad", () => {
+    // Kamis 26 Nov → Jum, Sab, Sen, Sel, Rab, Kam = Kamis 3 Des (contoh A4).
+    expect(perkiraanJatuhTempo("2026-11-26")).toBe("2026-12-03");
+    // Sabtu 28 Nov → Sen 30 … Sab 5 Des.
+    expect(perkiraanJatuhTempo("2026-11-28")).toBe("2026-12-05");
   });
 });
