@@ -23,8 +23,8 @@ export function LangkahPokok(props: {
   onTekan: (kunci: string) => void;
   onLanjut: () => void;
 }) {
-  // Potongan & pencairan sama untuk semua jenis dan tak bergantung tenor (A3).
-  const syarat = props.pokok > 0 ? cobaAturan(() => rincianPokok(props.pokok)) : null;
+  // Potongan & pencairan menurut jenis, tak bergantung tenor (A3).
+  const syarat = props.pokok > 0 ? cobaAturan(() => rincianPokok(props.jenis, props.pokok)) : null;
   const h = syarat?.hasil ?? null;
   const terakhir = props.lama?.terakhir ?? null;
 
@@ -63,8 +63,16 @@ export function LangkahPokok(props: {
       {syarat?.galat ? <Text style={gaya.galat}>{syarat.galat}</Text> : null}
       {h ? (
         <View style={gaya.rincian}>
-          <Baris label="Admin 5%" nilai={`− ${rupiah(h.potonganAdmin)}`} />
-          <Baris label="Tabungan 5%" nilai={`− ${rupiah(h.tabunganMasuk)}`} />
+          <Baris
+            label={`Admin ${persen(h.potonganAdmin, props.pokok)}`}
+            nilai={`− ${rupiah(h.potonganAdmin)}`}
+          />
+          {h.tabunganMasuk > 0 ? (
+            <Baris
+              label={`Tabungan ${persen(h.tabunganMasuk, props.pokok)}`}
+              nilai={`− ${rupiah(h.tabunganMasuk)}`}
+            />
+          ) : null}
           <View style={gaya.garis} />
           <Baris label="Dicairkan ke Nasabah" nilai={rupiah(h.pencairan)} tebal />
         </View>
@@ -72,6 +80,9 @@ export function LangkahPokok(props: {
     </KerangkaLangkah>
   );
 }
+
+/** "5%" / "10%" — persen potongan dari pokok (A3 selalu bulat). */
+const persen = (nilai: number, pokok: number) => `${Math.round((nilai / pokok) * 100)}%`;
 
 const gaya = StyleSheet.create({
   patokan: { ...HURUF.sm, color: WARNA.redup },

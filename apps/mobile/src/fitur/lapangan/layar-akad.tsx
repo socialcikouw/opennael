@@ -1,5 +1,5 @@
 import type { NasabahLama } from "@opennael/contracts";
-import { geserTanggal, type JenisPinjaman, syaratAkad, TENOR_PINJAMAN } from "@opennael/domain";
+import { geserTanggal, type JenisPinjaman, syaratAkad, tenorTunggal } from "@opennael/domain";
 import { LABEL_JENIS, tanggalBertahun } from "@opennael/format";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
@@ -70,8 +70,7 @@ export function LayarAkad() {
 
   const urutan = urutanLangkah(siapa, jenis);
   const pokok = jumlahKetukan(ketukan);
-  const tenor = jenis === "harian" ? (TENOR_PINJAMAN.harian[0] ?? null) : tenorDipilih;
-  // Pasangan pokok + tenor masih berlaku? (mingguan 6 kali hanya pokok kelipatan 300 rb, A2)
+  const tenor = jenis === null ? null : (tenorTunggal(jenis) ?? tenorDipilih);
   const syaratSah =
     jenis !== null && tenor !== null && cobaAturan(() => syaratAkad(jenis, pokok, tenor)).hasil;
 
@@ -140,7 +139,7 @@ export function LayarAkad() {
       const terakhir = lama?.terakhir;
       if (ketukan.length === 0 && terakhir?.jenis === j) setKetukan([terakhir.pokok]);
       // Diubah dari Periksa: tenor jenis lama tak berlaku — pilih tenornya dulu, lalu kembali.
-      if (kePeriksa && j !== "harian") return setLangkah("tenor");
+      if (kePeriksa && tenorTunggal(j) === null) return setLangkah("tenor");
     }
     if (kePeriksa) {
       setKePeriksa(false);
@@ -227,7 +226,7 @@ export function LayarAkad() {
           />
         );
       case "tenor":
-        return jenis === null || jenis === "harian" ? null : (
+        return jenis === null || tenorTunggal(jenis) !== null ? null : (
           <LangkahTenor
             k={k}
             jenis={jenis}

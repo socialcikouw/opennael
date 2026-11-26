@@ -13,15 +13,15 @@ import { KartuPilihan } from "./kartu-pilihan";
 import { type Kerangka, KerangkaLangkah } from "./kerangka-langkah";
 
 /**
- * Langkah TENOR (mingguan & tempoan; harian selalu 25 kali dan dilewati) — tiap pilihan
- * menampilkan angsurannya untuk pokok yang sudah diisi, tempoan juga tanggal jatuh
- * temponya (tanggal akad + tenor hari, A4). Ketuk = langsung lanjut. Tenor yang tak
- * berlaku untuk pokok ini (mingguan 6 kali: pokok kelipatan Rp 300.000, A2) tampil
- * redup dengan sebabnya, tak bisa dipilih.
+ * Langkah TENOR — hanya untuk jenis yang tenornya bisa dipilih (kini tempoan; harian 25 kali
+ * & mingguan 8 kali dilewati, `tenorTunggal`). Tiap pilihan menampilkan angsurannya untuk
+ * pokok yang sudah diisi, tempoan juga tanggal jatuh temponya (tanggal akad + tenor hari,
+ * A4). Ketuk = langsung lanjut. Tenor yang tak berlaku untuk pokok ini tampil redup dengan
+ * sebabnya, tak bisa dipilih.
  */
 export function LangkahTenor(props: {
   k: Kerangka;
-  jenis: Exclude<JenisPinjaman, "harian">;
+  jenis: JenisPinjaman;
   pokok: number;
   /** Tanggal kantor hari ini (`YYYY-MM-DD`) — dasar jatuh tempo; null selama dimuat. */
   hariIni: string | null;
@@ -30,7 +30,7 @@ export function LangkahTenor(props: {
 }) {
   const tempo = props.jenis === "tempoan";
   const pilihan = TENOR_PINJAMAN[props.jenis];
-  const total = cobaAturan(() => rincianPokok(props.pokok)).hasil?.totalKembali ?? 0;
+  const total = cobaAturan(() => rincianPokok(props.jenis, props.pokok)).hasil?.totalKembali ?? 0;
   return (
     <KerangkaLangkah
       k={props.k}

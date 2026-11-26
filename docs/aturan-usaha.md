@@ -17,26 +17,31 @@ Istilah: lihat [`produk.md`](produk.md#istilah). Semua uang dalam rupiah bulat.
 
 ## A. Akad pinjaman
 
-**A1. Pokok** kelipatan Rp 100.000. (Itulah yang membuat 5%, 125%, dan
-pembagian per tenor selalu bulat — kecuali mingguan 6 kali, lihat A2.)
+**A1. Pokok** kelipatan Rp 100.000. (Itulah yang membuat semua potongan, total
+kembali, dan pembagian per tenor selalu bulat.)
 
 **A2. Tenor** per jenis:
 
 | Jenis | Tenor |
 |---|---|
 | Harian | 25 kali |
-| Mingguan | 6, 8, atau 10 kali |
+| Mingguan | 8 kali |
 | Tempoan | 7, 10, atau 14 hari (sekali bayar) |
 
-Mingguan **6 kali hanya untuk pokok kelipatan Rp 300.000** (300.000, 600.000,
-900.000, 1.200.000, …): 125% ÷ 6 baru bulat pada kelipatan itu. Pokok lain
-memilih 8 atau 10 kali. *Keputusan pemilik, 26 Nov 2026.*
+**A3. Potongan & total kembali** per jenis (*keputusan pemilik, 26 Nov 2026*):
 
-**A3. Semua jenis sama:** potongan admin 5% pokok + potongan tabungan 5% pokok
-(**dicairkan 90%**); total kembali **125% pokok**; angsuran = total kembali ÷
-tenor (harian: 5% pokok). *Keputusan pemilik, 26 Nov 2026* — sebelumnya harian
-24 kali & mingguan kembali 120%, tempoan tanpa potongan (dicairkan 100%).
-Data uji lama dihapus; tidak ada pinjaman dengan rumus lama.
+| Jenis | Potongan | Dicairkan | Total kembali | Angsuran |
+|---|---|---|---|---|
+| Harian | admin 5% + tabungan 5% | 90% | 125% pokok | 5% pokok |
+| Mingguan | **admin 10%, tanpa tabungan** | 90% | **120% pokok** | 15% pokok |
+| Tempoan | admin 5% + tabungan 5% | 90% | 125% pokok | sekali bayar (A4) |
+
+Angsuran = total kembali ÷ tenor. Mingguan tidak memotong tabungan, jadi
+pinjaman mingguan tidak menambah tabungan nasabah (yang dikembalikan saat
+lunas hanya tabungan yang sudah ada). Sebelumnya (26 Nov 2026 pagi) semua jenis
+125% dengan mingguan 6/8/10 kali — 125% ÷ 8 tidak bulat ribuan (Rp 156.250 per
+Rp 1 juta) sehingga tak bisa dibayar pas (C1: kelipatan Rp 1.000). Data uji lama
+dihapus; tidak ada pinjaman dengan rumus lama.
 
 **A4. Tempoan:** potongan & total kembali seperti A3; angsuran = total kembali
 (sekali bayar); jatuh tempo = tanggal akad + tenor hari.
@@ -47,9 +52,8 @@ lama (hanya gulung).
 | Contoh | Pokok | Admin | Tabungan | Pencairan | Total kembali | Angsuran |
 |---|---|---|---|---|---|---|
 | Harian, 25× | 1.000.000 | 50.000 | 50.000 | 900.000 | 1.250.000 | 50.000 |
-| Mingguan, 8× | 1.000.000 | 50.000 | 50.000 | 900.000 | 1.250.000 | 156.250 |
-| Mingguan, 10× | 100.000 | 5.000 | 5.000 | 90.000 | 125.000 | 12.500 |
-| Mingguan, 6× | 1.200.000 | 60.000 | 60.000 | 1.080.000 | 1.500.000 | 250.000 |
+| Mingguan, 8× | 1.000.000 | 100.000 | 0 | 900.000 | 1.200.000 | 150.000 |
+| Mingguan, 8× | 100.000 | 10.000 | 0 | 90.000 | 120.000 | 15.000 |
 | Tempoan, 14 hari | 1.000.000 | 50.000 | 50.000 | 900.000 | 1.250.000 | 1.250.000 |
 
 **A6. Syarat akad dibekukan** di pinjaman pada hari akad: mengubah rumus hanya

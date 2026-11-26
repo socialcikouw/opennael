@@ -91,6 +91,8 @@ describe.skipIf(!url)("skema database", () => {
             drop_baru: 1_050_000,
           });
           await salah("pinjaman_tenor_check", { tenor: 10, angsuran: 125_000 });
+          // Mingguan hanya 8 kali (keputusan pemilik 26 Nov 2026).
+          await salah("pinjaman_tenor_check", { jenis: "mingguan", tenor: 10, angsuran: 125_000 });
           // Harian 24 kali (aturan sebelum 26 Nov 2026) tak berlaku lagi.
           await salah("pinjaman_tenor_check", {
             tenor: 24,

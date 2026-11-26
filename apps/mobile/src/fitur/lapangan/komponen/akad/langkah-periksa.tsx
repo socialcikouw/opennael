@@ -1,5 +1,5 @@
 import type { NasabahLama } from "@opennael/contracts";
-import { type JenisPinjaman, syaratAkad } from "@opennael/domain";
+import { type JenisPinjaman, syaratAkad, tenorTunggal } from "@opennael/domain";
 import { jam, LABEL_JENIS, rupiah, tampilKampung, tampilNama } from "@opennael/format";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { Ikon } from "@/komponen/ui/ikon";
@@ -142,7 +142,7 @@ export function LangkahPeriksa(props: {
           garis
           label="Tenor"
           nilai={tenorTeks}
-          onUbah={props.jenis === "harian" ? undefined : () => props.onUbah("tenor")}
+          onUbah={tenorTunggal(props.jenis) !== null ? undefined : () => props.onUbah("tenor")}
         />
         <BarisPeriksa
           garis
@@ -153,7 +153,11 @@ export function LangkahPeriksa(props: {
         <BarisPeriksa
           garis
           label="Potongan"
-          nilai={`Admin ${rupiah(h.potonganAdmin)} · Tabungan ${rupiah(h.tabunganMasuk)}`}
+          nilai={
+            h.tabunganMasuk > 0
+              ? `Admin ${rupiah(h.potonganAdmin)} · Tabungan ${rupiah(h.tabunganMasuk)}`
+              : `Admin ${rupiah(h.potonganAdmin)}`
+          }
         />
         <View style={[gaya.baris, gaya.garis]}>
           <StatusTitikRumah titik={props.titik} lama={props.siapa === "pernah-melunasi"} />

@@ -166,7 +166,7 @@ export const pinjaman = pgTable(
     check(
       "pinjaman_tenor_check",
       sql`(${t.jenis} = 'harian' AND ${t.tenor} = 25)
-        OR (${t.jenis} = 'mingguan' AND ${t.tenor} IN (6, 8, 10))
+        OR (${t.jenis} = 'mingguan' AND ${t.tenor} = 8)
         OR (${t.jenis} = 'tempoan' AND ${t.tenor} IN (7, 10, 14))`,
     ),
     check(

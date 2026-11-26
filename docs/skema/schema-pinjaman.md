@@ -48,12 +48,12 @@ Tiga jenis: **harian** (25 × bayar), **mingguan** (6/8/10 × bayar),
 
 | Kolom | Tipe | Penjelasan |
 |---|---|---|
-| `pokok` | `bigint` | Kelipatan Rp 100.000 — membuat 5%, 125%, dan ÷ tenor selalu bulat (mingguan 6 kali: kelipatan Rp 300.000, dijaga `syaratAkad` & `pinjaman_angsuran_check`). |
-| `potongan_admin` | `bigint` | Potongan jasa/admin, pendapatan kantor saat pencairan. Tempoan & migrasi: 0. |
-| `tabungan_masuk` | `bigint` | Yang masuk tabungan nasabah lewat akad ini: potongan tabungan (baru/gulung) atau tabungan pembuka (migrasi). |
+| `pokok` | `bigint` | Kelipatan Rp 100.000 — membuat potongan, total kembali, dan ÷ tenor selalu bulat. |
+| `potongan_admin` | `bigint` | Potongan jasa/admin, pendapatan kantor saat pencairan: harian & tempoan 5%, mingguan 10% pokok; migrasi 0. |
+| `tabungan_masuk` | `bigint` | Yang masuk tabungan nasabah lewat akad ini: potongan tabungan 5% (baru/gulung harian & tempoan; mingguan 0) atau tabungan pembuka (migrasi). |
 | `saldo_lama` | `bigint` | Gulung: sisa saldo pinjaman asal yang dipotong dari pencairan. |
 | `pencairan` | `bigint` | Tunai yang benar-benar diterima nasabah. |
-| `total_kembali` | `bigint` | Seluruh kewajiban (pokok + jasa): 125% pokok, semua jenis. |
+| `total_kembali` | `bigint` | Seluruh kewajiban (pokok + jasa): harian & tempoan 125%, mingguan 120% pokok. |
 | `angsuran` | `bigint` | Nominal satu kali bayar; tempoan = `total_kembali`. |
 | `saldo_awal` | `bigint` | Saldo saat masuk pembukuan: `total_kembali`, kecuali migrasi (sudah dicicil sebagian). |
 
@@ -119,7 +119,7 @@ Tiga jenis: **harian** (25 × bayar), **mingguan** (6/8/10 × bayar),
 |---|---|
 | `pinjaman_ke_check` | `pinjaman_ke >= 1` |
 | `pinjaman_pokok_check` | `pokok > 0 AND pokok % 100000 = 0` |
-| `pinjaman_tenor_check` | harian 25; mingguan 6/8/10; tempoan 7/10/14 |
+| `pinjaman_tenor_check` | harian 25; mingguan 8; tempoan 7/10/14 |
 | `pinjaman_nominal_check` | semua nominal ≥ 0; `total_kembali >= pokok` |
 | `pinjaman_angsuran_check` | `angsuran > 0`; tempoan `angsuran = total_kembali`; lainnya `angsuran × tenor = total_kembali` |
 | `pinjaman_saldo_check` | `0 <= saldo <= saldo_awal <= total_kembali` |
@@ -206,8 +206,9 @@ Field API lama (`collectorId`, `admin`, `tabunganAwal`, `macetSejak`,
 
 ## Service / logika nantinya
 
-- **Syarat akad** dari satu rumus (`packages/domain` `syaratAkad`): semua jenis
-  potong 5% admin + 5% tabungan (dicairkan 90%), kembali 125%.
+- **Syarat akad** dari satu rumus (`packages/domain` `syaratAkad`, aturan-usaha A3):
+  dicairkan 90% — harian & tempoan potong 5% admin + 5% tabungan, kembali 125%;
+  mingguan potong 10% admin tanpa tabungan, kembali 120%, 8 kali.
 - **Gulung**: asal harus masih ditagih; rem `kebijakan` diperiksa lebih dulu
   (`gulung_pinjaman_dikunci`, `naik_pinjaman_dikunci`); harian: tidak macet,
   pinjaman pertama tak boleh naik, ambang angsuran (ke-1–3 mulai angsuran 12,

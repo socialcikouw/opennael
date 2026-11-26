@@ -1,4 +1,4 @@
-import type { JenisPinjaman } from "@opennael/domain";
+import { type JenisPinjaman, tenorTunggal } from "@opennael/domain";
 
 /**
  * LANGKAH AKAD — urutan layar akad baru, satu pertanyaan per layar (keputusan pemilik
@@ -6,13 +6,13 @@ import type { JenisPinjaman } from "@opennael/domain";
  *
  *   foto → siapa → [nasabah baru: nama → kampung → kontak]
  *                  [pernah melunasi: pernah-melunasi]
- *        → jenis → pokok → [mingguan & tempoan: tenor] → periksa
+ *        → jenis → pokok → [tempoan: tenor] → periksa
  *
  * `foto` = kamera serah terima (A7) yang terbuka begitu (+) diketuk. JENIS dipilih dengan
  * sadar di langkahnya sendiri, tak mengikuti tab yang kebetulan dibuka (koreksi pemilik
  * 26 Nov 2026: takut salah input); letaknya sesudah nasabah supaya pinjaman terakhir
- * nasabah yang pernah melunasi bisa ditampilkan. Harian tak punya langkah tenor (hanya
- * 25 kali, A2). Pokok sebelum tenor: tiap pilihan tenor langsung menampilkan angsurannya.
+ * nasabah yang pernah melunasi bisa ditampilkan. Harian (25 kali) & mingguan (8 kali)
+ * tak punya langkah tenor — tenornya tunggal (A2). Pokok sebelum tenor: tiap pilihan tenor langsung menampilkan angsurannya.
  */
 export type LangkahAkad =
   | "foto"
@@ -38,7 +38,7 @@ export function urutanLangkah(
   if (siapa === "pernah-melunasi") urutan.push("pernah-melunasi");
   else urutan.push("nama", "kampung", "kontak");
   urutan.push("jenis", "pokok");
-  if (jenis !== "harian") urutan.push("tenor");
+  if (jenis === null || tenorTunggal(jenis) === null) urutan.push("tenor");
   urutan.push("periksa");
   return urutan;
 }
