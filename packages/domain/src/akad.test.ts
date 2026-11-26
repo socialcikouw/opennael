@@ -20,12 +20,12 @@ describe("A. akad", () => {
       totalKembali: 1_200_000,
       angsuran: 150_000,
     });
-    expect(syaratAkad("mingguan", 100_000, 8)).toMatchObject({
-      potonganAdmin: 10_000,
+    expect(syaratAkad("mingguan", 500_000, 8)).toMatchObject({
+      potonganAdmin: 50_000,
       tabunganMasuk: 0,
-      pencairan: 90_000,
-      totalKembali: 120_000,
-      angsuran: 15_000,
+      pencairan: 450_000,
+      totalKembali: 600_000,
+      angsuran: 75_000,
     });
     expect(syaratAkad("tempoan", 1_000_000, 14)).toMatchObject({
       potonganAdmin: 50_000,
@@ -55,7 +55,7 @@ describe("A. akad", () => {
   });
 
   test("mingguan 8 kali: angsuran selalu kelipatan Rp 5.000 (A1–A3)", () => {
-    for (let pokok = 100_000; pokok <= 10_000_000; pokok += 100_000) {
+    for (let pokok = 500_000; pokok <= 10_000_000; pokok += 100_000) {
       expect(syaratAkad("mingguan", pokok, 8).angsuran % 5_000).toBe(0);
     }
   });
@@ -66,7 +66,11 @@ describe("A. akad", () => {
     expect(kode(() => syaratAkad("harian", 1_000_000, 20))).toBe("TENOR_TIDAK_BERLAKU");
     expect(kode(() => syaratAkad("harian", 1_000_000, 24))).toBe("TENOR_TIDAK_BERLAKU");
     expect(kode(() => syaratAkad("tempoan", 1_000_000, 30))).toBe("TENOR_TIDAK_BERLAKU");
-    // Mingguan hanya 8 kali (keputusan pemilik 26 Nov 2026).
+    // Mingguan: pokok paling sedikit Rp 500.000; hanya 8 kali (keputusan pemilik 26 Nov 2026).
+    expect(kode(() => syaratAkad("mingguan", 400_000, 8))).toBe("POKOK_TIDAK_SAH");
+    expect(kode(() => syaratAkad("mingguan", 100_000, 8))).toBe("POKOK_TIDAK_SAH");
+    expect(syaratAkad("harian", 100_000, 25).angsuran).toBe(5_000);
+    expect(syaratAkad("tempoan", 100_000, 7).angsuran).toBe(125_000);
     expect(kode(() => syaratAkad("mingguan", 1_000_000, 6))).toBe("TENOR_TIDAK_BERLAKU");
     expect(kode(() => syaratAkad("mingguan", 1_000_000, 10))).toBe("TENOR_TIDAK_BERLAKU");
   });

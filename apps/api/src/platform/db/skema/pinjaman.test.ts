@@ -90,6 +90,20 @@ describe.skipIf(!url)("skema database", () => {
             pencairan: 950_000,
             drop_baru: 1_050_000,
           });
+          // Mingguan pokok paling sedikit Rp 500.000 (keputusan pemilik 26 Nov 2026).
+          await salah("pinjaman_pokok_check", {
+            jenis: "mingguan",
+            tenor: 8,
+            pokok: 400_000,
+            potongan_admin: 40_000,
+            tabungan_masuk: 0,
+            pencairan: 360_000,
+            total_kembali: 480_000,
+            angsuran: 60_000,
+            saldo_awal: 480_000,
+            drop_baru: 400_000,
+            saldo: 480_000,
+          });
           await salah("pinjaman_tenor_check", { tenor: 10, angsuran: 125_000 });
           // Mingguan hanya 8 kali (keputusan pemilik 26 Nov 2026).
           await salah("pinjaman_tenor_check", { jenis: "mingguan", tenor: 10, angsuran: 125_000 });

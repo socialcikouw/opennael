@@ -162,7 +162,10 @@ export const pinjaman = pgTable(
       .where(sql`${t.tanggalSelesai} IS NOT NULL`),
 
     check("pinjaman_ke_check", sql`${t.pinjamanKe} >= 1`),
-    check("pinjaman_pokok_check", sql`${t.pokok} > 0 AND ${t.pokok} % 100000 = 0`),
+    check(
+      "pinjaman_pokok_check",
+      sql`${t.pokok} > 0 AND ${t.pokok} % 100000 = 0 AND (${t.jenis} <> 'mingguan' OR ${t.pokok} >= 500000)`,
+    ),
     check(
       "pinjaman_tenor_check",
       sql`(${t.jenis} = 'harian' AND ${t.tenor} = 25)

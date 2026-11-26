@@ -204,6 +204,13 @@
       "when": 1795682083500,
       "tag": "0028_tenor_mingguan_8",
       "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1795683984018,
+      "tag": "0029_pokok_minimal_mingguan",
+      "breakpoints": true
     }
   ]
 }

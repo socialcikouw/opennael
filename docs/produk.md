@@ -66,7 +66,7 @@ rekening).
 | Jenis | Cara bayar |
 |---|---|
 | **Harian** | 25 kali, setiap hari kerja |
-| **Mingguan** | 8 kali, sekali seminggu pada hari akad |
+| **Mingguan** | 8 kali, sekali seminggu pada hari akad; pokok paling sedikit Rp 500.000 |
 | **Tempoan** | sekali bayar pada jatuh tempo (7, 10, atau 14 hari) |
 
 | Asal | Arti |

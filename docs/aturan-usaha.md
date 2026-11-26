@@ -18,7 +18,9 @@ Istilah: lihat [`produk.md`](produk.md#istilah). Semua uang dalam rupiah bulat.
 ## A. Akad pinjaman
 
 **A1. Pokok** kelipatan Rp 100.000. (Itulah yang membuat semua potongan, total
-kembali, dan pembagian per tenor selalu bulat.)
+kembali, dan pembagian per tenor selalu bulat.) **Mingguan: pokok paling sedikit
+Rp 500.000** — di bawah itu akad ditolak (*keputusan pemilik, 26 Nov 2026*).
+Berlaku juga untuk gulung dan salinan migrasi.
 
 **A2. Tenor** per jenis:
 
@@ -53,7 +55,7 @@ lama (hanya gulung).
 |---|---|---|---|---|---|---|
 | Harian, 25× | 1.000.000 | 50.000 | 50.000 | 900.000 | 1.250.000 | 50.000 |
 | Mingguan, 8× | 1.000.000 | 100.000 | 0 | 900.000 | 1.200.000 | 150.000 |
-| Mingguan, 8× | 100.000 | 10.000 | 0 | 90.000 | 120.000 | 15.000 |
+| Mingguan, 8× | 500.000 | 50.000 | 0 | 450.000 | 600.000 | 75.000 |
 | Tempoan, 14 hari | 1.000.000 | 50.000 | 50.000 | 900.000 | 1.250.000 | 1.250.000 |
 
 **A6. Syarat akad dibekukan** di pinjaman pada hari akad: mengubah rumus hanya

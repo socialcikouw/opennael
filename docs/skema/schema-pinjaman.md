@@ -48,7 +48,7 @@ Tiga jenis: **harian** (25 × bayar), **mingguan** (6/8/10 × bayar),
 
 | Kolom | Tipe | Penjelasan |
 |---|---|---|
-| `pokok` | `bigint` | Kelipatan Rp 100.000 — membuat potongan, total kembali, dan ÷ tenor selalu bulat. |
+| `pokok` | `bigint` | Kelipatan Rp 100.000 — membuat potongan, total kembali, dan ÷ tenor selalu bulat. Mingguan paling sedikit Rp 500.000. |
 | `potongan_admin` | `bigint` | Potongan jasa/admin, pendapatan kantor saat pencairan: harian & tempoan 5%, mingguan 10% pokok; migrasi 0. |
 | `tabungan_masuk` | `bigint` | Yang masuk tabungan nasabah lewat akad ini: potongan tabungan 5% (baru/gulung harian & tempoan; mingguan 0) atau tabungan pembuka (migrasi). |
 | `saldo_lama` | `bigint` | Gulung: sisa saldo pinjaman asal yang dipotong dari pencairan. |
@@ -118,7 +118,7 @@ Tiga jenis: **harian** (25 × bayar), **mingguan** (6/8/10 × bayar),
 | Nama | Isi |
 |---|---|
 | `pinjaman_ke_check` | `pinjaman_ke >= 1` |
-| `pinjaman_pokok_check` | `pokok > 0 AND pokok % 100000 = 0` |
+| `pinjaman_pokok_check` | `pokok > 0 AND pokok % 100000 = 0`; mingguan `pokok >= 500000` |
 | `pinjaman_tenor_check` | harian 25; mingguan 8; tempoan 7/10/14 |
 | `pinjaman_nominal_check` | semua nominal ≥ 0; `total_kembali >= pokok` |
 | `pinjaman_angsuran_check` | `angsuran > 0`; tempoan `angsuran = total_kembali`; lainnya `angsuran × tenor = total_kembali` |

@@ -17,6 +17,9 @@ export const TENOR_PINJAMAN: Record<JenisPinjaman, readonly number[]> = {
 /** A1. */
 export const KELIPATAN_POKOK = 100_000;
 
+/** A1. Pokok mingguan paling sedikit ini (keputusan pemilik 26 Nov 2026). */
+export const POKOK_MINIMAL_MINGGUAN = 500_000;
+
 export interface SyaratAkad {
   jenis: JenisPinjaman;
   tenor: number;
@@ -55,6 +58,11 @@ export function rincianPokok(
     "Pokok harus kelipatan Rp 100.000",
   );
   const mingguan = jenis === "mingguan";
+  wajib(
+    !mingguan || pokok >= POKOK_MINIMAL_MINGGUAN,
+    "POKOK_TIDAK_SAH",
+    "Pinjaman mingguan: pokok paling sedikit Rp 500.000",
+  );
   const potonganAdmin = mingguan ? pokok / 10 : pokok / 20;
   const tabunganMasuk = mingguan ? 0 : pokok / 20;
   return {

@@ -267,7 +267,7 @@ describe.skipIf(!URL_DB)("ringkasan & layar baca bos", () => {
             asal, tanggal_akad, tanggal_disalin, pokok, potongan_admin, tabungan_masuk, pencairan,
             total_kembali, angsuran, saldo_awal, drop_baru, saldo, status, tanggal_macet, tanggal_selesai)
           values (${kantorId}, ${kolektorId}, ${bos.pengguna.id}, ${nasabahId}, 1, ${isi.jenis}, ${tenor},
-            'migrasi', ${isi.akad}, ${isi.akad}, 100000, 0, 0, 0, ${total}, ${isi.angsuran}, ${total}, 0,
+            'migrasi', ${isi.akad}, ${isi.akad}, ${isi.jenis === "mingguan" ? 500_000 : 100_000}, 0, 0, 0, ${total}, ${isi.angsuran}, ${total}, 0,
             ${selesai ? 0 : total}, ${isi.status ?? "berjalan"}, ${isi.tanggalMacet ?? null},
             ${selesai ? (isi.tanggalSelesai ?? hari) : null})
           returning id`);
@@ -298,7 +298,7 @@ describe.skipIf(!URL_DB)("ringkasan & layar baca bos", () => {
         akad: geserTanggal(hari, -13),
         angsuran: 500_000,
       });
-      await jenisLain(dedi.pengguna.id, "f", { jenis: "mingguan", akad, angsuran: 50_000 });
+      await jenisLain(dedi.pengguna.id, "f", { jenis: "mingguan", akad, angsuran: 100_000 });
       await d.setor(andiId, pA, hari, { murni: 150_000 });
       await d.setor(andiId, pB, hari, { murni: 70_000 });
 
@@ -385,8 +385,8 @@ describe.skipIf(!URL_DB)("ringkasan & layar baca bos", () => {
         {
           tanggal: hari,
           setoranMurni: 220_000,
-          patokan: 325_000,
-          persentase: (220_000 / 325_000) * 100,
+          patokan: 375_000,
+          persentase: (220_000 / 375_000) * 100,
         },
       ]);
       // Hari lain tanpa yang jatuh tagih: patokan 0, persentase kosong (bukan nol).
