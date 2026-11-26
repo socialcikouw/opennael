@@ -4,36 +4,39 @@ import { geserTanggal, hariPekanDari, TEMPO } from "@opennael/domain";
  * LANGKAH AKAD — urutan layar akad baru, satu pertanyaan per layar (keputusan pemilik
  * lewat simulasi, 26 Nov 2026). PURE.
  *
- *   foto → siapa → [nasabah baru: nama → kampung → kontak]
- *                  [pernah melunasi: pernah-melunasi]
- *        → jenis → pokok → periksa
+ *   siapa → [nasabah baru: data (nama, NIK, nomor HP) → kampung]
+ *           [pernah melunasi: pernah-melunasi]
+ *         → jenis → pokok → foto → periksa (Cairkan)
  *
- * `foto` = kamera serah terima (A7) yang terbuka begitu (+) diketuk. JENIS dipilih dengan
+ * `foto` = kamera serah terima (A7) langsung sesudah pokok (keputusan pemilik 26 Nov 2026,
+ * menggantikan foto di awal): "Selanjutnya" di pokok meminta server memeriksa akad lebih
+ * dulu (`POST /lapangan/akad/periksa`, tanpa menulis), baru kamera — uang diserahkan
+ * sesudah jumlahnya pasti dan akadnya boleh. Periksa sesudah foto = ringkasan + Cairkan.
+ * Nama, NIK, nomor HP satu lembar (permintaan pemilik 26 Nov 2026). JENIS dipilih dengan
  * sadar di langkahnya sendiri, tak mengikuti tab yang kebetulan dibuka (koreksi pemilik
  * 26 Nov 2026: takut salah input); letaknya sesudah nasabah supaya pinjaman terakhir
  * nasabah yang pernah melunasi bisa ditampilkan. Tak ada langkah tenor: semua jenis
- * bertenor tunggal (A2: harian 25, mingguan 8, tempoan 6 hari kerja — `tenorTunggal`). Pokok sebelum tenor: tiap pilihan tenor langsung menampilkan angsurannya.
+ * bertenor tunggal (A2: harian 25, mingguan 8, tempoan 6 hari kerja — `tenorTunggal`).
  */
 export type LangkahAkad =
-  | "foto"
   | "siapa"
-  | "nama"
+  | "data"
   | "kampung"
-  | "kontak"
   | "pernah-melunasi"
   | "jenis"
   | "pokok"
-  | "periksa";
+  | "periksa"
+  | "foto";
 
 /** Siapa penerima uangnya: orang yang belum terdaftar, atau nasabah pegangan yang sudah lunas. */
 export type SiapaNasabah = "baru" | "pernah-melunasi";
 
 export function urutanLangkah(siapa: SiapaNasabah | null): LangkahAkad[] {
-  const urutan: LangkahAkad[] = ["foto", "siapa"];
+  const urutan: LangkahAkad[] = ["siapa"];
   // Sebelum dipilih, hitungan langkah memakai jalur terpanjang (nasabah baru).
   if (siapa === "pernah-melunasi") urutan.push("pernah-melunasi");
-  else urutan.push("nama", "kampung", "kontak");
-  urutan.push("jenis", "pokok", "periksa");
+  else urutan.push("data", "kampung");
+  urutan.push("jenis", "pokok", "foto", "periksa");
   return urutan;
 }
 

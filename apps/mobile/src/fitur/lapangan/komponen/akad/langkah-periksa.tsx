@@ -19,13 +19,16 @@ import { KakiTombol, type Kerangka, KerangkaLangkah } from "./kerangka-langkah";
 /**
  * Langkah PERIKSA — ringkasan sebelum uang keluar; menggantikan pertanyaan "Simpan akad?".
  * Tiap baris yang bisa diubah bertautan "Ubah" ke langkahnya (tombol di sana kembali ke
- * sini). Pencairan = angka terbesar; tombol akhir menyebut uangnya ("Cairkan Rp 900.000").
- * Foto lewat 1 jam (A7): tombolnya berganti "Potret ulang".
+ * sini). Pencairan = angka terbesar. Dua tahap (foto di akhir, keputusan pemilik 26 Nov
+ * 2026):
+ *   1. belum ada foto → "Serahkan Rp … & potret": server memeriksa akad dulu, lalu kamera;
+ *   2. sudah ada foto → "Cairkan Rp …". Foto lewat 1 jam (A7): "Potret ulang".
  */
 export function LangkahPeriksa(props: {
   k: Kerangka;
   jenis: JenisPinjaman;
-  foto: FotoSerahTerima;
+  /** Foto serah terima yang cocok dengan isian sekarang; null = belum dipotret. */
+  foto: FotoSerahTerima | null;
   siapa: SiapaNasabah;
   nama: string;
   kampung: KampungAkad | null;
@@ -37,14 +40,19 @@ export function LangkahPeriksa(props: {
   /** Perkiraan jatuh tempo (tempoan, A4), sudah diformat; null bila bukan tempoan / belum dimuat. */
   jatuhTempo: string | null;
   titik: TitikLatar;
+  /** Server sedang memeriksa akad sebelum kamera. */
+  memeriksa: boolean;
   memuat: boolean;
   galat: string | null | undefined;
   onUbah: (langkah: LangkahAkad) => void;
+  /** Periksa ke server, lalu buka kamera serah terima. */
+  onSerahkan: () => void;
   onCairkan: () => void;
 }) {
   const zona = useZonaKantor();
   const h = syaratAkad(props.jenis, props.pokok, props.tenor);
-  const fotoSah = fotoMasihBerlaku(props.foto);
+  const foto = props.foto;
+  const fotoSah = foto !== null && fotoMasihBerlaku(foto);
   const tempo = props.jenis === "tempoan";
   const satuan =
     props.jenis === "harian" ? " per hari" : props.jenis === "mingguan" ? " per minggu" : "";
@@ -58,7 +66,12 @@ export function LangkahPeriksa(props: {
   return (
     <KerangkaLangkah
       k={props.k}
-      tanya="Periksa sebelum mencairkan"
+      tanya={fotoSah ? "Siap mencairkan" : "Periksa sebelum menyerahkan uang"}
+      sub={
+        fotoSah
+          ? undefined
+          : "Uang belum diserahkan. Bila semua benar, serahkan uangnya lalu potret nasabah memegangnya."
+      }
       kaki={
         <KakiTombol>
           <PesanGalat pesan={props.galat} />
@@ -70,30 +83,37 @@ export function LangkahPeriksa(props: {
               onPress={props.onCairkan}
             />
           ) : (
-            <Tombol judul="Potret ulang" ikon="camera" onPress={() => props.onUbah("foto")} />
+            <Tombol
+              judul={foto ? "Potret ulang" : `Serahkan ${rupiah(h.pencairan)} & potret`}
+              ikon="camera"
+              memuat={props.memeriksa}
+              onPress={props.onSerahkan}
+            />
           )}
         </KakiTombol>
       }
     >
-      {fotoSah ? null : (
+      {foto && !fotoSah ? (
         <Spanduk
           warna="merah"
           judul="Foto sudah lebih dari 1 jam"
           isi="Potret ulang serah terima sebelum mencairkan."
         />
-      )}
+      ) : null}
 
-      <View style={[gaya.blok, gaya.foto]}>
-        <Image source={{ uri: props.foto.uri }} style={gaya.mini} />
-        <View style={gaya.isi}>
-          <Text style={gaya.nilai}>Foto Serah Terima</Text>
-          <Text style={gaya.ket}>
-            Diambil {jam(new Date(props.foto.diambilAt).toISOString(), zona)}
-            {fotoSah ? " · berlaku 1 jam" : " · kedaluwarsa"}
-          </Text>
+      {foto ? (
+        <View style={[gaya.blok, gaya.foto]}>
+          <Image source={{ uri: foto.uri }} style={gaya.mini} />
+          <View style={gaya.isi}>
+            <Text style={gaya.nilai}>Foto Serah Terima</Text>
+            <Text style={gaya.ket}>
+              Diambil {jam(new Date(foto.diambilAt).toISOString(), zona)}
+              {fotoSah ? " · berlaku 1 jam" : " · kedaluwarsa"}
+            </Text>
+          </View>
+          <TautanUbah judul="Potret ulang" onPress={props.onSerahkan} />
         </View>
-        <TautanUbah judul="Potret ulang" onPress={() => props.onUbah("foto")} />
-      </View>
+      ) : null}
 
       <View style={gaya.blok}>
         {props.siapa === "pernah-melunasi" && props.lama ? (
@@ -108,7 +128,7 @@ export function LangkahPeriksa(props: {
             <BarisPeriksa
               label="Nasabah Baru"
               nilai={tampilNama(props.nama.trim())}
-              onUbah={() => props.onUbah("nama")}
+              onUbah={() => props.onUbah("data")}
             />
             <BarisPeriksa
               garis
@@ -120,7 +140,7 @@ export function LangkahPeriksa(props: {
               garis
               label="NIK · Nomor HP"
               nilai={`${props.nik || "—"} · ${props.nomorHp || "—"}`}
-              onUbah={() => props.onUbah("kontak")}
+              onUbah={() => props.onUbah("data")}
             />
           </>
         )}

@@ -24,9 +24,14 @@ interface Potret {
  * Sesudah memotret: "Potret ulang" di atas, tombol utama di bawah (dalam jangkauan jempol;
  * sketsa pemilik 26 Nov 2026). `judulPakai` = tulisan tombol utama (akad: "Selanjutnya");
  * `keterangan` = satu baris kecil di bawah petunjuk (akad: keadaan GPS titik rumah).
+ * `sebaris` = tampil sebagai isi layar pemanggil (langkah akad), bukan `Modal` bergeser
+ * sendiri — supaya tak ada dua animasi bertumpuk. `petunjuk` menggantikan kalimat bawaan
+ * (akad: menyebut uang yang diserahkan).
  */
 export function KameraSerahTerima(props: {
   terbuka: boolean;
+  sebaris?: boolean;
+  petunjuk?: string;
   onTutup: () => void;
   onSelesai: (fotoId: string, pratinjauUri: string) => void;
   judulPakai?: string;
@@ -71,73 +76,75 @@ export function KameraSerahTerima(props: {
     }
   };
 
+  const isi = (
+    <SafeAreaView style={gaya.latar}>
+      {!izin ? null : !izin.granted ? (
+        <View style={gaya.izin}>
+          <Keterangan>Kamera dibutuhkan untuk memotret nasabah memegang uang pencairan.</Keterangan>
+          {izin.canAskAgain ? (
+            <Tombol judul="Izinkan kamera" onPress={() => void mintaIzin()} />
+          ) : (
+            <Keterangan>Izin kamera ditolak — buka Pengaturan HP untuk mengizinkan.</Keterangan>
+          )}
+          <Tombol judul="Batal" jenis="kedua" onPress={tutup} />
+        </View>
+      ) : potret ? (
+        <View style={g.isi}>
+          <Image source={{ uri: potret.uri }} style={g.isi} resizeMode="contain" />
+          <View style={[gaya.panel, gaya.panelTerang]}>
+            <PesanGalat pesan={galat} />
+            <Tombol
+              judul="Potret ulang"
+              ikon="refresh-cw"
+              jenis="kedua"
+              nonaktif={mengunggah}
+              onPress={() => setPotret(null)}
+            />
+            <Tombol
+              judul={props.judulPakai ?? "Pakai foto ini"}
+              memuat={mengunggah}
+              onPress={() => void pakai()}
+            />
+          </View>
+        </View>
+      ) : (
+        <View style={g.isi}>
+          <CameraView
+            ref={kamera}
+            style={g.isi}
+            facing="back"
+            animateShutter
+            onCameraReady={() => setSiap(true)}
+          />
+          <View style={gaya.panel}>
+            <Text style={gaya.petunjuk}>
+              {props.petunjuk ?? "Nasabah memegang uang pencairan, wajah terlihat jelas."}
+            </Text>
+            {props.keterangan ? <Text style={gaya.keterangan}>{props.keterangan}</Text> : null}
+            <PesanGalat pesan={galat} />
+            <View style={gaya.kendali}>
+              <Tekan onPress={tutup} style={gaya.sisi}>
+                <Text style={gaya.batal}>Batal</Text>
+              </Tekan>
+              <Tekan
+                getar="ketuk"
+                onPress={() => void jepret()}
+                disabled={!siap}
+                style={[gaya.rana, siap ? null : gaya.ranaMati]}
+              >
+                <View style={gaya.ranaIsi} />
+              </Tekan>
+              <View style={gaya.sisi} />
+            </View>
+          </View>
+        </View>
+      )}
+    </SafeAreaView>
+  );
+  if (props.sebaris) return props.terbuka ? isi : null;
   return (
     <Modal visible={props.terbuka} animationType="slide" onRequestClose={tutup}>
-      <SafeAreaView style={gaya.latar}>
-        {!izin ? null : !izin.granted ? (
-          <View style={gaya.izin}>
-            <Keterangan>
-              Kamera dibutuhkan untuk memotret nasabah memegang uang pencairan.
-            </Keterangan>
-            {izin.canAskAgain ? (
-              <Tombol judul="Izinkan kamera" onPress={() => void mintaIzin()} />
-            ) : (
-              <Keterangan>Izin kamera ditolak — buka Pengaturan HP untuk mengizinkan.</Keterangan>
-            )}
-            <Tombol judul="Batal" jenis="kedua" onPress={tutup} />
-          </View>
-        ) : potret ? (
-          <View style={g.isi}>
-            <Image source={{ uri: potret.uri }} style={g.isi} resizeMode="contain" />
-            <View style={[gaya.panel, gaya.panelTerang]}>
-              <PesanGalat pesan={galat} />
-              <Tombol
-                judul="Potret ulang"
-                ikon="refresh-cw"
-                jenis="kedua"
-                nonaktif={mengunggah}
-                onPress={() => setPotret(null)}
-              />
-              <Tombol
-                judul={props.judulPakai ?? "Pakai foto ini"}
-                memuat={mengunggah}
-                onPress={() => void pakai()}
-              />
-            </View>
-          </View>
-        ) : (
-          <View style={g.isi}>
-            <CameraView
-              ref={kamera}
-              style={g.isi}
-              facing="back"
-              animateShutter
-              onCameraReady={() => setSiap(true)}
-            />
-            <View style={gaya.panel}>
-              <Text style={gaya.petunjuk}>
-                Nasabah memegang uang pencairan, wajah terlihat jelas.
-              </Text>
-              {props.keterangan ? <Text style={gaya.keterangan}>{props.keterangan}</Text> : null}
-              <PesanGalat pesan={galat} />
-              <View style={gaya.kendali}>
-                <Tekan onPress={tutup} style={gaya.sisi}>
-                  <Text style={gaya.batal}>Batal</Text>
-                </Tekan>
-                <Tekan
-                  getar="ketuk"
-                  onPress={() => void jepret()}
-                  disabled={!siap}
-                  style={[gaya.rana, siap ? null : gaya.ranaMati]}
-                >
-                  <View style={gaya.ranaIsi} />
-                </Tekan>
-                <View style={gaya.sisi} />
-              </View>
-            </View>
-          </View>
-        )}
-      </SafeAreaView>
+      {isi}
     </Modal>
   );
 }

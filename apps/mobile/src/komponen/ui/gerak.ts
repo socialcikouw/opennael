@@ -1,4 +1,13 @@
-import { Easing, FadeIn, FadeOut, LinearTransition } from "react-native-reanimated";
+import {
+  Easing,
+  FadeIn,
+  FadeOut,
+  LinearTransition,
+  SlideInLeft,
+  SlideInRight,
+  SlideOutLeft,
+  SlideOutRight,
+} from "react-native-reanimated";
 
 /**
  * GERAK — kurva & durasi animasi bersama (Reanimated, berjalan di UI thread). Satu tempat
@@ -30,3 +39,19 @@ export const MUNCUL = FadeIn.duration(DURASI.sedang).easing(KURVA.keluar);
 export const HILANG = FadeOut.duration(DURASI.keluar);
 /** Unsur yang tetap tetapi berpindah tempat / berubah lebar (tab bergeser). */
 export const GESER = LinearTransition.duration(DURASI.sedang).easing(KURVA.pindah);
+
+/**
+ * Pindah langkah di alur bertahap (akad): MAJU = layar baru masuk dari kanan, yang lama
+ * keluar ke kiri; MUNDUR = kebalikannya (permintaan pemilik 26 Nov 2026 — seperti membalik
+ * lembar). Pemakai membungkus tiap langkah dalam `Animated.View` ber-`key` langkah.
+ */
+export const GESER_LANGKAH = {
+  maju: {
+    masuk: SlideInRight.duration(DURASI.sedang).easing(KURVA.keluar),
+    keluar: SlideOutLeft.duration(DURASI.sedang).easing(KURVA.keluar),
+  },
+  mundur: {
+    masuk: SlideInLeft.duration(DURASI.sedang).easing(KURVA.keluar),
+    keluar: SlideOutRight.duration(DURASI.sedang).easing(KURVA.keluar),
+  },
+} as const;

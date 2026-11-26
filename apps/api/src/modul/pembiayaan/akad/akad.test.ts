@@ -74,6 +74,49 @@ describe.skipIf(!URL_DB)("akad", () => {
     });
   }, 120_000);
 
+  test("periksa sebelum foto: aturan akad tanpa menulis apa pun", async () => {
+    await dalamTransaksi(async (tx) => {
+      const { kirim, k, kantorId, absen, akadBaru } = await siapkanLapangan(tx);
+      const isi = (nama: string, ubah: Record<string, unknown> = {}) => ({
+        nasabah: { nama, kampung: { nama: "pule" } },
+        jenis: "tempoan",
+        pokok: 200_000,
+        tenor: 6,
+        ...ubah,
+      });
+      // Gerbang lapangan sama dengan akad: belum absen ditolak.
+      expect(kode(await kirim("/lapangan/akad/periksa", isi("tono"), k))).toBe("BELUM_ABSEN");
+      await absen();
+      const boleh = await kirim("/lapangan/akad/periksa", isi("tono"), k);
+      expect(boleh.status).toBe(200);
+      expect(boleh.isi).toEqual({ pencairan: 200_000 });
+      // Tak menulis: nasabah baru & kampung baru tak tersimpan.
+      const [n] = (await tx.execute(sql`
+        select (select count(*) from nasabah where kantor_id = ${kantorId})::int as nasabah,
+               (select count(*) from wilayah where kantor_id = ${kantorId})::int as kampung`)) as unknown as {
+        nasabah: number;
+        kampung: number;
+      }[];
+      expect(n).toEqual({ nasabah: 0, kampung: 0 });
+      // Aturan yang sama dengan akad: nasabah dengan pinjaman aktif ditolak sebelum foto.
+      const sari = await akadBaru("sari");
+      expect(
+        kode(
+          await kirim(
+            "/lapangan/akad/periksa",
+            isi("sari", { nasabah: { nasabahId: sari.isi.nasabah.id } }),
+            k,
+          ),
+        ),
+      ).toBe("PINJAMAN_MASIH_AKTIF");
+      expect(
+        kode(
+          await kirim("/lapangan/akad/periksa", isi("budi", { jenis: "mingguan", tenor: 8 }), k),
+        ),
+      ).toBe("POKOK_TIDAK_SAH");
+    });
+  }, 60_000);
+
   test("gulung: kunci rem, pinjaman pertama tak boleh naik, pelunasan + pinjaman penerus", async () => {
     await dalamTransaksi(async (tx) => {
       const { kirim, bos, k, kantorId, absen, fotoBaru, akadBaru } = await siapkanLapangan(tx);

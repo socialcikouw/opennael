@@ -180,6 +180,10 @@ export const tulis = {
   laporan: async () => (await panggil(() => api.hariKolektor.lapangan.laporan.$post())).json(),
   akad: async (json: Parameters<typeof api.pembiayaan.lapangan.akad.$post>[0]["json"]) =>
     (await panggil(() => api.pembiayaan.lapangan.akad.$post({ json }))).json(),
+  /** Aturan akad tanpa menulis — sebelum kamera serah terima (uang belum diserahkan). */
+  periksaAkad: async (
+    json: Parameters<typeof api.pembiayaan.lapangan.akad.periksa.$post>[0]["json"],
+  ) => (await panggil(() => api.pembiayaan.lapangan.akad.periksa.$post({ json }))).json(),
   bayar: async (json: Parameters<typeof api.pembiayaan.lapangan.bayar.$post>[0]["json"]) =>
     (await panggil(() => api.pembiayaan.lapangan.bayar.$post({ json }))).json(),
   lunas: async (pinjamanId: string) =>

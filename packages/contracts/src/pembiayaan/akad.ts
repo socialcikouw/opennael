@@ -33,6 +33,18 @@ export const akadSchema = z.object({
 });
 export type AkadInput = z.infer<typeof akadSchema>;
 
+/**
+ * `POST /lapangan/akad/periksa` — semua aturan akad dijalankan TANPA menulis apa pun,
+ * sebelum kamera serah terima dibuka (uang belum berpindah tangan). Jawaban sama dengan
+ * galat akad bila ditolak.
+ */
+export const periksaAkadSchema = akadSchema.omit({ fotoSerahTerimaId: true });
+export type PeriksaAkadInput = z.infer<typeof periksaAkadSchema>;
+export const hasilPeriksaAkadSchema = z.object({
+  /** Tunai yang akan dicairkan — angka yang disebut di layar foto serah terima. */
+  pencairan: z.number(),
+});
+
 /** `POST /lapangan/gulung` — pinjaman lama dilunasi pinjaman baru berjenis sama. */
 export const gulungSchema = z.object({
   pinjamanId: z.uuid(),

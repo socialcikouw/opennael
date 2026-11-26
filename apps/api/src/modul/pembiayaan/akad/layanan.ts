@@ -5,8 +5,11 @@ import { buatGulung } from "./operasi/gulung";
 
 /** AKAD — akad pinjaman baru (orang baru / pinjam lagi) dan gulung (A, E). */
 export function buatLayananAkad(deps: GerbangDeps) {
+  const { akad, periksa } = buatAkad(deps);
   return {
-    akad: buatAkad(deps),
+    akad,
+    /** Pemeriksaan sebelum foto serah terima — tak menulis apa pun, jadi tak idempoten. */
+    periksaAkad: periksa,
     gulung: buatGulung(deps),
   };
 }

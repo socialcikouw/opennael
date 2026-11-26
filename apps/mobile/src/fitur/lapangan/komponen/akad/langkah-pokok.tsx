@@ -21,6 +21,10 @@ export function LangkahPokok(props: {
   pokok: number;
   lama: NasabahLama | null;
   onTekan: (kunci: string) => void;
+  /** Server sedang memeriksa akad sebelum kamera. */
+  memuat?: boolean;
+  /** Penolakan server (mis. nasabah diblokir) — kamera tak dibuka. */
+  galat?: string | null | undefined;
   onLanjut: () => void;
 }) {
   // Potongan & pencairan menurut jenis, tak bergantung tenor (A3).
@@ -37,7 +41,7 @@ export function LangkahPokok(props: {
           papan={PAPAN_POKOK}
           sisaTinggi={560}
           sah={h !== null}
-          memuat={false}
+          memuat={props.memuat ?? false}
           aksen={AKSEN}
           judul={judulLanjut(props.k).toUpperCase()}
           onTekan={props.onTekan}
@@ -61,6 +65,7 @@ export function LangkahPokok(props: {
         {rupiah(props.pokok)}
       </Text>
       {syarat?.galat ? <Text style={gaya.galat}>{syarat.galat}</Text> : null}
+      {props.galat ? <Text style={gaya.galat}>{props.galat}</Text> : null}
       {h ? (
         <View style={gaya.rincian}>
           {h.potonganAdmin > 0 ? (
