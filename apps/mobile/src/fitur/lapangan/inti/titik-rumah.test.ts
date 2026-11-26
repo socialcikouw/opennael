@@ -1,5 +1,12 @@
 import { describe, expect, test } from "bun:test";
-import { AKURASI_MAKS_METER, pilihTitikTerbaik, susunAlamat, titikRumahDari } from "./titik-rumah";
+import {
+  AKURASI_MAKS_METER,
+  perluCekTitikLama,
+  perluRekamTitik,
+  pilihTitikTerbaik,
+  susunAlamat,
+  titikRumahDari,
+} from "./titik-rumah";
 
 const JAKARTA = { latitude: -6.2, longitude: 106.8166 };
 
@@ -148,5 +155,32 @@ describe("susunAlamat", () => {
         { district: "Pule", city: null, subregion: "Tulungagung" },
       ]),
     ).toEqual(["Pule, Kota", "Tulungagung"]);
+  });
+});
+
+describe("perluRekamTitik (gulung & akad ulang, 27 Nov 2026)", () => {
+  const akurat = { ...JAKARTA, akurasiMeter: 12 };
+  const batas = { ...JAKARTA, akurasiMeter: 30 };
+  const kasar = { ...JAKARTA, akurasiMeter: 45 };
+
+  test("dimatikan kolektor (bukan di rumah nasabah) → tak pernah direkam", () => {
+    expect(perluRekamTitik(akurat, { perbarui: false, sudahAda: true })).toBe(false);
+    expect(perluRekamTitik(akurat, { perbarui: false, sudahAda: false })).toBe(false);
+  });
+
+  test("titik ≤ 30 m menimpa titik lama", () => {
+    expect(perluRekamTitik(akurat, { perbarui: true, sudahAda: true })).toBe(true);
+    expect(perluRekamTitik(batas, { perbarui: true, sudahAda: true })).toBe(true);
+  });
+
+  test("titik kasar hanya mengisi yang belum punya titik", () => {
+    expect(perluRekamTitik(kasar, { perbarui: true, sudahAda: true })).toBe(false);
+    expect(perluRekamTitik(kasar, { perbarui: true, sudahAda: false })).toBe(true);
+  });
+
+  test("titik lama hanya perlu diperiksa bila titik baru kasar dan saklar menyala", () => {
+    expect(perluCekTitikLama(akurat, true)).toBe(false);
+    expect(perluCekTitikLama(kasar, true)).toBe(true);
+    expect(perluCekTitikLama(kasar, false)).toBe(false);
   });
 });

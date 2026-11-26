@@ -10,7 +10,7 @@ import { Keterangan } from "@/komponen/ui/teks";
 import { Tombol } from "@/komponen/ui/tombol";
 import { cobaAturan } from "@/lib/aturan";
 import { AKSEN, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
-import { tulis, useTagihan, useTulis } from "./data";
+import { useGulung, useTagihan } from "./data";
 import { jumlahKetukan, PAPAN_POKOK, tekanPokok } from "./inti/papan";
 import { FotoGulung } from "./komponen/foto-gulung";
 import { AvatarNasabah } from "./komponen/foto-nasabah";
@@ -21,6 +21,8 @@ import {
 } from "./komponen/kamera-serah-terima";
 import { NominalGulung } from "./komponen/nominal-gulung";
 import { PanelPapan } from "./komponen/panel-papan";
+import { StatusTitikRumah } from "./komponen/status-titik-rumah";
+import { ringkasTitikLatar, useTitikRumahLatar } from "./titik-rumah-latar";
 
 /**
  * GULUNG (E) — pinjaman lama dilunasi pinjaman baru berjenis sama.
@@ -29,6 +31,10 @@ import { PanelPapan } from "./komponen/panel-papan";
  * A7) → formulir bergaya layar Bayar: nasabah, foto tepat di bawahnya,
  * patokan POKOK lama, nominal pokok baru besar, papan pokok, KONFIRMASI.
  * Batal di kamera sebelum ada foto = kembali ke daftar.
+ *
+ * TITIK RUMAH (keputusan pemilik 27 Nov 2026): GPS dipantau di latar sejak kamera
+ * terbuka; sesudah gulung tersimpan titik ≤ 30 m menimpa titik lama, kecuali saklar
+ * "Perbarui titik rumah" dimatikan (gulung bukan di rumah nasabah).
  *
  * Papan pokok MENAMBAH: 100k diketuk dua kali = Rp 200.000; ⌫ membatalkan
  * ketukan terakhir. Pratinjau memakai rumus yang sama dengan server; rem bos
@@ -42,7 +48,9 @@ export function LayarGulung({ id }: { id: string }) {
   const [tenorDipilih, setTenor] = useState<number | null>(null);
   const [foto, setFoto] = useState<FotoSerahTerima | null>(null);
   const [kamera, setKamera] = useState(true);
-  const gulung = useTulis(tulis.gulung);
+  const gulung = useGulung();
+  const titik = useTitikRumahLatar();
+  const [perbaruiTitik, setPerbaruiTitik] = useState(true);
 
   if (!p) {
     return (
@@ -86,7 +94,12 @@ export function LayarGulung({ id }: { id: string }) {
         text: "Setuju",
         onPress: () =>
           gulung.mutate(
-            { pinjamanId: p.id, pokok, tenor, fotoSerahTerimaId: foto.id },
+            {
+              gulung: { pinjamanId: p.id, pokok, tenor, fotoSerahTerimaId: foto.id },
+              nasabahId: p.nasabah.id,
+              titik: titik.status === "siap" ? titik.titik : null,
+              perbarui: perbaruiTitik,
+            },
             {
               // Penerusnya cair hari ini: kolektor dibawa ke segmen Droping.
               onSuccess: () =>
@@ -135,6 +148,11 @@ export function LayarGulung({ id }: { id: string }) {
 
         <FotoGulung foto={foto} fotoSah={fotoSah} aksen={aksen} onPotret={() => setKamera(true)} />
 
+        <StatusTitikRumah
+          titik={titik}
+          perbarui={{ nyala: perbaruiTitik, ubah: setPerbaruiTitik }}
+        />
+
         <NominalGulung
           jenis={p.jenis}
           pokokLama={p.pokok}
@@ -160,6 +178,7 @@ export function LayarGulung({ id }: { id: string }) {
 
       <KameraSerahTerima
         terbuka={kamera}
+        keterangan={ringkasTitikLatar(titik)}
         onTutup={() => {
           setKamera(false);
           // Gulung dimulai dari kamera: batal sebelum ada foto = batal gulung.

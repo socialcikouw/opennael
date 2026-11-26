@@ -10,7 +10,12 @@ import {
 import { useCallback, useMemo } from "react";
 import { api, kueri, panggil } from "@/lib/api";
 import { bacaPosisi } from "@/platform/lokasi";
-import { type TitikRumah, titikRumahDari } from "./inti/titik-rumah";
+import {
+  perluCekTitikLama,
+  perluRekamTitik,
+  type TitikRumah,
+  titikRumahDari,
+} from "./inti/titik-rumah";
 
 /**
  * DATA LAPANGAN KOLEKTOR — kueri bersama layar kerja harian, kartu pinjaman,
@@ -57,45 +62,74 @@ export function useRekamTitikRumah(id: string) {
   });
 }
 
+/** Titik rumah yang dikirim sesudah akad / gulung tersimpan. */
+export interface TitikSesudah {
+  titik: TitikRumah | null;
+  /** Saklar "Perbarui titik rumah" (nasabah lama); nasabah baru selalu direkam. */
+  perbarui: boolean;
+}
+
 /**
  * Akad baru + titik rumah dari GPS latar. Titik dikirim SESUDAH akad berhasil, tanpa
- * ditunggu layar: orang baru selalu belum punya titik; nasabah lama hanya bila titiknya
- * masih kosong (yang sudah direkam tak ditimpa diam-diam). GPS hanya tambahan — gagal
- * merekam tak menggagalkan akad (titiknya masih bisa direkam dari Detail Nasabah).
+ * ditunggu layar: orang baru selalu direkam; nasabah lama (akad ulang) mengikuti saklar
+ * "Perbarui titik rumah" (`perluRekamTitik`). GPS hanya tambahan — gagal merekam tak
+ * menggagalkan akad (titiknya masih bisa direkam dari Detail Nasabah).
  */
 export function useAkad() {
   const klien = useQueryClient();
   return useMutation({
-    mutationFn: async (masuk: {
-      akad: Parameters<typeof tulis.akad>[0];
-      titik: TitikRumah | null;
-    }) => {
+    mutationFn: async (masuk: { akad: Parameters<typeof tulis.akad>[0] } & TitikSesudah) => {
       const pinjaman = await tulis.akad(masuk.akad);
-      if (masuk.titik) {
-        const nasabahLama = "nasabahId" in masuk.akad.nasabah;
-        void rekamTitikSesudahAkad(klien, pinjaman.nasabah.id, masuk.titik, nasabahLama);
-      }
+      const lama = "nasabahId" in masuk.akad.nasabah;
+      void rekamTitikSesudah(klien, pinjaman.nasabah.id, masuk.titik, {
+        perbarui: lama ? masuk.perbarui : true,
+        lama,
+      });
       return pinjaman;
     },
     onSettled: () => klien.invalidateQueries({ queryKey: kunci.lapangan }),
   });
 }
 
-async function rekamTitikSesudahAkad(
+/**
+ * Gulung + titik rumah dari GPS latar (keputusan pemilik 27 Nov 2026): sama dengan akad
+ * ulang — titik ≤ 30 m menimpa titik lama bila saklar "Perbarui titik rumah" menyala.
+ */
+export function useGulung() {
+  const klien = useQueryClient();
+  return useMutation({
+    mutationFn: async (
+      masuk: { gulung: Parameters<typeof tulis.gulung>[0]; nasabahId: string } & TitikSesudah,
+    ) => {
+      const hasil = await tulis.gulung(masuk.gulung);
+      void rekamTitikSesudah(klien, masuk.nasabahId, masuk.titik, {
+        perbarui: masuk.perbarui,
+        lama: true,
+      });
+      return hasil;
+    },
+    onSettled: () => klien.invalidateQueries({ queryKey: kunci.lapangan }),
+  });
+}
+
+async function rekamTitikSesudah(
   klien: QueryClient,
   nasabahId: string,
-  titik: TitikRumah,
-  nasabahLama: boolean,
+  titik: TitikRumah | null,
+  s: { perbarui: boolean; lama: boolean },
 ) {
+  if (!titik) return;
   try {
-    if (nasabahLama) {
+    let sudahAda = false;
+    if (s.lama && perluCekTitikLama(titik, s.perbarui)) {
       const nasabah = await klien.fetchQuery(kueri.lapangan.nasabah(nasabahId));
-      if (nasabah.lokasi) return;
+      sudahAda = nasabah.lokasi !== null;
     }
+    if (!perluRekamTitik(titik, { perbarui: s.perbarui, sudahAda })) return;
     await tulis.lokasiRumah(nasabahId, titik);
     await klien.invalidateQueries({ queryKey: kunci.lapangan });
   } catch {
-    // Sengaja diam: akadnya sudah tercatat; titik rumah bisa direkam ulang dari Detail Nasabah.
+    // Sengaja diam: transaksinya sudah tercatat; titik rumah bisa direkam dari Detail Nasabah.
   }
 }
 

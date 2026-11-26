@@ -57,7 +57,8 @@ type Arah = "maju" | "mundur";
  * nasabah memegang uangnya" → Periksa → Cairkan. Foto terikat isian saat dipotret: mengubah nasabah, jenis,
  * atau pokok sesudahnya membuang foto (jumlah di foto harus jumlah yang dicairkan).
  * GPS dipantau di latar sejak layar dibuka; titik terbaiknya jadi titik rumah begitu akad
- * tersimpan. Sesudahnya: stempel Berhasil, lalu tab jenisnya di segmen Droping.
+ * tersimpan (nasabah lama: menimpa titik lama bila ≤ 30 m dan saklar "Perbarui titik
+ * rumah" di Periksa menyala). Sesudahnya: stempel Berhasil, lalu tab jenisnya di segmen Droping.
  */
 export function LayarAkad() {
   const [jenis, setJenis] = useState<JenisPinjaman | null>(null);
@@ -78,6 +79,8 @@ export function LayarAkad() {
   const [galatPeriksa, setGalatPeriksa] = useState<string | null>(null);
   const akad = useAkad();
   const titik = useTitikRumahLatar();
+  // Nasabah lama: titik baru menimpa titik lama kecuali dimatikan (27 Nov 2026).
+  const [perbaruiTitik, setPerbaruiTitik] = useState(true);
   const hariIni = useHariIni().data?.kalender.tanggal ?? null;
 
   const urutan = urutanLangkah(siapa);
@@ -197,6 +200,7 @@ export function LayarAkad() {
       {
         akad: { nasabah: nasabahIsi, jenis, pokok, tenor, fotoSerahTerimaId: fotoCocok.id },
         titik: titik.status === "siap" ? titik.titik : null,
+        perbarui: perbaruiTitik,
       },
       { onSuccess: () => setBerhasil(true) },
     );
@@ -275,6 +279,8 @@ export function LayarAkad() {
               jenis === "tempoan" && hariIni ? tanggalBertahun(perkiraanJatuhTempo(hariIni)) : null
             }
             titik={titik}
+            perbaruiTitik={perbaruiTitik}
+            onPerbaruiTitik={setPerbaruiTitik}
             memeriksa={memeriksa}
             memuat={akad.isPending}
             galat={galatPeriksa ?? akad.error?.message}

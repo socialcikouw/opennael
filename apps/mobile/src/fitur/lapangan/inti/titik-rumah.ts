@@ -16,6 +16,31 @@ export const AKURASI_MAKS_METER = 100;
 /** Titik sudah sebaik yang dibutuhkan (meter) — pemantau GPS latar berhenti di sini (hemat baterai). */
 export const AKURASI_CUKUP_METER = 20;
 
+/**
+ * Titik baru hanya MENIMPA titik lama bila galatnya paling banyak ini (meter) — bacaan
+ * kasar tak boleh mengganti titik lama yang bagus (keputusan pemilik 27 Nov 2026).
+ */
+export const AKURASI_TIMPA_METER = 30;
+
+/**
+ * Titik rumah sesudah GULUNG / AKAD ULANG nasabah lama (keputusan pemilik 27 Nov 2026):
+ * - "Perbarui titik rumah" dimatikan kolektor (bukan di rumah nasabah) → tak direkam;
+ * - titik baru ≤ 30 m → menimpa titik lama (yang lama tetap di riwayat server);
+ * - titik baru lebih kasar → hanya mengisi bila nasabah belum punya titik.
+ * Nasabah baru (akad pertama) selalu direkam — tak ada titik yang bisa tertimpa.
+ */
+export function perluRekamTitik(
+  titik: TitikRumah,
+  s: { perbarui: boolean; sudahAda: boolean },
+): boolean {
+  if (!s.perbarui) return false;
+  return titik.akurasiMeter <= AKURASI_TIMPA_METER || !s.sudahAda;
+}
+
+/** Perlu tahu apakah nasabah sudah punya titik? Hanya bila titik baru terlalu kasar untuk menimpa. */
+export const perluCekTitikLama = (titik: TitikRumah, perbarui: boolean) =>
+  perbarui && titik.akurasiMeter > AKURASI_TIMPA_METER;
+
 export function titikRumahDari(posisi: {
   latitude: number;
   longitude: number;

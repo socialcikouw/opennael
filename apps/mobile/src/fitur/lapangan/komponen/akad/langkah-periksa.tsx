@@ -40,6 +40,9 @@ export function LangkahPeriksa(props: {
   /** Perkiraan jatuh tempo (tempoan, A4), sudah diformat; null bila bukan tempoan / belum dimuat. */
   jatuhTempo: string | null;
   titik: TitikLatar;
+  /** Saklar "Perbarui titik rumah" — hanya untuk nasabah lama (akad ulang). */
+  perbaruiTitik: boolean;
+  onPerbaruiTitik: (nyala: boolean) => void;
   /** Server sedang memeriksa akad sebelum kamera. */
   memeriksa: boolean;
   memuat: boolean;
@@ -187,7 +190,14 @@ export function LangkahPeriksa(props: {
           }
         />
         <View style={[gaya.baris, gaya.garis]}>
-          <StatusTitikRumah titik={props.titik} lama={props.siapa === "pernah-melunasi"} />
+          <StatusTitikRumah
+            titik={props.titik}
+            perbarui={
+              props.siapa === "pernah-melunasi"
+                ? { nyala: props.perbaruiTitik, ubah: props.onPerbaruiTitik }
+                : undefined
+            }
+          />
         </View>
       </View>
 

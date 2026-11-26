@@ -142,7 +142,9 @@ aplikasi beralih.
 - **Blokir** otomatis saat pemutihan; dibuka bos, atau saat pemutihan
   terakhirnya dibatalkan.
 - **Rekam titik rumah**: kolektor pemegang (dari depan rumah) atau bos; nilai
-  lama tercatat di riwayat.
+  lama tercatat di riwayat. HP kolektor merekamnya otomatis sesudah akad (nasabah
+  baru selalu) dan sesudah gulung / akad ulang (menimpa bila akurasi ≤ 30 m dan
+  saklar "Perbarui titik rumah" menyala — keputusan 27 Nov 2026).
 
 ## Catatan migrasi (tidak dijalankan di sesi desain)
 
