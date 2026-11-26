@@ -35,7 +35,7 @@ const PANDUAN: readonly { ikon: NamaIkon; judul: string; isi: string }[] = [
   {
     ikon: "lock-open",
     judul: "Membuka laporan sore",
-    isi: "Buka Mode Rekap › Ringkasan › Mutasi Kas. Laporan terbuka sesudah semua nasabah wajib hari ini ditagih: harian, mingguan di hari tagihnya, dan tempoan sejak jatuh tempo. Lalu setor tunai ke kasir.",
+    isi: "Buka Mode Rekap › Ringkasan, pil Hari Ini: kartu hitam Mutasi Kas. Laporan terbuka sesudah semua nasabah wajib hari ini ditagih: harian, mingguan di hari tagihnya, dan tempoan sejak jatuh tempo. Lalu setor tunai ke kasir.",
   },
   {
     ikon: "arrow-left-right",

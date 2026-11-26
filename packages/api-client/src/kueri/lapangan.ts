@@ -1,4 +1,8 @@
 import type { JenisPerforma } from "@opennael/contracts";
+
+/** Jenis pinjaman (saringan Ringkasan) = jenis performa tanpa "semua". */
+type JenisPinjaman = Exclude<JenisPerforma, "semua">;
+
 import { queryOptions } from "@tanstack/react-query";
 import type { Bahan } from "../bahan";
 import { kunci } from "../kunci";
@@ -105,6 +109,30 @@ export function kueriLapangan({ api, ambil }: Bahan) {
               }),
             ),
           enabled: tanggal !== undefined,
+        }),
+      /**
+       * Angka kolektor ini satu rentang (layar Ringkasan): penagihan, akad, kas lapangan, dan
+       * komposisi per jenis; `jenis` menyaring penagihan & akad. Di bawah `kunci.lapangan`
+       * supaya ikut segar sesudah tiap transaksi lapangan.
+       */
+      ringkasan: (mulai: string, selesai: string, jenis?: JenisPinjaman) =>
+        queryOptions({
+          queryKey: [...kunci.lapangan, "ringkasan", mulai, selesai, jenis ?? "semua"],
+          queryFn: () =>
+            ambil(() =>
+              api.pelaporan.ringkasan.$get({
+                query: jenis ? { mulai, selesai, jenis } : { mulai, selesai },
+              }),
+            ),
+        }),
+      /** Perkiraan gaji kolektor ini satu rentang (aturan-usaha J) — kartu sorot Ringkasan. */
+      gaji: (kolektorId: string, mulai: string, selesai: string) =>
+        queryOptions({
+          queryKey: [...kunci.lapangan, "gaji", mulai, selesai],
+          queryFn: () =>
+            ambil(() =>
+              api.penggajian.kas.gaji.pratinjau.$get({ query: { kolektorId, mulai, selesai } }),
+            ),
         }),
       kampung: () =>
         queryOptions({

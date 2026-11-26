@@ -93,7 +93,7 @@ potongan_tekor = Σ greatest(−serah_terima_kas.selisih_setor, 0)
 
 | Metode & jalur | Peran | Isi |
 |---|---|---|
-| `GET /kas/gaji/pratinjau?kolektorId=&mulai=&selesai=` | bos | Gaji kotor, rincian storting × tarif per hari, tekor per hari — sebelum membayar. |
+| `GET /kas/gaji/pratinjau?kolektorId=&mulai=&selesai=` | bos; kolektor: miliknya (27 Nov 2026 — perkiraan gaji di Ringkasan HP) | Gaji kotor, rincian storting × tarif per hari, tekor per hari — sebelum membayar. |
 | `POST /kas/gaji` | bos | `{ kolektorId, periodeMulai, periodeSelesai, dariAkun, keterangan? }` |
 | `POST /kas/gaji/:id/batal` | bos | `{ alasan }` — hari yang sama. |
 | `GET /kas/gaji?kolektorId=` | bos, pengawas: semua; kolektor: miliknya | Riwayat slip. |

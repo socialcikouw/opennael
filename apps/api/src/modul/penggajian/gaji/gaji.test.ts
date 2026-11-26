@@ -88,14 +88,20 @@ describe.skipIf(!URL_DB)("gaji kolektor", () => {
         { tanggal: "2026-10-12", storting: 5_000_000, tekor: 50_000, tarifBp: 600 },
         { tanggal: "2026-10-14", storting: -200_000, tekor: 0, tarifBp: 600 },
       ]);
+      // Kolektor membaca perkiraan gajinya sendiri (Ringkasan HP), bukan milik orang lain.
+      const milikSendiri = await kirim(
+        `/kas/gaji/pratinjau?kolektorId=${andiId}&mulai=2026-10-01&selesai=2026-10-15`,
+        { token: andi.tokenAkses },
+      );
+      expect(milikSendiri.isi).toMatchObject({ gajiKotor: 488_000, gajiBersih: 430_000 });
       expect(
         kode(
           await kirim(
-            `/kas/gaji/pratinjau?kolektorId=${andiId}&mulai=2026-10-01&selesai=2026-10-15`,
+            `/kas/gaji/pratinjau?kolektorId=${bosId}&mulai=2026-10-01&selesai=2026-10-15`,
             { token: andi.tokenAkses },
           ),
         ),
-      ).toBe("PERAN_DILARANG");
+      ).toBe("BUKAN_MILIK_ANDA");
 
       // ---- bayar --------------------------------------------------------------------
       const bayar = (isi: Record<string, unknown>) =>

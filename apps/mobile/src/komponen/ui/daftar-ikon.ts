@@ -44,12 +44,15 @@ import MapPin from "lucide-react-native/icons/map-pin";
 import Maximize2 from "lucide-react-native/icons/maximize-2";
 import MessageCircle from "lucide-react-native/icons/message-circle";
 import Moon from "lucide-react-native/icons/moon";
+import Motorbike from "lucide-react-native/icons/motorbike";
+import Percent from "lucide-react-native/icons/percent";
 import Phone from "lucide-react-native/icons/phone";
 import PiggyBank from "lucide-react-native/icons/piggy-bank";
 import Plus from "lucide-react-native/icons/plus";
 import ReceiptText from "lucide-react-native/icons/receipt-text";
 import RefreshCw from "lucide-react-native/icons/refresh-cw";
 import Repeat from "lucide-react-native/icons/repeat";
+import Scissors from "lucide-react-native/icons/scissors";
 import Search from "lucide-react-native/icons/search";
 import SearchX from "lucide-react-native/icons/search-x";
 import Settings from "lucide-react-native/icons/settings";
@@ -142,6 +145,9 @@ export const IKON = {
   "lock-open": LockOpen,
   smartphone: Smartphone,
   vibrate: Vibrate,
+  motorbike: Motorbike,
+  percent: Percent,
+  scissors: Scissors,
 } as const satisfies Record<string, LucideIcon>;
 
 export type NamaIkon = keyof typeof IKON;

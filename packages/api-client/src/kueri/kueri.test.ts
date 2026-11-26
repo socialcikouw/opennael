@@ -379,6 +379,27 @@ const KASUS: [string, unknown, readonly unknown[], string, unknown[]][] = [
     [{ query: { mulai: "2026-10-26", selesai: T, jenis: "mingguan" } }],
   ],
   [
+    "lapangan.ringkasan",
+    kueri.lapangan.ringkasan("2026-11-01", T),
+    ["lapangan", "ringkasan", "2026-11-01", T, "semua"],
+    "pelaporan.ringkasan.$get",
+    [{ query: { mulai: "2026-11-01", selesai: T } }],
+  ],
+  [
+    "lapangan.ringkasan (jenis)",
+    kueri.lapangan.ringkasan(T, T, "tempoan"),
+    ["lapangan", "ringkasan", T, T, "tempoan"],
+    "pelaporan.ringkasan.$get",
+    [{ query: { mulai: T, selesai: T, jenis: "tempoan" } }],
+  ],
+  [
+    "lapangan.gaji",
+    kueri.lapangan.gaji("k1", "2026-11-01", T),
+    ["lapangan", "gaji", "2026-11-01", T],
+    "penggajian.kas.gaji.pratinjau.$get",
+    [{ query: { kolektorId: "k1", mulai: "2026-11-01", selesai: T } }],
+  ],
+  [
     "lapangan.kampung",
     kueri.lapangan.kampung(),
     ["lapangan", "kampung"],

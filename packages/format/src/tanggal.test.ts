@@ -1,5 +1,13 @@
 import { describe, expect, test } from "bun:test";
-import { jam, tanggal, tanggalBertahun, tanggalPendek, waktu, waktuPendek } from "./tanggal";
+import {
+  jam,
+  namaBulan,
+  tanggal,
+  tanggalBertahun,
+  tanggalPendek,
+  waktu,
+  waktuPendek,
+} from "./tanggal";
 
 describe("format tanggal kantor", () => {
   test("tanggal: tiga bentuk nama hari", () => {
@@ -12,6 +20,12 @@ describe("format tanggal kantor", () => {
   test("teks yang bukan tanggal dikembalikan apa adanya", () => {
     expect(tanggal("bukan-tanggal")).toBe("bukan-tanggal");
     expect(tanggalPendek("bukan-tanggal")).toBe("bukan-tanggal");
+  });
+
+  test("namaBulan: bulan lengkap + tahun", () => {
+    expect(namaBulan("2026-11")).toBe("November 2026");
+    expect(namaBulan("2026-02-14")).toBe("Februari 2026");
+    expect(namaBulan("bukan")).toBe("bukan");
   });
 
   test("tanggalPendek & tanggalBertahun", () => {

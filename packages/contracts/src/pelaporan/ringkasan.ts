@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { orang, tanggal } from "../bersama/dasar";
+import { jenisPinjamanSchema } from "../pembiayaan/pinjaman";
 
 /**
  * RINGKASAN (web bos; pengawas & kolektor membaca miliknya) — angka satu
@@ -12,6 +13,14 @@ export const saringRingkasanSchema = z.object({
   mulai: tanggal.optional(),
   selesai: tanggal.optional(),
   kolektorId: z.uuid().optional(),
+});
+
+/**
+ * `GET /ringkasan` — `jenis` (opsional) menyaring `penagihan` & `akad` ke satu jenis
+ * pinjaman; `kasLapangan` dan `perJenis` tidak ikut tersaring (kas tak berjenis).
+ */
+export const saringRingkasanJenisSchema = saringRingkasanSchema.extend({
+  jenis: jenisPinjamanSchema.optional(),
 });
 
 /**
@@ -34,6 +43,8 @@ export const angkaRingkasanSchema = z.object({
     tabunganKeluar: z.number(),
     /** murni + pelunasan − tabungan keluar. */
     storting: z.number(),
+    /** Bagian setoran yang dibayar lewat transfer (dicatat kasir), ikut saringan jenis. */
+    transfer: z.number(),
   }),
   /** Akad (bukan salinan migrasi) — menurut pencair & tanggal akad. */
   akad: z.object({
@@ -59,9 +70,20 @@ export const angkaRingkasanSchema = z.object({
   }),
 });
 
+/** Storting & droping satu jenis pinjaman — komposisi per jenis (tak ikut saringan jenis). */
+export const angkaPerJenisSchema = z.object({
+  jenis: jenisPinjamanSchema,
+  jumlahSetoran: z.number(),
+  storting: z.number(),
+  jumlahAkad: z.number(),
+  droping: z.number(),
+});
+
 export const ringkasanSchema = angkaRingkasanSchema.extend({
   mulai: z.string(),
   selesai: z.string(),
+  /** Selalu tiga baris: harian, mingguan, tempoan. */
+  perJenis: z.array(angkaPerJenisSchema),
 });
 
 export const ringkasanKolektorSchema = angkaRingkasanSchema.extend({ kolektor: orang });
@@ -74,3 +96,6 @@ export const performaHarianSchema = z.object({
   patokan: z.number().nullable(),
   persentase: z.number().nullable(),
 });
+
+export type Ringkasan = z.infer<typeof ringkasanSchema>;
+export type AngkaPerJenis = z.infer<typeof angkaPerJenisSchema>;

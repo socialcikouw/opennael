@@ -9,9 +9,15 @@ import { hitung, type Konteks, keSlip, namaKolektor, pilihSlip, sudahDibayar } f
 /** Bacaan GAJI: pratinjau periode dan riwayat slip. */
 export function buatKueriGaji(k: Konteks) {
   return {
-    /** Pratinjau gaji (bos) — angka yang akan dibekukan bila dibayar hari ini. */
+    /**
+     * Pratinjau gaji — angka yang akan dibekukan bila dibayar hari ini. Bos: kolektor mana
+     * pun; kolektor: dirinya sendiri (perkiraan gaji di Ringkasan HP, keputusan 27 Nov 2026).
+     */
     async pratinjau(aktor: Aktor, saring: { kolektorId: string; mulai: string; selesai: string }) {
-      wajibPeran(aktor, "bos");
+      wajibPeran(aktor, "bos", "kolektor");
+      if (aktor.peran === "kolektor" && saring.kolektorId !== aktor.penggunaId) {
+        throw dilarang("BUKAN_MILIK_ANDA", "Anda hanya bisa melihat gaji Anda sendiri");
+      }
       if (saring.mulai > saring.selesai) {
         throw melanggar("RENTANG_TIDAK_SAH", "Tanggal mulai sesudah tanggal selesai");
       }

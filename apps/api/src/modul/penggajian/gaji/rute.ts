@@ -27,7 +27,7 @@ const pratinjau = createRoute({
   method: "get",
   path: "/kas/gaji/pratinjau",
   tags: tag,
-  summary: "Pratinjau gaji satu kolektor satu periode (bos)",
+  summary: "Pratinjau gaji satu kolektor satu periode (bos; kolektor: miliknya)",
   security: aman,
   request: { query: saringPratinjauGajiSchema },
   responses: { 200: { description: "Pratinjau", ...json(pratinjauGajiSchema) }, ...galat },

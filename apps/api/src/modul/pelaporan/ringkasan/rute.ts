@@ -4,6 +4,7 @@ import {
   ringkasanKolektorSchema,
   ringkasanSchema,
   saringPerformaSchema,
+  saringRingkasanJenisSchema,
   saringRingkasanSchema,
 } from "@opennael/contracts";
 import type { ZodType } from "zod";
@@ -39,7 +40,7 @@ const ringkasan = baca(
   "/ringkasan",
   "Angka satu rentang — kantor atau satu kolektor (kolektor: miliknya)",
   ringkasanSchema,
-  saringRingkasanSchema,
+  saringRingkasanJenisSchema,
 );
 const perKolektor = baca(
   "/ringkasan/per-kolektor",

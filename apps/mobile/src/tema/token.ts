@@ -109,6 +109,25 @@ export const WARNA = {
   latarTab: kertas[900],
   ikonTab: kertas[400],
 
+  /**
+   * KARTU SOROT Ringkasan — satu-satunya bidang pekat di layarnya (hitam hangat seperti
+   * tab bar) untuk angka yang paling dicari: mutasi kas hari ini, gaji, storting satu jenis.
+   */
+  latarSorot: kertas[900],
+  teksSorot: kertas[50],
+  teksSorotRedup: kertas[200],
+  /** Keping & rel bar tembus pandang di atas `latarSorot`. */
+  isiSorot: tirai.terang,
+
+  /** Bagian bar komposisi di kartu terang (Ringkasan): bagian ke-1 · ke-2 · ke-3. */
+  komposisi1: terakota[700],
+  komposisi2: terakota[400],
+  komposisi3: terakota[200],
+  /** Bagian bar komposisi di atas `latarSorot`. */
+  komposisiSorot1: terakota[400],
+  komposisiSorot2: kertas[200],
+  komposisiSorot3: kertas[500],
+
   /** Layar transisi beralih mode: latar hitam hangat, teks kertas. */
   latarTransisi: kertas[900],
   teksTransisi: kertas[50],

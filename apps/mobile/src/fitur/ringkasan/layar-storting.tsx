@@ -1,84 +1,89 @@
-import type { KartuTagih } from "@opennael/contracts";
-import { jam, rupiah, tampilKampung } from "@opennael/format";
+import type { TransaksiHari } from "@opennael/contracts";
+import { rupiah, tampilKampung } from "@opennael/format";
 import { router } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
 import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
-import { useHariIni, useTagihan } from "@/fitur/lapangan";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useTagihan } from "@/fitur/lapangan";
 import { PilJenis } from "@/komponen/pil-jenis";
-import { useRuangTab } from "@/komponen/tab-mengambang";
 import { g } from "@/komponen/ui/gaya-bersama";
 import { PesanGalat } from "@/komponen/ui/isian";
 import { Kerangka } from "@/komponen/ui/kerangka";
 import { KotakKosong } from "@/komponen/ui/kotak-kosong";
 import { Spanduk } from "@/komponen/ui/spanduk";
 import { Tombol } from "@/komponen/ui/tombol";
-import { useZonaKantor } from "@/lib/kantor";
 import { useTarikSegarkan } from "@/lib/tarik-segarkan";
 import { AKSEN, RUANG } from "@/tema";
-import { type BarisDroping, barisDroping, dropingHariIni, ringkasDroping } from "./inti/droping";
+import { useSetoranHariIni } from "./data";
 import { hitungPerJenis, type SaringJenis, saringJenis } from "./inti/jenis";
+import { type BarisStorting, barisStorting, ringkasStorting } from "./inti/storting";
 import { BarisJenis } from "./komponen/baris-jenis";
 import { KartuTotal } from "./komponen/kartu-total";
 
-const jenisDari = (p: KartuTagih) => p.jenis;
+const jenisDari = (t: TransaksiHari) => t.jenisPinjaman;
 
 /**
- * SEGMEN DROPING (Ringkasan, Mode Rekap) — pokok pinjaman yang keluar hari ini dari ketiga jenis:
- * total droping (drop baru + drop gulung) dan pencairan (uang yang dicairkan ke nasabah)
- * (pencairan), lalu satu baris per akad (terbaru dulu). Diketuk → rincian
- * pinjaman hanya-baca. Potongan admin & tabungan masuk ada di arus kas (Mutasi).
+ * STORTING HARI INI (dibuka dari kartu Storting di Ringkasan, periode Hari Ini) — uang setoran yang masuk hari ini dari ketiga jenis
+ * pinjaman: total & penyusunnya (murni + pelunasan − tabungan keluar), bagian
+ * yang ditransfer, lalu satu baris per setoran. Saringan jenis mengubah total
+ * dan daftar. Hanya-baca; menagih dari Mode Kerja.
  */
-export function SegmenDroping() {
+export function LayarStorting() {
   const aksen = AKSEN;
-  const ruangTab = useRuangTab();
-  const zona = useZonaKantor();
-  const hariIni = useHariIni();
+  const ruangTab = useSafeAreaInsets().bottom + RUANG[6];
+  const setoran = useSetoranHariIni();
   const tagihan = useTagihan();
-  const tanggal = hariIni.data?.kalender.tanggal;
   const [saring, setSaring] = useState<SaringJenis>("semua");
 
-  const { refetch: segarHariIni } = hariIni;
+  const { refetch: segarSetoran } = setoran;
   const { refetch: segarTagihan } = tagihan;
   const segarkan = useCallback(
-    () => Promise.all([segarHariIni(), segarTagihan()]),
-    [segarHariIni, segarTagihan],
+    () => Promise.all([segarSetoran(), segarTagihan()]),
+    [segarSetoran, segarTagihan],
   );
   const { aktif: menarik, tarik } = useTarikSegarkan(segarkan);
 
   const { jumlah, ringkas, baris } = useMemo(() => {
-    const semua = tagihan.data && tanggal ? dropingHariIni(tagihan.data, tanggal) : [];
+    const semua = setoran.data ?? [];
     const tersaring = saringJenis(semua, saring, jenisDari);
     return {
       jumlah: hitungPerJenis(semua, jenisDari),
-      ringkas: ringkasDroping(tersaring),
-      baris: tersaring.map(barisDroping),
+      ringkas: ringkasStorting(tersaring),
+      baris: tersaring.map(barisStorting),
     };
-  }, [tagihan.data, tanggal, saring]);
+  }, [setoran.data, saring]);
+  // Pinjaman yang lunas/digulung hari ini sudah keluar daftar tagih: barisnya tak bisa dibuka.
+  const aktif = useMemo(() => new Set(tagihan.data?.map((p) => p.id)), [tagihan.data]);
 
   const renderItem = useCallback(
-    ({ item: b }: { item: BarisDroping }) => (
+    ({ item: b }: { item: BarisStorting }) => (
       <BarisJenis
         jenis={b.jenis}
         nama={b.nama}
-        sub={`${tampilKampung(b.kampung)} · ke-${b.pinjamanKe}${b.waktuAkad ? ` · ${jam(b.waktuAkad, zona)}` : ""}`}
-        nilai={rupiah(b.pokok)}
-        lencana={b.asal}
-        catatan={`Pencairan ${rupiah(b.pencairan)}`}
-        onPress={() =>
-          router.push({ pathname: "/kolektor/pinjaman/[id]", params: { id: b.id, lihat: "1" } })
+        sub={`${tampilKampung(b.kampung)} · ${b.jenisTransaksi}`}
+        nilai={rupiah(b.storting)}
+        nilaiBahaya={b.storting < 0}
+        lencana={b.transfer !== null ? `Transfer ${rupiah(b.transfer)}` : undefined}
+        catatan={b.rincian}
+        onPress={
+          aktif.has(b.pinjamanId)
+            ? () =>
+                router.push({
+                  pathname: "/kolektor/pinjaman/[id]",
+                  params: { id: b.pinjamanId, lihat: "1" },
+                })
+            : undefined
         }
       />
     ),
-    [zona],
+    [aktif],
   );
 
-  if (hariIni.isPending || tagihan.isPending)
-    return <Kerangka jenis="daftar" teks="Memuat droping…" />;
-  const galat = !tagihan.data ? tagihan.error : !hariIni.data ? hariIni.error : null;
-  if (galat) {
+  if (setoran.isPending) return <Kerangka jenis="daftar" teks="Memuat storting…" />;
+  if (!setoran.data) {
     return (
       <View style={[g.layar, gaya.galat]}>
-        <PesanGalat pesan={galat.message} />
+        <PesanGalat pesan={setoran.error?.message} />
         <Tombol judul="Coba lagi" ikon="refresh-cw" onPress={() => void segarkan()} />
       </View>
     );
@@ -102,20 +107,21 @@ export function SegmenDroping() {
       }
       ListHeaderComponent={
         <View style={gaya.kepala}>
-          {hariIni.isError || tagihan.isError ? (
+          {setoran.isError ? (
             <Spanduk
               judul="Gagal menyegarkan"
               isi="Data mungkin belum terbaru. Tarik ke bawah untuk mencoba lagi."
             />
           ) : null}
           <KartuTotal
-            label="DROPING HARI INI"
-            ikon="banknote-arrow-up"
+            label="STORTING HARI INI"
+            ikon="banknote-arrow-down"
             nilai={ringkas.total}
-            keterangan={`${ringkas.jumlah} akad · pencairan ${rupiah(ringkas.pencairan)}`}
+            keterangan={`${ringkas.jumlah} setoran${ringkas.transfer > 0 ? ` · ${rupiah(ringkas.transfer)} lewat transfer` : ""}`}
             rincian={[
-              { label: "Drop Baru", nilai: ringkas.baru },
-              { label: "Drop Gulung", nilai: ringkas.gulung, tanda: "+" },
+              { label: "Setoran Murni", nilai: ringkas.murni },
+              { label: "Setoran Pelunasan", nilai: ringkas.pelunasan, tanda: "+" },
+              { label: "Tabungan Keluar", nilai: ringkas.tabunganKeluar, tanda: "−" },
             ]}
           />
           <PilJenis nilai={saring} jumlah={jumlah} onPilih={setSaring} />
@@ -123,12 +129,12 @@ export function SegmenDroping() {
       }
       ListEmptyComponent={
         <KotakKosong
-          ikon="banknote-arrow-up"
-          judul="Belum ada droping"
+          ikon="banknote-arrow-down"
+          judul="Belum ada setoran"
           isi={
             saring === "semua"
-              ? "Akad & gulung yang dicairkan hari ini muncul di sini."
-              : "Belum ada pencairan jenis ini hari ini."
+              ? "Setoran yang dicatat hari ini muncul di sini."
+              : "Belum ada setoran jenis ini hari ini."
           }
         />
       }

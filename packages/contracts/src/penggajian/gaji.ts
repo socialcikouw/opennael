@@ -70,3 +70,5 @@ export const slipGajiSchema = z.object({
 
 /** `GET /kas/gaji` — kolektor: miliknya. */
 export const saringSlipGajiSchema = z.object({ kolektorId: z.uuid().optional() });
+
+export type PratinjauGaji = z.infer<typeof pratinjauGajiSchema>;

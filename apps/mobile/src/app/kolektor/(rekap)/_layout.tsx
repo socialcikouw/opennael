@@ -32,7 +32,8 @@ export default function TataLetakRekap() {
       )}
       screenOptions={OPSI_TAB}
     >
-      <Tabs.Screen name="ringkasan" options={{ title: "Ringkasan" }} />
+      {/* Ringkasan memegang judul besarnya sendiri (ikut tergulung). */}
+      <Tabs.Screen name="ringkasan" options={{ title: "Ringkasan", headerShown: false }} />
       <Tabs.Screen name="performa" options={{ title: "Performa" }} />
       <Tabs.Screen name="portofolio" options={{ title: "Portofolio" }} />
     </Tabs>

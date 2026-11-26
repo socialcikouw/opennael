@@ -23,7 +23,7 @@ function pembuat(tx: Db, kantorId: string, bosId: string) {
         values (${kantorId}, ${kolektorId}, ${nama}, ${wilayahId}, ${isi.nik ?? null}) returning id`);
       return n?.id as string;
     },
-    /** Pinjaman harian; `baru` = akad sungguhan bertanggal (berfoto), selain itu salinan migrasi. */
+    /** Pinjaman (bawaan harian); `baru` = akad sungguhan bertanggal (berfoto), selain itu salinan migrasi. */
     async pinjaman(
       kolektorId: string,
       nasabahId: string,
@@ -34,10 +34,15 @@ function pembuat(tx: Db, kantorId: string, bosId: string) {
         status?: string;
         tanggalSelesai?: string;
         tanggalMacet?: string;
+        jenis?: "harian" | "mingguan";
       } = {},
     ) {
       const pokok = isi.pokok ?? 1_000_000;
-      const total = pokok * 1.25;
+      const mingguan = isi.jenis === "mingguan";
+      const tenor = mingguan ? 8 : 25;
+      const total = mingguan ? pokok * 1.2 : pokok * 1.25;
+      const admin = isi.baru ? (mingguan ? pokok * 0.1 : pokok * 0.05) : 0;
+      const tabungan = isi.baru && !mingguan ? pokok * 0.05 : 0;
       const saldo = isi.saldo ?? (isi.status === "lunas" ? 0 : total);
       let foto: string | null = null;
       if (isi.baru) {
@@ -51,10 +56,10 @@ function pembuat(tx: Db, kantorId: string, bosId: string) {
         insert into pinjaman (kantor_id, pencair_id, dibuat_oleh, nasabah_id, pinjaman_ke, jenis, tenor,
           asal, tanggal_akad, tanggal_disalin, foto_serah_terima_id, pokok, potongan_admin, tabungan_masuk,
           pencairan, total_kembali, angsuran, saldo_awal, drop_baru, saldo, status, tanggal_selesai, tanggal_macet)
-        values (${kantorId}, ${kolektorId}, ${bosId}, ${nasabahId}, 1, 'harian', 25,
+        values (${kantorId}, ${kolektorId}, ${bosId}, ${nasabahId}, 1, ${isi.jenis ?? "harian"}, ${tenor},
           ${isi.baru ? "baru" : "migrasi"}, ${isi.baru ?? "2026-08-01"}, ${isi.baru ? null : "2026-09-01"}, ${foto},
-          ${pokok}, ${isi.baru ? pokok * 0.05 : 0}, ${isi.baru ? pokok * 0.05 : 0}, ${isi.baru ? pokok * 0.9 : 0},
-          ${total}, ${total / 25}, ${total}, ${isi.baru ? pokok : 0}, ${saldo}, ${isi.status ?? "berjalan"},
+          ${pokok}, ${admin}, ${tabungan}, ${isi.baru ? pokok - admin - tabungan : 0},
+          ${total}, ${total / tenor}, ${total}, ${isi.baru ? pokok : 0}, ${saldo}, ${isi.status ?? "berjalan"},
           ${isi.tanggalSelesai ?? null}, ${isi.tanggalMacet ?? null})
         returning id`);
       return p?.id as string;
@@ -76,6 +81,55 @@ function pembuat(tx: Db, kantorId: string, bosId: string) {
 }
 
 describe.skipIf(!URL_DB)("ringkasan & layar baca bos", () => {
+  test("ringkasan per jenis: saringan jenis & komposisi perJenis (HP Ringkasan)", async () => {
+    await dalamTransaksi(async (tx) => {
+      const { kirim, bos, kolektor: andi, kantorId } = await siapkanKantor(tx);
+      const andiId = andi.pengguna.id;
+      const d = pembuat(tx, kantorId, bos.pengguna.id);
+      const [h] = await d.baris<{ t: string }>(sql`select kantor_hari_ini(${kantorId})::text as t`);
+      const hari = h?.t as string;
+      // Harian: setoran 50.000 + akad baru 1 jt. Mingguan: setoran 150.000 + akad baru 1 jt.
+      const pHarian = await d.pinjaman(andiId, await d.nasabah(andiId, "budi"));
+      await d.setor(andiId, pHarian, hari, { murni: 50_000 });
+      const pMingguan = await d.pinjaman(andiId, await d.nasabah(andiId, "sari"), {
+        jenis: "mingguan",
+      });
+      await d.setor(andiId, pMingguan, hari, { murni: 150_000 });
+      await d.pinjaman(andiId, await d.nasabah(andiId, "rina"), { baru: hari });
+      await d.pinjaman(andiId, await d.nasabah(andiId, "tini"), { baru: hari, jenis: "mingguan" });
+
+      const t = andi.tokenAkses;
+      const semua = (await kirim("/ringkasan", { token: t })).isi;
+      expect(semua.penagihan).toMatchObject({ jumlahSetoran: 2, storting: 200_000, transfer: 0 });
+      expect(semua.akad).toMatchObject({ jumlahAkad: 2, droping: 2_000_000 });
+      expect(semua.perJenis).toEqual([
+        { jenis: "harian", jumlahSetoran: 1, storting: 50_000, jumlahAkad: 1, droping: 1_000_000 },
+        {
+          jenis: "mingguan",
+          jumlahSetoran: 1,
+          storting: 150_000,
+          jumlahAkad: 1,
+          droping: 1_000_000,
+        },
+        { jenis: "tempoan", jumlahSetoran: 0, storting: 0, jumlahAkad: 0, droping: 0 },
+      ]);
+
+      const mingguan = (await kirim("/ringkasan?jenis=mingguan", { token: t })).isi;
+      expect(mingguan.penagihan).toMatchObject({ jumlahSetoran: 1, storting: 150_000 });
+      expect(mingguan.akad).toMatchObject({
+        jumlahAkad: 1,
+        potonganAdmin: 100_000,
+        tabunganMasuk: 0,
+        pencairan: 900_000,
+      });
+      // perJenis tak ikut tersaring.
+      expect(mingguan.perJenis).toEqual(semua.perJenis);
+      const tempoan = (await kirim("/ringkasan?jenis=tempoan", { token: t })).isi;
+      expect(tempoan.penagihan.storting).toBe(0);
+      expect(tempoan.akad.jumlahAkad).toBe(0);
+    });
+  });
+
   test("ringkasan, per kolektor, performa (contoh N), posisi modal", async () => {
     await dalamTransaksi(async (tx) => {
       const { kirim, bos, kolektor: andi, kantorId } = await siapkanKantor(tx);

@@ -1,21 +1,30 @@
 import type { JenisPerforma } from "@opennael/contracts";
+import type { JenisPinjaman } from "@opennael/domain";
 import { gabungPerforma, selisihHari } from "@opennael/domain";
 import { asc, eq } from "drizzle-orm";
 import { pengguna } from "../../../platform/db/skema";
 import type { Aktor } from "../../../platform/http/aktor";
 import { melanggar } from "../../../platform/http/galat";
 import { wajibPeran } from "../../../platform/http/peran";
-import { angka } from "./angka";
+import { angka, angkaPerJenis } from "./angka";
 import { type Konteks, RENTANG_PERFORMA_MAKS, saring } from "./data";
 import { performaHarian, performaPeriodik } from "./performa";
 
 /** Bacaan RINGKASAN: angka satu rentang, per kolektor, dan deret performa penagihan. */
 export function buatKueriRingkasan(k: Konteks) {
   return {
-    /** Angka satu rentang — kantor, atau satu kolektor. */
-    async ringkasan(aktor: Aktor, s: { mulai?: string; selesai?: string; kolektorId?: string }) {
+    /** Angka satu rentang — kantor, atau satu kolektor; `jenis` menyaring penagihan & akad. */
+    async ringkasan(
+      aktor: Aktor,
+      s: { mulai?: string; selesai?: string; kolektorId?: string; jenis?: JenisPinjaman },
+    ) {
       const { kolektorId, mulai, selesai } = await saring(k, aktor, s);
-      return { mulai, selesai, ...(await angka(k, aktor, mulai, selesai, kolektorId)) };
+      return {
+        mulai,
+        selesai,
+        ...(await angka(k, aktor, mulai, selesai, kolektorId, s.jenis)),
+        perJenis: await angkaPerJenis(k, aktor, mulai, selesai, kolektorId),
+      };
     },
 
     /** Angka satu rentang per kolektor (bos, pengawas). */

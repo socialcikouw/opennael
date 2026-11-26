@@ -26,6 +26,27 @@ export function tanggal(t: string, hari: NamaHari = "pendek"): string {
   return `${(hari === "panjang" ? HARI_PANJANG : HARI_PENDEK)[pekan]}, ${isi}`;
 }
 
+const BULAN_PANJANG = [
+  "Januari",
+  "Februari",
+  "Maret",
+  "April",
+  "Mei",
+  "Juni",
+  "Juli",
+  "Agustus",
+  "September",
+  "Oktober",
+  "November",
+  "Desember",
+];
+
+/** `2026-11` atau `2026-11-27` → `November 2026` (pil & kepala periode Ringkasan). */
+export function namaBulan(t: string): string {
+  const [th, bl] = t.split("-").map(Number);
+  return th && bl ? `${BULAN_PANJANG[bl - 1]} ${th}` : t;
+}
+
 /** `2026-10-23` → `23 Okt` — sumbu grafik, kartu. */
 export function tanggalPendek(t: string): string {
   const [, bl, tg] = t.split("-").map(Number);
