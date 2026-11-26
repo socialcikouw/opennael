@@ -306,6 +306,8 @@ Database (`cd apps/api`, membaca `apps/api/.env`):
 | `bun run db:generate` | Skema Drizzle (`src/platform/db/skema/`) → berkas SQL baru di `src/platform/db/migrasi/`. Periksa SQL-nya sebelum diterapkan. |
 | `bunx --bun drizzle-kit generate --custom --name <nama>` | Migrasi SQL kustom kosong — untuk fungsi, trigger, `EXCLUDE`. |
 | `bun run db:migrate` | Terapkan migrasi yang belum jalan (dicatat di `drizzle.__drizzle_migrations`). Lewat `scripts/migrasi.ts`, yang menolak berjalan bila host bukan Supabase dev. |
+| `bun run data:buat` | **Data uji lapangan** (`scripts/data-uji.ts`): 35 nasabah lama (salinan migrasi) untuk kolektor `rian-demo` — 25 harian, 5 mingguan, 5 tempoan — plus riwayat absen 12 hari kerja supaya tempoan berada di tahap berbeda. Menolak bila kantor sudah punya nasabah. Pemilik memicunya dengan "buat data nasabah sekarang". |
+| `bun run data:hapus` | Kosongkan semua data **kecuali** kantor, pengguna, pengaturan kantor (pekan kerja, libur kantor, tarif gaji, rem kantor/kolektor), dan tautan HP (perangkat & tautan); berkas foto ikut dihapus. Pemilik memicunya dengan "hapus semua data nasabah". |
 
 Migrasi yang sudah diterapkan **tidak pernah disunting** — perubahan selalu
 lewat migrasi baru. Nama constraint ditulis eksplisit sesuai konvensi #8
