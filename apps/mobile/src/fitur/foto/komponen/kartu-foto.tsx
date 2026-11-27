@@ -16,7 +16,8 @@ const CABANG = RUANG[2] + 10;
  * KARTU FOTO (tab Foto, rupa kartu Harian — permintaan pemilik 28 Nov 2026): satu kartu
  * per nasabah bercabang ke rel kampung; isinya foto serah terima, dengan lencana kecil
  * berlatar hitam bertulisan terakota di atas foto: angsuran ke- (kiri atas), nama dan
- * angsuran (kiri bawah); MACET (kanan atas, bila macet) berlatar putih bertulisan merah. Huruf sekecil yang masih terbaca (10 pt tebal).
+ * angsuran (kiri bawah); status (kanan atas) sedikit lebih besar: BERJALAN hijau / MACET
+ * merah, tulisan putih. Huruf sekecil yang masih terbaca (10 pt tebal).
  * Ketuk = layar penuh.
  */
 export const KartuFoto = memo(function KartuFoto(props: {
@@ -58,11 +59,9 @@ export const KartuFoto = memo(function KartuFoto(props: {
           <View style={[gaya.lencana, gaya.bulat]}>
             <Text style={gaya.teks}>{f.angsuranKe}</Text>
           </View>
-          {f.macet ? (
-            <View style={[gaya.lencana, gaya.lencanaMacet]}>
-              <Text style={[gaya.teks, gaya.teksMacet]}>MACET</Text>
-            </View>
-          ) : null}
+          <View style={[gaya.status, f.macet ? gaya.statusMacet : gaya.statusBerjalan]}>
+            <Text style={gaya.teksStatus}>{f.macet ? "MACET" : "BERJALAN"}</Text>
+          </View>
         </View>
         <View style={gaya.bawah}>
           <View style={gaya.lencana}>
@@ -119,9 +118,16 @@ const gaya = StyleSheet.create({
     borderRadius: SUDUT.kecil - 2,
     backgroundColor: WARNA.latarLencanaFoto,
   },
-  // Putih bertulisan merah (arti "bahaya"; merah 700 di atas putih ±6,4:1).
-  lencanaMacet: { backgroundColor: WARNA.permukaan },
-  teksMacet: { color: WARNA.bahaya },
+  // Lencana STATUS sedikit lebih besar supaya mencolok: berjalan hijau (arti "boleh"),
+  // macet merah (arti "bahaya"), tulisan putih — kontras ≥ 4,5:1 diuji `token.test.ts`.
+  status: {
+    paddingHorizontal: RUANG[2],
+    paddingVertical: RUANG[0.5],
+    borderRadius: SUDUT.kecil - 2,
+  },
+  statusBerjalan: { backgroundColor: WARNA.sukses },
+  statusMacet: { backgroundColor: WARNA.bahayaBingkai },
+  teksStatus: { ...HURUF.xs, fontWeight: TEBAL.ekstra, color: WARNA.teksAtasSukses },
   bulat: { minWidth: 20, alignItems: "center", borderRadius: SUDUT.bulat },
   teks: {
     ...HURUF["3xs"],
