@@ -1,3 +1,5 @@
+import { rupiah } from "@opennael/format";
+
 /**
  * KOMPOSISI & SELISIH — bahan bar bertumpuk di kartu Ringkasan dan tanda naik/turun
  * terhadap periode pembanding. Tanpa warna: komponen memetakan `urutan` (bagian ke-1, -2,
@@ -57,19 +59,32 @@ export function susunSegmen(
 
 export interface SelisihVM {
   arah: "naik" | "turun" | "tetap";
-  /** "12% dari Oktober 1–27" / "sama dengan pekan lalu" / "baru (Oktober 1–27 nol)". */
+  /** Arti perubahan: naik saldo = baik, naik macet = buruk (`naikBaik`). */
+  nada: "baik" | "buruk" | "netral";
+  /** "+Rp 250.000 (12%) vs akhir Oktober" / "−3 nasabah (8%) vs akhir Oktober" / "sama dengan …". */
   teks: string;
 }
 
 /**
- * Perubahan `sekarang` terhadap `dulu` (periode pembanding sepadan). null bila keduanya
- * nol — tak ada yang dibandingkan.
+ * Perubahan `sekarang` terhadap `dulu` (pembanding): besaran mutlak + persen. `naikBaik` false
+ * untuk angka yang lebih baik bila turun (macet, macet baru). `satuan` diisi = hitungan
+ * ("nasabah"), selain itu rupiah. null bila keduanya nol — tak ada yang dibandingkan.
  */
-export function selisih(sekarang: number, dulu: number, label: string): SelisihVM | null {
+export function selisih(
+  sekarang: number,
+  dulu: number,
+  label: string,
+  opsi: { naikBaik?: boolean; satuan?: string } = {},
+): SelisihVM | null {
   if (sekarang === 0 && dulu === 0) return null;
-  if (sekarang === dulu) return { arah: "tetap", teks: `sama dengan ${label}` };
+  if (sekarang === dulu) return { arah: "tetap", nada: "netral", teks: `sama dengan ${label}` };
   const arah = sekarang > dulu ? "naik" : "turun";
-  if (dulu <= 0) return { arah, teks: `${label}: Rp 0` };
-  const persen = Math.round((Math.abs(sekarang - dulu) / dulu) * 100);
-  return { arah, teks: `${persen < 1 ? "<1" : persen}% dari ${label}` };
+  const naikBaik = opsi.naikBaik ?? true;
+  const nada = (arah === "naik") === naikBaik ? "baik" : "buruk";
+  const beda = Math.abs(sekarang - dulu);
+  const besaran = opsi.satuan ? `${beda.toLocaleString("id-ID")} ${opsi.satuan}` : rupiah(beda);
+  const tanda = arah === "naik" ? "+" : "−";
+  if (dulu <= 0) return { arah, nada, teks: `${tanda}${besaran} vs ${label}` };
+  const persen = Math.round((beda / Math.abs(dulu)) * 100);
+  return { arah, nada, teks: `${tanda}${besaran} (${persen < 1 ? "<1" : persen}%) vs ${label}` };
 }

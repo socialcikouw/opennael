@@ -130,7 +130,8 @@ describe.skipIf(!URL_DB)("portofolio kolektor", () => {
       // Angsuran per bentuk jenis; tabungan dari nasabahnya (Ani 70.000); lunas Ani dihitung.
       const hBerjalan = { jumlah: 1, saldo: 800_000, angsuran: 50_000, tabungan: 70_000 };
       const hMacet = { jumlah: 1, saldo: 300_000, angsuran: 50_000, tabungan: 0 };
-      expect(await baca()).toEqual({
+      const { pembanding: _p, ...porto } = await baca();
+      expect(porto).toEqual({
         harian: {
           berjalan: hBerjalan,
           macet: hMacet,

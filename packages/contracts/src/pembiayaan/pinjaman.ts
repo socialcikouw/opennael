@@ -96,12 +96,6 @@ export const portofolioJenisSchema = z.object({
 export type PortofolioJenis = z.infer<typeof portofolioJenisSchema>;
 
 /**
- * `GET /lapangan/portofolio` — pegangan kolektor per jenis lalu per status.
- * `diputihkan` = seluruh riwayat (saldo tak disentuh pemutihan, jadi angkanya
- * nilai yang dihapus). Dipecah per jenis supaya Dasbor HP mengikuti mode tanpa
- * permintaan ulang. Docs: schema-pinjaman.md.
- */
-/**
  * `GET /lapangan/buku` — BUKU kolektor (28 Nov 2026): SEMUA nasabah pegangan (pernah meminjam,
  * pinjaman batal tak dihitung), satu baris per nasabah dengan pinjaman terbarunya dan
  * banyaknya pinjaman — ringan, tanpa batas baris yang memotong indeks abjad.
@@ -122,10 +116,58 @@ export const indeksBukuSchema = z.object({
 });
 export type IndeksBuku = z.infer<typeof indeksBukuSchema>;
 
+/** Potret posisi satu jenis pada satu tanggal (`posisi_harian`, sapuan tutup hari). */
+export const potretJenisSchema = z.object({
+  jumlahBerjalan: z.number(),
+  jumlahMacet: z.number(),
+  saldoBerjalan: z.number(),
+  saldoMacet: z.number(),
+  angsuranBerjalan: z.number(),
+  angsuranMacet: z.number(),
+});
+
+/** Arus satu jenis dalam satu rentang (pegangan sekarang). */
+export const arusJenisSchema = z.object({
+  /** Pinjaman yang lunas (tanggal selesai) & Σ pokoknya. */
+  lunas: z.number(),
+  pokokLunas: z.number(),
+  /** Pinjaman yang menjadi macet (tanggal macet). */
+  macetBaru: z.number(),
+  /** Σ tabungan keluar setoran berlaku. */
+  tabunganKeluar: z.number(),
+  /** Σ pengurangan pokok gulung turun (tanggal akad penerus). */
+  pokokBerkurang: z.number(),
+});
+
+const perJenis = <T extends z.ZodType>(s: T) => z.object({ harian: s, mingguan: s, tempoan: s });
+
+/**
+ * Pembanding Portofolio (28 Nov 2026, delta bulan ini vs bulan lalu): POSISI dibanding potret
+ * akhir bulan lalu (potret terakhir bulan itu; null bila belum ada), ARUS bulan ini (1 s/d hari
+ * ini) dibanding rentang sepadan bulan lalu (1 s/d tanggal yang sama, dipangkas ke akhir bulan).
+ */
+export const pembandingPortofolioSchema = z.object({
+  tanggalPotret: z.string().nullable(),
+  potret: perJenis(potretJenisSchema).nullable(),
+  bulanIni: z.object({ mulai: z.string(), selesai: z.string(), arus: perJenis(arusJenisSchema) }),
+  bulanLalu: z.object({ mulai: z.string(), selesai: z.string(), arus: perJenis(arusJenisSchema) }),
+});
+export type PembandingPortofolio = z.infer<typeof pembandingPortofolioSchema>;
+export type PotretJenis = z.infer<typeof potretJenisSchema>;
+export type ArusJenis = z.infer<typeof arusJenisSchema>;
+
+/**
+ * `GET /lapangan/portofolio` — pegangan kolektor per jenis lalu per status.
+ * `diputihkan` = seluruh riwayat (saldo tak disentuh pemutihan, jadi angkanya
+ * nilai yang dihapus). Dipecah per jenis supaya Dasbor HP mengikuti mode tanpa
+ * permintaan ulang. Docs: schema-pinjaman.md.
+ */
 export const portofolioSchema = z.object({
   harian: portofolioJenisSchema,
   mingguan: portofolioJenisSchema,
   tempoan: portofolioJenisSchema,
+  /** Delta bulan ini vs bulan lalu (28 Nov 2026). */
+  pembanding: pembandingPortofolioSchema,
 });
 export type Portofolio = z.infer<typeof portofolioSchema>;
 

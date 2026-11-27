@@ -22,17 +22,25 @@ describe("komposisi & selisih", () => {
     ).toBe(1);
   });
 
-  test("selisih terhadap pembanding", () => {
+  test("selisih: besaran mutlak + persen, warna menurut arti", () => {
     expect(selisih(1_120_000, 1_000_000, "Oktober 1–27")).toEqual({
       arah: "naik",
-      teks: "12% dari Oktober 1–27",
+      nada: "baik",
+      teks: "+Rp 120.000 (12%) vs Oktober 1–27",
     });
-    expect(selisih(900, 1_000, "pekan lalu")).toEqual({
-      arah: "turun",
-      teks: "10% dari pekan lalu",
+    // Macet yang naik = buruk; hitungan memakai satuan.
+    expect(selisih(5, 3, "akhir Oktober", { naikBaik: false, satuan: "nasabah" })).toEqual({
+      arah: "naik",
+      nada: "buruk",
+      teks: "+2 nasabah (67%) vs akhir Oktober",
     });
-    expect(selisih(5, 5, "pekan lalu")).toEqual({ arah: "tetap", teks: "sama dengan pekan lalu" });
+    expect(selisih(900, 1_000, "pekan lalu")).toMatchObject({ arah: "turun", nada: "buruk" });
+    expect(selisih(5, 5, "pekan lalu")).toEqual({
+      arah: "tetap",
+      nada: "netral",
+      teks: "sama dengan pekan lalu",
+    });
     expect(selisih(0, 0, "x")).toBeNull();
-    expect(selisih(500, 0, "September")?.teks).toBe("September: Rp 0");
+    expect(selisih(500, 0, "September")?.teks).toBe("+Rp 500 vs September");
   });
 });

@@ -18,10 +18,10 @@ import { Tombol } from "@/komponen/ui/tombol";
 import { useTarikSegarkan } from "@/lib/tarik-segarkan";
 import { AKSEN, RUANG } from "@/tema";
 import { useDataPortofolio } from "./data";
-import { portofolioUntuk, sorotSaldoAkhir, susunKartuPortofolio } from "./inti/portofolio";
+import { susunPortofolio } from "./inti/kartu-portofolio";
 
 /**
- * PORTOFOLIO (tab ketiga Mode Rekap; rupa aplikasi lama, 27 Nov 2026) — pegangan kolektor
+ * PORTOFOLIO (tab ketiga Mode Rekap; rupa aplikasi lama 27 Nov, ber-delta 28 Nov 2026) — pegangan kolektor
  * saat ini, satu gulungan:
  *
  *   PEGANGAN · JUMAT, 27 NOV 2026
@@ -48,13 +48,7 @@ export function LayarPortofolio() {
   const { aktif: menarik, tarik } = useTarikSegarkan(segarkan);
 
   const vm = useMemo(
-    () =>
-      data.data
-        ? {
-            sorot: sorotSaldoAkhir(portofolioUntuk(data.data, jenis)),
-            kartu: susunKartuPortofolio(data.data, jenis),
-          }
-        : null,
+    () => (data.data ? susunPortofolio(data.data, jenis) : null),
     [data.data, jenis],
   );
   const tanggal = hariIni.data?.kalender.tanggal;
@@ -79,6 +73,13 @@ export function LayarPortofolio() {
         judul="Portofolio"
       />
       <PilJenis nilai={saring} onPilih={setSaring} />
+      {vm ? (
+        <Text style={g.teksMini}>
+          Posisi dibanding {vm.pembanding.labelPotret}
+          {vm.pembanding.potret ? "" : " (belum ada potret)"}; arus bulan ini dibanding{" "}
+          {vm.pembanding.labelArus}. Hijau = membaik, merah = memburuk.
+        </Text>
+      ) : null}
 
       {data.isError && data.data ? (
         <Spanduk

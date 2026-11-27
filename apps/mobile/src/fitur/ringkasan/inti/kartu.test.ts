@@ -105,7 +105,11 @@ describe("kartu rincian", () => {
     ]);
     expect(k.rincian.find((r) => r.label === "Tunai")?.nilai).toBe(3_500_000);
     expect(k.meta).toBe("40 setoran · rata-rata Rp 200.000 per hari kerja");
-    expect(k.selisih).toEqual({ arah: "naik", teks: "25% dari Oktober 1–27" });
+    expect(k.selisih).toEqual({
+      arah: "naik",
+      nada: "baik",
+      teks: "+Rp 800.000 (25%) vs Oktober 1–27",
+    });
     expect(k.kaki).toMatchObject({ label: "Tabungan keluar", nilai: 200_000 });
   });
 

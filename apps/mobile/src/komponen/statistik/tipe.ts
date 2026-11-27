@@ -18,6 +18,8 @@ export interface RincianVM {
   satuan?: string;
   /** Warna nilai: bahaya (tekor, macet) / sukses (lebih setor). */
   nada?: "bahaya" | "sukses";
+  /** Naik/turun baris ini terhadap pembanding (kecil di bawah nilai). */
+  selisih?: SelisihVM | null;
 }
 
 export interface KartuVM {
@@ -45,6 +47,7 @@ export interface KepingVM {
   label: string;
   nilai: number;
   satuan?: string;
+  selisih?: SelisihVM | null;
 }
 
 export interface SorotVM {

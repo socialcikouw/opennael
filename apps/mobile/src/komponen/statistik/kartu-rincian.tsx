@@ -33,11 +33,6 @@ export function KartuRincian({
           <Ikon nama={vm.ikon} ukuran={16} warna={aksen.teks} />
         </View>
         <Text style={gaya.judul}>{vm.judul}</Text>
-        {vm.selisih ? (
-          <View style={gaya.selisih}>
-            <TandaSelisih vm={vm.selisih} />
-          </View>
-        ) : null}
       </View>
 
       <View>
@@ -49,6 +44,7 @@ export function KartuRincian({
         >
           {teksNilai(vm.nilai, vm.satuan, rupiah)}
         </Text>
+        {vm.selisih ? <TandaSelisih vm={vm.selisih} /> : null}
         {vm.rumus ? <Text style={gaya.rumus}>{vm.rumus}</Text> : null}
         {vm.meta ? <Text style={gaya.meta}>{vm.meta}</Text> : null}
       </View>
@@ -117,6 +113,7 @@ function Keping({ r }: { r: RincianVM }) {
       >
         {teksNilai(r.nilai, r.satuan, rupiah)}
       </Text>
+      {r.selisih ? <TandaSelisih vm={r.selisih} kecil /> : null}
     </View>
   );
 }
@@ -130,9 +127,12 @@ function Baris({ r, pertama }: { r: RincianVM; pertama: boolean }) {
       <Text style={gaya.barisLabel} numberOfLines={1}>
         {r.label}
       </Text>
-      <Text style={[gaya.barisNilai, { color: warnaNada(r) }]} numberOfLines={1}>
-        {teksNilai(r.nilai, r.satuan, rupiah)}
-      </Text>
+      <View style={gaya.barisKanan}>
+        <Text style={[gaya.barisNilai, { color: warnaNada(r) }]} numberOfLines={1}>
+          {teksNilai(r.nilai, r.satuan, rupiah)}
+        </Text>
+        {r.selisih ? <TandaSelisih vm={r.selisih} kecil /> : null}
+      </View>
     </View>
   );
 }
@@ -156,7 +156,6 @@ const gaya = StyleSheet.create({
     justifyContent: "center",
   },
   judul: { ...HURUF.sm, fontWeight: TEBAL.tebal, color: WARNA.teks },
-  selisih: { flex: 1, alignItems: "flex-end" },
   nilai: {
     fontSize: 26,
     lineHeight: 32,
@@ -201,9 +200,10 @@ const gaya = StyleSheet.create({
     backgroundColor: WARNA.isiNetral,
   },
   barisLabel: { ...HURUF.sm, flexShrink: 1, fontWeight: TEBAL.semi, color: WARNA.teks },
+  // Nilai & naik/turunnya rata kanan, mengisi sisa baris.
+  barisKanan: { flex: 1, minWidth: 0, alignItems: "flex-end", gap: 1 },
   barisNilai: {
     ...HURUF.sm,
-    flex: 1,
     textAlign: "right",
     fontWeight: TEBAL.tebal,
     fontVariant: ["tabular-nums"],

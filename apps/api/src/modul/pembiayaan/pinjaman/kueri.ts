@@ -7,6 +7,7 @@ import { wajibPeran } from "../../../platform/http/peran";
 import { catatanHari } from "../../hari-kolektor";
 import { bacaKalender } from "../../kantor";
 import { keKartu, kolomKartu } from "./data";
+import { pembandingPortofolio } from "./pembanding";
 
 export function buatKueriPinjaman(deps: { db: Db; sekarang?: (() => Date) | undefined }) {
   const sekarang = deps.sekarang ?? (() => new Date());
@@ -161,7 +162,13 @@ export function buatKueriPinjaman(deps: { db: Db; sekarang?: (() => Date) | unde
         lunas: { jumlah: 0, pokok: 0 },
         penyelesaian: { pokokBerkurang: 0, tabunganKeluar: 0 },
       });
-      const hasil: Portofolio = { harian: kosong(), mingguan: kosong(), tempoan: kosong() };
+      const { tanggal } = await bacaKalender(deps.db, aktor.kantorId, sekarang());
+      const hasil: Portofolio = {
+        harian: kosong(),
+        mingguan: kosong(),
+        tempoan: kosong(),
+        pembanding: await pembandingPortofolio(deps.db, aktor, tanggal),
+      };
       for (const b of berkurang) hasil[b.jenis].penyelesaian.pokokBerkurang = b.nilai;
       for (const t of tabunganKeluar) hasil[t.jenis].penyelesaian.tabunganKeluar = t.nilai;
       for (const b of baris) {

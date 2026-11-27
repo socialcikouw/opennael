@@ -1,16 +1,31 @@
 import { describe, expect, test } from "bun:test";
-import type { Portofolio } from "@opennael/contracts";
+import type { ArusJenis, Portofolio, PotretJenis } from "@opennael/contracts";
 import {
   kartuAngsuran,
   kartuNasabah,
   kartuPenyelesaian,
-  piutangAktif,
-  portofolioUntuk,
   sorotSaldoAkhir,
-  susunKartuPortofolio,
-} from "./portofolio";
+  susunPortofolio,
+} from "./kartu-portofolio";
+import { pembandingUntuk, piutangAktif, portofolioUntuk } from "./portofolio";
 
 const nol = { jumlah: 0, saldo: 0, angsuran: 0, tabungan: 0 };
+const potretNol: PotretJenis = {
+  jumlahBerjalan: 0,
+  jumlahMacet: 0,
+  saldoBerjalan: 0,
+  saldoMacet: 0,
+  angsuranBerjalan: 0,
+  angsuranMacet: 0,
+};
+const arusNol: ArusJenis = {
+  lunas: 0,
+  pokokLunas: 0,
+  macetBaru: 0,
+  tabunganKeluar: 0,
+  pokokBerkurang: 0,
+};
+
 const DATA: Portofolio = {
   harian: {
     berjalan: { jumlah: 40, saldo: 20_000_000, angsuran: 2_000_000, tabungan: 3_000_000 },
@@ -33,46 +48,109 @@ const DATA: Portofolio = {
     lunas: { jumlah: 4, pokok: 2_000_000 },
     penyelesaian: { pokokBerkurang: 0, tabunganKeluar: 100_000 },
   },
+  pembanding: {
+    tanggalPotret: "2026-10-31",
+    potret: {
+      harian: {
+        jumlahBerjalan: 38,
+        jumlahMacet: 1,
+        saldoBerjalan: 18_000_000,
+        saldoMacet: 1_000_000,
+        angsuranBerjalan: 1_900_000,
+        angsuranMacet: 50_000,
+      },
+      mingguan: { ...potretNol, jumlahBerjalan: 10, saldoBerjalan: 9_000_000 },
+      tempoan: potretNol,
+    },
+    bulanIni: {
+      mulai: "2026-11-01",
+      selesai: "2026-11-28",
+      arus: {
+        harian: {
+          lunas: 6,
+          pokokLunas: 6_000_000,
+          macetBaru: 2,
+          tabunganKeluar: 300_000,
+          pokokBerkurang: 0,
+        },
+        mingguan: arusNol,
+        tempoan: arusNol,
+      },
+    },
+    bulanLalu: {
+      mulai: "2026-10-01",
+      selesai: "2026-10-28",
+      arus: {
+        harian: {
+          lunas: 4,
+          pokokLunas: 4_000_000,
+          macetBaru: 1,
+          tabunganKeluar: 300_000,
+          pokokBerkurang: 0,
+        },
+        mingguan: arusNol,
+        tempoan: arusNol,
+      },
+    },
+  },
 };
 
-describe("portofolioUntuk", () => {
-  test("satu jenis mengambil jenisnya sendiri", () => {
-    expect(portofolioUntuk(DATA, "harian")).toBe(DATA.harian);
-    expect(portofolioUntuk(DATA, "tempoan")).toBe(DATA.tempoan);
-  });
-
+describe("portofolio per jenis", () => {
   test("semua jenis: tiap status & lunas dijumlah", () => {
-    expect(portofolioUntuk(DATA, null)).toEqual({
-      berjalan: { jumlah: 52, saldo: 31_500_000, angsuran: 6_000_000, tabungan: 3_000_000 },
-      macet: { jumlah: 4, saldo: 2_750_000, angsuran: 1_400_000, tabungan: 100_000 },
-      diputihkan: { jumlah: 3, saldo: 2_800_000, angsuran: 2_050_000, tabungan: 0 },
+    expect(portofolioUntuk(DATA, null)).toMatchObject({
+      berjalan: { jumlah: 52, saldo: 31_500_000 },
+      macet: { jumlah: 4, saldo: 2_750_000 },
       lunas: { jumlah: 132, pokok: 130_000_000 },
-      penyelesaian: { pokokBerkurang: 500_000, tabunganKeluar: 1_000_000 },
     });
+    expect(piutangAktif(DATA.harian)).toEqual({ jumlah: 43, saldo: 21_500_000, macet: 3 });
   });
 
-  test("piutang aktif = berjalan + macet (diputihkan tidak)", () => {
-    expect(piutangAktif(DATA.harian)).toEqual({ jumlah: 43, saldo: 21_500_000, macet: 3 });
+  test("pembanding: potret & arus dijumlah lintas jenis, label bulan", () => {
+    const pb = pembandingUntuk(DATA.pembanding, null);
+    expect(pb.potret).toMatchObject({ jumlahBerjalan: 48, saldoBerjalan: 27_000_000 });
+    expect(pb.labelPotret).toBe("akhir Oktober");
+    expect(pb.labelArus).toBe("Oktober 1–28");
+    expect(pb.ini.lunas).toBe(6);
   });
 });
 
-describe("kartu portofolio", () => {
-  test("sorot saldo akhir: bar berjalan vs macet, lencana porsi macet", () => {
-    const s = sorotSaldoAkhir(portofolioUntuk(DATA, null));
-    expect(s).toMatchObject({
-      label: "Saldo Akhir",
-      nilai: 34_250_000,
-      lencana: "8% macet",
-      keping: [
-        { label: "Saldo berjalan", nilai: 31_500_000 },
-        { label: "Saldo macet", nilai: 2_750_000 },
-      ],
+describe("kartu portofolio ber-delta", () => {
+  const pbHarian = pembandingUntuk(DATA.pembanding, "harian");
+
+  test("saldo akhir naik = hijau; saldo macet naik = merah", () => {
+    const s = sorotSaldoAkhir(DATA.harian, pbHarian);
+    expect(s.selisih).toEqual({
+      arah: "naik",
+      nada: "baik",
+      teks: "+Rp 2.500.000 (13%) vs akhir Oktober",
     });
-    expect(sorotSaldoAkhir(DATA.mingguan).lencana).toBeNull();
+    expect(s.keping[1]?.selisih).toMatchObject({ arah: "naik", nada: "buruk" });
   });
 
-  test("semua jenis: Per Jenis di depan; diputihkan hanya bila ada", () => {
-    expect(susunKartuPortofolio(DATA, null).map((k) => k.kunci)).toEqual([
+  test("nasabah aktif: delta hitungan; macet baru & lunas bulan ini vs bulan lalu", () => {
+    const k = kartuNasabah(DATA.harian, pbHarian);
+    expect(k.selisih?.teks).toBe("+4 nasabah (10%) vs akhir Oktober");
+    const baris = Object.fromEntries(k.rincian.map((r) => [r.label, r]));
+    expect(baris["Macet baru bulan ini"]).toMatchObject({
+      nilai: 2,
+      selisih: { nada: "buruk", teks: "+1 orang (100%) vs Oktober 1–28" },
+    });
+    expect(baris["Lunas bulan ini"]?.selisih).toMatchObject({ nada: "baik" });
+  });
+
+  test("target angsuran semua jenis = harian; penyelesaian bulan ini", () => {
+    expect(kartuAngsuran(DATA, null)).toMatchObject({
+      judul: "Target Angsuran Harian",
+      nilai: 2_150_000,
+    });
+    const p = kartuPenyelesaian(DATA.harian, pbHarian);
+    expect(p).toMatchObject({ nilai: 6_000_000 });
+    expect(p.selisih?.teks).toBe("+Rp 2.000.000 (50%) vs Oktober 1–28");
+    expect(p.rincian[0]?.selisih?.arah).toBe("tetap");
+  });
+
+  test("susunan: Per Jenis hanya Semua; tanpa potret = tanpa delta posisi", () => {
+    expect(susunPortofolio(DATA, null).kartu.map((k) => k.kunci)).toEqual([
       "per-jenis",
       "nasabah",
       "angsuran",
@@ -80,45 +158,7 @@ describe("kartu portofolio", () => {
       "penyelesaian",
       "diputihkan",
     ]);
-    expect(susunKartuPortofolio(DATA, "mingguan").map((k) => k.kunci)).toEqual([
-      "nasabah",
-      "angsuran",
-      "tabungan",
-      "penyelesaian",
-    ]);
-  });
-
-  test("nasabah aktif berupa hitungan; macet merah bila ada", () => {
-    const k = kartuNasabah(DATA.harian);
-    expect(k).toMatchObject({ nilai: 43, satuan: "nasabah" });
-    expect(k.rincian.find((r) => r.label === "Macet")?.nada).toBe("bahaya");
-    expect(
-      kartuNasabah(DATA.mingguan).rincian.find((r) => r.label === "Macet")?.nada,
-    ).toBeUndefined();
-  });
-
-  test("target angsuran tak dijumlah lintas jenis: semua jenis = harian", () => {
-    expect(kartuAngsuran(DATA, null)).toMatchObject({
-      judul: "Target Angsuran Harian",
-      nilai: 2_150_000,
-    });
-    expect(kartuAngsuran(DATA, "mingguan").rumus).toBe(
-      "Angsuran mingguan berjalan + macet, per minggu",
-    );
-  });
-});
-
-describe("penyelesaian piutang", () => {
-  test("pokok terlunasi murni + tabungan keluar + pokok berkurang gulung", () => {
-    const k = kartuPenyelesaian(portofolioUntuk(DATA, null));
-    expect(k).toMatchObject({
-      judul: "Penyelesaian Piutang",
-      nilai: 130_000_000,
-      meta: "132 pinjaman lunas",
-    });
-    expect(k.rincian.map((r) => [r.label, r.nilai])).toEqual([
-      ["Tabungan keluar", 1_000_000],
-      ["Pokok berkurang (gulung)", 500_000],
-    ]);
+    const tanpaPotret = { ...DATA, pembanding: { ...DATA.pembanding, potret: null } };
+    expect(susunPortofolio(tanpaPotret, "harian").sorot.selisih).toBeNull();
   });
 });

@@ -101,6 +101,7 @@ function Keping({ k, tengah }: { k: KepingVM; tengah?: boolean }) {
       >
         {teksNilai(k.nilai, k.satuan, rupiah)}
       </Text>
+      {k.selisih ? <TandaSelisih vm={k.selisih} sorot kecil /> : null}
     </View>
   );
 }
