@@ -2,7 +2,7 @@ import { kunci } from "@opennael/api-client";
 import type { JenisPinjaman } from "@opennael/domain";
 import { kunciWilayah } from "@opennael/domain";
 import { useQueryClient } from "@tanstack/react-query";
-import { type Href, router } from "expo-router";
+import { type Href, router, useNavigation } from "expo-router";
 import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
 import { RefreshControl, StyleSheet, View } from "react-native";
 import Animated from "react-native-reanimated";
@@ -100,6 +100,22 @@ export function LayarTagihan({
     },
     [keAtas],
   );
+
+  // Ketuk ULANG tab yang sedang terbuka (Harian/Mingguan/Tempoan) → kembali ke urutan teratas
+  // dengan gulir halus (permintaan pemilik 28 Nov 2026). Tab bar mengambang memancarkan
+  // `tabPress` untuk setiap ketukan; layar yang sedang tampil = tab yang diketuk ulang.
+  const navigasi = useNavigation();
+  useEffect(() => {
+    const dengar = navigasi.addListener as unknown as (
+      jenis: "tabPress",
+      f: () => void,
+    ) => () => void;
+    return dengar("tabPress", () => {
+      if (!navigasi.isFocused()) return;
+      tutupGeser();
+      keAtas(true);
+    });
+  }, [navigasi, keAtas]);
 
   // Parameter `segmen=droping` (dari layar Gulung) dipakai sekali lalu dibuang — kalau
   // dibiarkan, gulung berikutnya tak mengubah nilainya (efek tak jalan) dan ganti mode

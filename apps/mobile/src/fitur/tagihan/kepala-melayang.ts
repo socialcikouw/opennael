@@ -46,10 +46,14 @@ export function useKepalaMelayang(cariTerbuka: boolean) {
 
   const [tinggiKepala, setTinggiKepala] = useState(insets.top + 220);
   const daftar = useRef<FlatList<Baris>>(null);
-  const keAtas = useCallback(() => {
-    lipat.set(0);
-    daftar.current?.scrollToOffset({ offset: 0, animated: false });
-  }, [lipat]);
+  /** Kembali ke urutan teratas; `animasi` = gulir halus (ketuk ulang tab), selain itu lompat. */
+  const keAtas = useCallback(
+    (animasi = false) => {
+      lipat.set(0);
+      daftar.current?.scrollToOffset({ offset: 0, animated: animasi });
+    },
+    [lipat],
+  );
 
   return {
     lipat,
