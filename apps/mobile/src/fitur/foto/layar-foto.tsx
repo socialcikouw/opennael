@@ -18,7 +18,7 @@ import { JudulKampung } from "./komponen/judul-kampung";
 import { KartuFoto } from "./komponen/kartu-foto";
 
 type BarisFoto =
-  | { jenis: "judul"; kunci: string; kampung: string; jumlah: number }
+  | { jenis: "judul"; kunci: string; kampung: string; jumlah: number; total: number }
   | {
       jenis: "kartu";
       kunci: string;
@@ -77,6 +77,7 @@ export function LayarFoto() {
         kunci: `j-${k.kunci}`,
         kampung: k.kampung,
         jumlah: k.foto.length,
+        total: k.totalAngsuran,
       });
       k.foto.forEach((foto, indeks) => {
         daftar.push({
@@ -97,7 +98,9 @@ export function LayarFoto() {
   }, [tagihan.data, cariTunda]);
 
   const renderItem = useCallback(({ item }: { item: BarisFoto }) => {
-    if (item.jenis === "judul") return <JudulKampung kampung={item.kampung} jumlah={item.jumlah} />;
+    if (item.jenis === "judul") {
+      return <JudulKampung kampung={item.kampung} jumlah={item.jumlah} total={item.total} />;
+    }
     return (
       <KartuFoto
         foto={item.foto}

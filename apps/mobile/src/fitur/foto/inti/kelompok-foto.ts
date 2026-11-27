@@ -34,6 +34,8 @@ export interface KelompokFoto {
   kunci: string;
   kampung: string;
   foto: FotoNasabah[];
+  /** Σ angsuran nasabah di kampung ini (pinjaman terbaru masing-masing) — di judul kampung. */
+  totalAngsuran: number;
 }
 
 /**
@@ -72,6 +74,7 @@ export function kelompokFoto(daftar: readonly KartuTagih[], cari = ""): Kelompok
       kunci,
       kampung: p.nasabah.kampung,
       foto: [],
+      totalAngsuran: 0,
       rute: Number.POSITIVE_INFINITY,
     };
     k.rute = Math.min(k.rute, p.ruteKe ?? Number.POSITIVE_INFINITY);
@@ -95,5 +98,6 @@ export function kelompokFoto(daftar: readonly KartuTagih[], cari = ""): Kelompok
     .map(({ rute: _rute, ...k }) => ({
       ...k,
       foto: k.foto.sort((a, b) => a.nama.localeCompare(b.nama)),
+      totalAngsuran: k.foto.reduce((n, f) => n + f.angsuran, 0),
     }));
 }

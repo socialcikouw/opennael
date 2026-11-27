@@ -115,4 +115,16 @@ describe("galeri foto nasabah", () => {
       ["dedi", "Jumat"],
     ]);
   });
+
+  test("total angsuran per kampung (judul kampung)", () => {
+    const g = kelompokFoto([
+      kartu("ani", "pule", { angsuran: 50_000 }),
+      kartu("budi", "pule", { angsuran: 150_000, jenis: "mingguan" }),
+      kartu("citra", "sawah", { angsuran: 25_000 }),
+    ]);
+    expect(g.map((k) => [k.kampung, k.totalAngsuran])).toEqual([
+      ["pule", 200_000],
+      ["sawah", 25_000],
+    ]);
+  });
 });
