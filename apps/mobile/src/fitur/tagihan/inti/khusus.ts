@@ -111,7 +111,11 @@ export interface TempoVM {
   /** Hari kerja tersisa sampai jatuh tempo; 0 = hari ini; negatif = meleset sekian hari. */
   sisaHari: number;
   keadaan: KeadaanTempo;
-  /** "3 HARI LAGI" (hari kerja) / "HARI INI" / "MELESET 2 HARI" / "WAJIB LUNAS" / "MACET". */
+  /**
+   * Lencana (kata pemilik 28 Nov 2026; hari = hari kerja kolektor): "4 HARI LAGI" · "HARI INI"
+   * · "TELAT 2 HARI" · "HARUS LUNAS HARI INI" (batas, janji habis) · "DITANGGUHKAN KE KOLEKTOR"
+   * (macet).
+   */
   hitungMundur: string;
   /** Bagian 6 hari kerja yang sudah berjalan, 0–1. */
   jalan: number;
@@ -152,11 +156,11 @@ export function susunTempo(
               : "nanti";
   const hitungMundur =
     keadaan === "macet"
-      ? "MACET"
+      ? "DITANGGUHKAN KE KOLEKTOR"
       : keadaan === "batas"
-        ? "WAJIB LUNAS"
+        ? "HARUS LUNAS HARI INI"
         : keadaan === "meleset"
-          ? `MELESET ${-sisaHari} HARI`
+          ? `TELAT ${-sisaHari} HARI`
           : keadaan === "hariini"
             ? "HARI INI"
             : `${sisaHari} HARI LAGI`;
