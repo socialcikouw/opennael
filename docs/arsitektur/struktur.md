@@ -597,6 +597,7 @@ sebelum `react()`; `lazyRouteComponent` tidak dipakai lagi.
 | `/kolektor/portofolio` | `app/kolektor/(rekap)/portofolio.tsx` | `fitur/portofolio/layar-portofolio.tsx` |
 | `/kolektor/profil` · `pengaturan` · `bantuan` | `app/kolektor/(akun)/profil.tsx` dst. | `fitur/akun/layar-profil.tsx` dst. |
 | `/kolektor/notifikasi` | `app/kolektor/notifikasi.tsx` | `fitur/notifikasi/layar-notifikasi.tsx` |
+| `/kolektor/absensi` | `app/kolektor/absensi.tsx` | `fitur/absensi/layar-absensi.tsx` (dari Menu Mode Rekap) |
 | `/kolektor/gaji` | `app/kolektor/gaji.tsx` | `fitur/gaji/layar-gaji.tsx` (dari Menu Mode Rekap, `fitur/menu`) |
 | `/kolektor/riwayat-kas` · `riwayat-kas/[tanggal]` | `app/kolektor/riwayat-kas/index.tsx` dst. | `fitur/riwayat-kas/layar-riwayat-kas.tsx` · `layar-hari-kas.tsx` (dari Menu Mode Rekap) |
 | `/kolektor/storting` · `droping` | `app/kolektor/storting.tsx` dst. | `fitur/ringkasan/layar-storting.tsx` dst. (daftar hari ini per nasabah, dari kartu Ringkasan) |

@@ -86,6 +86,8 @@ export const riwayatHariSchema = z.object({
   kasLapangan: z.number(),
   uangJalan: z.number(),
   laporanDibukaAt: z.string().nullable(),
+  /** Waktu absen pagi dicatat (ISO) — layar Absensi HP (28 Nov 2026). */
+  absenAt: z.string(),
   /** Arsip tekor buku lama (salinan migrasi); 0 untuk hari baru. */
   tekorLama: z.number(),
   /** Serah terima berlaku (null = kas belum diterima). */

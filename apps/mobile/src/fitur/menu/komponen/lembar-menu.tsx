@@ -14,12 +14,14 @@ import { AKSEN, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 /**
  * LEMBAR MENU Mode Rekap (opsi C, keputusan pemilik 28 Nov 2026) — dibuka tombol kanan tab
  * bar Rekap. Ubin layar-layar di luar tab (Foto · Performa · Portofolio): Ringkasan (Mutasi
- * Kas & laporan sore), Gaji, Riwayat Kas; ubin boleh membawa angka kecil supaya menu ikut jadi layar pantau.
+ * Kas & laporan sore), Gaji, Riwayat Kas, Absensi; ubin boleh membawa angka kecil supaya menu ikut jadi layar pantau.
  * Mengetuk ubin menutup lembar lalu membuka layarnya. Isi lembar baru dipasang saat terbuka
  * (Modal), jadi bacaan ubin tak berjalan selama lembar tertutup.
  */
 export function LembarMenu({ terbuka, onTutup }: { terbuka: boolean; onTutup: () => void }) {
-  const buka = (rute: "/kolektor/ringkasan" | "/kolektor/gaji" | "/kolektor/riwayat-kas") => {
+  const buka = (
+    rute: "/kolektor/ringkasan" | "/kolektor/gaji" | "/kolektor/riwayat-kas" | "/kolektor/absensi",
+  ) => {
     onTutup();
     router.push(rute);
   };
@@ -29,6 +31,7 @@ export function LembarMenu({ terbuka, onTutup }: { terbuka: boolean; onTutup: ()
         <UbinRingkasan onPress={() => buka("/kolektor/ringkasan")} />
         <UbinGaji onPress={() => buka("/kolektor/gaji")} />
         <UbinRiwayatKas onPress={() => buka("/kolektor/riwayat-kas")} />
+        <UbinAbsensi onPress={() => buka("/kolektor/absensi")} />
       </View>
     </LembarBawah>
   );
@@ -71,6 +74,15 @@ function UbinRiwayatKas({ onPress }: { onPress: () => void }) {
       ? `Tekor bulan ini ${rupiah(r.tekor)}`
       : `${r.hariDiterima} hari diterima bulan ini`;
   return <Ubin ikon="arrow-left-right" judul="Riwayat Kas" ket={ket} onPress={onPress} />;
+}
+
+/** Ubin Absensi membawa banyaknya hari masuk bulan ini. */
+function UbinAbsensi({ onPress }: { onPress: () => void }) {
+  const tanggal = useHariIni().data?.kalender.tanggal;
+  const riwayat = useRiwayatBulan(tanggal ? (daftarBulan(tanggal, 0)[0] ?? null) : null);
+  const masuk = riwayat.data?.filter((h) => h.absensi === "masuk_kerja").length;
+  const ket = masuk === undefined ? "Kehadiran sebulan" : `${masuk} hari masuk bulan ini`;
+  return <Ubin ikon="user-round-check" judul="Absensi" ket={ket} onPress={onPress} />;
 }
 
 function Ubin(props: { ikon: NamaIkon; judul: string; ket: string; onPress: () => void }) {

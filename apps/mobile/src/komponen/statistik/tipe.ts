@@ -40,18 +40,27 @@ export interface KartuVM {
   daftar: string | null;
 }
 
+/** Satu keping di kaki kartu sorot; `satuan` diisi = hitungan ("3 hari"), bukan rupiah. */
+export interface KepingVM {
+  label: string;
+  nilai: number;
+  satuan?: string;
+}
+
 export interface SorotVM {
   label: string;
   ikon: NamaIkon;
   nilai: number;
+  /** Diisi = hitungan ("21 hari"), bukan rupiah. */
+  satuan?: string;
   /** Keping kecil di kepala: "Perkiraan", "Sudah Dibayar", "Minus", "12% macet". */
   lencana: string | null;
   rumus: string;
   selisih: SelisihVM | null;
   segmen: SegmenVM[] | null;
-  keping: { label: string; nilai: number }[];
+  keping: KepingVM[];
   /** Satu keping di bawah, di tengah (mis. Tabungan keluar). */
-  kepingBawah: { label: string; nilai: number } | null;
+  kepingBawah: KepingVM | null;
 }
 
 /** "Rp 1.250.000" atau "12 nasabah". */

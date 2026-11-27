@@ -18,6 +18,7 @@ const hari = (ubah: Partial<RiwayatHari>): RiwayatHari => ({
   kasLapangan: 1_000_000,
   uangJalan: 50_000,
   laporanDibukaAt: "2026-11-27T09:00:00.000Z",
+  absenAt: "2026-11-27T00:30:00.000Z",
   tekorLama: 0,
   serahTerima: null,
   ...ubah,

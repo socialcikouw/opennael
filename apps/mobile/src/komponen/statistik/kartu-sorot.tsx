@@ -6,7 +6,7 @@ import { Ikon } from "@/komponen/ui/ikon";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 import { BarKomposisi } from "./bar-komposisi";
 import { TandaSelisih } from "./tanda-selisih";
-import type { SorotVM } from "./tipe";
+import { type KepingVM, type SorotVM, teksNilai } from "./tipe";
 
 /**
  * KARTU SOROT — satu-satunya bidang pekat (`latarSorot`) di layar Rekap (Ringkasan,
@@ -19,13 +19,13 @@ import type { SorotVM } from "./tipe";
 export function KartuSorot({ vm }: { vm: SorotVM }) {
   return (
     <BingkaiSorot ikon={vm.ikon} label={vm.label} lencana={vm.lencana}>
-      <AngkaSorot nilai={vm.nilai} rumus={vm.rumus} />
+      <AngkaSorot nilai={vm.nilai} satuan={vm.satuan} rumus={vm.rumus} />
       {vm.selisih ? <TandaSelisih vm={vm.selisih} sorot /> : null}
       {vm.segmen ? <BarKomposisi segmen={vm.segmen} sorot /> : null}
       <DeretKeping keping={vm.keping} />
       {vm.kepingBawah ? (
         <View style={gaya.bawah}>
-          <Keping label={vm.kepingBawah.label} nilai={vm.kepingBawah.nilai} tengah />
+          <Keping k={vm.kepingBawah} tengah />
         </View>
       ) : null}
     </BingkaiSorot>
@@ -59,39 +59,47 @@ export function BingkaiSorot(props: {
   );
 }
 
-export function AngkaSorot({ nilai, rumus }: { nilai: number; rumus: string }) {
+export function AngkaSorot({
+  nilai,
+  satuan,
+  rumus,
+}: {
+  nilai: number;
+  satuan?: string | undefined;
+  rumus: string;
+}) {
   return (
     <View>
       <Text style={gaya.nilai} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}>
-        {rupiah(nilai)}
+        {teksNilai(nilai, satuan, rupiah)}
       </Text>
       <Text style={gaya.rumus}>{rumus}</Text>
     </View>
   );
 }
 
-export function DeretKeping({ keping }: { keping: readonly { label: string; nilai: number }[] }) {
+export function DeretKeping({ keping }: { keping: readonly KepingVM[] }) {
   return (
     <View style={gaya.deret}>
       {keping.map((k) => (
-        <Keping key={k.label} label={k.label} nilai={k.nilai} />
+        <Keping key={k.label} k={k} />
       ))}
     </View>
   );
 }
 
-function Keping({ label, nilai, tengah }: { label: string; nilai: number; tengah?: boolean }) {
+function Keping({ k, tengah }: { k: KepingVM; tengah?: boolean }) {
   return (
     <View style={[gaya.keping, tengah ? gaya.kepingBawah : null]}>
       <Text style={[gaya.kepingLabel, tengah ? gaya.tengah : null]} numberOfLines={1}>
-        {label}
+        {k.label}
       </Text>
       <Text
         style={[gaya.kepingNilai, tengah ? gaya.tengah : null]}
         numberOfLines={1}
         adjustsFontSizeToFit
       >
-        {rupiah(nilai)}
+        {teksNilai(k.nilai, k.satuan, rupiah)}
       </Text>
     </View>
   );

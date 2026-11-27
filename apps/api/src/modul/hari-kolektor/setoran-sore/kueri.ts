@@ -52,6 +52,7 @@ export function buatKueriSetoranSore(k: Konteks) {
           kasLapangan: hariKolektor.kasLapangan,
           uangJalan: hariKolektor.uangJalan,
           laporanDibukaAt: hariKolektor.laporanDibukaAt,
+          absenAt: hariKolektor.dibuatAt,
           tekorLama: hariKolektor.tekorLama,
           tunaiSeharusnya: serahTerimaKas.tunaiSeharusnya,
           tunaiDiterima: serahTerimaKas.tunaiDiterima,
@@ -76,6 +77,7 @@ export function buatKueriSetoranSore(k: Konteks) {
       return baris.map(({ tunaiSeharusnya, tunaiDiterima, selisihSetor, ...h }) => ({
         ...h,
         laporanDibukaAt: iso(h.laporanDibukaAt),
+        absenAt: h.absenAt.toISOString(),
         tekorLama: h.tekorLama ?? 0,
         serahTerima:
           tunaiSeharusnya !== null && tunaiDiterima !== null && selisihSetor !== null

@@ -50,6 +50,7 @@ describe.skipIf(!URL_DB)("riwayat hari kolektor", () => {
       ]);
       const [lima, tiga, dua] = r.isi as unknown as Record<string, unknown>[];
       expect(lima).toMatchObject({ absensi: "masuk_kerja", serahTerima: null, tekorLama: 0 });
+      expect(typeof lima?.absenAt).toBe("string");
       expect(tiga).toMatchObject({ absensi: "tidak_kerja", alasanTidakKerja: "sakit" });
       expect(dua).toMatchObject({
         kasLapangan: 1_000_000,
