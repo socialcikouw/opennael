@@ -141,11 +141,13 @@ const gaya = StyleSheet.create({
     letterSpacing: 0.5,
     color: WARNA.teks,
   },
+  // Total angsuran kampung: kecil & redup (14 → 11 pt, permintaan pemilik 28 Nov 2026) —
+  // sama dengan total kampung di tab Foto.
   total: {
-    ...HURUF.sm,
+    ...HURUF["2xs"],
     fontWeight: TEBAL.semi,
     fontVariant: ["tabular-nums"],
-    color: WARNA.teksKedua,
+    color: WARNA.redup,
   },
   // Rel turun dari bawah lencana jumlah sampai dasar judul, bertemu rel kartu pertama.
   rel: {
