@@ -177,7 +177,7 @@ function susun(p: KartuTagih, hariIni: string, bahan: BahanGrid, zona: ZonaWaktu
     namaTampil: tampilNama(p.nasabah.nama),
     subjudul: `${tampilKampung(p.nasabah.kampung)}${ekor}`,
     angsuranKeTeks: String(p.angsuranKe),
-    pinjamanKeTeks: `Pinjaman Ke-${p.pinjamanKe}`,
+    pinjamanKeTeks: `ke-${p.pinjamanKe}`,
     lencana: lencana(p, e),
     akadTeks: p.waktuAkad
       ? `${tanggalAkadTeks(p.tanggalAkad, hariIni)} • ${jamDinding(p.waktuAkad, zona)}`

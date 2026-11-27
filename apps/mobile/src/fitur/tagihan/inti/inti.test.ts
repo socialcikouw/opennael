@@ -116,7 +116,7 @@ describe("kartu nasabah", () => {
     expect(vm.wajib).toBe(true);
     // Kotak info: lingkaran = angsuran ke-, nama, pinjaman ke-, tanggal & jam akad (WIB).
     expect(vm.angsuranKeTeks).toBe("11");
-    expect(vm.pinjamanKeTeks).toBe("Pinjaman Ke-2");
+    expect(vm.pinjamanKeTeks).toBe("ke-2");
     expect(vm.namaTampil).toBe("sari");
     expect(vm.akadTeks).toBe("1 Okt • 15.00");
     expect([vm.pokokRp, vm.saldoRp, vm.angsuranRp, vm.tabunganRp]).toEqual([
@@ -188,7 +188,7 @@ describe("kartu nasabah", () => {
     expect(m.hariTagih).toBe("Kamis");
     expect(m.subjudul).toBe("PULE BARAT · mingguan 8×");
     // Jenis & tenor tak diulang di baris pinjaman-ke (mode + kotak mingguan menjelaskannya).
-    expect(m.pinjamanKeTeks).toBe("Pinjaman Ke-1");
+    expect(m.pinjamanKeTeks).toBe("ke-1");
   });
 
   test("VM dipakai ulang selama data, bahan, dan zona sama", () => {

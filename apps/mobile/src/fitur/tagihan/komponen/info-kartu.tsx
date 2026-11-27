@@ -17,10 +17,10 @@ export const CABANG_INFO = 1 + ISIAN_KOTAK + TINGGI_LINGKARAN / 2;
  * Bagian atas kotak kartu:
  *   (12) Budi Santoso                                ›
  *        20 Nov 26 • 14.10
- *   [Rabu]                                  Pinjaman Ke-3
+ *   [Rabu]
  * Tanggal & jam akad 10 pt TEPAT DI BAWAH NAMA, sejajar huruf pertamanya (permintaan
- * pemilik 28 Nov 2026; dulu di baris kedua di bawah lingkaran). Baris kedua: lencana hari
- * tagih / status di kiri, "Pinjaman Ke-N" di kanan berwarna terakota & tebal. Tabungan
+ * pemilik 28 Nov 2026; dulu di baris kedua di bawah lingkaran). Baris kedua (bila ada):
+ * lencana hari tagih / status. "ke-N" (pinjaman ke-) pindah ke atas Pokok Pinjaman. Tabungan
  * "••••" tak lagi di kartu (ada di Detail Nasabah). Lingkaran = angsuran yang sudah
  * lunas: pekat berwarna mode dan besar supaya paling mencolok (beda dari lencana jumlah
  * nasabah di judul kelompok yang abu).
@@ -79,15 +79,12 @@ export function InfoKartu({
         </View>
         <Ikon nama="chevron-right" ukuran={16} warna={WARNA.redup} />
       </Tekan>
-      <View style={gaya.barisKecil}>
+      {vm.hariTagih || vm.lencana ? (
         <View style={gaya.kiri}>
           {vm.hariTagih ? <LencanaHari hari={vm.hariTagih} aksen={aksen} /> : null}
           {vm.lencana ? <LencanaStatus lencana={vm.lencana} /> : null}
         </View>
-        <Text style={[gaya.pinjamanKe, { color: aksen.teks }]} numberOfLines={1}>
-          {vm.pinjamanKeTeks}
-        </Text>
-      </View>
+      ) : null}
     </View>
   );
 }
@@ -114,15 +111,6 @@ const gaya = StyleSheet.create({
   nama: { ...HURUF.base, lineHeight: 20, fontWeight: TEBAL.tebal, color: WARNA.teks },
   // Tanggal & jam akad: 10 pt, tepat di bawah nama (permintaan pemilik 28 Nov 2026).
   akad: { ...HURUF["3xs"], color: WARNA.redup, fontVariant: ["tabular-nums"] },
-  // Kiri (akad + lencana) boleh turun ke baris berikutnya bila sempit — tak pernah
-  // berhimpitan dengan "Pinjaman Ke-N" yang tetap di kanan atas.
-  barisKecil: {
-    minHeight: 18,
-    flexDirection: "row",
-    alignItems: "flex-start",
-    justifyContent: "space-between",
-    gap: RUANG[2],
-  },
   kiri: {
     flex: 1,
     minWidth: 0,
@@ -133,6 +121,4 @@ const gaya = StyleSheet.create({
     columnGap: RUANG[1.5],
     rowGap: RUANG[1],
   },
-  // Pinjaman Ke-N: rata kanan, terakota & tebal supaya mencolok (menggantikan tabungan ••••).
-  pinjamanKe: { ...HURUF.xs, lineHeight: 18, flexShrink: 0, fontWeight: TEBAL.tebal },
 });

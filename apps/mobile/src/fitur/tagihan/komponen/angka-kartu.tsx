@@ -1,5 +1,6 @@
+import type { ReactNode } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { HURUF, RUANG, TEBAL, WARNA } from "@/tema";
+import { HURUF, RUANG, TEBAL, WARNA, type WarnaAksen } from "@/tema";
 import type { KartuVM } from "../inti/kartu";
 
 /**
@@ -7,10 +8,28 @@ import type { KartuVM } from "../inti/kartu";
  * paling dicari kolektor). Angsuran hanya dicetak bila tak ada tombol Bayar — tombol
  * itu sudah mencetak nominalnya.
  */
-export function AngkaKartu({ vm, tanpaAngsuran }: { vm: KartuVM; tanpaAngsuran: boolean }) {
+export function AngkaKartu({
+  vm,
+  tanpaAngsuran,
+  aksen,
+}: {
+  vm: KartuVM;
+  tanpaAngsuran: boolean;
+  aksen: WarnaAksen;
+}) {
   return (
     <View style={gaya.baris}>
-      <Angka label="Pokok Pinjaman" nilai={vm.pokokRp} rata={gaya.kiri} />
+      <Angka
+        label="Pokok Pinjaman"
+        nilai={vm.pokokRp}
+        rata={gaya.kiri}
+        atas={
+          // Pinjaman ke-N: kecil, terakota, tepat di atas Pokok Pinjaman (28 Nov 2026).
+          <Text style={[gaya.ke, { color: aksen.teks }]} numberOfLines={1}>
+            {vm.pinjamanKeTeks}
+          </Text>
+        }
+      />
       {tanpaAngsuran ? null : <Angka label="Angsuran" nilai={vm.angsuranRp} rata={gaya.tengah} />}
       <Angka label="Sisa Saldo" nilai={vm.saldoRp} rata={gaya.kanan} tegas />
     </View>
@@ -22,9 +41,12 @@ function Angka(props: {
   nilai: string;
   rata: { textAlign: "left" | "center" | "right" };
   tegas?: boolean;
+  /** Baris kecil di atas label (mis. "ke-3" di atas Pokok Pinjaman). */
+  atas?: ReactNode;
 }) {
   return (
     <View style={gaya.angka}>
+      {props.atas}
       <Text style={[gaya.label, props.rata]} numberOfLines={1}>
         {props.label}
       </Text>
@@ -59,4 +81,5 @@ const gaya = StyleSheet.create({
   kiri: { textAlign: "left" },
   tengah: { textAlign: "center" },
   kanan: { textAlign: "right" },
+  ke: { ...HURUF["3xs"], fontWeight: TEBAL.ekstra, fontVariant: ["tabular-nums"] },
 });

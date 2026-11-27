@@ -75,7 +75,7 @@ export const KartuNasabah = memo(function KartuNasabah(props: {
       ) : vm.tempo ? (
         <BlokTempo t={vm.tempo} aksen={props.aksen} />
       ) : null}
-      <AngkaKartu vm={vm} tanpaAngsuran={bisaAksi} />
+      <AngkaKartu vm={vm} tanpaAngsuran={bisaAksi} aksen={props.aksen} />
       {bisaAksi ? <KakiKartu vm={vm} aksi={props.aksi} aksen={props.aksen} /> : null}
       {props.stempel ? (
         <StempelBerhasil keterangan={KETERANGAN_STEMPEL[props.stempel]} />
