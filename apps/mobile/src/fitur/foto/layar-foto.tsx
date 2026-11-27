@@ -1,5 +1,5 @@
-import { router } from "expo-router";
-import { useCallback, useDeferredValue, useMemo, useState } from "react";
+import { router, useNavigation } from "expo-router";
+import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { FlatList, RefreshControl, StyleSheet, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTagihan } from "@/fitur/lapangan";
@@ -52,6 +52,20 @@ export function LayarFoto() {
   const [cari, setCari] = useState("");
   const cariTunda = useDeferredValue(cari);
   const [buka, setBuka] = useState<{ foto: readonly FotoBerfoto[]; awal: number } | null>(null);
+
+  // Ketuk ULANG tab Foto saat sedang terbuka → gulir halus ke urutan teratas (seperti tab
+  // Mode Kerja; permintaan pemilik 28 Nov 2026).
+  const daftar = useRef<FlatList<BarisFoto>>(null);
+  const navigasi = useNavigation();
+  useEffect(() => {
+    const dengar = navigasi.addListener as unknown as (
+      jenis: "tabPress",
+      f: () => void,
+    ) => () => void;
+    return dengar("tabPress", () => {
+      if (navigasi.isFocused()) daftar.current?.scrollToOffset({ offset: 0, animated: true });
+    });
+  }, [navigasi]);
   const { aktif: menarik, tarik } = useTarikSegarkan(() => tagihan.refetch());
 
   const { baris, nasabah, kampung } = useMemo(() => {
@@ -116,6 +130,7 @@ export function LayarFoto() {
   return (
     <View style={g.layar}>
       <FlatList
+        ref={daftar}
         data={baris}
         keyExtractor={(b) => b.kunci}
         renderItem={renderItem}
