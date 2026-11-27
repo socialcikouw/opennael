@@ -96,4 +96,23 @@ describe("galeri foto nasabah", () => {
       macet: true,
     });
   });
+
+  test("hari tagih: mingguan = hari akad, tempoan = hari jatuh tempo (atau perkiraannya)", () => {
+    const g = kelompokFoto([
+      kartu("ani", "pule", { jenis: "harian" }),
+      kartu("budi", "pule", { jenis: "mingguan", tanggalAkad: "2026-11-25" }),
+      kartu("citra", "pule", { jenis: "tempoan", tanggalAkad: "2026-11-26", jatuhTempo: null }),
+      kartu("dedi", "pule", {
+        jenis: "tempoan",
+        tanggalAkad: "2026-11-26",
+        jatuhTempo: "2026-12-04",
+      }),
+    ]);
+    expect(g[0]?.foto.map((f) => [f.nama, f.hariTagih])).toEqual([
+      ["ani", null],
+      ["budi", "Rabu"],
+      ["citra", "Kamis"],
+      ["dedi", "Jumat"],
+    ]);
+  });
 });

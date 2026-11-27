@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { type BahanTagih, posisiTagih, wajibDitagihHariIni } from "./tagih";
+import { type BahanTagih, perkiraanJatuhTempo, posisiTagih, wajibDitagihHariIni } from "./tagih";
 
 const harian: BahanTagih = {
   jenis: "harian",
@@ -122,5 +122,13 @@ describe("wajib ditagih hari ini (aturan-usaha B6)", () => {
     expect(wajib("mingguan", "2026-10-22")).toBe(true);
     expect(wajib("mingguan", "2026-10-08")).toBe(true);
     expect(wajib("mingguan", "2026-10-23")).toBe(false);
+  });
+});
+
+describe("perkiraan jatuh tempo tempoan (A4)", () => {
+  test("6 hari Senin–Sabtu sesudah akad, Minggu dilewati", () => {
+    // Kamis 26 Nov → Jum, Sab, Sen, Sel, Rab, Kam = Kamis 3 Des (contoh A4).
+    expect(perkiraanJatuhTempo("2026-11-26")).toBe("2026-12-03");
+    expect(perkiraanJatuhTempo("2026-11-28")).toBe("2026-12-05");
   });
 });

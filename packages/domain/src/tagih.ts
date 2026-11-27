@@ -1,5 +1,5 @@
 import type { JenisPinjaman } from "./akad";
-import { hariTagihMingguan, selisihHari } from "./kalender";
+import { geserTanggal, hariPekanDari, hariTagihMingguan, selisihHari } from "./kalender";
 
 /**
  * A4. Tempoan dihitung dari HARI MASUK KERJA kolektor pemegang sesudah akad: ke-6 =
@@ -10,6 +10,20 @@ export const TEMPO = { jatuhTempoKe: 6, janjiMaks: 4 } as const;
 
 /** A4. Hari masuk kerja ke-berapa yang menjadi batas lunas (6 + 4 = 10). */
 export const HARI_BATAS_TEMPO = TEMPO.jatuhTempoKe + TEMPO.janjiMaks;
+
+/**
+ * PERKIRAAN jatuh tempo tempoan (A4) dari tanggal akad: hari ke-6 Senin–Sabtu sesudahnya,
+ * seolah kolektor masuk kerja tiap hari. Jatuh tempo sebenarnya dihitung server dari absen
+ * kolektor (`jatuhTempo`); ini hanya untuk tampilan sebelum tanggal itu pasti.
+ */
+export function perkiraanJatuhTempo(tanggalAkad: string): string {
+  let t = tanggalAkad;
+  for (let n = 0; n < TEMPO.jatuhTempoKe; ) {
+    t = geserTanggal(t, 1);
+    if (hariPekanDari(t) !== 0) n++;
+  }
+  return t;
+}
 
 /**
  * POSISI TAGIH — docs/aturan-usaha.md B5. Tertinggal & tunggakan dihitung

@@ -1,5 +1,6 @@
 import type { KartuTagih } from "@opennael/contracts";
-import { type JenisPinjaman, kunciWilayah } from "@opennael/domain";
+import { type JenisPinjaman, kunciWilayah, perkiraanJatuhTempo } from "@opennael/domain";
+import { tanggal } from "@opennael/format";
 
 /** Satu kartu di tab Foto: seorang nasabah pegangan dan foto serah terima terakhirnya. */
 export interface FotoNasabah {
@@ -15,6 +16,11 @@ export interface FotoNasabah {
   jenis: JenisPinjaman;
   /** Nominal satu angsuran (tempoan: sekali bayar). */
   angsuran: number;
+  /**
+   * Hari tagihnya: mingguan = hari akad (akad + 7k, B3); tempoan = hari jatuh tempo (dari
+   * server bila sudah pasti, selain itu perkiraan 6 hari kerja, A4); harian = null.
+   */
+  hariTagih: string | null;
   macet: boolean;
 }
 
@@ -37,6 +43,15 @@ export interface KelompokFoto {
  * belum diatur di belakang, lalu abjad); di dalam kampung urut nama. `cari` (nama, tanpa
  * peduli huruf besar & spasi ganda) menyaring foto; kampung tanpa foto yang cocok hilang. PURE.
  */
+/** "Rabu" dari tanggal kantor. */
+const namaHari = (t: string) => tanggal(t, "panjang").split(",")[0] ?? null;
+
+function hariTagih(p: KartuTagih): string | null {
+  if (p.jenis === "mingguan") return namaHari(p.tanggalAkad);
+  if (p.jenis === "tempoan") return namaHari(p.jatuhTempo ?? perkiraanJatuhTempo(p.tanggalAkad));
+  return null;
+}
+
 export function kelompokFoto(daftar: readonly KartuTagih[], cari = ""): KelompokFoto[] {
   const kunciCari = kunciWilayah(cari);
   const terakhir = new Map<string, KartuTagih>();
@@ -69,6 +84,7 @@ export function kelompokFoto(daftar: readonly KartuTagih[], cari = ""): Kelompok
       angsuranKe: p.angsuranKe,
       jenis: p.jenis,
       angsuran: p.angsuran,
+      hariTagih: hariTagih(p),
       macet: p.status === "macet",
     });
     kelompok.set(kunci, k);

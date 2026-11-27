@@ -1,4 +1,4 @@
-import { geserTanggal, hariPekanDari, TEMPO } from "@opennael/domain";
+import { perkiraanJatuhTempo as perkiraanDomain } from "@opennael/domain";
 
 /**
  * LANGKAH AKAD — urutan layar akad baru, satu pertanyaan per layar (keputusan pemilik
@@ -65,11 +65,4 @@ export function nomorLangkah(urutan: readonly LangkahAkad[], kini: LangkahAkad):
  * kolektor masuk kerja Senin–Sabtu (A4). Hanya perkiraan — yang berlaku dihitung server
  * dari absen sungguhan (libur kantor & hari tidak kerja menggesernya).
  */
-export function perkiraanJatuhTempo(hariIni: string): string {
-  let t = hariIni;
-  for (let n = 0; n < TEMPO.jatuhTempoKe; ) {
-    t = geserTanggal(t, 1);
-    if (hariPekanDari(t) !== 0) n++;
-  }
-  return t;
-}
+export const perkiraanJatuhTempo = (hariIni: string): string => perkiraanDomain(hariIni);
