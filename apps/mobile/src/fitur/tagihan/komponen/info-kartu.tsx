@@ -14,11 +14,9 @@ export const CABANG_INFO = 1 + ISIAN_KOTAK + TINGGI_LINGKARAN / 2;
 /**
  * Bagian atas kotak kartu:
  *   (12) Budi Santoso                                ›
- *        20 Nov 26 • 14.10 [Rabu]            ← lencana hari tagih mingguan sebaris
- *   [Gulung Naik]                          ← lencana status droping (bila ada)
+ *        20 Nov 26 • 14.10 [Rabu] [Gulung Naik]  ← lencana hari tagih / asal droping sebaris
  * Tanggal & jam akad 10 pt TEPAT DI BAWAH NAMA, sejajar huruf pertamanya (permintaan
- * pemilik 28 Nov 2026; dulu di baris kedua di bawah lingkaran). Baris kedua (bila ada):
- * lencana hari tagih / status. "ke-N" (pinjaman ke-) pindah ke atas Pokok Pinjaman. Tabungan
+ * pemilik 28 Nov 2026; dulu di baris kedua di bawah lingkaran). "ke-N" (pinjaman ke-) pindah ke atas Pokok Pinjaman. Tabungan
  * "••••" tak lagi di kartu (ada di Detail Nasabah). Lingkaran = angsuran yang sudah
  * lunas: pekat berwarna mode dan besar supaya paling mencolok (beda dari lencana jumlah
  * nasabah di judul kelompok yang abu).
@@ -69,21 +67,18 @@ export function InfoKartu({
           <Text style={gaya.nama} numberOfLines={1}>
             {vm.namaTampil}
           </Text>
-          {/* Mingguan: lencana hari tagih sebaris di samping tanggal akad (28 Nov 2026). */}
+          {/* Lencana hari tagih (mingguan) & asal droping (Baru / Gulung …) sebaris di samping
+              tanggal akad — tanpa baris sendiri (28 Nov 2026). */}
           <View style={gaya.barisAkad}>
             <Text style={gaya.akad} numberOfLines={1}>
               {vm.akadTeks}
             </Text>
             {vm.hariTagih ? <LencanaHari hari={vm.hariTagih} aksen={aksen} kecil /> : null}
+            {vm.lencana ? <LencanaStatus lencana={vm.lencana} kecil /> : null}
           </View>
         </View>
         <Ikon nama="chevron-right" ukuran={16} warna={WARNA.redup} />
       </Tekan>
-      {vm.lencana ? (
-        <View style={gaya.kiri}>
-          <LencanaStatus lencana={vm.lencana} />
-        </View>
-      ) : null}
     </View>
   );
 }
@@ -111,14 +106,4 @@ const gaya = StyleSheet.create({
   // Tanggal & jam akad: 10 pt, tepat di bawah nama (permintaan pemilik 28 Nov 2026).
   akad: { ...HURUF["3xs"], flexShrink: 1, color: WARNA.redup, fontVariant: ["tabular-nums"] },
   barisAkad: { flexDirection: "row", alignItems: "center", gap: RUANG[1.5] },
-  kiri: {
-    flex: 1,
-    minWidth: 0,
-    minHeight: 18,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    alignItems: "center",
-    columnGap: RUANG[1.5],
-    rowGap: RUANG[1],
-  },
 });

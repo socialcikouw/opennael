@@ -11,12 +11,21 @@ const NADA: Record<Nada, { teks: string; latar: string }> = {
 };
 
 /** Lencana asal kartu droping: Baru · Gulung Naik/Tetap/Turun (macet tak berlencana — ada segmen Macet). */
-export function LencanaStatus({ lencana }: { lencana: NonNullable<KartuVM["lencana"]> }) {
+export function LencanaStatus({
+  lencana,
+  kecil = false,
+}: {
+  lencana: NonNullable<KartuVM["lencana"]>;
+  /** Sebaris dengan tanggal akad 10 pt: lebih pendek. */
+  kecil?: boolean;
+}) {
   const nada = NADA[lencana.nada];
   return (
-    <View style={[gaya.lencana, { backgroundColor: nada.latar }]}>
-      <Ikon nama={lencana.ikon} ukuran={11} warna={nada.teks} />
-      <Text style={[gaya.lencanaTeks, { color: nada.teks }]}>{lencana.teks}</Text>
+    <View style={[gaya.lencana, kecil ? gaya.lencanaKecil : null, { backgroundColor: nada.latar }]}>
+      <Ikon nama={lencana.ikon} ukuran={kecil ? 10 : 11} warna={nada.teks} />
+      <Text style={[kecil ? gaya.teksKecil : gaya.lencanaTeks, { color: nada.teks }]}>
+        {lencana.teks}
+      </Text>
     </View>
   );
 }
@@ -68,6 +77,7 @@ const gaya = StyleSheet.create({
     borderRadius: SUDUT.kecil - 2,
   },
   lencanaTeks: { ...HURUF["2xs"], fontWeight: TEBAL.tebal },
+  lencanaKecil: { paddingHorizontal: RUANG[1.5], paddingVertical: 1 },
   hariKecil: { paddingHorizontal: RUANG[1], paddingVertical: 1 },
   teksKecil: { ...HURUF["3xs"], fontWeight: TEBAL.tebal },
 });
