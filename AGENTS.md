@@ -308,6 +308,7 @@ Database (`cd apps/api`, membaca `apps/api/.env`):
 | `bun run db:migrate` | Terapkan migrasi yang belum jalan (dicatat di `drizzle.__drizzle_migrations`). Lewat `scripts/migrasi.ts`, yang menolak berjalan bila host bukan Supabase dev. |
 | `bun run data:buat` | **Data uji lapangan** (`scripts/data-uji.ts`): 35 nasabah lama (salinan migrasi) untuk kolektor `rian-demo` — 25 harian, 5 mingguan, 5 tempoan — plus riwayat absen 12 hari kerja supaya tempoan berada di tahap berbeda. Menolak bila kantor sudah punya nasabah. Pemilik memicunya dengan "buat data nasabah sekarang". |
 | `bun run data:hapus` | Kosongkan semua data **kecuali** kantor, pengguna, pengaturan kantor (pekan kerja, libur kantor, tarif gaji, rem kantor/kolektor), dan tautan HP (perangkat & tautan); berkas foto ikut dihapus. Pemilik memicunya dengan "hapus semua data nasabah". |
+| `bun run data:bulan-lalu` | **Data uji bulan lalu** (`scripts/data-bulan-lalu.ts`, 28 Nov 2026) supaya delta Portofolio HP terlihat: untuk `rian-demo`, 11 pinjaman salinan yang lunas di bulan lalu (tanggal 1–28, harian ditutup pelunasan bertabungan), 2 harian macet di bulan lalu, dan potret `posisi_harian` tiap tanggal bulan lalu (acak, sedikit di bawah posisi sekarang). Menolak bila potret bulan lalu sudah ada; riwayat lunas/macet tak dibuat dua kali. |
 
 Migrasi yang sudah diterapkan **tidak pernah disunting** — perubahan selalu
 lewat migrasi baru. Nama constraint ditulis eksplisit sesuai konvensi #8

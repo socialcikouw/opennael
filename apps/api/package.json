@@ -11,6 +11,7 @@
     "db:migrate": "bun scripts/migrasi.ts",
     "data:buat": "bun scripts/data-uji.ts buat",
     "data:hapus": "bun scripts/data-uji.ts hapus",
+    "data:bulan-lalu": "bun scripts/data-bulan-lalu.ts",
     "test": "bun test",
     "tipe": "tsc -p tsconfig.tipe.json"
   },
