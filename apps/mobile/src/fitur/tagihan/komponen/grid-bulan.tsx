@@ -80,13 +80,13 @@ const gaya = StyleSheet.create({
   baris: {
     flexDirection: "row",
     alignItems: "center",
-    height: 18,
+    height: 16,
     paddingHorizontal: RUANG[1],
     borderRadius: SUDUT.kecil,
   },
   barisBerjalan: { backgroundColor: WARNA.permukaan },
   judul: {
-    ...HURUF["3xs"],
+    ...HURUF["4xs"],
     fontWeight: TEBAL.tebal,
     letterSpacing: 0.4,
     textTransform: "uppercase",
@@ -94,8 +94,8 @@ const gaya = StyleSheet.create({
     color: WARNA.samar,
   },
   nomor: {
-    ...HURUF["2xs"],
-    width: 18,
+    ...HURUF["3xs"],
+    width: 16,
     fontWeight: TEBAL.semi,
     textAlign: "center",
     color: WARNA.samar,
@@ -104,13 +104,13 @@ const gaya = StyleSheet.create({
   nomorBerjalan: { color: WARNA.teksKedua },
   kolom: { flex: 1, alignItems: "center" },
   nilai: {
-    ...HURUF["2xs"],
+    ...HURUF["3xs"],
     fontWeight: TEBAL.semi,
     textAlign: "center",
     fontVariant: ["tabular-nums"],
   },
   pil: {
-    minWidth: 34,
+    minWidth: 30,
     paddingHorizontal: RUANG[1.5],
     paddingVertical: 1,
     borderRadius: SUDUT.bulat,

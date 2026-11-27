@@ -183,6 +183,8 @@ export const SUDUT = {
 
 /** Ukuran huruf + tinggi baris (skala Tailwind dalam pt). */
 export const HURUF = {
+  /** Judul kolom grid setoran kartu tagih — 9 pt atas permintaan pemilik 28 Nov 2026 (rapat). */
+  "4xs": { fontSize: 9, lineHeight: 12 },
   /** Judul kolom grid setoran — di luar skala Tailwind (14 Nov 2026: 9 → 10 pt, terlalu kecil di lapangan). */
   "3xs": { fontSize: 10, lineHeight: 13 },
   /** Label terkecil (judul tab bawah, isi grid) — di luar skala Tailwind (14 Nov 2026: 10 → 11 pt). */

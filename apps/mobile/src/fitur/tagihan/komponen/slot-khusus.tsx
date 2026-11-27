@@ -110,15 +110,15 @@ const gaya = StyleSheet.create({
     backgroundColor: WARNA.isiNetral,
   },
   sel: { width: "15%", alignItems: "center", gap: 2 },
-  tanggal: { ...HURUF["3xs"], color: WARNA.samar, fontVariant: ["tabular-nums"] },
+  tanggal: { ...HURUF["4xs"], color: WARNA.samar, fontVariant: ["tabular-nums"] },
   nilai: {
-    ...HURUF["2xs"],
+    ...HURUF["3xs"],
     fontWeight: TEBAL.semi,
     textAlign: "center",
     fontVariant: ["tabular-nums"],
   },
   pil: {
-    minWidth: 34,
+    minWidth: 30,
     paddingHorizontal: RUANG[1.5],
     borderRadius: SUDUT.bulat,
     overflow: "hidden",
