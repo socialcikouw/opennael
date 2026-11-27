@@ -121,6 +121,7 @@ serah terima (kurang setor), bukan masukan.
 | `POST /lapangan/laporan` | kolektor | Membuka laporan (tanpa angka transfer lagi). Idempoten. Ditolak `MASIH_ADA_TAGIHAN` (422) selama masih ada pinjaman wajib ditagih hari ini yang belum dicatat ([aturan-usaha C6](../aturan-usaha.md)). |
 | `PATCH /hari-kolektor/:kolektorId/hari-ini` | bos | `{ kasLapangan?, uangJalan? }` (minimal satu; yang diisi minimal 5.000, kelipatan 5.000 — I0) — hari ini, kolektor masuk kerja (`BELUM_ABSEN`, `TIDAK_KERJA_HARI_INI`), sebelum kas diterima (`KAS_SUDAH_DITERIMA`). Jejak `perbaiki_hari_kolektor`. |
 | `POST /hari-kolektor/:kolektorId/laporan/batal` | bos | `{ alasan }` — membuka kembali hari kolektor (mis. nasabah libur datang membayar sore): hari ini, laporan sudah dibuka (`LAPORAN_BELUM_DIBUKA`), sebelum kas diterima. Jejak `batal_laporan` beserta alasannya. |
+| `GET /hari-kolektor/riwayat` | kolektor: miliknya; bos, kasir, pengawas: wajib `kolektorId` | `?mulai=&selesai=` (≤ 62 hari) — tiap hari: absensi, kas lapangan, uang jalan, laporan dibuka, `tekorLama`, serah terima berlaku (tanpa rincian I1). Riwayat Kas HP (28 Nov 2026). |
 | `GET /hari-kolektor` | bos, kasir, pengawas: semua; kolektor: miliknya | `?kolektorId=&tanggalMulai=&tanggalSelesai=` — beserta total transfer & serah terima yang berlaku. |
 
 Serah terima kas: lihat [schema-serah-terima-kas.md](schema-serah-terima-kas.md).

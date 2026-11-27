@@ -68,6 +68,39 @@ export const hariKasSchema = z.object({
 });
 export type HariKas = z.infer<typeof hariKasSchema>;
 
+/**
+ * `GET /hari-kolektor/riwayat` — hari-hari satu kolektor dalam satu rentang (paling panjang
+ * 62 hari), ringan: tanpa rincian I1 (dibaca per hari lewat `GET /hari-kolektor?tanggal=`).
+ * Kolektor: miliknya; bos, kasir, pengawas: wajib `kolektorId` (28 Nov 2026, Riwayat Kas HP).
+ */
+export const saringRiwayatHariSchema = z.object({
+  kolektorId: z.uuid().optional(),
+  mulai: tanggal,
+  selesai: tanggal,
+});
+
+export const riwayatHariSchema = z.object({
+  tanggal: z.string(),
+  absensi: z.enum(["masuk_kerja", "tidak_kerja"]),
+  alasanTidakKerja: z.string().nullable(),
+  kasLapangan: z.number(),
+  uangJalan: z.number(),
+  laporanDibukaAt: z.string().nullable(),
+  /** Arsip tekor buku lama (salinan migrasi); 0 untuk hari baru. */
+  tekorLama: z.number(),
+  /** Serah terima berlaku (null = kas belum diterima). */
+  serahTerima: z
+    .object({
+      tunaiSeharusnya: z.number(),
+      tunaiDiterima: z.number(),
+      selisihSetor: z.number(),
+      tekor: z.number(),
+      lebihSetor: z.number(),
+    })
+    .nullable(),
+});
+export type RiwayatHari = z.infer<typeof riwayatHariSchema>;
+
 /** `POST /hari-kolektor/:kolektorId/terima-kas` — uang fisik yang dihitung kasir. */
 export const terimaKasSchema = z.object({ tunaiDiterima: z.number().int().min(0) });
 export type TerimaKasInput = z.infer<typeof terimaKasSchema>;

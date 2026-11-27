@@ -400,6 +400,20 @@ const KASUS: [string, unknown, readonly unknown[], string, unknown[]][] = [
     [{ query: { kolektorId: "k1", mulai: "2026-11-01", selesai: T } }],
   ],
   [
+    "lapangan.riwayatKas",
+    kueri.lapangan.riwayatKas("2026-11-01", T),
+    ["lapangan", "riwayat-kas", "2026-11-01", T],
+    "hariKolektor.hari-kolektor.riwayat.$get",
+    [{ query: { mulai: "2026-11-01", selesai: T } }],
+  ],
+  [
+    "lapangan.kasTanggal",
+    kueri.lapangan.kasTanggal("2026-11-02"),
+    ["lapangan", "kas", "2026-11-02"],
+    "hariKolektor.hari-kolektor.$get",
+    [{ query: { tanggal: "2026-11-02" } }],
+  ],
+  [
     "lapangan.kampung",
     kueri.lapangan.kampung(),
     ["lapangan", "kampung"],

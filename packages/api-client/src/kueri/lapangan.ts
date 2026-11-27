@@ -92,6 +92,23 @@ export function kueriLapangan({ api, ambil }: Bahan) {
           queryKey: [...kunci.lapangan, "kas"],
           queryFn: () => ambil(() => api.hariKolektor["hari-kolektor"].$get({ query: {} })),
         }),
+      /** Hari-hari kolektor ini satu rentang (≤ 62 hari), terbaru dulu — Riwayat Kas. */
+      riwayatKas: (mulai: string, selesai: string) =>
+        queryOptions({
+          queryKey: [...kunci.lapangan, "riwayat-kas", mulai, selesai],
+          queryFn: () =>
+            ambil(() =>
+              api.hariKolektor["hari-kolektor"].riwayat.$get({ query: { mulai, selesai } }),
+            ),
+          enabled: !!mulai && !!selesai,
+        }),
+      /** Hari kas kolektor ini pada satu tanggal lampau (rincian I1, serah terima) — Riwayat Kas. */
+      kasTanggal: (tanggal: string) =>
+        queryOptions({
+          queryKey: [...kunci.lapangan, "kas", tanggal],
+          queryFn: () =>
+            ambil(() => api.hariKolektor["hari-kolektor"].$get({ query: { tanggal } })),
+        }),
       /** Setoran berlaku kolektor ini hari ini (beserta transfernya) — tab Storting. */
       setoran: () =>
         queryOptions({

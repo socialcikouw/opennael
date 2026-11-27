@@ -8,8 +8,10 @@ import {
   hariKasSchema,
   idParamSchema,
   kolektorIdParamSchema,
+  riwayatHariSchema,
   saringBiayaSchema,
   saringHariSchema,
+  saringRiwayatHariSchema,
   terimaKasSchema,
   transaksiHariSchema,
   transferInputSchema,
@@ -117,6 +119,12 @@ const batalSerahTerima = batal(
   "Batal penerimaan kas (bos, hari yang sama)",
   hariKasSchema,
 );
+const riwayatHari = baca(
+  "/hari-kolektor/riwayat",
+  "Riwayat hari satu kolektor (≤ 62 hari): absensi, laporan, serah terima — kolektor: miliknya",
+  saringRiwayatHariSchema,
+  z.array(riwayatHariSchema),
+);
 const daftarTransaksi = baca(
   "/transaksi",
   "Setoran berlaku satu hari beserta transfernya — pilihan transfer kasir",
@@ -185,6 +193,9 @@ export function ruteSetoranSore(
         ),
         200,
       ),
+    )
+    .openapi(riwayatHari, async (c) =>
+      c.json(await layanan().riwayatHari(c.get("aktor"), c.req.valid("query")), 200),
     )
     .openapi(terimaKas, async (c) =>
       c.json(

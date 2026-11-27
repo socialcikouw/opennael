@@ -2,10 +2,13 @@ import { rupiah } from "@opennael/format";
 import { router } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 import { useGajiBerjalan } from "@/fitur/gaji";
+import { useHariIni } from "@/fitur/lapangan";
+import { ringkasBulan, useRiwayatBulan } from "@/fitur/riwayat-kas";
 import { LembarBawah } from "@/komponen/lembar-bawah";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Tekan } from "@/komponen/ui/tekan";
+import { daftarBulan } from "@/lib/bulan";
 import { AKSEN, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 
 /**
@@ -16,7 +19,7 @@ import { AKSEN, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
  * (Modal), jadi bacaan ubin tak berjalan selama lembar tertutup.
  */
 export function LembarMenu({ terbuka, onTutup }: { terbuka: boolean; onTutup: () => void }) {
-  const buka = (rute: "/kolektor/gaji" | "/kolektor/foto-nasabah") => {
+  const buka = (rute: "/kolektor/gaji" | "/kolektor/riwayat-kas" | "/kolektor/foto-nasabah") => {
     onTutup();
     router.push(rute);
   };
@@ -24,6 +27,7 @@ export function LembarMenu({ terbuka, onTutup }: { terbuka: boolean; onTutup: ()
     <LembarBawah terbuka={terbuka} onTutup={onTutup} judul="Menu">
       <View style={gaya.grid}>
         <UbinGaji onPress={() => buka("/kolektor/gaji")} />
+        <UbinRiwayatKas onPress={() => buka("/kolektor/riwayat-kas")} />
         <Ubin
           ikon="images"
           judul="Foto Nasabah"
@@ -47,6 +51,19 @@ function UbinGaji({ onPress }: { onPress: () => void }) {
       onPress={onPress}
     />
   );
+}
+
+/** Ubin Riwayat Kas membawa tekor bulan ini (memotong gaji), atau hari yang sudah diterima. */
+function UbinRiwayatKas({ onPress }: { onPress: () => void }) {
+  const tanggal = useHariIni().data?.kalender.tanggal;
+  const riwayat = useRiwayatBulan(tanggal ? (daftarBulan(tanggal, 0)[0] ?? null) : null);
+  const r = riwayat.data ? ringkasBulan(riwayat.data) : null;
+  const ket = !r
+    ? "Kas harian per bulan"
+    : r.tekor > 0
+      ? `Tekor bulan ini ${rupiah(r.tekor)}`
+      : `${r.hariDiterima} hari diterima bulan ini`;
+  return <Ubin ikon="arrow-left-right" judul="Riwayat Kas" ket={ket} onPress={onPress} />;
 }
 
 function Ubin(props: { ikon: NamaIkon; judul: string; ket: string; onPress: () => void }) {

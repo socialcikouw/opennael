@@ -4,7 +4,7 @@ import { useMemo, useRef } from "react";
 import { rasioJenis, useHariIni, useTagihan } from "@/fitur/lapangan";
 import { jatuhTempoDari } from "@/fitur/tagihan";
 import { kueri } from "@/lib/api";
-import type { BulanPerforma } from "./inti/bulan";
+import type { BulanPerforma } from "@/lib/bulan";
 import { type RingkasPerforma, susunPerforma } from "./inti/performa";
 
 /**

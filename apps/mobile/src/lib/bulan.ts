@@ -1,7 +1,7 @@
 import { namaBulan } from "@opennael/format";
 
 /**
- * PIL BULAN layar Performa — Bulan Ini lalu lima bulan lalu (seperti aplikasi lama). Bulan
+ * PIL BULAN layar Rekap (Performa, Riwayat Kas) — Bulan Ini lalu lima bulan lalu (seperti aplikasi lama). Bulan
  * berjalan dibaca sampai hari ini; bulan lalu penuh. PURE.
  */
 export interface BulanPerforma {

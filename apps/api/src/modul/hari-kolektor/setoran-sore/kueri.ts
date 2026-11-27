@@ -1,16 +1,22 @@
-import { batasTransfer } from "@opennael/domain";
-import { and, asc, eq, gte, isNull, lte } from "drizzle-orm";
+import { batasTransfer, selisihHari, tekorDanLebih } from "@opennael/domain";
+import { and, asc, between, desc, eq, gte, isNull, lte } from "drizzle-orm";
 import {
   biayaTakTerduga,
+  hariKolektor,
   nasabah,
   pinjaman,
+  serahTerimaKas,
   transaksi,
   transferSetoran,
   wilayah,
 } from "../../../platform/db/skema";
 import type { Aktor } from "../../../platform/http/aktor";
-import { bacaHari, type Konteks, keHariKas, kolektorYangDibaca } from "./data";
+import { melanggar } from "../../../platform/http/galat";
+import { bacaHari, iso, type Konteks, keHariKas, kolektorYangDibaca } from "./data";
 import { keBiaya, keTransfer, pilihBiaya, pilihTransfer } from "./transfer-biaya";
+
+/** Riwayat hari paling panjang ±2 bulan (Riwayat Kas HP membaca satu bulan). */
+const RIWAYAT_MAKS_HARI = 62;
 
 /** Bacaan SETORAN SORE: hari kolektor, setoran, transfer, dan biaya. */
 export function buatKueriSetoranSore(k: Konteks) {
@@ -23,6 +29,59 @@ export function buatKueriSetoranSore(k: Konteks) {
       const tanggal = saring.tanggal ?? (await k.hariIni(aktor));
       const baris = await bacaHari(k.db, aktor, tanggal, kolektorId);
       return Promise.all(baris.map((h) => keHariKas(k.db, aktor, h)));
+    },
+
+    /**
+     * Riwayat hari satu kolektor dalam rentang ≤ 62 hari, terbaru dulu — ringan (satu kueri):
+     * absensi, laporan, dan serah terima berlaku; rincian I1 dibaca per hari.
+     */
+    async riwayatHari(aktor: Aktor, s: { kolektorId?: string; mulai: string; selesai: string }) {
+      const kolektorId = kolektorYangDibaca(aktor, s.kolektorId);
+      if (!kolektorId) throw melanggar("KOLEKTOR_WAJIB", "Pilih kolektornya");
+      if (s.mulai > s.selesai) {
+        throw melanggar("RENTANG_TIDAK_SAH", "Tanggal mulai sesudah tanggal selesai");
+      }
+      if (selisihHari(s.mulai, s.selesai) >= RIWAYAT_MAKS_HARI) {
+        throw melanggar("RENTANG_TERLALU_PANJANG", `Paling panjang ${RIWAYAT_MAKS_HARI} hari`);
+      }
+      const baris = await k.db
+        .select({
+          tanggal: hariKolektor.tanggal,
+          absensi: hariKolektor.absensi,
+          alasanTidakKerja: hariKolektor.alasanTidakKerja,
+          kasLapangan: hariKolektor.kasLapangan,
+          uangJalan: hariKolektor.uangJalan,
+          laporanDibukaAt: hariKolektor.laporanDibukaAt,
+          tekorLama: hariKolektor.tekorLama,
+          tunaiSeharusnya: serahTerimaKas.tunaiSeharusnya,
+          tunaiDiterima: serahTerimaKas.tunaiDiterima,
+          selisihSetor: serahTerimaKas.selisihSetor,
+        })
+        .from(hariKolektor)
+        .leftJoin(
+          serahTerimaKas,
+          and(
+            eq(serahTerimaKas.hariKolektorId, hariKolektor.id),
+            isNull(serahTerimaKas.dibatalkanAt),
+          ),
+        )
+        .where(
+          and(
+            eq(hariKolektor.kantorId, aktor.kantorId),
+            eq(hariKolektor.kolektorId, kolektorId),
+            between(hariKolektor.tanggal, s.mulai, s.selesai),
+          ),
+        )
+        .orderBy(desc(hariKolektor.tanggal));
+      return baris.map(({ tunaiSeharusnya, tunaiDiterima, selisihSetor, ...h }) => ({
+        ...h,
+        laporanDibukaAt: iso(h.laporanDibukaAt),
+        tekorLama: h.tekorLama ?? 0,
+        serahTerima:
+          tunaiSeharusnya !== null && tunaiDiterima !== null && selisihSetor !== null
+            ? { tunaiSeharusnya, tunaiDiterima, selisihSetor, ...tekorDanLebih(selisihSetor) }
+            : null,
+      }));
     },
 
     // ---- setoran hari itu ----------------------------------------------------
