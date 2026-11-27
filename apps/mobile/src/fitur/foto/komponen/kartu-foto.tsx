@@ -19,7 +19,7 @@ const CABANG = RUANG[2] + UKURAN_KE / 2;
  * per nasabah bercabang ke rel kampung; isinya foto serah terima, dengan lencana kecil
  * berlatar hitam bertulisan terakota di atas foto: angsuran ke- (kiri atas), nama dan
  * angsuran (kiri bawah); status (kanan atas) sedikit lebih besar: BERJALAN hijau / MACET
- * merah, tulisan putih 12. Ukuran bertingkat: angsuran ke- 20 (lingkaran 36), nama 16,
+ * merah, tulisan putih 12. Ukuran bertingkat: angsuran ke- 16 (lingkaran 36), nama 16,
  * angsuran 12.
  * Ketuk = layar penuh.
  */
@@ -131,7 +131,7 @@ const gaya = StyleSheet.create({
   statusBerjalan: { backgroundColor: WARNA.sukses },
   statusMacet: { backgroundColor: WARNA.bahayaBingkai },
   teksStatus: { ...HURUF.xs, fontWeight: TEBAL.ekstra, color: WARNA.teksAtasSukses },
-  // Lingkaran angsuran ke- (seperti kartu Harian): paling besar di kartu, 20 pt.
+  // Lingkaran angsuran ke- (seperti kartu Harian): 36 pt, angka 16 pt.
   bulat: {
     minWidth: UKURAN_KE,
     height: UKURAN_KE,
@@ -141,9 +141,9 @@ const gaya = StyleSheet.create({
     borderRadius: SUDUT.bulat,
   },
   lencanaNama: { paddingHorizontal: RUANG[2], paddingVertical: RUANG[0.5] },
-  // Ukuran bertingkat: angsuran ke- 20 (lingkaran), nama 16, nominal angsuran 12 sedang.
+  // Ukuran bertingkat: angsuran ke- 16 (lingkaran 36), nama 16, nominal angsuran 12 sedang.
   teks: { color: WARNA.teksLencanaFoto, fontVariant: ["tabular-nums"] },
-  teksKe: { ...HURUF.xl, fontWeight: TEBAL.ekstra },
+  teksKe: { ...HURUF.base, fontWeight: TEBAL.ekstra },
   teksNama: { ...HURUF.base, fontWeight: TEBAL.ekstra },
   teksAngsuran: { ...HURUF.xs, fontWeight: TEBAL.semi },
 });
