@@ -113,7 +113,7 @@ export interface TempoVM {
   keadaan: KeadaanTempo;
   /**
    * Lencana (kata pemilik 28 Nov 2026; hari = hari kerja kolektor): "4 HARI LAGI" · "HARI INI"
-   * · "TELAT 2 HARI" · "HARUS LUNAS HARI INI" (batas, janji habis) · "DITANGGUHKAN KE KOLEKTOR"
+   * · "TELAT 2 HARI" · "HARUS LUNAS HARI INI" (batas, janji habis) · "DITANGGUNG KOLEKTOR"
    * (macet).
    */
   hitungMundur: string;
@@ -156,7 +156,7 @@ export function susunTempo(
               : "nanti";
   const hitungMundur =
     keadaan === "macet"
-      ? "DITANGGUHKAN KE KOLEKTOR"
+      ? "DITANGGUNG KOLEKTOR"
       : keadaan === "batas"
         ? "HARUS LUNAS HARI INI"
         : keadaan === "meleset"

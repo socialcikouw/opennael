@@ -109,7 +109,7 @@ describe("tempoan (hari masuk kerja, A4)", () => {
       hitungMundur: "HARUS LUNAS HARI INI",
     });
     const macet = susunTempo({ ...tempo(11, "2026-10-22", "2026-10-28"), status: "macet" }, KAMIS);
-    expect(macet).toMatchObject({ keadaan: "macet", hitungMundur: "DITANGGUHKAN KE KOLEKTOR" });
+    expect(macet).toMatchObject({ keadaan: "macet", hitungMundur: "DITANGGUNG KOLEKTOR" });
   });
 
   test("ringkasan jatuh tempo: meleset, hari ini, belum jatuh tempo", () => {
