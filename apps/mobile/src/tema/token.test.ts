@@ -85,7 +85,6 @@ describe("kontras teks di atas isi berwarna", () => {
     ["diAtasFoto", "latarMedia", 7],
     ["teksTransisi", "latarTransisi", 7],
     ["teksSorot", "latarSorot", 7],
-    ["teksLencanaFoto", "latarLencanaFoto", 4.5],
     ["teksSorotRedup", "latarSorot", 4.5],
     ["komposisiSorot1", "latarSorot", 3],
     ["ikonTab", "latarTab", 4.5],

@@ -16,12 +16,13 @@ const CABANG = RUANG[2] + UKURAN_KE / 2;
 
 /**
  * KARTU FOTO (tab Foto, rupa kartu Harian — permintaan pemilik 28 Nov 2026): satu kartu
- * per nasabah bercabang ke rel kampung; isinya foto serah terima, dengan lencana kecil
- * berlatar hitam bertulisan terakota di atas foto: angsuran ke- (kiri atas), nama dan
- * angsuran (kiri bawah); status (kanan atas) sedikit lebih besar: BERJALAN hijau / MACET
- * merah, tulisan putih 12. Ukuran bertingkat: angsuran ke- 16 (lingkaran 36), nama 16,
- * angsuran 12.
- * Ketuk = layar penuh.
+ * per nasabah bercabang ke rel kampung; isinya foto serah terima. Tulisan MENEMPEL di foto
+ * seperti cap kamera (rekomendasi saya atas permintaan pemilik "cantik & jelas dibaca"):
+ *   - kiri atas: lingkaran angsuran ke- gelap tembus pandang, angka putih 16 pt, tepi putih;
+ *   - kanan atas: status BERJALAN hijau / MACET merah (warna = arti), tulisan putih 12 pt;
+ *   - dasar: PITA gelap tembus pandang selebar foto — nama putih 16 pt tebal, angsuran 12 pt
+ *     (sama dengan pita alamat di foto Detail Nasabah).
+ * Ketuk = layar penuh (berfoto) / Detail Nasabah (belum berfoto).
  */
 export const KartuFoto = memo(function KartuFoto(props: {
   foto: FotoNasabah;
@@ -59,24 +60,20 @@ export const KartuFoto = memo(function KartuFoto(props: {
           </View>
         )}
         <View style={gaya.atas}>
-          <View style={[gaya.lencana, gaya.bulat]}>
-            <Text style={[gaya.teks, gaya.teksKe]}>{f.angsuranKe}</Text>
+          <View style={gaya.bulat}>
+            <Text style={gaya.teksKe}>{f.angsuranKe}</Text>
           </View>
           <View style={[gaya.status, f.macet ? gaya.statusMacet : gaya.statusBerjalan]}>
             <Text style={gaya.teksStatus}>{f.macet ? "MACET" : "BERJALAN"}</Text>
           </View>
         </View>
-        <View style={gaya.bawah}>
-          <View style={[gaya.lencana, gaya.lencanaNama]}>
-            <Text style={[gaya.teks, gaya.teksNama]} numberOfLines={1}>
-              {nama}
-            </Text>
-          </View>
-          <View style={gaya.lencana}>
-            <Text style={[gaya.teks, gaya.teksAngsuran]} numberOfLines={1}>
-              Angsuran {rupiah(f.angsuran)}
-            </Text>
-          </View>
+        <View style={gaya.pita}>
+          <Text style={gaya.teksNama} numberOfLines={1}>
+            {nama}
+          </Text>
+          <Text style={gaya.teksAngsuran} numberOfLines={1}>
+            Angsuran {rupiah(f.angsuran)}
+          </Text>
         </View>
       </Tekan>
     </BarisRel>
@@ -88,7 +85,6 @@ const gaya = StyleSheet.create({
     aspectRatio: 1,
     overflow: "hidden",
     justifyContent: "space-between",
-    padding: RUANG[2],
     borderRadius: SUDUT.besar,
     borderWidth: 1,
     borderColor: WARNA.garis,
@@ -111,15 +107,18 @@ const gaya = StyleSheet.create({
     backgroundColor: WARNA.utamaMuda,
   },
   tanpaFoto: { ...HURUF.xs, fontWeight: TEBAL.semi, color: WARNA.redup },
-  atas: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },
-  bawah: { alignItems: "flex-start", gap: RUANG[1] },
-  // Hitam hangat bertulisan terakota terang (permintaan pemilik 28 Nov 2026).
-  lencana: {
-    maxWidth: "100%",
-    paddingHorizontal: RUANG[1.5],
-    paddingVertical: 2,
-    borderRadius: SUDUT.kecil - 2,
-    backgroundColor: WARNA.latarLencanaFoto,
+  atas: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    padding: RUANG[2],
+  },
+  // Pita dasar selebar foto: lapisan gelap tembus pandang, tulisan putih (seperti cap kamera).
+  pita: {
+    gap: RUANG[0.5],
+    paddingHorizontal: RUANG[3],
+    paddingVertical: RUANG[2],
+    backgroundColor: WARNA.tiraiGelap,
   },
   // Lencana STATUS sedikit lebih besar supaya mencolok: berjalan hijau (arti "boleh"),
   // macet merah (arti "bahaya"), tulisan putih — kontras ≥ 4,5:1 diuji `token.test.ts`.
@@ -131,19 +130,30 @@ const gaya = StyleSheet.create({
   statusBerjalan: { backgroundColor: WARNA.sukses },
   statusMacet: { backgroundColor: WARNA.bahayaBingkai },
   teksStatus: { ...HURUF.xs, fontWeight: TEBAL.ekstra, color: WARNA.teksAtasSukses },
-  // Lingkaran angsuran ke- (seperti kartu Harian): 36 pt, angka 16 pt.
+  // Lingkaran angsuran ke- (seperti kartu Harian): 36 pt, gelap tembus pandang, tepi putih.
   bulat: {
     minWidth: UKURAN_KE,
     height: UKURAN_KE,
+    paddingHorizontal: RUANG[1.5],
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 0,
     borderRadius: SUDUT.bulat,
+    borderWidth: 1.5,
+    borderColor: WARNA.diAtasFoto,
+    backgroundColor: WARNA.tiraiGelap,
   },
-  lencanaNama: { paddingHorizontal: RUANG[2], paddingVertical: RUANG[0.5] },
-  // Ukuran bertingkat: angsuran ke- 16 (lingkaran 36), nama 16, nominal angsuran 12 sedang.
-  teks: { color: WARNA.teksLencanaFoto, fontVariant: ["tabular-nums"] },
-  teksKe: { ...HURUF.base, fontWeight: TEBAL.ekstra },
-  teksNama: { ...HURUF.base, fontWeight: TEBAL.ekstra },
-  teksAngsuran: { ...HURUF.xs, fontWeight: TEBAL.semi },
+  teksKe: {
+    ...HURUF.base,
+    fontWeight: TEBAL.ekstra,
+    color: WARNA.diAtasFoto,
+    fontVariant: ["tabular-nums"],
+  },
+  teksNama: { ...HURUF.base, fontWeight: TEBAL.ekstra, color: WARNA.diAtasFoto },
+  teksAngsuran: {
+    ...HURUF.xs,
+    fontWeight: TEBAL.semi,
+    color: WARNA.diAtasFoto,
+    opacity: 0.9,
+    fontVariant: ["tabular-nums"],
+  },
 });
