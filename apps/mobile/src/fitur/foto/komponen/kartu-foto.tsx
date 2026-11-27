@@ -19,7 +19,8 @@ const CABANG = RUANG[2] + UKURAN_KE / 2;
  * per nasabah bercabang ke rel kampung; isinya foto serah terima. Tulisan MENEMPEL di foto
  * seperti cap kamera (rekomendasi saya atas permintaan pemilik "cantik & jelas dibaca"):
  *   - kiri atas: lingkaran angsuran ke- gelap tembus pandang, angka putih 16 pt, tepi putih;
- *   - kanan atas: status BERJALAN hijau / MACET merah (warna = arti), tulisan putih 12 pt;
+ *   - kanan atas: kapsul status serupa (gelap bening, tepi putih, tulisan putih 12 pt) dengan
+ *     titik warna arti — hijau BERJALAN / merah MACET;
  *   - dasar: PITA gelap tembus pandang selebar foto — nama putih 16 pt tebal, angsuran 12 pt
  *     (sama dengan pita alamat di foto Detail Nasabah).
  * Ketuk = layar penuh (berfoto) / Detail Nasabah (belum berfoto).
@@ -63,7 +64,13 @@ export const KartuFoto = memo(function KartuFoto(props: {
           <View style={gaya.bulat}>
             <Text style={gaya.teksKe}>{f.angsuranKe}</Text>
           </View>
-          <View style={[gaya.status, f.macet ? gaya.statusMacet : gaya.statusBerjalan]}>
+          <View style={gaya.status}>
+            <View
+              style={[
+                gaya.titik,
+                { backgroundColor: f.macet ? WARNA.bahayaDiAtasFoto : WARNA.suksesDiAtasFoto },
+              ]}
+            />
             <Text style={gaya.teksStatus}>{f.macet ? "MACET" : "BERJALAN"}</Text>
           </View>
         </View>
@@ -120,16 +127,21 @@ const gaya = StyleSheet.create({
     paddingVertical: RUANG[2],
     backgroundColor: WARNA.tiraiGelap,
   },
-  // Lencana STATUS sedikit lebih besar supaya mencolok: berjalan hijau (arti "boleh"),
-  // macet merah (arti "bahaya"), tulisan putih — kontras ≥ 4,5:1 diuji `token.test.ts`.
+  // Kapsul STATUS — rupa sama dengan lingkaran angsuran ke- (gelap bening, tepi putih),
+  // arti dibawa titik warna: hijau berjalan / merah macet.
   status: {
-    paddingHorizontal: RUANG[2],
-    paddingVertical: RUANG[0.5],
-    borderRadius: SUDUT.kecil - 2,
+    height: UKURAN_KE - 8,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: RUANG[1.5],
+    paddingHorizontal: RUANG[2.5],
+    borderRadius: SUDUT.bulat,
+    borderWidth: 1.5,
+    borderColor: WARNA.diAtasFoto,
+    backgroundColor: WARNA.tiraiGelap,
   },
-  statusBerjalan: { backgroundColor: WARNA.sukses },
-  statusMacet: { backgroundColor: WARNA.bahayaBingkai },
-  teksStatus: { ...HURUF.xs, fontWeight: TEBAL.ekstra, color: WARNA.teksAtasSukses },
+  titik: { width: 8, height: 8, borderRadius: 4 },
+  teksStatus: { ...HURUF.xs, fontWeight: TEBAL.ekstra, color: WARNA.diAtasFoto },
   // Lingkaran angsuran ke- (seperti kartu Harian): 36 pt, gelap tembus pandang, tepi putih.
   bulat: {
     minWidth: UKURAN_KE,

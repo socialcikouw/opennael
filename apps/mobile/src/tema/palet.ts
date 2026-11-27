@@ -51,6 +51,8 @@ const emerald = {
   50: "#ecfdf5",
   100: "#d1fae5",
   200: "#a7f3d0",
+  /** Hijau terang di atas lapisan gelap (titik status di foto). */
+  400: "#34d399",
   700: "#047857",
   800: "#065f46",
 } as const;
@@ -59,6 +61,8 @@ const red = {
   50: "#fef2f2",
   100: "#fee2e2",
   200: "#fecaca",
+  /** Merah terang di atas lapisan gelap (titik status di foto). */
+  400: "#f87171",
   600: "#dc2626",
   700: "#b91c1c",
   800: "#991b1b",
