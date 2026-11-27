@@ -7,7 +7,7 @@ import { StempelBerhasil } from "@/komponen/ui/stempel-berhasil";
 import { RUANG, SUDUT, WARNA, type WarnaAksen } from "@/tema";
 import type { KartuVM } from "../inti/kartu";
 import { AngkaKartu } from "./angka-kartu";
-import { GeserLunasi } from "./geser-lunasi";
+import { GeserKartu } from "./geser-kartu";
 import { GridBulan } from "./grid-bulan";
 import { CABANG_INFO, InfoKartu, ISIAN_KOTAK } from "./info-kartu";
 import { InfoTempo } from "./info-tempo";
@@ -39,7 +39,7 @@ export interface AksiKartu {
  * satu kotak: lingkaran angsuran ke- + nama + jam akad, Pinjaman Ke- +
  * lencana + Tabungan rahasia, grid sebulan, Pokok Pinjaman · Sisa Saldo,
  * sinyal gulung, lalu tombol Libur · Gulung dan Bayar. Lunasi harian & mingguan: GESER
- * KARTU KE KIRI → tombol LUNASI di belakangnya (`GeserLunasi`, 28 Nov 2026; dulu tahan
+ * KARTU KE KIRI → tombol LUNASI di belakangnya (`GeserKartu`, 28 Nov 2026; dulu tahan
  * lama); tempoan lewat tombol Lunasi di kaki. Kartu tanpa aksi (droping, baru tercatat)
  * tak punya tombol maupun geser.
  */
@@ -62,6 +62,11 @@ export const KartuNasabah = memo(function KartuNasabah(props: {
   const lunasi = bisaAksi && !props.sibuk ? () => props.aksi.lunas(vm) : null;
   // Geser kiri → LUNASI hanya harian & mingguan; tempoan punya tombol Lunasi sendiri di kaki.
   const geser = lunasi && !vm.sekaliBayar ? lunasi : null;
+  // Tempoan sejak jatuh tempo: JANJI BESOK di belakang kartu (geser kiri); tombol LUNASI di kaki.
+  const janji =
+    bisaAksi && !props.sibuk && vm.sekaliBayar && vm.tampilkanLibur
+      ? () => props.aksi.libur(vm)
+      : null;
 
   // Tempoan yang masih ditagih: kepala khusus (hitung mundur & jatuh tempo, tanpa angsuran ke-,
   // tanpa baris Pokok/Sisa Saldo — nominal ada di tombol LUNASI). Rombak 28 Nov 2026.
@@ -111,9 +116,29 @@ export const KartuNasabah = memo(function KartuNasabah(props: {
       <BarisRel cabang={CABANG_INFO} akhir={props.terakhir} jarak={JARAK_KARTU}>
         {geser ? (
           // Aksi Lunasi untuk pembaca layar tetap di baris nama (aksi aksesibilitas).
-          <GeserLunasi saldoRp={vm.saldoRp} onLunasi={geser}>
+          <GeserKartu
+            judul="LUNASI"
+            keterangan={vm.saldoRp}
+            ikon="check-check"
+            latar={WARNA.bahayaBingkai}
+            aksesLabel={`Lunasi, sisa saldo ${vm.saldoRp}`}
+            onPress={geser}
+          >
             {kotak}
-          </GeserLunasi>
+          </GeserKartu>
+        ) : janji ? (
+          <GeserKartu
+            judul="JANJI BESOK"
+            keterangan={null}
+            ikon="calendar-clock"
+            latar={vm.alasanLibur ? WARNA.redup : WARNA.waspada}
+            aksesLabel={
+              vm.alasanLibur ? `Janji besok, tidak tersedia. ${vm.alasanLibur}` : "Janji besok"
+            }
+            onPress={janji}
+          >
+            {kotak}
+          </GeserKartu>
         ) : (
           kotak
         )}

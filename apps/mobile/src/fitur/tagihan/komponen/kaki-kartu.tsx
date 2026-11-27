@@ -16,7 +16,7 @@ import type { AksiKartu } from "./kartu-nasabah";
  * diketuk untuk membacanya). Bayar — satu-satunya bidang berwarna pekat,
  * selebar kartu — mencetak nominalnya. Tempoan hanya Janji Besok & Lunasi (keputusan
  * pemilik 26 Nov 2026): Lunasi seharga saldo; Janji Besok sejak jatuh tempo, mati pada batas
- * lunas (G1); tanpa Gulung (E5). Lunasi harian & mingguan: geser kartu ke kiri.
+ * lunas (G1); tanpa Gulung (E5). Lunasi harian & mingguan dan Janji Besok tempoan: geser kartu ke kiri.
  */
 export function KakiKartu({
   vm,
@@ -33,9 +33,11 @@ export function KakiKartu({
   // Sebelum jatuh tempo tempoan tak ada Janji Besok — baris tonal hilang.
   const macet = vm.p.status === "macet";
   const gulung = !vm.sekaliBayar && !macet;
-  // Macet & tempoan: tombol tonal (Libur / Janji Besok) sebaris dengan Bayar / Lunasi.
-  const sebaris = (macet || vm.sekaliBayar) && vm.tampilkanLibur;
-  const libur = vm.tampilkanLibur ? (
+  // Tempoan: JANJI BESOK pindah ke belakang kartu (geser ke kiri, 28 Nov 2026) — kaki hanya
+  // LUNASI selebar kartu. Macet: Libur sebaris dengan Bayar.
+  const liburDiKaki = vm.tampilkanLibur && !vm.sekaliBayar;
+  const sebaris = macet && liburDiKaki;
+  const libur = liburDiKaki ? (
     <TombolTonal
       label={vm.labelLibur}
       ikon={vm.sekaliBayar ? "calendar-clock" : "circle-pause"}
@@ -85,7 +87,7 @@ export function KakiKartu({
   }
   return (
     <View style={gaya.kaki}>
-      {vm.tampilkanLibur || gulung ? (
+      {liburDiKaki || gulung ? (
         <View style={gaya.barisTonal}>
           {libur}
           {gulung ? (
