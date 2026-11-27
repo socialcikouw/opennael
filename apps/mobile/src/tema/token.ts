@@ -119,6 +119,13 @@ export const WARNA = {
   /** Keping & rel bar tembus pandang di atas `latarSorot`. */
   isiSorot: tirai.terang,
 
+  /**
+   * Lencana kecil di atas foto (tab Foto: angsuran ke-, MACET, nama, angsuran) — latar hitam
+   * hangat, tulisan terakota terang (terakota 700 terlalu gelap di atas hitam). 28 Nov 2026.
+   */
+  latarLencanaFoto: kertas[900],
+  teksLencanaFoto: terakota[400],
+
   /** Bagian bar komposisi di kartu terang (Ringkasan): bagian ke-1 · ke-2 · ke-3. */
   komposisi1: terakota[700],
   komposisi2: terakota[400],

@@ -14,7 +14,7 @@ const CABANG = RUANG[2] + 10;
 /**
  * KARTU FOTO (tab Foto, rupa kartu Harian — permintaan pemilik 28 Nov 2026): satu kartu
  * per nasabah bercabang ke rel kampung; isinya foto serah terima, dengan lencana kecil
- * berlatar terakota di atas foto: angsuran ke- (kiri atas), MACET (kanan atas, bila
+ * berlatar hitam bertulisan terakota di atas foto: angsuran ke- (kiri atas), MACET (kanan atas, bila
  * macet), nama dan angsuran (kiri bawah). Huruf sekecil yang masih terbaca (10 pt tebal).
  * Ketuk = layar penuh.
  */
@@ -84,19 +84,19 @@ const gaya = StyleSheet.create({
   ditekan: { opacity: 0.85 },
   atas: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },
   bawah: { alignItems: "flex-start", gap: RUANG[1] },
-  // Terakota berisi (`utamaIsi`) bertulisan gelap: putih di atas coral hanya 3,1:1.
+  // Hitam hangat bertulisan terakota terang (permintaan pemilik 28 Nov 2026).
   lencana: {
     maxWidth: "100%",
     paddingHorizontal: RUANG[1.5],
     paddingVertical: 2,
     borderRadius: SUDUT.kecil - 2,
-    backgroundColor: WARNA.utamaIsi,
+    backgroundColor: WARNA.latarLencanaFoto,
   },
   bulat: { minWidth: 20, alignItems: "center", borderRadius: SUDUT.bulat },
   teks: {
     ...HURUF["3xs"],
     fontWeight: TEBAL.ekstra,
-    color: WARNA.teksAtasUtama,
+    color: WARNA.teksLencanaFoto,
     fontVariant: ["tabular-nums"],
   },
 });
