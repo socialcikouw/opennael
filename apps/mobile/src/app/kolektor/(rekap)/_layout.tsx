@@ -1,6 +1,6 @@
-import { router } from "expo-router";
 import { Tabs } from "expo-router/js-tabs";
-import { TabBarMode, usePasangMode } from "@/fitur/mode";
+import { TabBarRekap } from "@/fitur/menu";
+import { usePasangMode } from "@/fitur/mode";
 import { OPSI_TAB } from "@/tema";
 
 const IKON = {
@@ -11,25 +11,14 @@ const IKON = {
 
 /**
  * MODE REKAP — tab Ringkasan · Performa · Portofolio (nama rute = nama tab); tombol kanan =
- * Foto Nasabah (galeri foto serah terima per kampung).
+ * MENU (lembar ubin layar jarang: Gaji, Foto Nasabah, …; opsi C, 28 Nov 2026).
  */
 export default function TataLetakRekap() {
   usePasangMode("rekap");
   return (
     <Tabs
       backBehavior="none"
-      tabBar={(p) => (
-        <TabBarMode
-          {...p}
-          mode="rekap"
-          ikon={IKON}
-          kanan={{
-            ikon: "images",
-            label: "Foto Nasabah",
-            onPress: () => router.push("/kolektor/foto-nasabah"),
-          }}
-        />
-      )}
+      tabBar={(p) => <TabBarRekap {...p} ikon={IKON} />}
       screenOptions={OPSI_TAB}
     >
       {/* Ketiga layar Rekap memegang judul besarnya sendiri (ikut tergulung). */}

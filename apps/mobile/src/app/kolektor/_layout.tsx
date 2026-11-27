@@ -16,6 +16,7 @@ export default function TataLetakKolektor() {
         <Stack.Screen name="(akun)" options={{ headerShown: false }} />
         <Stack.Screen name="notifikasi" options={{ title: "Notifikasi" }} />
         <Stack.Screen name="foto-nasabah" options={{ title: "Foto Nasabah" }} />
+        <Stack.Screen name="gaji" options={{ title: "Gaji" }} />
         <Stack.Screen name="storting" options={{ title: "Storting Hari Ini" }} />
         <Stack.Screen name="droping" options={{ title: "Droping Hari Ini" }} />
         <Stack.Screen name="nasabah/[id]" options={{ title: "Nasabah" }} />

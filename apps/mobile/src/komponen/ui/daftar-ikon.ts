@@ -36,6 +36,7 @@ import ImageIcon from "lucide-react-native/icons/image";
 import Images from "lucide-react-native/icons/images";
 import Info from "lucide-react-native/icons/info";
 import LayoutDashboard from "lucide-react-native/icons/layout-dashboard";
+import LayoutGrid from "lucide-react-native/icons/layout-grid";
 import LifeBuoy from "lucide-react-native/icons/life-buoy";
 import Lock from "lucide-react-native/icons/lock";
 import LockOpen from "lucide-react-native/icons/lock-open";
@@ -145,6 +146,7 @@ export const IKON = {
   "lock-open": LockOpen,
   smartphone: Smartphone,
   vibrate: Vibrate,
+  "layout-grid": LayoutGrid,
   motorbike: Motorbike,
   percent: Percent,
   scissors: Scissors,

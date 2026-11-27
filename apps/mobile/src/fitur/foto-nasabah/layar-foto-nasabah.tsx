@@ -19,7 +19,7 @@ import { FotoLayarPenuh } from "./komponen/foto-layar-penuh";
 const LEBAR_FOTO = 140;
 
 /**
- * FOTO NASABAH (tombol kanan Mode Rekap) — foto serah terima nasabah pegangan, satu per
+ * FOTO NASABAH (Mode Rekap › Menu) — foto serah terima nasabah pegangan, satu per
  * nasabah, dikelompokkan per kampung dalam karosel yang digeser ke samping; kolom cari nama
  * di atas. Ketuk foto = layar penuh, bisa digeser ke foto lain di kampung yang sama.
  */

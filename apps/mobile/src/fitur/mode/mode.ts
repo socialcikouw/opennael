@@ -30,8 +30,8 @@ export const MODE: Record<
   rekap: {
     label: "Rekap",
     huruf: "R",
-    keterangan: "Kas, laporan sore, performa, portofolio",
-    tab: "Ringkasan · Performa · Portofolio · Foto",
+    keterangan: "Kas, laporan sore, performa, portofolio, gaji",
+    tab: "Ringkasan · Performa · Portofolio · Menu (Gaji, Foto)",
     awal: "/kolektor/ringkasan",
   },
   akun: {
