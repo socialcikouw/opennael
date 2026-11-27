@@ -62,10 +62,10 @@ export const KartuSudah = memo(function KartuSudah({
       </View>
       <View style={[gaya.status, gaya.statusBungkus]}>
         <View style={[gaya.pita, { backgroundColor: latar }]}>
-          <Ikon nama={libur ? "circle-pause" : "circle-check"} ukuran={12} warna={warna} />
+          <Ikon nama={libur ? "circle-pause" : "circle-check"} ukuran={11} warna={warna} />
           <Text style={[gaya.pitaTeks, { color: warna }]}>{vm.judulSudah}</Text>
         </View>
-        {vm.hariTagih ? <LencanaHari hari={vm.hariTagih} aksen={aksen} /> : null}
+        {vm.hariTagih ? <LencanaHari hari={vm.hariTagih} aksen={aksen} kecil /> : null}
       </View>
       <View style={gaya.angka}>
         <View style={gaya.kolom}>
@@ -129,41 +129,48 @@ export function KartuDroping({ baru, gulung }: { baru: number; gulung: number })
 }
 
 const gaya = StyleSheet.create({
+  // Rapat seperti kartu tagih (28 Nov 2026): isian 10, jarak 6.
   kartu: {
-    gap: RUANG[2.5],
+    gap: RUANG[1.5],
     marginHorizontal: RUANG[4],
     marginBottom: RUANG[2],
-    padding: RUANG[3],
+    padding: RUANG[2.5],
     borderRadius: SUDUT.besar,
     borderWidth: 1,
     borderColor: WARNA.garis,
     backgroundColor: WARNA.permukaan,
   },
-  baris: { flexDirection: "row", alignItems: "center", gap: RUANG[3] },
+  baris: { flexDirection: "row", alignItems: "center", gap: RUANG[2] },
   lingkaran: {
-    minWidth: 40,
-    height: 40,
+    minWidth: 32,
+    height: 32,
     paddingHorizontal: RUANG[1.5],
     alignItems: "center",
     justifyContent: "center",
     borderRadius: SUDUT.bulat,
-    borderWidth: 2,
+    borderWidth: 1.5,
   },
-  lingkaranTeks: { ...HURUF.lg, fontWeight: TEBAL.ekstra, fontVariant: ["tabular-nums"] },
-  identitas: { flex: 1, minWidth: 0, gap: RUANG[0.5] },
+  lingkaranTeks: { ...HURUF.base, fontWeight: TEBAL.ekstra, fontVariant: ["tabular-nums"] },
+  identitas: { flex: 1, minWidth: 0 },
   ditekan: { opacity: 0.6 },
-  nama: { ...HURUF.base, fontWeight: TEBAL.tebal, textTransform: "uppercase", color: WARNA.teks },
+  nama: {
+    ...HURUF.sm,
+    lineHeight: 18,
+    fontWeight: TEBAL.tebal,
+    textTransform: "uppercase",
+    color: WARNA.teks,
+  },
   alamat: { ...HURUF["2xs"], color: WARNA.redup },
   status: { flexDirection: "row", alignItems: "center", gap: RUANG[1.5] },
   pita: {
     flexDirection: "row",
     alignItems: "center",
     gap: RUANG[1],
-    paddingHorizontal: RUANG[2.5],
-    paddingVertical: RUANG[1],
+    paddingHorizontal: RUANG[2],
+    paddingVertical: 2,
     borderRadius: SUDUT.bulat,
   },
-  pitaTeks: { ...HURUF["2xs"], fontWeight: TEBAL.ekstra, letterSpacing: 0.5 },
+  pitaTeks: { ...HURUF["3xs"], fontWeight: TEBAL.ekstra, letterSpacing: 0.5 },
   angka: { flexDirection: "row", justifyContent: "space-between", gap: RUANG[3] },
   kolom: { flex: 1, minWidth: 0, gap: 1 },
   // Angka kartu "Sudah ditagih" = ukuran rapat kartu lain (10 / 12 / 14 pt).
