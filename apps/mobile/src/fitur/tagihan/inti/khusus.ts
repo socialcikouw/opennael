@@ -110,7 +110,7 @@ export interface TempoVM {
   /** Hari kerja tersisa sampai jatuh tempo; 0 = hari ini; negatif = meleset sekian hari. */
   sisaHari: number;
   keadaan: KeadaanTempo;
-  /** "HARI 3 DARI 6" / "HARI INI" / "MELESET 2 HARI" / "WAJIB LUNAS" / "MACET". */
+  /** "3 HARI LAGI" (hari kerja) / "HARI INI" / "MELESET 2 HARI" / "WAJIB LUNAS" / "MACET". */
   hitungMundur: string;
   /** Bagian 6 hari kerja yang sudah berjalan, 0–1. */
   jalan: number;
@@ -153,7 +153,7 @@ export function susunTempo(
           ? `MELESET ${-sisaHari} HARI`
           : keadaan === "hariini"
             ? "HARI INI"
-            : `HARI ${p.hariTempo} DARI ${TEMPO.jatuhTempoKe}`;
+            : `${sisaHari} HARI LAGI`;
   return {
     jatuhTempo: p.jatuhTempo,
     sisaHari,

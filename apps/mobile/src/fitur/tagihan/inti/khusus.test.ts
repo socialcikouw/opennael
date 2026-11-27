@@ -70,19 +70,22 @@ describe("tempoan (hari masuk kerja, A4)", () => {
     status: "berjalan" as const,
   });
 
-  test("sebelum jatuh tempo: hari ke-N dari 6, garis waktu sebagian", () => {
+  test('sebelum jatuh tempo: sisa hari kerja ("3 HARI LAGI"), garis waktu sebagian', () => {
     const t = susunTempo(tempo(3), KAMIS);
     expect(t).toMatchObject({
       jatuhTempo: null,
       sisaHari: 3,
       keadaan: "nanti",
-      hitungMundur: "HARI 3 DARI 6",
+      hitungMundur: "3 HARI LAGI",
       jatuhTempoTeks: "Hari Ke-6",
       jatuhTempoHariTeks: "hari kerja ke-6",
       akadTeks: "20 Okt",
     });
     expect(t.jalan).toBeCloseTo(0.5);
-    expect(susunTempo(tempo(5), KAMIS).keadaan).toBe("segera");
+    expect(susunTempo(tempo(5), KAMIS)).toMatchObject({
+      keadaan: "segera",
+      hitungMundur: "1 HARI LAGI",
+    });
   });
 
   test("jatuh tempo hari ini, meleset, batas lunas, macet", () => {
