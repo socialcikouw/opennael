@@ -21,7 +21,11 @@ export function LencanaStatus({ lencana }: { lencana: NonNullable<KartuVM["lenca
   );
 }
 
-/** Lencana PEKAT hari tagih mingguan, mis. [📅 Rabu] — beda bentuk dari lencana status. */
+/**
+ * Lencana TONAL hari tagih mingguan, mis. [📅 Rabu] — latar terakota sangat muda, tulisan &
+ * ikon terakota tua, garis tepi tipis (28 Nov 2026; dulu coral pekat). Kalem & jelas: satu-
+ * satunya isi pekat di kartu tetap lingkaran angsuran ke-. Kontras utama/utamaLembut diuji.
+ */
 export function LencanaHari({
   hari,
   aksen,
@@ -36,12 +40,10 @@ export function LencanaHari({
     <View
       accessible
       accessibilityLabel={`Ditagih tiap ${hari}`}
-      style={[gaya.hari, kecil ? gaya.hariKecil : null, { backgroundColor: aksen.isi }]}
+      style={[gaya.hari, kecil ? gaya.hariKecil : null, { backgroundColor: aksen.lembut }]}
     >
-      <Ikon nama="calendar" ukuran={kecil ? 10 : 11} warna={aksen.teksIsi} />
-      <Text style={[kecil ? gaya.teksKecil : gaya.lencanaTeks, { color: aksen.teksIsi }]}>
-        {hari}
-      </Text>
+      <Ikon nama="calendar" ukuran={kecil ? 10 : 11} warna={aksen.teks} />
+      <Text style={[kecil ? gaya.teksKecil : gaya.lencanaTeks, { color: aksen.teks }]}>{hari}</Text>
     </View>
   );
 }
@@ -56,6 +58,8 @@ const gaya = StyleSheet.create({
     borderRadius: SUDUT.bulat,
   },
   hari: {
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: WARNA.utamaGaris,
     flexDirection: "row",
     alignItems: "center",
     gap: RUANG[1],
