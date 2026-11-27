@@ -16,10 +16,11 @@ export const CABANG_INFO = 1 + ISIAN_KOTAK + TINGGI_LINGKARAN / 2;
 /**
  * Bagian atas kotak kartu:
  *   (12) Budi Santoso                                ›
- *   1 Sep • 14.00 [Rabu]                    Pinjaman Ke-3
- * Baris kedua (permintaan pemilik 24 Nov 2026): tanggal & jam akad KECIL di kiri, tepat
- * di bawah lingkaran (bila sempit, akad yang terpotong; tahun hanya bila bukan tahun
- * ini), "Pinjaman Ke-N" di kanan berwarna terakota & tebal supaya mencolok. Tabungan
+ *        20 Nov 26 • 14.10
+ *   [Rabu]                                  Pinjaman Ke-3
+ * Tanggal & jam akad 10 pt TEPAT DI BAWAH NAMA, sejajar huruf pertamanya (permintaan
+ * pemilik 28 Nov 2026; dulu di baris kedua di bawah lingkaran). Baris kedua: lencana hari
+ * tagih / status di kiri, "Pinjaman Ke-N" di kanan berwarna terakota & tebal. Tabungan
  * "••••" tak lagi di kartu (ada di Detail Nasabah). Lingkaran = angsuran yang sudah
  * lunas: pekat berwarna mode dan besar supaya paling mencolok (beda dari lencana jumlah
  * nasabah di judul kelompok yang abu).
@@ -67,16 +68,19 @@ export function InfoKartu({
             {vm.angsuranKeTeks}
           </Text>
         </View>
-        <Text style={gaya.nama} numberOfLines={1}>
-          {vm.namaTampil}
-        </Text>
+        {/* Nama, dan tepat di bawahnya tanggal & jam akad — sejajar huruf pertama nama. */}
+        <View style={gaya.kolomNama}>
+          <Text style={gaya.nama} numberOfLines={1}>
+            {vm.namaTampil}
+          </Text>
+          <Text style={gaya.akad} numberOfLines={1}>
+            {vm.akadTeks}
+          </Text>
+        </View>
         <Ikon nama="chevron-right" ukuran={16} warna={WARNA.redup} />
       </Tekan>
       <View style={gaya.barisKecil}>
         <View style={gaya.kiri}>
-          <Text style={gaya.akad} numberOfLines={1}>
-            {vm.akadTeks}
-          </Text>
           {vm.hariTagih ? <LencanaHari hari={vm.hariTagih} aksen={aksen} /> : null}
           {vm.lencana ? <LencanaStatus lencana={vm.lencana} /> : null}
         </View>
@@ -106,9 +110,10 @@ const gaya = StyleSheet.create({
     justifyContent: "center",
   },
   lingkaranTeks: { ...HURUF.base, fontWeight: TEBAL.ekstra, fontVariant: ["tabular-nums"] },
-  nama: { ...HURUF.base, flex: 1, fontWeight: TEBAL.tebal, color: WARNA.teks },
-  // Tanggal & jam akad: kecil, di bawah lingkaran angsuran (rata kiri kotak).
-  akad: { ...HURUF["2xs"], flexShrink: 1, color: WARNA.redup, fontVariant: ["tabular-nums"] },
+  kolomNama: { flex: 1, minWidth: 0 },
+  nama: { ...HURUF.base, lineHeight: 20, fontWeight: TEBAL.tebal, color: WARNA.teks },
+  // Tanggal & jam akad: 10 pt, tepat di bawah nama (permintaan pemilik 28 Nov 2026).
+  akad: { ...HURUF["3xs"], color: WARNA.redup, fontVariant: ["tabular-nums"] },
   // Kiri (akad + lencana) boleh turun ke baris berikutnya bila sempit — tak pernah
   // berhimpitan dengan "Pinjaman Ke-N" yang tetap di kanan atas.
   barisKecil: {
