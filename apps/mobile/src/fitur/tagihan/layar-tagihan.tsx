@@ -19,6 +19,7 @@ import { type Baris, jumlahSegmen, type SegmenTagihan } from "./inti/daftar";
 import { useKepalaMelayang } from "./kepala-melayang";
 import { JudulKelompok, KerangkaKartu, Kosong } from "./komponen/daftar-bagian";
 import { GagalSegar } from "./komponen/gagal-segar";
+import { tutupGeser } from "./komponen/geser-lunasi";
 import { KartuNasabah } from "./komponen/kartu-nasabah";
 import { KartuDroping, KartuSudah } from "./komponen/kartu-sudah";
 import { KepalaTagihan } from "./komponen/kepala-tagihan";
@@ -184,6 +185,8 @@ export function LayarTagihan({
         renderItem={renderItem}
         extraData={statusKartu}
         onScroll={onScroll}
+        // Kartu yang tergeser (tombol LUNASI terbuka) menutup begitu daftar digulir.
+        onScrollBeginDrag={tutupGeser}
         scrollEventThrottle={16}
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"

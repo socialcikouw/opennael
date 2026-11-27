@@ -25,7 +25,7 @@ const PANDUAN: readonly { ikon: NamaIkon; judul: string; isi: string }[] = [
   {
     ikon: "circle-check",
     judul: "Melunasi pinjaman",
-    isi: "Tahan kartu nasabah sampai muncul pertanyaan Lunasi. Tabungan nasabah ikut menutup sisa saldo lebih dulu. Tempoan dilunasi lewat tombol LUNASI di kartunya.",
+    isi: "Geser kartu nasabah ke kiri, lalu ketuk tombol merah LUNASI di belakangnya. Tabungan nasabah ikut menutup sisa saldo lebih dulu. Tempoan dilunasi lewat tombol LUNASI di kartunya.",
   },
   {
     ikon: "repeat",

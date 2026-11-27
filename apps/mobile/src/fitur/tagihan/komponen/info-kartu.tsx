@@ -6,8 +6,6 @@ import type { KartuVM } from "../inti/kartu";
 import { LencanaHari, LencanaStatus } from "./lencana-kartu";
 
 const TINGGI_LINGKARAN = 32;
-/** Lama kartu ditahan sebelum Lunasi (konfirmasinya tetap ditanyakan layar). */
-export const TAHAN_LUNASI_MS = 600;
 /** Isian kotak kartu (pt) — kartu-nasabah memakai angka yang sama. */
 export const ISIAN_KOTAK = RUANG[2.5];
 /** Jarak dari atas kotak ke garis tengah baris nama — tempat cabang rel masuk. */
@@ -25,8 +23,8 @@ export const CABANG_INFO = 1 + ISIAN_KOTAK + TINGGI_LINGKARAN / 2;
  * lunas: pekat berwarna mode dan besar supaya paling mencolok (beda dari lencana jumlah
  * nasabah di judul kelompok yang abu).
  * Baris nama bisa diketuk: membuka detail nasabah (`onBuka`); `onSiap` dipanggil
- * saat jari menekan, supaya datanya sudah mulai diambil. Tahan lama di baris itu
- * tetap Lunasi (`onLunasi`), juga ditawarkan sebagai aksi aksesibilitas.
+ * saat jari menekan, supaya datanya sudah mulai diambil. Lunasi (`onLunasi`) ditawarkan
+ * di sini sebagai aksi aksesibilitas pembaca layar (di layar: geser kartu ke kiri).
  */
 export function InfoKartu({
   vm,
@@ -47,8 +45,6 @@ export function InfoKartu({
         style={({ pressed }) => [gaya.baris, pressed ? gaya.ditekan : null]}
         onPress={onBuka}
         onPressIn={onSiap}
-        onLongPress={onLunasi ?? undefined}
-        delayLongPress={TAHAN_LUNASI_MS}
         hitSlop={{ top: 4, bottom: 4 }}
         accessibilityRole="button"
         accessibilityHint="Buka detail nasabah"

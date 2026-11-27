@@ -4,12 +4,12 @@ import type { Stempel } from "@/fitur/lapangan";
 import { BarisRel, JARAK_KARTU } from "@/komponen/rel-kartu";
 import { SelubungMencatat } from "@/komponen/ui/selubung-mencatat";
 import { StempelBerhasil } from "@/komponen/ui/stempel-berhasil";
-import { Tekan } from "@/komponen/ui/tekan";
 import { RUANG, SUDUT, WARNA, type WarnaAksen } from "@/tema";
 import type { KartuVM } from "../inti/kartu";
 import { AngkaKartu } from "./angka-kartu";
+import { GeserLunasi } from "./geser-lunasi";
 import { GridBulan } from "./grid-bulan";
-import { CABANG_INFO, InfoKartu, ISIAN_KOTAK, TAHAN_LUNASI_MS } from "./info-kartu";
+import { CABANG_INFO, InfoKartu, ISIAN_KOTAK } from "./info-kartu";
 import { KakiKartu } from "./kaki-kartu";
 import { BlokMinggu, BlokTempo } from "./slot-khusus";
 
@@ -37,9 +37,10 @@ export interface AksiKartu {
  * KARTU NASABAH — anak dari rel pohon kelompoknya (judul kampung di atas),
  * satu kotak: lingkaran angsuran ke- + nama + jam akad, Pinjaman Ke- +
  * lencana + Tabungan rahasia, grid sebulan, Pokok Pinjaman · Sisa Saldo,
- * sinyal gulung, lalu tombol Libur · Gulung dan Bayar. Lunasi: TAHAN LAMA
- * kartunya (bukan tombol). Kartu tanpa aksi (droping, baru tercatat) tak
- * punya tombol maupun tahan-lama.
+ * sinyal gulung, lalu tombol Libur · Gulung dan Bayar. Lunasi harian & mingguan: GESER
+ * KARTU KE KIRI → tombol LUNASI di belakangnya (`GeserLunasi`, 28 Nov 2026; dulu tahan
+ * lama); tempoan lewat tombol Lunasi di kaki. Kartu tanpa aksi (droping, baru tercatat)
+ * tak punya tombol maupun geser.
  */
 export const KartuNasabah = memo(function KartuNasabah(props: {
   vm: KartuVM;
@@ -50,14 +51,16 @@ export const KartuNasabah = memo(function KartuNasabah(props: {
   stempel: Stempel | null;
   /** Kartu terakhir kelompoknya: rel menekuk jadi siku ke kartu ini lalu berhenti. */
   terakhir: boolean;
-  /** Libur/Lunasi kartu ini masih berjalan: selubung "Mencatat…", tanpa tahan-lama. */
+  /** Libur/Lunasi kartu ini masih berjalan: selubung "Mencatat…", tanpa geser Lunasi. */
   sibuk: boolean;
 }) {
   const { vm } = props;
   // `bisaAksi` menentukan susunan kartu (kaki tombol ada/tidak) — tetap saat sibuk supaya
-  // kartu tak melompat; sibuk hanya mematikan tahan-lama dan menutup tombol dengan selubung.
+  // kartu tak melompat; sibuk hanya mematikan geser Lunasi dan menutup tombol dengan selubung.
   const bisaAksi = vm.aksi && props.stempel === null;
   const lunasi = bisaAksi && !props.sibuk ? () => props.aksi.lunas(vm) : null;
+  // Geser kiri → LUNASI hanya harian & mingguan; tempoan punya tombol Lunasi sendiri di kaki.
+  const geser = lunasi && !vm.sekaliBayar ? lunasi : null;
 
   const kotak = (
     <View style={gaya.kotak}>
@@ -89,12 +92,11 @@ export const KartuNasabah = memo(function KartuNasabah(props: {
   return (
     <View style={gaya.wadah}>
       <BarisRel cabang={CABANG_INFO} akhir={props.terakhir} jarak={JARAK_KARTU}>
-        {lunasi ? (
-          // Pembungkus tahan-lama tidak menjadi satu elemen aksesibilitas: tombol di dalamnya
-          // tetap terjangkau; aksi Lunasi untuk pembaca layar ada di baris nama.
-          <Tekan accessible={false} delayLongPress={TAHAN_LUNASI_MS} onLongPress={lunasi}>
+        {geser ? (
+          // Aksi Lunasi untuk pembaca layar tetap di baris nama (aksi aksesibilitas).
+          <GeserLunasi saldoRp={vm.saldoRp} onLunasi={geser}>
             {kotak}
-          </Tekan>
+          </GeserLunasi>
         ) : (
           kotak
         )}

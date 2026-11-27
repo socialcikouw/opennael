@@ -8,7 +8,8 @@ import * as Haptics from "expo-haptics";
  * - `pilih`    — tiap angka papan Bayar/Gulung; memilih mode di lembar Ganti Mode (paling halus).
  * - `ketuk`    — rana kamera serah terima (ringan).
  * - `tegas`    — cadangan untuk aksi penentu bila kelak dibutuhkan (sedang).
- * - `tahan`    — tekan lama tercapai: Lunasi kartu, ⌫ tahan = kosongkan (otomatis oleh `Tekan`).
+ * - `tahan`    — tekan lama tercapai: ⌫ tahan = kosongkan (otomatis oleh `Tekan`). Tombol LUNASI
+ *               kartu tagih yang muncul saat kartu digeser ke kiri memakai `pilih`.
  * - `berhasil` — transaksi tersimpan di server (otomatis: `MutationCache` di `app/_layout.tsx`,
  *                Libur/Lunasi kartu di `fitur/tagihan/aksi-kartu.ts`).
  * - `galat`    — transaksi gagal (otomatis, di tempat yang sama), bersama pesan di layar.

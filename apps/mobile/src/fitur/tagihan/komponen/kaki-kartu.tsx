@@ -15,7 +15,7 @@ import type { AksiKartu } from "./kartu-nasabah";
  * diketuk untuk membacanya). Bayar — satu-satunya bidang berwarna pekat,
  * selebar kartu — mencetak nominalnya. Tempoan hanya Janji Besok & Lunasi (keputusan
  * pemilik 26 Nov 2026): Lunasi seharga saldo; Janji Besok sejak jatuh tempo, mati pada batas
- * lunas (G1); tanpa Gulung (E5). Lunasi nasabah lain: tahan lama kartunya.
+ * lunas (G1); tanpa Gulung (E5). Lunasi harian & mingguan: geser kartu ke kiri.
  */
 export function KakiKartu({
   vm,
