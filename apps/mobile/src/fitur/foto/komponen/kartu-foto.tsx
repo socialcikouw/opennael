@@ -64,14 +64,16 @@ export const KartuFoto = memo(function KartuFoto(props: {
           <View style={gaya.bulat}>
             <Text style={gaya.teksKe}>{f.angsuranKe}</Text>
           </View>
-          <View style={gaya.status}>
+          <View style={[gaya.status, f.macet ? gaya.statusMacet : null]}>
             <View
               style={[
                 gaya.titik,
                 { backgroundColor: f.macet ? WARNA.bahayaDiAtasFoto : WARNA.suksesDiAtasFoto },
               ]}
             />
-            <Text style={gaya.teksStatus}>{f.macet ? "MACET" : "BERJALAN"}</Text>
+            <Text style={[gaya.teksStatus, f.macet ? gaya.teksMacet : null]}>
+              {f.macet ? "MACET" : "BERJALAN"}
+            </Text>
           </View>
         </View>
         <View style={gaya.pita}>
@@ -140,6 +142,9 @@ const gaya = StyleSheet.create({
     borderColor: WARNA.diAtasFoto,
     backgroundColor: WARNA.tiraiGelap,
   },
+  // MACET lebih mencolok: tepi & tulisan merah terang (BERJALAN tetap putih).
+  statusMacet: { borderColor: WARNA.bahayaDiAtasFoto },
+  teksMacet: { color: WARNA.bahayaDiAtasFoto },
   titik: { width: 8, height: 8, borderRadius: 4 },
   teksStatus: { ...HURUF.xs, fontWeight: TEBAL.ekstra, color: WARNA.diAtasFoto },
   // Lingkaran angsuran ke- (seperti kartu Harian): 36 pt, gelap tembus pandang, tepi putih.

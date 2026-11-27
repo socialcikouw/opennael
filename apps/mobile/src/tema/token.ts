@@ -98,7 +98,7 @@ export const WARNA = {
   /** Kode QR: latar putih pekat & tinta hitam pekat — kontras penuh supaya terpindai, apa pun temanya. */
   latarQr: mutlak.putih,
   tintaQr: mutlak.hitam,
-  /** Titik status di atas lapisan gelap foto: berjalan (hijau terang) / macet (merah terang). */
+  /** Status di atas lapisan gelap foto: titik berjalan (hijau terang); titik, tepi & tulisan MACET (merah terang). */
   suksesDiAtasFoto: emerald[400],
   bahayaDiAtasFoto: red[400],
   /** Lapisan gelap tembus pandang di atas foto (ikon petunjuk, pita alamat). */
