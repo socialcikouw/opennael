@@ -3,7 +3,7 @@ import { useEffect, useSyncExternalStore } from "react";
 /**
  * MODE HP KOLEKTOR — tiga "ruang kerja" (keputusan pemilik 26 Nov 2026):
  *   Kerja  — tab Harian · Mingguan · Tempoan, tombol + akad;
- *   Rekap  — tab Ringkasan · Performa · Portofolio, tombol Foto Nasabah;
+ *   Rekap  — tab Foto · Performa · Portofolio, tombol Menu (Ringkasan, Gaji, Riwayat Kas);
  *   Akun   — tab Profil · Pengaturan · Bantuan.
  *
  * Mode TIDAK disimpan sendiri: tiap mode = satu grup rute (`app/kolektor/(kerja)`, `(rekap)`,
@@ -31,8 +31,8 @@ export const MODE: Record<
     label: "Rekap",
     huruf: "R",
     keterangan: "Kas, laporan sore, performa, portofolio, gaji",
-    tab: "Ringkasan · Performa · Portofolio · Menu (Gaji, Foto)",
-    awal: "/kolektor/ringkasan",
+    tab: "Foto · Performa · Portofolio · Menu (Ringkasan, Gaji, Kas)",
+    awal: "/kolektor/foto",
   },
   akun: {
     label: "Akun",

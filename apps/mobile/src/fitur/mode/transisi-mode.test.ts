@@ -38,7 +38,7 @@ describe("beralih mode", () => {
     lepas.push(pasangPengarah(p), modeTerpasang.pasang("kerja"));
     beralihMode("rekap");
     expect(jejak).toEqual([]);
-    expect(ambilPermintaanMode()).toMatchObject({ mode: "rekap", ke: "/kolektor/ringkasan" });
+    expect(ambilPermintaanMode()).toMatchObject({ mode: "rekap", ke: "/kolektor/foto" });
   });
 
   test("tanpa pengarah (di luar layar kolektor): tidak terjadi apa-apa", () => {

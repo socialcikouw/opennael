@@ -64,4 +64,11 @@ describe("galeri foto nasabah", () => {
     expect(g).toHaveLength(1);
     expect(g[0]?.foto[0]?.nama).toBe("siti aminah");
   });
+
+  test("kartu foto membawa angsuran ke-, nominal angsuran, dan tanda macet", () => {
+    const [k] = kelompokFoto([
+      kartu("budi", "pule", { angsuranKe: 9, angsuran: 50_000, status: "macet" }),
+    ]);
+    expect(k?.foto[0]).toMatchObject({ angsuranKe: 9, angsuran: 50_000, macet: true });
+  });
 });

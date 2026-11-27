@@ -1,6 +1,7 @@
 import { memo } from "react";
 import { StyleSheet, View } from "react-native";
 import type { Stempel } from "@/fitur/lapangan";
+import { BarisRel, JARAK_KARTU } from "@/komponen/rel-kartu";
 import { SelubungMencatat } from "@/komponen/ui/selubung-mencatat";
 import { StempelBerhasil } from "@/komponen/ui/stempel-berhasil";
 import { Tekan } from "@/komponen/ui/tekan";
@@ -10,7 +11,6 @@ import { AngkaKartu } from "./angka-kartu";
 import { GridBulan } from "./grid-bulan";
 import { CABANG_INFO, InfoKartu, ISIAN_KOTAK, TAHAN_LUNASI_MS } from "./info-kartu";
 import { KakiKartu } from "./kaki-kartu";
-import { BarisRel, JARAK_KARTU } from "./rel-kartu";
 import { BlokMinggu, BlokTempo } from "./slot-khusus";
 
 /** Tulisan di bawah "Berhasil" pada stempel kartu. */

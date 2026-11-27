@@ -8,15 +8,13 @@ import { PilGulir } from "@/komponen/pil-gulir";
 import { PilJenis, type SaringJenis } from "@/komponen/pil-jenis";
 import { KartuRincian } from "@/komponen/statistik/kartu-rincian";
 import { KartuSorot } from "@/komponen/statistik/kartu-sorot";
-import { KepalaJudulBesar } from "@/komponen/statistik/kepala-judul-besar";
 import { KerangkaStatistik } from "@/komponen/statistik/kerangka-statistik";
-import { useRuangTab } from "@/komponen/tab-mengambang";
 import { g } from "@/komponen/ui/gaya-bersama";
 import { PesanGalat } from "@/komponen/ui/isian";
 import { Spanduk } from "@/komponen/ui/spanduk";
 import { Tombol } from "@/komponen/ui/tombol";
 import { useTarikSegarkan } from "@/lib/tarik-segarkan";
-import { AKSEN, RUANG } from "@/tema";
+import { AKSEN, HURUF, RUANG, TEBAL, WARNA } from "@/tema";
 import { useBiayaHariIni, useGajiPeriode, useRingkasanPeriode } from "./data";
 import { susunKartu } from "./inti/kartu";
 import { daftarPeriode } from "./inti/periode";
@@ -24,10 +22,10 @@ import { sorotGaji, sorotStortingJenis } from "./inti/sorot";
 import { SorotMutasiKas } from "./komponen/sorot-mutasi-kas";
 
 /**
- * RINGKASAN (tab pertama Mode Rekap; rupa dari aplikasi lama, 27 Nov 2026) — satu gulungan:
+ * RINGKASAN (Mode Rekap › Menu, layar bertumpuk sejak 28 Nov 2026; rupa dari aplikasi lama,
+ * 27 Nov 2026) — satu gulungan:
  *
  *   JUMAT, 27 NOV 2026            ← periode lengkap
- *   Ringkasan                     ← judul besar (kepala tab disembunyikan)
  *   [Hari Ini][Pekan Ini][Bulan Ini][Oktober 2026] …   ← pil periode
  *   [Semua][Harian][Mingguan][Tempoan]                 ← pil jenis
  *   ███ KARTU SOROT ███  Hari Ini: Mutasi Kas (gembok, Buka Laporan, serah terima kasir);
@@ -40,8 +38,7 @@ import { SorotMutasiKas } from "./komponen/sorot-mutasi-kas";
  * Selalu dibuka di Hari Ini (tujuan "Buka Mutasi Kas" dari Notifikasi).
  */
 export function LayarRingkasan() {
-  const atas = useSafeAreaInsets().top;
-  const ruangTab = useRuangTab();
+  const bawah = useSafeAreaInsets().bottom;
   const { hariIni, tagihan, kas, pengingat } = usePengingat();
   const { gerbang, belum } = useGerbangMutasi();
   const tanggal = hariIni.data?.kalender.tanggal;
@@ -156,7 +153,7 @@ export function LayarRingkasan() {
   return (
     <ScrollView
       style={g.layar}
-      contentContainerStyle={[gaya.isi, { paddingTop: atas + RUANG[3], paddingBottom: ruangTab }]}
+      contentContainerStyle={[gaya.isi, { paddingBottom: bawah + RUANG[6] }]}
       showsVerticalScrollIndicator={false}
       refreshControl={
         <RefreshControl
@@ -164,11 +161,12 @@ export function LayarRingkasan() {
           onRefresh={tarik}
           tintColor={AKSEN.teks}
           colors={[AKSEN.teks]}
-          progressViewOffset={atas}
         />
       }
     >
-      <KepalaJudulBesar overline={periode?.judul ?? " "} judul="Ringkasan" />
+      <Text style={gaya.periode} numberOfLines={1}>
+        {(periode?.judul ?? " ").toUpperCase()}
+      </Text>
       <View style={g.tumpuk2}>
         <PilGulir
           opsi={daftar.map((p) => ({ nilai: p.kunci, label: p.pil }))}
@@ -189,7 +187,8 @@ export function LayarRingkasan() {
 }
 
 const gaya = StyleSheet.create({
-  isi: { gap: RUANG[4], paddingHorizontal: RUANG[5] },
+  isi: { gap: RUANG[4], paddingHorizontal: RUANG[5], paddingTop: RUANG[2] },
+  periode: { ...HURUF["2xs"], fontWeight: TEBAL.tebal, letterSpacing: 0.8, color: WARNA.redup },
   kartu: { gap: RUANG[3] },
   /** Periode/jenis baru sedang dimuat: angka lama tetap di tempat, diredupkan. */
   redup: { opacity: 0.45 },

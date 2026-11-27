@@ -591,12 +591,12 @@ sebelum `react()`; `lazyRouteComponent` tidak dipakai lagi.
 | `/tautkan` | `app/tautkan.tsx` | `fitur/tautan/layar-tautkan.tsx` |
 | `/beranda` | `app/beranda.tsx` | `fitur/akun/layar-beranda-bos.tsx` |
 | `/kolektor/harian` · `mingguan` · `tempoan` | `app/kolektor/(kerja)/harian.tsx` dst. | `fitur/tagihan/layar-tagihan.tsx` (berjenis) |
-| `/kolektor/ringkasan` | `app/kolektor/(rekap)/ringkasan.tsx` | `fitur/ringkasan/layar-ringkasan.tsx` |
+| `/kolektor/foto` | `app/kolektor/(rekap)/foto.tsx` | `fitur/foto/layar-foto.tsx` (tab pertama Rekap, 28 Nov 2026) |
+| `/kolektor/ringkasan` | `app/kolektor/ringkasan.tsx` (layar bertumpuk, dari Menu) | `fitur/ringkasan/layar-ringkasan.tsx` |
 | `/kolektor/performa` | `app/kolektor/(rekap)/performa.tsx` | `fitur/performa/layar-performa.tsx` |
 | `/kolektor/portofolio` | `app/kolektor/(rekap)/portofolio.tsx` | `fitur/portofolio/layar-portofolio.tsx` |
 | `/kolektor/profil` · `pengaturan` · `bantuan` | `app/kolektor/(akun)/profil.tsx` dst. | `fitur/akun/layar-profil.tsx` dst. |
 | `/kolektor/notifikasi` | `app/kolektor/notifikasi.tsx` | `fitur/notifikasi/layar-notifikasi.tsx` |
-| `/kolektor/foto-nasabah` | `app/kolektor/foto-nasabah.tsx` | `fitur/foto-nasabah/layar-foto-nasabah.tsx` |
 | `/kolektor/gaji` | `app/kolektor/gaji.tsx` | `fitur/gaji/layar-gaji.tsx` (dari Menu Mode Rekap, `fitur/menu`) |
 | `/kolektor/riwayat-kas` · `riwayat-kas/[tanggal]` | `app/kolektor/riwayat-kas/index.tsx` dst. | `fitur/riwayat-kas/layar-riwayat-kas.tsx` · `layar-hari-kas.tsx` (dari Menu Mode Rekap) |
 | `/kolektor/storting` · `droping` | `app/kolektor/storting.tsx` dst. | `fitur/ringkasan/layar-storting.tsx` dst. (daftar hari ini per nasabah, dari kartu Ringkasan) |

@@ -1,11 +1,11 @@
 import { rupiah } from "@opennael/format";
 import { memo } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { LEBAR_REL, TEBAL_REL, TENGAH_REL } from "@/komponen/rel-kartu";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Tekan } from "@/komponen/ui/tekan";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaAksen } from "@/tema";
 import type { Baris, SegmenTagihan } from "../inti/daftar";
-import { LEBAR_REL, TEBAL_REL, TENGAH_REL } from "./rel-kartu";
 
 /** Tinggi lencana jumlah; rel turun dari bawahnya. */
 const TINGGI_JUMLAH = 24;

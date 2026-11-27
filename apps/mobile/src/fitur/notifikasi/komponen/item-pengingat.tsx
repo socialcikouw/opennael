@@ -1,4 +1,5 @@
 import { judul, tampilKampung, tampilNama } from "@opennael/format";
+import { router } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { beralihMode, ruteJenis } from "@/fitur/mode";
@@ -65,7 +66,8 @@ export function ItemPengingat({ p, tanpaMutasi = false }: { p: Pengingat; tanpaM
   const keTab = () => {
     if (p.jenisPinjaman) beralihMode("kerja", ruteJenis(p.jenisPinjaman));
   };
-  const keMutasi = () => beralihMode("rekap", "/kolektor/ringkasan");
+  // Ringkasan = layar bertumpuk: dibuka di atas mode mana pun, ← kembali ke sini.
+  const keMutasi = () => router.push("/kolektor/ringkasan");
 
   return (
     <View style={gaya.wadah}>

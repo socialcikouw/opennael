@@ -2,7 +2,7 @@ import { rupiah } from "@opennael/format";
 import { router } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 import { useGajiBerjalan } from "@/fitur/gaji";
-import { useHariIni } from "@/fitur/lapangan";
+import { useHariIni, useKasHariIni } from "@/fitur/lapangan";
 import { ringkasBulan, useRiwayatBulan } from "@/fitur/riwayat-kas";
 import { LembarBawah } from "@/komponen/lembar-bawah";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
@@ -13,30 +13,37 @@ import { AKSEN, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 
 /**
  * LEMBAR MENU Mode Rekap (opsi C, keputusan pemilik 28 Nov 2026) — dibuka tombol kanan tab
- * bar Rekap. Ubin layar-layar yang jarang dibuka (tab tetap untuk yang harian: Ringkasan,
- * Performa, Portofolio); ubin boleh membawa angka kecil supaya menu ikut jadi layar pantau.
+ * bar Rekap. Ubin layar-layar di luar tab (Foto · Performa · Portofolio): Ringkasan (Mutasi
+ * Kas & laporan sore), Gaji, Riwayat Kas; ubin boleh membawa angka kecil supaya menu ikut jadi layar pantau.
  * Mengetuk ubin menutup lembar lalu membuka layarnya. Isi lembar baru dipasang saat terbuka
  * (Modal), jadi bacaan ubin tak berjalan selama lembar tertutup.
  */
 export function LembarMenu({ terbuka, onTutup }: { terbuka: boolean; onTutup: () => void }) {
-  const buka = (rute: "/kolektor/gaji" | "/kolektor/riwayat-kas" | "/kolektor/foto-nasabah") => {
+  const buka = (rute: "/kolektor/ringkasan" | "/kolektor/gaji" | "/kolektor/riwayat-kas") => {
     onTutup();
     router.push(rute);
   };
   return (
     <LembarBawah terbuka={terbuka} onTutup={onTutup} judul="Menu">
       <View style={gaya.grid}>
+        <UbinRingkasan onPress={() => buka("/kolektor/ringkasan")} />
         <UbinGaji onPress={() => buka("/kolektor/gaji")} />
         <UbinRiwayatKas onPress={() => buka("/kolektor/riwayat-kas")} />
-        <Ubin
-          ikon="images"
-          judul="Foto Nasabah"
-          ket="Foto serah terima per kampung"
-          onPress={() => buka("/kolektor/foto-nasabah")}
-        />
       </View>
     </LembarBawah>
   );
+}
+
+/** Ubin Ringkasan membawa tunai yang harus disetor hari ini (Mutasi Kas). */
+function UbinRingkasan({ onPress }: { onPress: () => void }) {
+  const hari = useKasHariIni().data;
+  const st = hari?.serahTerima;
+  const ket = st
+    ? `Kas diterima ${rupiah(st.tunaiDiterima)}`
+    : hari?.rincian
+      ? `Setor hari ini ${rupiah(hari.rincian.tunaiSeharusnya)}`
+      : "Mutasi kas & laporan sore";
+  return <Ubin ikon="receipt-text" judul="Ringkasan" ket={ket} onPress={onPress} />;
 }
 
 /** Ubin Gaji membawa gaji yang belum dibayar (perkiraan). */

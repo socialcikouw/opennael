@@ -119,8 +119,8 @@ export function LayarPerforma() {
                 r={r}
                 gagal={d.tagihan.isError && !d.tagihan.data}
                 aksen={AKSEN}
-                // Laporan sore dibuka dari Ringkasan (tab pertama mode ini).
-                onLaporan={() => router.navigate("/kolektor/ringkasan")}
+                // Laporan sore dibuka dari Ringkasan (Menu › Ringkasan).
+                onLaporan={() => router.push("/kolektor/ringkasan")}
               />
             )}
           </>

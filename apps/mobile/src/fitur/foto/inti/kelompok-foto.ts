@@ -8,6 +8,11 @@ export interface FotoNasabah {
   kampung: string;
   fotoId: string;
   tanggalAkad: string;
+  /** Angsuran ke- (banyaknya angsuran yang sudah terbayar) pinjaman itu. */
+  angsuranKe: number;
+  /** Nominal satu angsuran. */
+  angsuran: number;
+  macet: boolean;
 }
 
 export interface KelompokFoto {
@@ -18,7 +23,7 @@ export interface KelompokFoto {
 }
 
 /**
- * GALERI FOTO NASABAH (Mode Rekap) — dari daftar tagih pegangan kolektor: SATU foto per
+ * TAB FOTO (Mode Rekap, 28 Nov 2026) — dari daftar tagih pegangan kolektor: SATU foto per
  * nasabah (akad terakhir yang punya foto serah terima; salinan buku lama tanpa foto tak
  * tampil), dikelompokkan per kampung. Kampung urut rute kolektor (`ruteKe` terkecil dulu,
  * belum diatur di belakang, lalu abjad); di dalam kampung urut nama. `cari` (nama, tanpa
@@ -50,6 +55,9 @@ export function kelompokFoto(daftar: readonly KartuTagih[], cari = ""): Kelompok
       kampung: p.nasabah.kampung,
       fotoId: p.fotoSerahTerimaId as string,
       tanggalAkad: p.tanggalAkad,
+      angsuranKe: p.angsuranKe,
+      angsuran: p.angsuran,
+      macet: p.status === "macet",
     });
     kelompok.set(kunci, k);
   }
