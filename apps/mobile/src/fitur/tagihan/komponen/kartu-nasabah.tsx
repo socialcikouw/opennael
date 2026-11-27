@@ -10,6 +10,7 @@ import { AngkaKartu } from "./angka-kartu";
 import { GeserLunasi } from "./geser-lunasi";
 import { GridBulan } from "./grid-bulan";
 import { CABANG_INFO, InfoKartu, ISIAN_KOTAK } from "./info-kartu";
+import { InfoTempo } from "./info-tempo";
 import { KakiKartu } from "./kaki-kartu";
 import { BlokMinggu, BlokTempo } from "./slot-khusus";
 
@@ -62,7 +63,23 @@ export const KartuNasabah = memo(function KartuNasabah(props: {
   // Geser kiri → LUNASI hanya harian & mingguan; tempoan punya tombol Lunasi sendiri di kaki.
   const geser = lunasi && !vm.sekaliBayar ? lunasi : null;
 
-  const kotak = (
+  // Tempoan yang masih ditagih: kepala khusus (hitung mundur & jatuh tempo, tanpa angsuran ke-,
+  // tanpa baris Pokok/Sisa Saldo — nominal ada di tombol LUNASI). Rombak 28 Nov 2026.
+  const tempo = vm.sekaliBayar && vm.tempo && bisaAksi ? vm.tempo : null;
+  const kotak = tempo ? (
+    <View style={gaya.kotak}>
+      <InfoTempo
+        vm={vm}
+        t={tempo}
+        aksen={props.aksen}
+        onLunasi={lunasi}
+        onBuka={() => props.aksi.nasabah(vm)}
+        onSiap={() => props.aksi.siapNasabah(vm)}
+      />
+      <KakiKartu vm={vm} aksi={props.aksi} aksen={props.aksen} />
+      {props.sibuk ? <SelubungMencatat warna={props.aksen.teks} /> : null}
+    </View>
+  ) : (
     <View style={gaya.kotak}>
       <InfoKartu
         vm={vm}

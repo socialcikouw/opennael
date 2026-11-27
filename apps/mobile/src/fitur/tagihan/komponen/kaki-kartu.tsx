@@ -33,7 +33,8 @@ export function KakiKartu({
   // Sebelum jatuh tempo tempoan tak ada Janji Besok — baris tonal hilang.
   const macet = vm.p.status === "macet";
   const gulung = !vm.sekaliBayar && !macet;
-  const sebaris = macet && vm.tampilkanLibur;
+  // Macet & tempoan: tombol tonal (Libur / Janji Besok) sebaris dengan Bayar / Lunasi.
+  const sebaris = (macet || vm.sekaliBayar) && vm.tampilkanLibur;
   const libur = vm.tampilkanLibur ? (
     <TombolTonal
       label={vm.labelLibur}

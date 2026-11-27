@@ -2,7 +2,8 @@ import { memo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Ikon } from "@/komponen/ui/ikon";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaAksen } from "@/tema";
-import type { KeadaanTempo, MingguanVM, StatusKotak, TempoVM } from "../inti/khusus";
+import type { MingguanVM, StatusKotak, TempoVM } from "../inti/khusus";
+import { rupaTempo } from "./info-tempo";
 
 /** Slot grid kartu MINGGUAN: kabar (minggu terlewat / tagih berikutnya) + kotak per minggu. */
 export const BlokMinggu = memo(function BlokMinggu(props: {
@@ -57,17 +58,8 @@ export const BlokMinggu = memo(function BlokMinggu(props: {
 
 /** Slot grid kartu TEMPOAN: jatuh tempo + hitung mundur berwarna, lalu garis waktu akad → jatuh tempo. */
 export const BlokTempo = memo(function BlokTempo({ t, aksen }: { t: TempoVM; aksen: WarnaAksen }) {
-  const rupa: Record<KeadaanTempo, { teks: string; latar: string }> = {
-    nanti: { teks: WARNA.teksKedua, latar: WARNA.isiNetral },
-    segera: { teks: WARNA.waspada, latar: WARNA.waspadaLembut },
-    hariini: { teks: aksen.teksIsi, latar: aksen.isi },
-    meleset: { teks: WARNA.bahayaTeks, latar: WARNA.bahayaLembut },
-    batas: { teks: WARNA.teksAtasBahaya, latar: WARNA.bahaya },
-    macet: { teks: WARNA.teksAtasBahaya, latar: WARNA.bahaya },
-  };
-  const w = rupa[t.keadaan];
-  const isiRel =
-    t.keadaan === "nanti" ? aksen.teks : t.keadaan === "segera" ? WARNA.waspada : w.latar;
+  const w = rupaTempo(t.keadaan, aksen);
+  const isiRel = w.rel;
   return (
     <View style={gaya.nampan}>
       <View style={gaya.barisTempo}>
