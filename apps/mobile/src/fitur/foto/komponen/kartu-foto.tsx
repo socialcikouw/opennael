@@ -16,7 +16,7 @@ const CABANG = RUANG[2] + 10;
  * KARTU FOTO (tab Foto, rupa kartu Harian — permintaan pemilik 28 Nov 2026): satu kartu
  * per nasabah bercabang ke rel kampung; isinya foto serah terima, dengan lencana kecil
  * berlatar hitam bertulisan terakota di atas foto: angsuran ke- (kiri atas), nama dan
- * angsuran (kiri bawah); MACET (kanan atas, bila macet) berlatar merah bertulisan putih. Huruf sekecil yang masih terbaca (10 pt tebal).
+ * angsuran (kiri bawah); MACET (kanan atas, bila macet) berlatar putih bertulisan merah. Huruf sekecil yang masih terbaca (10 pt tebal).
  * Ketuk = layar penuh.
  */
 export const KartuFoto = memo(function KartuFoto(props: {
@@ -119,9 +119,9 @@ const gaya = StyleSheet.create({
     borderRadius: SUDUT.kecil - 2,
     backgroundColor: WARNA.latarLencanaFoto,
   },
-  // Arti "bahaya": merah pekat bertulisan putih (≥ 4,5:1, diuji `token.test.ts`).
-  lencanaMacet: { backgroundColor: WARNA.bahayaBingkai },
-  teksMacet: { color: WARNA.teksAtasBahaya },
+  // Putih bertulisan merah (arti "bahaya"; merah 700 di atas putih ±6,4:1).
+  lencanaMacet: { backgroundColor: WARNA.permukaan },
+  teksMacet: { color: WARNA.bahaya },
   bulat: { minWidth: 20, alignItems: "center", borderRadius: SUDUT.bulat },
   teks: {
     ...HURUF["3xs"],
