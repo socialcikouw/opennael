@@ -74,13 +74,24 @@ const bilahPortofolioSchema = z.object({
 
 /**
  * Pegangan satu jenis pinjaman per status: banyaknya pinjaman, Σ saldo, Σ angsuran, Σ
- * tabungan nasabah; `lunas` = banyaknya pinjaman lunas sepanjang masa (27 Nov 2026).
+ * tabungan nasabah; `lunas` = banyaknya pinjaman lunas & Σ pokoknya sepanjang masa
+ * (27–28 Nov 2026); `penyelesaian` = cara piutang selesai selain dilunasi (28 Nov 2026).
  */
 export const portofolioJenisSchema = z.object({
   berjalan: bilahPortofolioSchema,
   macet: bilahPortofolioSchema,
   diputihkan: bilahPortofolioSchema,
-  lunas: z.object({ jumlah: z.number() }),
+  lunas: z.object({
+    jumlah: z.number(),
+    /** Σ pokok pinjaman berstatus lunas — yang digulung tidak termasuk. */
+    pokok: z.number(),
+  }),
+  penyelesaian: z.object({
+    /** Σ pengurangan pokok karena gulung turun (E), pinjaman yang tidak batal. */
+    pokokBerkurang: z.number(),
+    /** Σ tabungan keluar (pelunasan ditutup tabungan, D) dari setoran berlaku. */
+    tabunganKeluar: z.number(),
+  }),
 });
 export type PortofolioJenis = z.infer<typeof portofolioJenisSchema>;
 

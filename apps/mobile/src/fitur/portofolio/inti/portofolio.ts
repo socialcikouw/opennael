@@ -8,7 +8,7 @@ import type { KartuVM, SorotVM } from "../../../komponen/statistik/tipe";
  * PORTOFOLIO pegangan kolektor (rupa aplikasi lama, 27 Nov 2026) — kartu sorot SALDO AKHIR
  * (piutang yang masih di lapangan, bar berjalan vs macet: porsi macet terbaca lebih dulu),
  * lalu kartu rincian Per Jenis (Semua) · Nasabah Aktif · Target Angsuran · Tabungan Nasabah
- * · Diputihkan. Server memberi angka per jenis sekaligus (`GET /lapangan/portofolio`), jadi
+ * · Penyelesaian Piutang · Diputihkan. Server memberi angka per jenis sekaligus (`GET /lapangan/portofolio`), jadi
  * pil jenis tak memicu permintaan baru. PURE.
  */
 
@@ -29,7 +29,14 @@ export function portofolioUntuk(data: Portofolio, jenis: JenisPinjaman | null): 
     berjalan: jumlah("berjalan"),
     macet: jumlah("macet"),
     diputihkan: jumlah("diputihkan"),
-    lunas: { jumlah: semua.reduce((n, j) => n + j.lunas.jumlah, 0) },
+    lunas: {
+      jumlah: semua.reduce((n, j) => n + j.lunas.jumlah, 0),
+      pokok: semua.reduce((n, j) => n + j.lunas.pokok, 0),
+    },
+    penyelesaian: {
+      pokokBerkurang: semua.reduce((n, j) => n + j.penyelesaian.pokokBerkurang, 0),
+      tabunganKeluar: semua.reduce((n, j) => n + j.penyelesaian.tabunganKeluar, 0),
+    },
   };
 }
 
@@ -196,6 +203,35 @@ export function kartuTabungan(p: PortofolioJenis): KartuVM {
   };
 }
 
+/**
+ * Penyelesaian piutang sepanjang masa (rupa aplikasi lama): pokok yang terlunasi murni
+ * (pinjaman berstatus lunas — yang digulung tidak), serta dua jalan lain piutang selesai:
+ * tabungan keluar (pelunasan ditutup tabungan, D) dan pokok berkurang karena gulung turun (E).
+ */
+export function kartuPenyelesaian(p: PortofolioJenis): KartuVM {
+  return {
+    kunci: "penyelesaian",
+    judul: "Penyelesaian Piutang",
+    ikon: "check-check",
+    nilai: p.lunas.pokok,
+    rumus: "Pokok terlunasi murni, sepanjang masa",
+    meta: `${p.lunas.jumlah} pinjaman lunas`,
+    selisih: null,
+    segmen: null,
+    grid: false,
+    rincian: [
+      { ikon: "piggy-bank", label: "Tabungan keluar", nilai: p.penyelesaian.tabunganKeluar },
+      {
+        ikon: "trending-down",
+        label: "Pokok berkurang (gulung)",
+        nilai: p.penyelesaian.pokokBerkurang,
+      },
+    ],
+    kaki: null,
+    daftar: null,
+  };
+}
+
 /** Piutang yang dihapus bos (pemutihan, K); null bila tak pernah ada. */
 export function kartuDiputihkan(p: PortofolioJenis): KartuVM | null {
   if (p.diputihkan.jumlah === 0) return null;
@@ -223,6 +259,7 @@ export function susunKartuPortofolio(data: Portofolio, jenis: JenisPinjaman | nu
     kartuNasabah(p),
     kartuAngsuran(data, jenis),
     kartuTabungan(p),
+    kartuPenyelesaian(p),
     kartuDiputihkan(p),
   ];
   return kartu.filter((k): k is KartuVM => k !== null);

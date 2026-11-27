@@ -3,6 +3,7 @@ import type { Portofolio } from "@opennael/contracts";
 import {
   kartuAngsuran,
   kartuNasabah,
+  kartuPenyelesaian,
   piutangAktif,
   portofolioUntuk,
   sorotSaldoAkhir,
@@ -15,19 +16,22 @@ const DATA: Portofolio = {
     berjalan: { jumlah: 40, saldo: 20_000_000, angsuran: 2_000_000, tabungan: 3_000_000 },
     macet: { jumlah: 3, saldo: 1_500_000, angsuran: 150_000, tabungan: 100_000 },
     diputihkan: { jumlah: 1, saldo: 800_000, angsuran: 50_000, tabungan: 0 },
-    lunas: { jumlah: 120 },
+    lunas: { jumlah: 120, pokok: 120_000_000 },
+    penyelesaian: { pokokBerkurang: 500_000, tabunganKeluar: 900_000 },
   },
   mingguan: {
     berjalan: { jumlah: 10, saldo: 9_000_000, angsuran: 1_500_000, tabungan: 0 },
     macet: nol,
     diputihkan: nol,
-    lunas: { jumlah: 8 },
+    lunas: { jumlah: 8, pokok: 8_000_000 },
+    penyelesaian: { pokokBerkurang: 0, tabunganKeluar: 0 },
   },
   tempoan: {
     berjalan: { jumlah: 2, saldo: 2_500_000, angsuran: 2_500_000, tabungan: 0 },
     macet: { jumlah: 1, saldo: 1_250_000, angsuran: 1_250_000, tabungan: 0 },
     diputihkan: { jumlah: 2, saldo: 2_000_000, angsuran: 2_000_000, tabungan: 0 },
-    lunas: { jumlah: 4 },
+    lunas: { jumlah: 4, pokok: 2_000_000 },
+    penyelesaian: { pokokBerkurang: 0, tabunganKeluar: 100_000 },
   },
 };
 
@@ -42,7 +46,8 @@ describe("portofolioUntuk", () => {
       berjalan: { jumlah: 52, saldo: 31_500_000, angsuran: 6_000_000, tabungan: 3_000_000 },
       macet: { jumlah: 4, saldo: 2_750_000, angsuran: 1_400_000, tabungan: 100_000 },
       diputihkan: { jumlah: 3, saldo: 2_800_000, angsuran: 2_050_000, tabungan: 0 },
-      lunas: { jumlah: 132 },
+      lunas: { jumlah: 132, pokok: 130_000_000 },
+      penyelesaian: { pokokBerkurang: 500_000, tabunganKeluar: 1_000_000 },
     });
   });
 
@@ -72,12 +77,14 @@ describe("kartu portofolio", () => {
       "nasabah",
       "angsuran",
       "tabungan",
+      "penyelesaian",
       "diputihkan",
     ]);
     expect(susunKartuPortofolio(DATA, "mingguan").map((k) => k.kunci)).toEqual([
       "nasabah",
       "angsuran",
       "tabungan",
+      "penyelesaian",
     ]);
   });
 
@@ -98,5 +105,20 @@ describe("kartu portofolio", () => {
     expect(kartuAngsuran(DATA, "mingguan").rumus).toBe(
       "Angsuran mingguan berjalan + macet, per minggu",
     );
+  });
+});
+
+describe("penyelesaian piutang", () => {
+  test("pokok terlunasi murni + tabungan keluar + pokok berkurang gulung", () => {
+    const k = kartuPenyelesaian(portofolioUntuk(DATA, null));
+    expect(k).toMatchObject({
+      judul: "Penyelesaian Piutang",
+      nilai: 130_000_000,
+      meta: "132 pinjaman lunas",
+    });
+    expect(k.rincian.map((r) => [r.label, r.nilai])).toEqual([
+      ["Tabungan keluar", 1_000_000],
+      ["Pokok berkurang (gulung)", 500_000],
+    ]);
   });
 });

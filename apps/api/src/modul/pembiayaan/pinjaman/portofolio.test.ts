@@ -68,7 +68,18 @@ describe.skipIf(!URL_DB)("portofolio kolektor", () => {
       const eko = await nasabahBaru("eko", dedi?.id as string);
 
       // Ani: pinjaman harian pertama sudah lunas (tak dihitung), kedua berjalan.
-      await pinjamanLama({ nasabahId: ani, pemegang: andiId, ke: 1, saldo: 0, status: "lunas" });
+      const pAniLunas = await pinjamanLama({
+        nasabahId: ani,
+        pemegang: andiId,
+        ke: 1,
+        saldo: 0,
+        status: "lunas",
+      });
+      // Pelunasannya ditutup tabungan 50.000 (tabungan keluar → kartu Penyelesaian Piutang).
+      await tx.execute(sql`
+        insert into transaksi (kantor_id, pencatat_id, pinjaman_id, tanggal, jenis, setoran_murni,
+          setoran_pelunasan, tabungan_keluar, saldo_sesudah)
+        values (${kantorId}, ${andiId}, ${pAniLunas}, '2026-09-15', 'pelunasan', 0, 50000, 50000, 0)`);
       await pinjamanLama({
         nasabahId: ani,
         pemegang: andiId,
@@ -107,7 +118,10 @@ describe.skipIf(!URL_DB)("portofolio kolektor", () => {
 
       const baca = async () => (await kirim("/lapangan/portofolio", { token: k })).isi;
       const nol = { jumlah: 0, saldo: 0, angsuran: 0, tabungan: 0 };
-      const belumLunas = { jumlah: 0 };
+      const belumLunas = { jumlah: 0, pokok: 0 };
+      const tanpaPenyelesaian = { pokokBerkurang: 0, tabunganKeluar: 0 };
+      const hLunas = { jumlah: 1, pokok: 1_000_000 };
+      const hPenyelesaian = { pokokBerkurang: 0, tabunganKeluar: 50_000 };
 
       // Tanpa masuk ditolak; bos bukan kolektor: ringkasan ini milik pegangan, bukan kantor.
       expect(kode(await kirim("/lapangan/portofolio"))).toBe("BELUM_MASUK");
@@ -117,18 +131,26 @@ describe.skipIf(!URL_DB)("portofolio kolektor", () => {
       const hBerjalan = { jumlah: 1, saldo: 800_000, angsuran: 50_000, tabungan: 70_000 };
       const hMacet = { jumlah: 1, saldo: 300_000, angsuran: 50_000, tabungan: 0 };
       expect(await baca()).toEqual({
-        harian: { berjalan: hBerjalan, macet: hMacet, diputihkan: nol, lunas: { jumlah: 1 } },
+        harian: {
+          berjalan: hBerjalan,
+          macet: hMacet,
+          diputihkan: nol,
+          lunas: hLunas,
+          penyelesaian: hPenyelesaian,
+        },
         mingguan: {
           berjalan: { jumlah: 1, saldo: 400_000, angsuran: 150_000, tabungan: 0 },
           macet: nol,
           diputihkan: nol,
           lunas: belumLunas,
+          penyelesaian: tanpaPenyelesaian,
         },
         tempoan: {
           berjalan: nol,
           macet: { jumlah: 1, saldo: 500_000, angsuran: 1_250_000, tabungan: 0 },
           diputihkan: nol,
           lunas: belumLunas,
+          penyelesaian: tanpaPenyelesaian,
         },
       });
 
@@ -142,7 +164,8 @@ describe.skipIf(!URL_DB)("portofolio kolektor", () => {
         berjalan: hBerjalan,
         macet: nol,
         diputihkan: hMacet,
-        lunas: { jumlah: 1 },
+        lunas: hLunas,
+        penyelesaian: hPenyelesaian,
       });
 
       // Batal pemutihan: kembali macet.
@@ -154,7 +177,8 @@ describe.skipIf(!URL_DB)("portofolio kolektor", () => {
         berjalan: hBerjalan,
         macet: hMacet,
         diputihkan: nol,
-        lunas: { jumlah: 1 },
+        lunas: hLunas,
+        penyelesaian: hPenyelesaian,
       });
     });
   }, 60_000);

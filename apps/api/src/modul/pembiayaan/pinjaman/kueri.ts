@@ -1,7 +1,7 @@
 import type { KartuTagih, Portofolio } from "@opennael/contracts";
-import { and, asc, count, eq, inArray, sql } from "drizzle-orm";
+import { and, asc, count, eq, inArray, isNull, ne, sql } from "drizzle-orm";
 import type { Db } from "../../../platform/db/klien";
-import { nasabah, pinjaman, ruteWilayah, wilayah } from "../../../platform/db/skema";
+import { nasabah, pinjaman, ruteWilayah, transaksi, wilayah } from "../../../platform/db/skema";
 import type { Aktor } from "../../../platform/http/aktor";
 import { wajibPeran } from "../../../platform/http/peran";
 import { catatanHari } from "../../hari-kolektor";
@@ -64,6 +64,7 @@ export function buatKueriPinjaman(deps: { db: Db; sekarang?: (() => Date) | unde
           saldo: sql<number>`coalesce(sum(${pinjaman.saldo}), 0)`.mapWith(Number),
           angsuran: sql<number>`coalesce(sum(${pinjaman.angsuran}), 0)`.mapWith(Number),
           tabungan: sql<number>`coalesce(sum(${nasabah.saldoTabungan}), 0)`.mapWith(Number),
+          pokok: sql<number>`coalesce(sum(${pinjaman.pokok}), 0)`.mapWith(Number),
         })
         .from(pinjaman)
         .innerJoin(nasabah, eq(nasabah.id, pinjaman.nasabahId))
@@ -75,16 +76,51 @@ export function buatKueriPinjaman(deps: { db: Db; sekarang?: (() => Date) | unde
           ),
         )
         .groupBy(pinjaman.jenis, pinjaman.status);
+      // Pengurangan pokok gulung turun ada di pinjaman penerusnya (status apa pun, asal tak batal).
+      const berkurang = await deps.db
+        .select({
+          jenis: pinjaman.jenis,
+          nilai: sql<number>`coalesce(sum(${pinjaman.pokokBerkurang}), 0)`.mapWith(Number),
+        })
+        .from(pinjaman)
+        .innerJoin(nasabah, eq(nasabah.id, pinjaman.nasabahId))
+        .where(
+          and(
+            eq(pinjaman.kantorId, aktor.kantorId),
+            eq(nasabah.kolektorId, aktor.penggunaId),
+            ne(pinjaman.status, "batal"),
+          ),
+        )
+        .groupBy(pinjaman.jenis);
+      const tabunganKeluar = await deps.db
+        .select({
+          jenis: pinjaman.jenis,
+          nilai: sql<number>`coalesce(sum(${transaksi.tabunganKeluar}), 0)`.mapWith(Number),
+        })
+        .from(transaksi)
+        .innerJoin(pinjaman, eq(pinjaman.id, transaksi.pinjamanId))
+        .innerJoin(nasabah, eq(nasabah.id, pinjaman.nasabahId))
+        .where(
+          and(
+            eq(transaksi.kantorId, aktor.kantorId),
+            eq(nasabah.kolektorId, aktor.penggunaId),
+            isNull(transaksi.dibatalkanAt),
+          ),
+        )
+        .groupBy(pinjaman.jenis);
       const nol = () => ({ jumlah: 0, saldo: 0, angsuran: 0, tabungan: 0 });
       const kosong = () => ({
         berjalan: nol(),
         macet: nol(),
         diputihkan: nol(),
-        lunas: { jumlah: 0 },
+        lunas: { jumlah: 0, pokok: 0 },
+        penyelesaian: { pokokBerkurang: 0, tabunganKeluar: 0 },
       });
       const hasil: Portofolio = { harian: kosong(), mingguan: kosong(), tempoan: kosong() };
+      for (const b of berkurang) hasil[b.jenis].penyelesaian.pokokBerkurang = b.nilai;
+      for (const t of tabunganKeluar) hasil[t.jenis].penyelesaian.tabunganKeluar = t.nilai;
       for (const b of baris) {
-        if (b.status === "lunas") hasil[b.jenis].lunas = { jumlah: b.jumlah };
+        if (b.status === "lunas") hasil[b.jenis].lunas = { jumlah: b.jumlah, pokok: b.pokok };
         else if (b.status === "berjalan" || b.status === "macet" || b.status === "diputihkan") {
           const { jumlah, saldo, angsuran, tabungan } = b;
           hasil[b.jenis][b.status] = { jumlah, saldo, angsuran, tabungan };
