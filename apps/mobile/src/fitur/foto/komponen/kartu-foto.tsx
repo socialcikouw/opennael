@@ -4,6 +4,7 @@ import { memo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { sumberFoto } from "@/fitur/lapangan";
 import { BarisRel, JARAK_KARTU } from "@/komponen/rel-kartu";
+import { Ikon } from "@/komponen/ui/ikon";
 import { Tekan } from "@/komponen/ui/tekan";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 import type { FotoNasabah } from "../inti/kelompok-foto";
@@ -45,10 +46,10 @@ export const KartuFoto = memo(function KartuFoto(props: {
             style={StyleSheet.absoluteFill}
           />
         ) : (
-          // Belum berfoto (salinan buku lama): avatar huruf awal di tengah kartu.
+          // Belum berfoto (salinan buku lama): avatar ikon orang di tengah kartu.
           <View style={gaya.avatarBidang}>
             <View style={gaya.avatar}>
-              <Text style={gaya.avatarHuruf}>{nama.charAt(0).toUpperCase()}</Text>
+              <Ikon nama="user-round" ukuran={52} warna={WARNA.utamaTua} />
             </View>
             <Text style={gaya.tanpaFoto}>Belum ada foto</Text>
           </View>
@@ -107,7 +108,6 @@ const gaya = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: WARNA.utamaMuda,
   },
-  avatarHuruf: { fontSize: 40, lineHeight: 48, fontWeight: TEBAL.ekstra, color: WARNA.utamaTua },
   tanpaFoto: { ...HURUF.xs, fontWeight: TEBAL.semi, color: WARNA.redup },
   atas: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },
   bawah: { alignItems: "flex-start", gap: RUANG[1] },
