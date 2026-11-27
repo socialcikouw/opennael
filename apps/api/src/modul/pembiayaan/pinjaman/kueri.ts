@@ -1,4 +1,4 @@
-import type { KartuTagih, Portofolio } from "@opennael/contracts";
+import type { IndeksBuku, KartuTagih, Portofolio } from "@opennael/contracts";
 import { and, asc, count, eq, inArray, isNull, ne, sql } from "drizzle-orm";
 import type { Db } from "../../../platform/db/klien";
 import { nasabah, pinjaman, ruteWilayah, transaksi, wilayah } from "../../../platform/db/skema";
@@ -54,6 +54,51 @@ export function buatKueriPinjaman(deps: { db: Db; sekarang?: (() => Date) | unde
      * banyaknya pinjaman dan Σ saldo yang berjalan, macet, dan diputihkan. Satu
      * kueri agregat — tanpa mengunduh riwayat pinjaman selesai.
      */
+    async buku(aktor: Aktor): Promise<IndeksBuku[]> {
+      wajibPeran(aktor, "kolektor");
+      // Satu baris per nasabah (DISTINCT ON): pinjaman ke- terbesar yang tak batal, beserta
+      // banyaknya pinjaman nasabah itu (jendela) — satu kueri, tanpa batas baris.
+      const baris = await deps.db
+        .selectDistinctOn([nasabah.id], {
+          nasabahId: nasabah.id,
+          nama: nasabah.nama,
+          kampung: wilayah.nama,
+          jumlahPinjaman: sql<number>`count(*) over (partition by ${nasabah.id})`.mapWith(Number),
+          id: pinjaman.id,
+          pinjamanKe: pinjaman.pinjamanKe,
+          jenis: pinjaman.jenis,
+          status: pinjaman.status,
+          pokok: pinjaman.pokok,
+          saldo: pinjaman.saldo,
+          tanggalAkad: pinjaman.tanggalAkad,
+          tanggalSelesai: pinjaman.tanggalSelesai,
+        })
+        .from(pinjaman)
+        .innerJoin(nasabah, eq(nasabah.id, pinjaman.nasabahId))
+        .innerJoin(wilayah, eq(wilayah.id, nasabah.wilayahId))
+        .where(
+          and(
+            eq(pinjaman.kantorId, aktor.kantorId),
+            eq(nasabah.kolektorId, aktor.penggunaId),
+            ne(pinjaman.status, "batal"),
+          ),
+        )
+        .orderBy(nasabah.id, sql`${pinjaman.pinjamanKe} desc`);
+      return baris
+        .flatMap(({ nasabahId, nama, kampung, jumlahPinjaman, status, ...p }) =>
+          status === "batal"
+            ? []
+            : [
+                {
+                  nasabah: { id: nasabahId, nama, kampung },
+                  jumlahPinjaman,
+                  terakhir: { ...p, status },
+                },
+              ],
+        )
+        .sort((a, b) => a.nasabah.nama.localeCompare(b.nasabah.nama));
+    },
+
     async portofolio(aktor: Aktor): Promise<Portofolio> {
       wajibPeran(aktor, "kolektor");
       const baris = await deps.db

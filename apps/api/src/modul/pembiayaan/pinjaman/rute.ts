@@ -1,6 +1,7 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import {
   idParamSchema,
+  indeksBukuSchema,
   kartuPinjamanSchema,
   kartuTagihSchema,
   portofolioSchema,
@@ -88,6 +89,18 @@ const portofolio = createRoute({
   },
 });
 
+const buku = createRoute({
+  method: "get",
+  path: "/lapangan/buku",
+  tags: ["lapangan"],
+  summary: "Buku kolektor: semua nasabah pegangan, satu baris per nasabah (pinjaman terbaru)",
+  security: aman,
+  responses: {
+    200: { description: "Indeks nasabah", ...json(z.array(indeksBukuSchema)) },
+    ...galatLapangan,
+  },
+});
+
 export function rutePinjaman(layanan: LayananPinjaman, periksa: PeriksaTokenAkses) {
   const router = buatRouter();
   const masuk = wajibMasuk(periksa);
@@ -108,5 +121,6 @@ export function rutePinjaman(layanan: LayananPinjaman, periksa: PeriksaTokenAkse
       c.json(await layanan.riwayatStatus(c.get("aktor"), c.req.valid("param").id), 200),
     )
     .openapi(daftarPegangan, async (c) => c.json(await layanan.daftarPinjaman(c.get("aktor")), 200))
-    .openapi(portofolio, async (c) => c.json(await layanan.portofolio(c.get("aktor")), 200));
+    .openapi(portofolio, async (c) => c.json(await layanan.portofolio(c.get("aktor")), 200))
+    .openapi(buku, async (c) => c.json(await layanan.buku(c.get("aktor")), 200));
 }

@@ -1,4 +1,5 @@
 import { rupiah } from "@opennael/format";
+import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 import { useGajiBerjalan } from "@/fitur/gaji";
@@ -8,19 +9,25 @@ import { LembarBawah } from "@/komponen/lembar-bawah";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Tekan } from "@/komponen/ui/tekan";
+import { kueri } from "@/lib/api";
 import { daftarBulan } from "@/lib/bulan";
 import { AKSEN, HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 
 /**
  * LEMBAR MENU Mode Rekap (opsi C, keputusan pemilik 28 Nov 2026) — dibuka tombol kanan tab
  * bar Rekap. Ubin layar-layar di luar tab (Foto · Performa · Portofolio): Ringkasan (Mutasi
- * Kas & laporan sore), Gaji, Riwayat Kas, Absensi; ubin boleh membawa angka kecil supaya menu ikut jadi layar pantau.
+ * Kas & laporan sore), Gaji, Riwayat Kas, Absensi, Buku; ubin boleh membawa angka kecil supaya menu ikut jadi layar pantau.
  * Mengetuk ubin menutup lembar lalu membuka layarnya. Isi lembar baru dipasang saat terbuka
  * (Modal), jadi bacaan ubin tak berjalan selama lembar tertutup.
  */
 export function LembarMenu({ terbuka, onTutup }: { terbuka: boolean; onTutup: () => void }) {
   const buka = (
-    rute: "/kolektor/ringkasan" | "/kolektor/gaji" | "/kolektor/riwayat-kas" | "/kolektor/absensi",
+    rute:
+      | "/kolektor/ringkasan"
+      | "/kolektor/gaji"
+      | "/kolektor/riwayat-kas"
+      | "/kolektor/absensi"
+      | "/kolektor/buku",
   ) => {
     onTutup();
     router.push(rute);
@@ -32,6 +39,7 @@ export function LembarMenu({ terbuka, onTutup }: { terbuka: boolean; onTutup: ()
         <UbinGaji onPress={() => buka("/kolektor/gaji")} />
         <UbinRiwayatKas onPress={() => buka("/kolektor/riwayat-kas")} />
         <UbinAbsensi onPress={() => buka("/kolektor/absensi")} />
+        <UbinBuku onPress={() => buka("/kolektor/buku")} />
       </View>
     </LembarBawah>
   );
@@ -83,6 +91,13 @@ function UbinAbsensi({ onPress }: { onPress: () => void }) {
   const masuk = riwayat.data?.filter((h) => h.absensi === "masuk_kerja").length;
   const ket = masuk === undefined ? "Kehadiran sebulan" : `${masuk} hari masuk bulan ini`;
   return <Ubin ikon="user-round-check" judul="Absensi" ket={ket} onPress={onPress} />;
+}
+
+/** Ubin Buku membawa banyaknya nasabah pegangan (yang pernah meminjam). */
+function UbinBuku({ onPress }: { onPress: () => void }) {
+  const buku = useQuery(kueri.lapangan.buku());
+  const ket = buku.data ? `${buku.data.length} nasabah` : "Indeks semua nasabah";
+  return <Ubin ikon="users-round" judul="Buku" ket={ket} onPress={onPress} />;
 }
 
 function Ubin(props: { ikon: NamaIkon; judul: string; ket: string; onPress: () => void }) {

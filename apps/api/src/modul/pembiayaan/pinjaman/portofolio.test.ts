@@ -154,6 +154,26 @@ describe.skipIf(!URL_DB)("portofolio kolektor", () => {
         },
       });
 
+      // Buku (`GET /lapangan/buku`): semua nasabah pegangan, satu baris per nasabah (pinjaman
+      // terbaru + banyaknya), urut nama; pegangan kolektor lain tak ikut; bos ditolak.
+      const buku = (await kirim("/lapangan/buku", { token: k })).isi as unknown as {
+        nasabah: { nama: string; kampung: string };
+        jumlahPinjaman: number;
+        terakhir: { pinjamanKe: number; jenis: string; status: string; saldo: number };
+      }[];
+      expect(buku.map((b) => [b.nasabah.nama, b.jumlahPinjaman, b.terakhir.pinjamanKe])).toEqual([
+        ["ani", 2, 2],
+        ["budi", 1, 1],
+        ["citra", 1, 1],
+        ["dewi", 1, 1],
+      ]);
+      expect(buku[0]).toMatchObject({
+        nasabah: { kampung: "pule" },
+        terakhir: { jenis: "harian", status: "berjalan", saldo: 800_000 },
+      });
+      expect(buku[2]?.terakhir).toMatchObject({ jenis: "tempoan", status: "macet" });
+      expect(kode(await kirim("/lapangan/buku", { token: b }))).toBe("PERAN_DILARANG");
+
       // Pemutihan memindahkan pinjaman macet ke diputihkan; saldonya tak disentuh.
       const putih = await kirim(`/pinjaman/${pDewi}/putihkan`, {
         isi: { alasan: "macet_lama", keterangan: "tak tertagih 6 bulan" },

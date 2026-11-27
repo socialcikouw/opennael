@@ -101,6 +101,27 @@ export type PortofolioJenis = z.infer<typeof portofolioJenisSchema>;
  * nilai yang dihapus). Dipecah per jenis supaya Dasbor HP mengikuti mode tanpa
  * permintaan ulang. Docs: schema-pinjaman.md.
  */
+/**
+ * `GET /lapangan/buku` — BUKU kolektor (28 Nov 2026): SEMUA nasabah pegangan (pernah meminjam,
+ * pinjaman batal tak dihitung), satu baris per nasabah dengan pinjaman terbarunya dan
+ * banyaknya pinjaman — ringan, tanpa batas baris yang memotong indeks abjad.
+ */
+export const indeksBukuSchema = z.object({
+  nasabah: z.object({ id: z.uuid(), nama: z.string(), kampung: z.string() }),
+  jumlahPinjaman: z.number(),
+  terakhir: z.object({
+    id: z.uuid(),
+    pinjamanKe: z.number(),
+    jenis: jenisPinjamanSchema,
+    status: z.enum(["berjalan", "macet", "lunas", "digulung", "diputihkan"]),
+    pokok: z.number(),
+    saldo: z.number(),
+    tanggalAkad: z.string(),
+    tanggalSelesai: z.string().nullable(),
+  }),
+});
+export type IndeksBuku = z.infer<typeof indeksBukuSchema>;
+
 export const portofolioSchema = z.object({
   harian: portofolioJenisSchema,
   mingguan: portofolioJenisSchema,

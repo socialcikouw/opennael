@@ -414,6 +414,13 @@ const KASUS: [string, unknown, readonly unknown[], string, unknown[]][] = [
     [{ query: { tanggal: "2026-11-02" } }],
   ],
   [
+    "lapangan.buku",
+    kueri.lapangan.buku(),
+    ["lapangan", "buku"],
+    "pembiayaan.lapangan.buku.$get",
+    [],
+  ],
+  [
     "lapangan.kampung",
     kueri.lapangan.kampung(),
     ["lapangan", "kampung"],

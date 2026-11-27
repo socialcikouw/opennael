@@ -151,6 +151,12 @@ export function kueriLapangan({ api, ambil }: Bahan) {
               api.penggajian.kas.gaji.pratinjau.$get({ query: { kolektorId, mulai, selesai } }),
             ),
         }),
+      /** Buku: semua nasabah pegangan (pernah meminjam), satu baris per nasabah. */
+      buku: () =>
+        queryOptions({
+          queryKey: [...kunci.lapangan, "buku"],
+          queryFn: () => ambil(() => api.pembiayaan.lapangan.buku.$get()),
+        }),
       kampung: () =>
         queryOptions({
           queryKey: [...kunci.lapangan, "kampung"],

@@ -31,7 +31,7 @@ export const MODE: Record<
     label: "Rekap",
     huruf: "R",
     keterangan: "Kas, laporan sore, performa, portofolio, gaji",
-    tab: "Foto · Performa · Portofolio · Menu (Ringkasan, Gaji, Kas, Absensi)",
+    tab: "Foto · Performa · Portofolio · Menu (Ringkasan, Gaji, Kas, Absensi, Buku)",
     awal: "/kolektor/foto",
   },
   akun: {
