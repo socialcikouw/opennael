@@ -98,15 +98,15 @@ export const BlokTempo = memo(function BlokTempo({ t, aksen }: { t: TempoVM; aks
 });
 
 const gaya = StyleSheet.create({
-  blok: { gap: RUANG[2] },
+  blok: { gap: RUANG[1.5] },
   kabar: { ...HURUF.xs, fontWeight: TEBAL.semi },
   redup: { fontWeight: TEBAL.biasa, color: WARNA.redup },
   nampan: {
     flexDirection: "row",
     flexWrap: "wrap",
     gap: RUANG[1.5],
-    padding: RUANG[2],
-    borderRadius: SUDUT.besar,
+    padding: RUANG[1.5],
+    borderRadius: SUDUT.sedang,
     backgroundColor: WARNA.isiNetral,
   },
   sel: { width: "15%", alignItems: "center", gap: 2 },

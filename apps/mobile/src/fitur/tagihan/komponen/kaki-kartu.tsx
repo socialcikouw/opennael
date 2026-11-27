@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 import type { NamaIkon } from "@/komponen/ui/daftar-ikon";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Tekan } from "@/komponen/ui/tekan";
-import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaAksen } from "@/tema";
+import { HURUF, RUANG, SENTUH, SUDUT, TEBAL, WARNA, type WarnaAksen } from "@/tema";
 import type { KartuVM } from "../inti/kartu";
 import type { AksiKartu } from "./kartu-nasabah";
 
@@ -155,28 +155,28 @@ function TombolTonal(props: {
 
 const gaya = StyleSheet.create({
   ditekan: { opacity: 0.8 },
-  kaki: { gap: RUANG[2] },
-  barisTonal: { flexDirection: "row", gap: RUANG[2] },
+  kaki: { gap: RUANG[1.5] },
+  barisTonal: { flexDirection: "row", gap: RUANG[1.5] },
   tonal: {
     flex: 1,
-    height: 44,
+    height: SENTUH.kecil,
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: RUANG[2],
     borderRadius: SUDUT.sedang,
   },
   tonalBaris: { flexDirection: "row", alignItems: "center", gap: RUANG[1.5] },
-  tonalTeks: { ...HURUF.sm, fontWeight: TEBAL.semi, letterSpacing: 0.5 },
+  tonalTeks: { ...HURUF.xs, fontWeight: TEBAL.tebal, letterSpacing: 0.5 },
   sinyal: { ...HURUF["2xs"], fontWeight: TEBAL.sedang },
   bayar: {
-    height: 52,
+    height: SENTUH.sedang,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: RUANG[4],
+    paddingHorizontal: RUANG[3],
     borderRadius: SUDUT.sedang,
   },
   bayarKiri: { flexDirection: "row", alignItems: "center", gap: RUANG[2] },
-  bayarLabel: { ...HURUF.base, fontWeight: TEBAL.ekstra, letterSpacing: 0.5 },
-  bayarNominal: { ...HURUF.base, fontWeight: TEBAL.tebal, fontVariant: ["tabular-nums"] },
+  bayarLabel: { ...HURUF.sm, fontWeight: TEBAL.ekstra, letterSpacing: 0.5 },
+  bayarNominal: { ...HURUF.sm, fontWeight: TEBAL.ekstra, fontVariant: ["tabular-nums"] },
 });

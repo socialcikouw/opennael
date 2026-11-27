@@ -105,8 +105,9 @@ export const KartuNasabah = memo(function KartuNasabah(props: {
 
 const gaya = StyleSheet.create({
   wadah: { marginHorizontal: RUANG[4] },
+  // Rapat tetapi terbaca (permintaan pemilik 28 Nov 2026): isian 10, jarak 6.
   kotak: {
-    gap: RUANG[2],
+    gap: RUANG[1.5],
     padding: ISIAN_KOTAK,
     borderRadius: SUDUT.besar,
     borderWidth: 1,

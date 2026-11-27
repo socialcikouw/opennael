@@ -5,11 +5,11 @@ import { HURUF, RUANG, SUDUT, TEBAL, WARNA, type WarnaAksen } from "@/tema";
 import type { KartuVM } from "../inti/kartu";
 import { LencanaHari, LencanaStatus } from "./lencana-kartu";
 
-const TINGGI_LINGKARAN = 36;
+const TINGGI_LINGKARAN = 32;
 /** Lama kartu ditahan sebelum Lunasi (konfirmasinya tetap ditanyakan layar). */
 export const TAHAN_LUNASI_MS = 600;
 /** Isian kotak kartu (pt) — kartu-nasabah memakai angka yang sama. */
-export const ISIAN_KOTAK = RUANG[3];
+export const ISIAN_KOTAK = RUANG[2.5];
 /** Jarak dari atas kotak ke garis tengah baris nama — tempat cabang rel masuk. */
 export const CABANG_INFO = 1 + ISIAN_KOTAK + TINGGI_LINGKARAN / 2;
 
@@ -105,14 +105,14 @@ const gaya = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  lingkaranTeks: { ...HURUF.lg, fontWeight: TEBAL.ekstra, fontVariant: ["tabular-nums"] },
-  nama: { ...HURUF.lg, flex: 1, fontWeight: TEBAL.tebal, color: WARNA.teks },
+  lingkaranTeks: { ...HURUF.base, fontWeight: TEBAL.ekstra, fontVariant: ["tabular-nums"] },
+  nama: { ...HURUF.base, flex: 1, fontWeight: TEBAL.tebal, color: WARNA.teks },
   // Tanggal & jam akad: kecil, di bawah lingkaran angsuran (rata kiri kotak).
   akad: { ...HURUF["2xs"], flexShrink: 1, color: WARNA.redup, fontVariant: ["tabular-nums"] },
   // Kiri (akad + lencana) boleh turun ke baris berikutnya bila sempit — tak pernah
   // berhimpitan dengan "Pinjaman Ke-N" yang tetap di kanan atas.
   barisKecil: {
-    minHeight: 20,
+    minHeight: 18,
     flexDirection: "row",
     alignItems: "flex-start",
     justifyContent: "space-between",
@@ -121,7 +121,7 @@ const gaya = StyleSheet.create({
   kiri: {
     flex: 1,
     minWidth: 0,
-    minHeight: 20,
+    minHeight: 18,
     flexDirection: "row",
     flexWrap: "wrap",
     alignItems: "center",
@@ -129,5 +129,5 @@ const gaya = StyleSheet.create({
     rowGap: RUANG[1],
   },
   // Pinjaman Ke-N: rata kanan, terakota & tebal supaya mencolok (menggantikan tabungan ••••).
-  pinjamanKe: { ...HURUF.sm, lineHeight: 20, flexShrink: 0, fontWeight: TEBAL.tebal },
+  pinjamanKe: { ...HURUF.xs, lineHeight: 18, flexShrink: 0, fontWeight: TEBAL.tebal },
 });
