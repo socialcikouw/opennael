@@ -23,12 +23,8 @@ export function AngkaKartu({
         label="Pokok Pinjaman"
         nilai={vm.pokokRp}
         rata={gaya.kiri}
-        atas={
-          // Pinjaman ke-N: kecil, terakota, tepat di atas Pokok Pinjaman (28 Nov 2026).
-          <Text style={[gaya.ke, { color: aksen.teks }]} numberOfLines={1}>
-            {vm.pinjamanKeTeks}
-          </Text>
-        }
+        // Pinjaman ke-N menyambung label: "Pokok Pinjaman ke-3" (ke-3 terakota tebal, 28 Nov 2026).
+        ekor={<Text style={[gaya.ke, { color: aksen.teks }]}> {vm.pinjamanKeTeks}</Text>}
       />
       {tanpaAngsuran ? null : <Angka label="Angsuran" nilai={vm.angsuranRp} rata={gaya.tengah} />}
       <Angka label="Sisa Saldo" nilai={vm.saldoRp} rata={gaya.kanan} tegas />
@@ -41,14 +37,14 @@ function Angka(props: {
   nilai: string;
   rata: { textAlign: "left" | "center" | "right" };
   tegas?: boolean;
-  /** Baris kecil di atas label (mis. "ke-3" di atas Pokok Pinjaman). */
-  atas?: ReactNode;
+  /** Sambungan label sebaris (mis. " ke-3" sesudah "Pokok Pinjaman"). */
+  ekor?: ReactNode;
 }) {
   return (
     <View style={gaya.angka}>
-      {props.atas}
       <Text style={[gaya.label, props.rata]} numberOfLines={1}>
         {props.label}
+        {props.ekor}
       </Text>
       <Text
         style={[gaya.nilai, props.tegas ? gaya.tegas : null, props.rata]}
@@ -81,5 +77,5 @@ const gaya = StyleSheet.create({
   kiri: { textAlign: "left" },
   tengah: { textAlign: "center" },
   kanan: { textAlign: "right" },
-  ke: { ...HURUF["3xs"], fontWeight: TEBAL.ekstra, fontVariant: ["tabular-nums"] },
+  ke: { fontWeight: TEBAL.ekstra, fontVariant: ["tabular-nums"] },
 });
