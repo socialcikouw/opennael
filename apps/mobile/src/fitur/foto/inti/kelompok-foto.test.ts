@@ -82,8 +82,18 @@ describe("galeri foto nasabah", () => {
 
   test("kartu foto membawa angsuran ke-, nominal angsuran, dan tanda macet", () => {
     const [k] = kelompokFoto([
-      kartu("budi", "pule", { angsuranKe: 9, angsuran: 50_000, status: "macet" }),
+      kartu("budi", "pule", {
+        angsuranKe: 9,
+        angsuran: 50_000,
+        status: "macet",
+        jenis: "mingguan",
+      }),
     ]);
-    expect(k?.foto[0]).toMatchObject({ angsuranKe: 9, angsuran: 50_000, macet: true });
+    expect(k?.foto[0]).toMatchObject({
+      angsuranKe: 9,
+      jenis: "mingguan",
+      angsuran: 50_000,
+      macet: true,
+    });
   });
 });

@@ -1,4 +1,4 @@
-import { rupiah, tampilNama } from "@opennael/format";
+import { LABEL_JENIS, rupiah, tampilNama } from "@opennael/format";
 import { Image } from "expo-image";
 import { memo } from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -21,7 +21,7 @@ const CABANG = RUANG[2] + UKURAN_KE / 2;
  *   - kiri atas: lingkaran angsuran ke- gelap tembus pandang, angka putih 16 pt, tepi putih;
  *   - kanan atas: kapsul status serupa (gelap bening, tepi putih, tulisan putih 12 pt) dengan
  *     titik warna arti — hijau BERJALAN / merah MACET;
- *   - dasar: PITA gelap tembus pandang selebar foto — nama putih 16 pt tebal, angsuran 12 pt
+ *   - dasar: PITA gelap tembus pandang selebar foto — nama putih 16 pt tebal, jenis + angsuran ("Harian Rp …") 12 pt
  *     (sama dengan pita alamat di foto Detail Nasabah).
  * Ketuk = layar penuh (berfoto) / Detail Nasabah (belum berfoto).
  */
@@ -39,7 +39,7 @@ export const KartuFoto = memo(function KartuFoto(props: {
         accessibilityRole={f.fotoId ? "imagebutton" : "button"}
         accessibilityLabel={`${f.fotoId ? "Foto" : "Belum ada foto"} ${nama}, angsuran ke ${f.angsuranKe}${
           f.macet ? ", macet" : ""
-        }, angsuran ${rupiah(f.angsuran)}. ${f.fotoId ? "Ketuk untuk layar penuh." : "Ketuk untuk detail nasabah."}`}
+        }, ${LABEL_JENIS[f.jenis]} ${rupiah(f.angsuran)}. ${f.fotoId ? "Ketuk untuk layar penuh." : "Ketuk untuk detail nasabah."}`}
         style={({ pressed }) => [gaya.kartu, pressed ? gaya.ditekan : null]}
       >
         {f.fotoId ? (
@@ -81,7 +81,7 @@ export const KartuFoto = memo(function KartuFoto(props: {
             {nama}
           </Text>
           <Text style={gaya.teksAngsuran} numberOfLines={1}>
-            Angsuran {rupiah(f.angsuran)}
+            {LABEL_JENIS[f.jenis]} {rupiah(f.angsuran)}
           </Text>
         </View>
       </Tekan>

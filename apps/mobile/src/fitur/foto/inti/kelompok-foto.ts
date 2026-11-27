@@ -1,5 +1,5 @@
 import type { KartuTagih } from "@opennael/contracts";
-import { kunciWilayah } from "@opennael/domain";
+import { type JenisPinjaman, kunciWilayah } from "@opennael/domain";
 
 /** Satu kartu di tab Foto: seorang nasabah pegangan dan foto serah terima terakhirnya. */
 export interface FotoNasabah {
@@ -11,7 +11,9 @@ export interface FotoNasabah {
   tanggalAkad: string;
   /** Angsuran ke- (banyaknya angsuran yang sudah terbayar) pinjaman itu. */
   angsuranKe: number;
-  /** Nominal satu angsuran. */
+  /** Jenis pinjaman terbaru — label nominal angsuran ("Harian Rp …"). */
+  jenis: JenisPinjaman;
+  /** Nominal satu angsuran (tempoan: sekali bayar). */
   angsuran: number;
   macet: boolean;
 }
@@ -65,6 +67,7 @@ export function kelompokFoto(daftar: readonly KartuTagih[], cari = ""): Kelompok
       fotoId: fotoTerakhir.get(p.nasabah.id)?.fotoSerahTerimaId ?? null,
       tanggalAkad: p.tanggalAkad,
       angsuranKe: p.angsuranKe,
+      jenis: p.jenis,
       angsuran: p.angsuran,
       macet: p.status === "macet",
     });
