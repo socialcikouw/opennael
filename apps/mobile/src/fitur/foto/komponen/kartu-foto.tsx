@@ -29,20 +29,30 @@ export const KartuFoto = memo(function KartuFoto(props: {
     <BarisRel cabang={CABANG} akhir={props.akhir} jarak={JARAK_KARTU}>
       <Tekan
         onPress={props.onBuka}
-        accessibilityRole="imagebutton"
-        accessibilityLabel={`Foto ${nama}, angsuran ke ${f.angsuranKe}${
+        accessibilityRole={f.fotoId ? "imagebutton" : "button"}
+        accessibilityLabel={`${f.fotoId ? "Foto" : "Belum ada foto"} ${nama}, angsuran ke ${f.angsuranKe}${
           f.macet ? ", macet" : ""
-        }, angsuran ${rupiah(f.angsuran)}. Ketuk untuk layar penuh.`}
+        }, angsuran ${rupiah(f.angsuran)}. ${f.fotoId ? "Ketuk untuk layar penuh." : "Ketuk untuk detail nasabah."}`}
         style={({ pressed }) => [gaya.kartu, pressed ? gaya.ditekan : null]}
       >
-        <Image
-          source={sumberFoto(f.fotoId)}
-          recyclingKey={f.fotoId}
-          cachePolicy="disk"
-          contentFit="cover"
-          transition={150}
-          style={StyleSheet.absoluteFill}
-        />
+        {f.fotoId ? (
+          <Image
+            source={sumberFoto(f.fotoId)}
+            recyclingKey={f.fotoId}
+            cachePolicy="disk"
+            contentFit="cover"
+            transition={150}
+            style={StyleSheet.absoluteFill}
+          />
+        ) : (
+          // Belum berfoto (salinan buku lama): avatar huruf awal di tengah kartu.
+          <View style={gaya.avatarBidang}>
+            <View style={gaya.avatar}>
+              <Text style={gaya.avatarHuruf}>{nama.charAt(0).toUpperCase()}</Text>
+            </View>
+            <Text style={gaya.tanpaFoto}>Belum ada foto</Text>
+          </View>
+        )}
         <View style={gaya.atas}>
           <View style={[gaya.lencana, gaya.bulat]}>
             <Text style={gaya.teks}>{f.angsuranKe}</Text>
@@ -82,6 +92,23 @@ const gaya = StyleSheet.create({
     backgroundColor: WARNA.isiNetralTegas,
   },
   ditekan: { opacity: 0.85 },
+  avatarBidang: {
+    ...StyleSheet.absoluteFill,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: RUANG[2],
+    backgroundColor: WARNA.isiNetral,
+  },
+  avatar: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: WARNA.utamaMuda,
+  },
+  avatarHuruf: { fontSize: 40, lineHeight: 48, fontWeight: TEBAL.ekstra, color: WARNA.utamaTua },
+  tanpaFoto: { ...HURUF.xs, fontWeight: TEBAL.semi, color: WARNA.redup },
   atas: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },
   bawah: { alignItems: "flex-start", gap: RUANG[1] },
   // Hitam hangat bertulisan terakota terang (permintaan pemilik 28 Nov 2026).

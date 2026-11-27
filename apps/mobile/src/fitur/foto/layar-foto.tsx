@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { useCallback, useDeferredValue, useMemo, useState } from "react";
 import { FlatList, RefreshControl, StyleSheet, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -11,7 +12,7 @@ import { Kerangka } from "@/komponen/ui/kerangka";
 import { KotakKosong } from "@/komponen/ui/kotak-kosong";
 import { useTarikSegarkan } from "@/lib/tarik-segarkan";
 import { AKSEN, HURUF, RUANG, SUDUT, WARNA } from "@/tema";
-import { type FotoNasabah, kelompokFoto } from "./inti/kelompok-foto";
+import { berfoto, type FotoBerfoto, type FotoNasabah, kelompokFoto } from "./inti/kelompok-foto";
 import { FotoLayarPenuh } from "./komponen/foto-layar-penuh";
 import { JudulKampung } from "./komponen/judul-kampung";
 import { KartuFoto } from "./komponen/kartu-foto";
@@ -39,8 +40,10 @@ type BarisFoto =
  *    |  │Angsuran Rp 50.000│
  *    ╰─ └──────────────────┘
  *
- * Satu kartu per baris, kampung urut rute kolektor, nasabah urut nama; kolom cari nama di
- * atas. Ketuk kartu = layar penuh, bisa digeser ke foto lain di kampung yang sama.
+ * SEMUA nasabah pegangan, satu kartu per baris (belum berfoto — salinan buku lama — memakai
+ * avatar huruf awal); kampung urut rute kolektor, nasabah urut nama; kolom cari nama di atas.
+ * Ketuk kartu berfoto = layar penuh, bisa digeser ke foto lain di kampung yang sama; kartu
+ * avatar = Detail Nasabah.
  */
 export function LayarFoto() {
   const atas = useSafeAreaInsets().top;
@@ -48,7 +51,7 @@ export function LayarFoto() {
   const tagihan = useTagihan();
   const [cari, setCari] = useState("");
   const cariTunda = useDeferredValue(cari);
-  const [buka, setBuka] = useState<{ foto: readonly FotoNasabah[]; awal: number } | null>(null);
+  const [buka, setBuka] = useState<{ foto: readonly FotoBerfoto[]; awal: number } | null>(null);
   const { aktif: menarik, tarik } = useTarikSegarkan(() => tagihan.refetch());
 
   const { baris, nasabah, kampung } = useMemo(() => {
@@ -85,7 +88,18 @@ export function LayarFoto() {
       <KartuFoto
         foto={item.foto}
         akhir={item.akhir}
-        onBuka={() => setBuka({ foto: item.kelompok, awal: item.indeks })}
+        onBuka={() => {
+          // Berfoto → layar penuh (digeser antar foto sekampung); tanpa foto → Detail Nasabah.
+          if (!berfoto(item.foto)) {
+            router.push({
+              pathname: "/kolektor/nasabah/[id]",
+              params: { id: item.foto.nasabahId },
+            });
+            return;
+          }
+          const foto = item.kelompok.filter(berfoto);
+          setBuka({ foto, awal: Math.max(0, foto.indexOf(item.foto)) });
+        }}
       />
     );
   }, []);

@@ -38,7 +38,7 @@ function kartu(nama: string, kampung: string, isi: Partial<KartuTagih> = {}): Ka
 }
 
 describe("galeri foto nasabah", () => {
-  test("per kampung urut rute, nama urut abjad, tanpa foto tak tampil", () => {
+  test("per kampung urut rute, nama urut abjad; yang tanpa foto tetap tampil (avatar)", () => {
     const g = kelompokFoto([
       kartu("sari", "pule barat", { ruteKe: 2 }),
       kartu("budi", "sukamaju", { ruteKe: 1 }),
@@ -47,7 +47,10 @@ describe("galeri foto nasabah", () => {
     ]);
     expect(g.map((k) => k.kampung)).toEqual(["sukamaju", "pule barat"]);
     expect(g[1]?.foto.map((f) => f.nama)).toEqual(["ani", "sari"]);
-    expect(g[0]?.foto).toHaveLength(1);
+    expect(g[0]?.foto.map((f) => [f.nama, f.fotoId])).toEqual([
+      ["budi", expect.any(String)],
+      ["tono", null],
+    ]);
   });
 
   test("satu foto per nasabah: akad terakhir yang berfoto", () => {
@@ -56,6 +59,18 @@ describe("galeri foto nasabah", () => {
       kartu("sari", "sawah", { tanggalAkad: "2026-11-01", fotoSerahTerimaId: "baru" }),
     ]);
     expect(g[0]?.foto.map((f) => f.fotoId)).toEqual(["baru"]);
+  });
+
+  test("angka dari pinjaman terbaru walau tanpa foto; foto dari akad terakhir yang berfoto", () => {
+    const g = kelompokFoto([
+      kartu("sari", "sawah", {
+        tanggalAkad: "2026-09-01",
+        fotoSerahTerimaId: "lama",
+        angsuranKe: 20,
+      }),
+      kartu("sari", "sawah", { tanggalAkad: "2026-11-01", fotoSerahTerimaId: null, angsuranKe: 3 }),
+    ]);
+    expect(g[0]?.foto).toEqual([expect.objectContaining({ fotoId: "lama", angsuranKe: 3 })]);
   });
 
   test("cari nama tanpa peduli huruf besar; kampung tanpa yang cocok hilang", () => {

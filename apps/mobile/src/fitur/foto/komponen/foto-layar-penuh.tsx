@@ -8,7 +8,7 @@ import { sumberFoto } from "@/fitur/lapangan";
 import { Ikon } from "@/komponen/ui/ikon";
 import { Tekan } from "@/komponen/ui/tekan";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
-import type { FotoNasabah } from "../inti/kelompok-foto";
+import type { FotoBerfoto } from "../inti/kelompok-foto";
 
 /**
  * FOTO LAYAR PENUH — foto-foto SATU kampung, digeser kiri/kanan (satu halaman per foto),
@@ -16,7 +16,7 @@ import type { FotoNasabah } from "../inti/kelompok-foto";
  * ("2 dari 6"). Latar hitam, ikon status bar terang.
  */
 export function FotoLayarPenuh(props: {
-  foto: readonly FotoNasabah[] | null;
+  foto: readonly FotoBerfoto[] | null;
   awal: number;
   onTutup: () => void;
 }) {
