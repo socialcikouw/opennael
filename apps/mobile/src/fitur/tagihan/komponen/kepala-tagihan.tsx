@@ -181,8 +181,9 @@ function TombolBulat(props: {
 }
 
 /**
- * Segmen bergaya iOS: alas abu, segmen aktif keping putih yang timbul. Jumlah
- * berupa lencana kecil di samping label, supaya lebar label tak bergoyang.
+ * Segmen bergaris bawah (permintaan pemilik 28 Nov 2026; dulu alas abu + keping aktif):
+ * tanpa latar, satu garis tipis di bawah deret; segmen aktif bergaris bawah terakota tebal
+ * dan bertulisan terakota. Jumlah = lencana kecil di samping label (lebar tak bergoyang).
  */
 function Segmen(props: {
   segmen: SegmenTagihan;
@@ -277,29 +278,31 @@ const gaya = StyleSheet.create({
   menempel: { gap: RUANG[2], paddingHorizontal: RUANG[4], paddingBottom: RUANG[2] },
   segmen: {
     flexDirection: "row",
-    padding: 3,
-    borderRadius: SUDUT.sedang,
-    backgroundColor: WARNA.isiNetral,
+    borderBottomWidth: 1,
+    borderBottomColor: WARNA.garis,
   },
   keping: {
     flex: 1,
-    height: 34,
+    height: 38,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: RUANG[1.5],
-    borderRadius: SUDUT.kecil + 1,
+    // Garis bawah segmen menimpa garis tipis deret (−1) supaya rata.
+    marginBottom: -1,
+    borderBottomWidth: 2.5,
+    borderBottomColor: "transparent",
   },
-  kepingAktif: { backgroundColor: WARNA.isiNetralTegas },
+  kepingAktif: { borderBottomColor: WARNA.utama },
   kepingTeks: { ...HURUF.sm, fontWeight: TEBAL.sedang, color: WARNA.teksKedua },
-  kepingTeksAktif: { fontWeight: TEBAL.tebal, color: WARNA.teks },
+  kepingTeksAktif: { fontWeight: TEBAL.tebal, color: WARNA.utama },
   lencanaAngka: {
     minWidth: 20,
     paddingHorizontal: RUANG[1.5],
     borderRadius: SUDUT.bulat,
-    backgroundColor: WARNA.isiNetralTegas,
+    backgroundColor: WARNA.isiNetral,
   },
-  lencanaAngkaAktif: { backgroundColor: WARNA.teks },
+  lencanaAngkaAktif: { backgroundColor: WARNA.utamaLembut },
   angkaTeks: {
     ...HURUF["2xs"],
     fontWeight: TEBAL.tebal,
@@ -307,7 +310,7 @@ const gaya = StyleSheet.create({
     color: WARNA.teksKedua,
     fontVariant: ["tabular-nums"],
   },
-  angkaTeksAktif: { color: WARNA.permukaan },
+  angkaTeksAktif: { color: WARNA.utama },
   tutup: {
     flexDirection: "row",
     alignItems: "center",
