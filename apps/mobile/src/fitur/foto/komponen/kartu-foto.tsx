@@ -17,7 +17,7 @@ const CABANG = RUANG[2] + 10;
  * per nasabah bercabang ke rel kampung; isinya foto serah terima, dengan lencana kecil
  * berlatar hitam bertulisan terakota di atas foto: angsuran ke- (kiri atas), nama dan
  * angsuran (kiri bawah); status (kanan atas) sedikit lebih besar: BERJALAN hijau / MACET
- * merah, tulisan putih. Huruf sekecil yang masih terbaca (10 pt tebal).
+ * merah, tulisan putih 12. Ukuran bertingkat: nama 16, angsuran ke- 12 tebal, angsuran 12.
  * Ketuk = layar penuh.
  */
 export const KartuFoto = memo(function KartuFoto(props: {
@@ -57,20 +57,20 @@ export const KartuFoto = memo(function KartuFoto(props: {
         )}
         <View style={gaya.atas}>
           <View style={[gaya.lencana, gaya.bulat]}>
-            <Text style={gaya.teks}>{f.angsuranKe}</Text>
+            <Text style={[gaya.teks, gaya.teksKe]}>{f.angsuranKe}</Text>
           </View>
           <View style={[gaya.status, f.macet ? gaya.statusMacet : gaya.statusBerjalan]}>
             <Text style={gaya.teksStatus}>{f.macet ? "MACET" : "BERJALAN"}</Text>
           </View>
         </View>
         <View style={gaya.bawah}>
-          <View style={gaya.lencana}>
-            <Text style={gaya.teks} numberOfLines={1}>
+          <View style={[gaya.lencana, gaya.lencanaNama]}>
+            <Text style={[gaya.teks, gaya.teksNama]} numberOfLines={1}>
               {nama}
             </Text>
           </View>
           <View style={gaya.lencana}>
-            <Text style={gaya.teks} numberOfLines={1}>
+            <Text style={[gaya.teks, gaya.teksAngsuran]} numberOfLines={1}>
               Angsuran {rupiah(f.angsuran)}
             </Text>
           </View>
@@ -128,11 +128,12 @@ const gaya = StyleSheet.create({
   statusBerjalan: { backgroundColor: WARNA.sukses },
   statusMacet: { backgroundColor: WARNA.bahayaBingkai },
   teksStatus: { ...HURUF.xs, fontWeight: TEBAL.ekstra, color: WARNA.teksAtasSukses },
-  bulat: { minWidth: 20, alignItems: "center", borderRadius: SUDUT.bulat },
-  teks: {
-    ...HURUF["3xs"],
-    fontWeight: TEBAL.ekstra,
-    color: WARNA.teksLencanaFoto,
-    fontVariant: ["tabular-nums"],
-  },
+  bulat: { minWidth: 26, alignItems: "center", borderRadius: SUDUT.bulat },
+  lencanaNama: { paddingHorizontal: RUANG[2], paddingVertical: RUANG[0.5] },
+  // Tiga ukuran berbeda supaya terbaca bertingkat: nama paling besar (16), angsuran ke-
+  // setara lencana status (12 tebal), nominal angsuran 12 sedang.
+  teks: { color: WARNA.teksLencanaFoto, fontVariant: ["tabular-nums"] },
+  teksKe: { ...HURUF.xs, fontWeight: TEBAL.ekstra },
+  teksNama: { ...HURUF.base, fontWeight: TEBAL.ekstra },
+  teksAngsuran: { ...HURUF.xs, fontWeight: TEBAL.semi },
 });
