@@ -9,15 +9,18 @@ import { Tekan } from "@/komponen/ui/tekan";
 import { HURUF, RUANG, SUDUT, TEBAL, WARNA } from "@/tema";
 import type { FotoNasabah } from "../inti/kelompok-foto";
 
-/** Jarak dari atas kartu ke cabang rel (pt) — setinggi lencana angsuran ke-. */
-const CABANG = RUANG[2] + 10;
+/** Garis tengah lingkaran angsuran ke- (pt). */
+const UKURAN_KE = 36;
+/** Jarak dari atas kartu ke cabang rel (pt) — garis tengah lingkaran angsuran ke-. */
+const CABANG = RUANG[2] + UKURAN_KE / 2;
 
 /**
  * KARTU FOTO (tab Foto, rupa kartu Harian — permintaan pemilik 28 Nov 2026): satu kartu
  * per nasabah bercabang ke rel kampung; isinya foto serah terima, dengan lencana kecil
  * berlatar hitam bertulisan terakota di atas foto: angsuran ke- (kiri atas), nama dan
  * angsuran (kiri bawah); status (kanan atas) sedikit lebih besar: BERJALAN hijau / MACET
- * merah, tulisan putih 12. Ukuran bertingkat: nama 16, angsuran ke- 12 tebal, angsuran 12.
+ * merah, tulisan putih 12. Ukuran bertingkat: angsuran ke- 20 (lingkaran 36), nama 16,
+ * angsuran 12.
  * Ketuk = layar penuh.
  */
 export const KartuFoto = memo(function KartuFoto(props: {
@@ -128,12 +131,19 @@ const gaya = StyleSheet.create({
   statusBerjalan: { backgroundColor: WARNA.sukses },
   statusMacet: { backgroundColor: WARNA.bahayaBingkai },
   teksStatus: { ...HURUF.xs, fontWeight: TEBAL.ekstra, color: WARNA.teksAtasSukses },
-  bulat: { minWidth: 26, alignItems: "center", borderRadius: SUDUT.bulat },
+  // Lingkaran angsuran ke- (seperti kartu Harian): paling besar di kartu, 20 pt.
+  bulat: {
+    minWidth: UKURAN_KE,
+    height: UKURAN_KE,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 0,
+    borderRadius: SUDUT.bulat,
+  },
   lencanaNama: { paddingHorizontal: RUANG[2], paddingVertical: RUANG[0.5] },
-  // Tiga ukuran berbeda supaya terbaca bertingkat: nama paling besar (16), angsuran ke-
-  // setara lencana status (12 tebal), nominal angsuran 12 sedang.
+  // Ukuran bertingkat: angsuran ke- 20 (lingkaran), nama 16, nominal angsuran 12 sedang.
   teks: { color: WARNA.teksLencanaFoto, fontVariant: ["tabular-nums"] },
-  teksKe: { ...HURUF.xs, fontWeight: TEBAL.ekstra },
+  teksKe: { ...HURUF.xl, fontWeight: TEBAL.ekstra },
   teksNama: { ...HURUF.base, fontWeight: TEBAL.ekstra },
   teksAngsuran: { ...HURUF.xs, fontWeight: TEBAL.semi },
 });
