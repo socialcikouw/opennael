@@ -181,9 +181,10 @@ function TombolBulat(props: {
 }
 
 /**
- * Segmen bergaris bawah (permintaan pemilik 28 Nov 2026; dulu alas abu + keping aktif):
- * tanpa latar, satu garis tipis di bawah deret; segmen aktif bergaris bawah terakota tebal
- * dan bertulisan terakota. Jumlah = lencana kecil di samping label (lebar tak bergoyang).
+ * Segmen KAPSUL (permintaan pemilik 28 Nov 2026: garis bawah dinilai norak; dulu alas abu +
+ * keping aktif): tanpa latar & garis; segmen aktif = kapsul terakota sangat muda bertulisan
+ * terakota tebal, lainnya tulisan abu. Jumlah = angka kecil di dalam kapsul (lebar tak
+ * bergoyang). Tanpa animasi meluncur — pindah segmen = pindah tab biasa (aturan gerak).
  */
 function Segmen(props: {
   segmen: SegmenTagihan;
@@ -276,38 +277,27 @@ const gaya = StyleSheet.create({
   },
   ditekan: { opacity: 0.7 },
   menempel: { gap: RUANG[2], paddingHorizontal: RUANG[4], paddingBottom: RUANG[2] },
-  segmen: {
-    flexDirection: "row",
-    borderBottomWidth: 1,
-    borderBottomColor: WARNA.garis,
-  },
+  segmen: { flexDirection: "row", gap: RUANG[1.5] },
   keping: {
     flex: 1,
-    height: 38,
+    height: 36,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: RUANG[1.5],
-    // Garis bawah segmen menimpa garis tipis deret (−1) supaya rata.
-    marginBottom: -1,
-    borderBottomWidth: 2.5,
-    borderBottomColor: "transparent",
+    borderRadius: SUDUT.bulat,
   },
-  kepingAktif: { borderBottomColor: WARNA.utama },
+  kepingAktif: { backgroundColor: WARNA.utamaLembut },
   kepingTeks: { ...HURUF.sm, fontWeight: TEBAL.sedang, color: WARNA.teksKedua },
   kepingTeksAktif: { fontWeight: TEBAL.tebal, color: WARNA.utama },
-  lencanaAngka: {
-    minWidth: 20,
-    paddingHorizontal: RUANG[1.5],
-    borderRadius: SUDUT.bulat,
-    backgroundColor: WARNA.isiNetral,
-  },
-  lencanaAngkaAktif: { backgroundColor: WARNA.utamaLembut },
+  // Angka tanpa kotak sendiri — cukup tebal & redup di dalam kapsul.
+  lencanaAngka: { minWidth: 14 },
+  lencanaAngkaAktif: {},
   angkaTeks: {
-    ...HURUF["2xs"],
-    fontWeight: TEBAL.tebal,
+    ...HURUF.xs,
+    fontWeight: TEBAL.ekstra,
     textAlign: "center",
-    color: WARNA.teksKedua,
+    color: WARNA.samar,
     fontVariant: ["tabular-nums"],
   },
   angkaTeksAktif: { color: WARNA.utama },
