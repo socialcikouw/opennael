@@ -29,8 +29,10 @@ export function rupaTempo(
  * KEPALA KARTU TEMPOAN (rombak 28 Nov 2026, permintaan pemilik: rapat, tanpa angsuran ke-,
  * yang penting mencolok):
  *   Budi Santoso                       [MELESET 2 HARI] ›   ← nama + hitung mundur (mencolok)
- *   20 Nov 26 • 14.10 · Pokok 1 jt · ke-3                   ← keterangan kecil
- *   📅 Jatuh tempo Kam 3 Des  ▬▬▬▬▬▬░░░                    ← garis waktu ringkas
+ *   Akad              Pokok             Pinjaman           ← label 10 pt
+ *   20 Nov • 14.10    Rp 1 jt           ke-3               ← isi 12 pt (koreksi pemilik: terbaca)
+ *   ┌ 📅 Jatuh tempo Kam 3 Des ───────────────┐            ← kotak muda, 14 pt
+ *   └ ▬▬▬▬▬▬▬▬░░░░                             ┘
  * Sisa saldo (= jumlah lunas) tidak dicetak di sini: tombol LUNASI di kaki memuatnya.
  * Ketuk baris nama = Detail Nasabah; aksi aksesibilitas Lunasi tetap.
  */
@@ -59,14 +61,9 @@ export const InfoTempo = memo(function InfoTempo(props: {
           if (e.nativeEvent.actionName === "lunasi") props.onLunasi?.();
         }}
       >
-        <View style={gaya.kolom}>
-          <Text style={gaya.nama} numberOfLines={1}>
-            {vm.namaTampil}
-          </Text>
-          <Text style={gaya.meta} numberOfLines={1}>
-            {vm.akadTeks} · Pokok {vm.pokokRp} · {vm.pinjamanKeTeks}
-          </Text>
-        </View>
+        <Text style={gaya.nama} numberOfLines={1}>
+          {vm.namaTampil}
+        </Text>
         <View style={[gaya.mundur, { backgroundColor: w.latar }]}>
           <Text style={[gaya.mundurTeks, { color: w.teks }]} numberOfLines={1}>
             {t.hitungMundur}
@@ -74,11 +71,20 @@ export const InfoTempo = memo(function InfoTempo(props: {
         </View>
         <Ikon nama="chevron-right" ukuran={16} warna={WARNA.redup} />
       </Tekan>
-      <View style={gaya.lini}>
-        <Ikon nama="calendar" ukuran={12} warna={props.aksen.teks} />
-        <Text style={gaya.jatuhTempo} numberOfLines={1}>
-          Jatuh tempo <Text style={gaya.tegas}>{t.jatuhTempoHariTeks}</Text>
-        </Text>
+      {/* Keterangan berlabel (label 10 pt, isi 12 pt) — seperti baris angka kartu harian. */}
+      <View style={gaya.keterangan}>
+        <Butir label="Akad" isi={vm.akadTeks} />
+        <Butir label="Pokok" isi={vm.pokokRp} tengah />
+        <Butir label="Pinjaman" isi={vm.pinjamanKeTeks} kanan />
+      </View>
+      {/* Jatuh tempo: kotak muda, 14 pt, garis kemajuan berwarna keadaan. */}
+      <View style={gaya.kotakTempo}>
+        <View style={gaya.lini}>
+          <Ikon nama="calendar" ukuran={14} warna={props.aksen.teks} />
+          <Text style={gaya.jatuhTempo} numberOfLines={1}>
+            Jatuh tempo <Text style={gaya.tegas}>{t.jatuhTempoHariTeks}</Text>
+          </Text>
+        </View>
         <View style={gaya.rel}>
           <View
             style={[
@@ -92,11 +98,30 @@ export const InfoTempo = memo(function InfoTempo(props: {
   );
 });
 
+function Butir(props: { label: string; isi: string; tengah?: boolean; kanan?: boolean }) {
+  const rata = props.kanan ? gaya.kanan : props.tengah ? gaya.tengah : null;
+  return (
+    <View style={gaya.butir}>
+      <Text style={[gaya.label, rata]} numberOfLines={1}>
+        {props.label}
+      </Text>
+      <Text
+        style={[gaya.isiButir, rata]}
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.8}
+      >
+        {props.isi}
+      </Text>
+    </View>
+  );
+}
+
 /** Tinggi baris nama — cabang rel kartu masuk di garis tengahnya (sama dengan kartu biasa). */
 export const TINGGI_BARIS_TEMPO = 32;
 
 const gaya = StyleSheet.create({
-  info: { gap: RUANG[1.5] },
+  info: { gap: RUANG[2] },
   ditekan: { opacity: 0.6 },
   baris: {
     minHeight: TINGGI_BARIS_TEMPO,
@@ -104,21 +129,35 @@ const gaya = StyleSheet.create({
     alignItems: "center",
     gap: RUANG[2],
   },
-  kolom: { flex: 1, minWidth: 0 },
-  nama: { ...HURUF.base, lineHeight: 20, fontWeight: TEBAL.tebal, color: WARNA.teks },
-  meta: { ...HURUF["3xs"], color: WARNA.redup, fontVariant: ["tabular-nums"] },
+  nama: { ...HURUF.base, flex: 1, fontWeight: TEBAL.tebal, color: WARNA.teks },
+  keterangan: { flexDirection: "row", gap: RUANG[3] },
+  butir: { flex: 1, minWidth: 0, gap: 1 },
+  label: { ...HURUF["3xs"], color: WARNA.redup },
+  isiButir: {
+    ...HURUF.xs,
+    fontWeight: TEBAL.semi,
+    color: WARNA.teksKedua,
+    fontVariant: ["tabular-nums"],
+  },
+  tengah: { textAlign: "center" },
+  kanan: { textAlign: "right" },
   // Hitung mundur: satu-satunya isi berwarna di kepala — keadaan terbaca sekilas.
   mundur: { paddingHorizontal: RUANG[2], paddingVertical: 3, borderRadius: SUDUT.bulat },
-  mundurTeks: { ...HURUF["2xs"], fontWeight: TEBAL.ekstra, letterSpacing: 0.3 },
-  lini: { flexDirection: "row", alignItems: "center", gap: RUANG[1.5] },
-  jatuhTempo: { ...HURUF.xs, color: WARNA.teksKedua },
-  tegas: { fontWeight: TEBAL.tebal, color: WARNA.teks },
-  rel: {
-    flex: 1,
-    height: 5,
-    borderRadius: SUDUT.bulat,
-    overflow: "hidden",
+  mundurTeks: { ...HURUF.xs, fontWeight: TEBAL.ekstra, letterSpacing: 0.3 },
+  kotakTempo: {
+    gap: RUANG[1.5],
+    padding: RUANG[2],
+    borderRadius: SUDUT.sedang,
     backgroundColor: WARNA.isiNetral,
   },
-  isiRel: { height: 5, borderRadius: SUDUT.bulat },
+  lini: { flexDirection: "row", alignItems: "center", gap: RUANG[1.5] },
+  jatuhTempo: { ...HURUF.sm, flex: 1, color: WARNA.teksKedua },
+  tegas: { fontWeight: TEBAL.tebal, color: WARNA.teks },
+  rel: {
+    height: 6,
+    borderRadius: SUDUT.bulat,
+    overflow: "hidden",
+    backgroundColor: WARNA.permukaan,
+  },
+  isiRel: { height: 6, borderRadius: SUDUT.bulat },
 });
