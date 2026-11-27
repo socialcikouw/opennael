@@ -4,6 +4,7 @@ import {
   namaBulan,
   tanggal,
   tanggalBertahun,
+  tanggalHariBulan,
   tanggalPendek,
   waktu,
   waktuPendek,
@@ -20,6 +21,11 @@ describe("format tanggal kantor", () => {
   test("teks yang bukan tanggal dikembalikan apa adanya", () => {
     expect(tanggal("bukan-tanggal")).toBe("bukan-tanggal");
     expect(tanggalPendek("bukan-tanggal")).toBe("bukan-tanggal");
+  });
+
+  test("tanggalHariBulan: hari & bulan lengkap, tahun dua angka", () => {
+    expect(tanggalHariBulan("2026-11-03")).toBe("Selasa, 3 November 26");
+    expect(tanggalHariBulan("bukan")).toBe("bukan");
   });
 
   test("namaBulan: bulan lengkap + tahun", () => {

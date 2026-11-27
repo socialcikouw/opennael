@@ -1,5 +1,6 @@
 import type { KartuTagih, Peristiwa } from "@opennael/contracts";
-import { geserTanggal, hariPekanDari, TEMPO } from "@opennael/domain";
+import { geserTanggal, hariPekanDari, perkiraanJatuhTempo, TEMPO } from "@opennael/domain";
+import { tanggalHariBulan } from "@opennael/format";
 import { nominalK } from "./grid";
 
 /**
@@ -117,8 +118,13 @@ export interface TempoVM {
   akadTeks: string;
   /** Ujung kanan garis waktu: tanggal jatuh tempo, atau "Hari Ke-6" bila belum sampai. */
   jatuhTempoTeks: string;
-  /** "Kam 5 Nov", atau "hari kerja ke-6" bila belum sampai. */
+  /**
+   * "Selasa, 3 November 26" — tanggal jatuh tempo dari server, atau PERKIRAAN 6 hari kerja
+   * Senin–Sabtu sesudah akad selama belum sampai (permintaan pemilik 28 Nov 2026).
+   */
   jatuhTempoHariTeks: string;
+  /** Tanggal di atas masih perkiraan (kolektor libur → bergeser). */
+  jatuhTempoPerkiraan: boolean;
 }
 
 export function susunTempo(
@@ -162,9 +168,8 @@ export function susunTempo(
     jalan: Math.max(0, Math.min(1, p.hariTempo / TEMPO.jatuhTempoKe)),
     akadTeks: ringkas(p.tanggalAkad),
     jatuhTempoTeks: p.jatuhTempo ? ringkas(p.jatuhTempo) : `Hari Ke-${TEMPO.jatuhTempoKe}`,
-    jatuhTempoHariTeks: p.jatuhTempo
-      ? hariRingkas(p.jatuhTempo)
-      : `hari kerja ke-${TEMPO.jatuhTempoKe}`,
+    jatuhTempoHariTeks: tanggalHariBulan(p.jatuhTempo ?? perkiraanJatuhTempo(p.tanggalAkad)),
+    jatuhTempoPerkiraan: p.jatuhTempo === null,
   };
 }
 

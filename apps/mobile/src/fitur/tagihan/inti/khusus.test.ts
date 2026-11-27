@@ -78,7 +78,9 @@ describe("tempoan (hari masuk kerja, A4)", () => {
       keadaan: "nanti",
       hitungMundur: "3 HARI LAGI",
       jatuhTempoTeks: "Hari Ke-6",
-      jatuhTempoHariTeks: "hari kerja ke-6",
+      // Perkiraan: 6 hari Senin–Sabtu sesudah Selasa 20 Okt = Selasa 27 Okt.
+      jatuhTempoHariTeks: "Selasa, 27 Oktober 26",
+      jatuhTempoPerkiraan: true,
       akadTeks: "20 Okt",
     });
     expect(t.jalan).toBeCloseTo(0.5);
@@ -93,7 +95,8 @@ describe("tempoan (hari masuk kerja, A4)", () => {
       sisaHari: 0,
       keadaan: "hariini",
       hitungMundur: "HARI INI",
-      jatuhTempoHariTeks: "Kam 29 Okt",
+      jatuhTempoHariTeks: "Kamis, 29 Oktober 26",
+      jatuhTempoPerkiraan: false,
       jalan: 1,
     });
     expect(susunTempo(tempo(8, "2026-10-27"), KAMIS)).toMatchObject({

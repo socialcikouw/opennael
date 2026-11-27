@@ -47,6 +47,14 @@ export function namaBulan(t: string): string {
   return th && bl ? `${BULAN_PANJANG[bl - 1]} ${th}` : t;
 }
 
+/** `2026-11-03` → `Selasa, 3 November 26` (jatuh tempo kartu tempoan). */
+export function tanggalHariBulan(t: string): string {
+  const [th, bl, tg] = t.split("-").map(Number);
+  if (!th || !bl || !tg) return t;
+  const pekan = new Date(Date.UTC(th, bl - 1, tg)).getUTCDay();
+  return `${HARI_PANJANG[pekan]}, ${tg} ${BULAN_PANJANG[bl - 1]} ${String(th).slice(2)}`;
+}
+
 /** `2026-10-23` → `23 Okt` — sumbu grafik, kartu. */
 export function tanggalPendek(t: string): string {
   const [, bl, tg] = t.split("-").map(Number);

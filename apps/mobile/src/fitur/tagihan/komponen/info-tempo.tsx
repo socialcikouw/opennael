@@ -31,7 +31,8 @@ export function rupaTempo(
  *   Budi Santoso                       [MELESET 2 HARI] ›   ← nama + hitung mundur (mencolok)
  *   Akad              Pokok             Pinjaman           ← label 10 pt
  *   20 Nov • 14.10    Rp 1 jt           ke-3               ← isi 12 pt (koreksi pemilik: terbaca)
- *   ┌ 📅 Jatuh tempo Kam 3 Des ───────────────┐            ← kotak muda, 14 pt
+ *   ┌ 📅 Jatuh tempo (perkiraan)               ┐            ← label 10 pt
+ *   │    Selasa, 3 November 26                 │            ← tanggal 14 pt tebal
  *   └ ▬▬▬▬▬▬▬▬░░░░                             ┘
  * Sisa saldo (= jumlah lunas) tidak dicetak di sini: tombol LUNASI di kaki memuatnya.
  * Ketuk baris nama = Detail Nasabah; aksi aksesibilitas Lunasi tetap.
@@ -80,10 +81,20 @@ export const InfoTempo = memo(function InfoTempo(props: {
       {/* Jatuh tempo: kotak muda, 14 pt, garis kemajuan berwarna keadaan. */}
       <View style={gaya.kotakTempo}>
         <View style={gaya.lini}>
-          <Ikon nama="calendar" ukuran={14} warna={props.aksen.teks} />
-          <Text style={gaya.jatuhTempo} numberOfLines={1}>
-            Jatuh tempo <Text style={gaya.tegas}>{t.jatuhTempoHariTeks}</Text>
-          </Text>
+          <Ikon nama="calendar" ukuran={16} warna={props.aksen.teks} />
+          <View style={gaya.kolomTempo}>
+            <Text style={gaya.labelTempo}>
+              {t.jatuhTempoPerkiraan ? "Jatuh tempo (perkiraan)" : "Jatuh tempo"}
+            </Text>
+            <Text
+              style={gaya.tanggalTempo}
+              numberOfLines={1}
+              adjustsFontSizeToFit
+              minimumFontScale={0.85}
+            >
+              {t.jatuhTempoHariTeks}
+            </Text>
+          </View>
         </View>
         <View style={gaya.rel}>
           <View
@@ -151,8 +162,9 @@ const gaya = StyleSheet.create({
     backgroundColor: WARNA.isiNetral,
   },
   lini: { flexDirection: "row", alignItems: "center", gap: RUANG[1.5] },
-  jatuhTempo: { ...HURUF.sm, flex: 1, color: WARNA.teksKedua },
-  tegas: { fontWeight: TEBAL.tebal, color: WARNA.teks },
+  kolomTempo: { flex: 1, minWidth: 0 },
+  labelTempo: { ...HURUF["3xs"], color: WARNA.redup },
+  tanggalTempo: { ...HURUF.sm, fontWeight: TEBAL.tebal, color: WARNA.teks },
   rel: {
     height: 6,
     borderRadius: SUDUT.bulat,
