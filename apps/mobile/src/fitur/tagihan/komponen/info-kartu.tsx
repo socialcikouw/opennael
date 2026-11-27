@@ -16,8 +16,8 @@ export const CABANG_INFO = 1 + ISIAN_KOTAK + TINGGI_LINGKARAN / 2;
 /**
  * Bagian atas kotak kartu:
  *   (12) Budi Santoso                                ›
- *        20 Nov 26 • 14.10
- *   [Rabu]
+ *        20 Nov 26 • 14.10 [Rabu]            ← lencana hari tagih mingguan sebaris
+ *   [Gulung Naik]                          ← lencana status droping (bila ada)
  * Tanggal & jam akad 10 pt TEPAT DI BAWAH NAMA, sejajar huruf pertamanya (permintaan
  * pemilik 28 Nov 2026; dulu di baris kedua di bawah lingkaran). Baris kedua (bila ada):
  * lencana hari tagih / status. "ke-N" (pinjaman ke-) pindah ke atas Pokok Pinjaman. Tabungan
@@ -73,16 +73,19 @@ export function InfoKartu({
           <Text style={gaya.nama} numberOfLines={1}>
             {vm.namaTampil}
           </Text>
-          <Text style={gaya.akad} numberOfLines={1}>
-            {vm.akadTeks}
-          </Text>
+          {/* Mingguan: lencana hari tagih sebaris di samping tanggal akad (28 Nov 2026). */}
+          <View style={gaya.barisAkad}>
+            <Text style={gaya.akad} numberOfLines={1}>
+              {vm.akadTeks}
+            </Text>
+            {vm.hariTagih ? <LencanaHari hari={vm.hariTagih} aksen={aksen} kecil /> : null}
+          </View>
         </View>
         <Ikon nama="chevron-right" ukuran={16} warna={WARNA.redup} />
       </Tekan>
-      {vm.hariTagih || vm.lencana ? (
+      {vm.lencana ? (
         <View style={gaya.kiri}>
-          {vm.hariTagih ? <LencanaHari hari={vm.hariTagih} aksen={aksen} /> : null}
-          {vm.lencana ? <LencanaStatus lencana={vm.lencana} /> : null}
+          <LencanaStatus lencana={vm.lencana} />
         </View>
       ) : null}
     </View>
@@ -110,7 +113,8 @@ const gaya = StyleSheet.create({
   kolomNama: { flex: 1, minWidth: 0 },
   nama: { ...HURUF.base, lineHeight: 20, fontWeight: TEBAL.tebal, color: WARNA.teks },
   // Tanggal & jam akad: 10 pt, tepat di bawah nama (permintaan pemilik 28 Nov 2026).
-  akad: { ...HURUF["3xs"], color: WARNA.redup, fontVariant: ["tabular-nums"] },
+  akad: { ...HURUF["3xs"], flexShrink: 1, color: WARNA.redup, fontVariant: ["tabular-nums"] },
+  barisAkad: { flexDirection: "row", alignItems: "center", gap: RUANG[1.5] },
   kiri: {
     flex: 1,
     minWidth: 0,

@@ -22,15 +22,26 @@ export function LencanaStatus({ lencana }: { lencana: NonNullable<KartuVM["lenca
 }
 
 /** Lencana PEKAT hari tagih mingguan, mis. [📅 Rabu] — beda bentuk dari lencana status. */
-export function LencanaHari({ hari, aksen }: { hari: string; aksen: WarnaAksen }) {
+export function LencanaHari({
+  hari,
+  aksen,
+  kecil = false,
+}: {
+  hari: string;
+  aksen: WarnaAksen;
+  /** Sebaris dengan tanggal akad 10 pt di kartu tagih: lebih pendek. */
+  kecil?: boolean;
+}) {
   return (
     <View
       accessible
       accessibilityLabel={`Ditagih tiap ${hari}`}
-      style={[gaya.hari, { backgroundColor: aksen.isi }]}
+      style={[gaya.hari, kecil ? gaya.hariKecil : null, { backgroundColor: aksen.isi }]}
     >
-      <Ikon nama="calendar" ukuran={11} warna={aksen.teksIsi} />
-      <Text style={[gaya.lencanaTeks, { color: aksen.teksIsi }]}>{hari}</Text>
+      <Ikon nama="calendar" ukuran={kecil ? 10 : 11} warna={aksen.teksIsi} />
+      <Text style={[kecil ? gaya.teksKecil : gaya.lencanaTeks, { color: aksen.teksIsi }]}>
+        {hari}
+      </Text>
     </View>
   );
 }
@@ -53,4 +64,6 @@ const gaya = StyleSheet.create({
     borderRadius: SUDUT.kecil - 2,
   },
   lencanaTeks: { ...HURUF["2xs"], fontWeight: TEBAL.tebal },
+  hariKecil: { paddingHorizontal: RUANG[1], paddingVertical: 1 },
+  teksKecil: { ...HURUF["3xs"], fontWeight: TEBAL.tebal },
 });
